@@ -199,7 +199,7 @@ hr{border:none;border-top:1px solid var(--border);margin:10px 0}
   <div class="hdiv"></div>
   <div id="sbar">
     <svg width="13" height="13" viewBox="0 0 16 16" fill="none" style="opacity:.35;flex-shrink:0"><circle cx="6.5" cy="6.5" r="5" stroke="#7878a0" stroke-width="1.5"/><line x1="10.5" y1="10.5" x2="14" y2="14" stroke="#7878a0" stroke-width="1.5" stroke-linecap="round"/></svg>
-    <input id="si" type="text" placeholder='Try: "site numbers with most spend" · "what sites does Louisiana have" · "seller hierarchy" · "Cognos on site LA-GOV-0041"'/>
+    <input id="si" type="text" placeholder='Try: "top spend sites" · "Louisiana site products" · "does Louisiana have Cognos on all sites" · "seller hierarchy"'/>
     <button id="sbtn">Search</button>
   </div>
   <span class="badge mock" id="badge">DEMO MODE</span>
@@ -275,6 +275,11 @@ hr{border:none;border-top:1px solid var(--border);margin:10px 0}
     <button class="gcb" id="bzo" title="Zoom out">−</button>
     <button class="gcb" id="bfit" title="Fit to view">⊡</button>
     <button class="gcb" id="brst" title="Restart layout">↺</button>
+    <div style="width:1px;height:20px;background:rgba(255,255,255,0.1);margin:0 2px"></div>
+    <button class="gcb" id="bhier" title="Show Org Hierarchy" style="font-size:11px;width:auto;padding:0 8px;gap:4px;display:flex;align-items:center">
+      <svg width="12" height="12" viewBox="0 0 16 16" fill="none"><circle cx="8" cy="2.5" r="2" fill="currentColor"/><circle cx="3" cy="11.5" r="2" fill="currentColor"/><circle cx="13" cy="11.5" r="2" fill="currentColor"/><line x1="8" y1="4.5" x2="8" y2="7" stroke="currentColor" stroke-width="1.2"/><line x1="8" y1="7" x2="3" y2="9.5" stroke="currentColor" stroke-width="1.2"/><line x1="8" y1="7" x2="13" y2="9.5" stroke="currentColor" stroke-width="1.2"/></svg>
+      Hierarchy
+    </button>
     <div style="width:1px;height:20px;background:rgba(255,255,255,0.1);margin:0 2px"></div>
     <button class="gcb" id="bexp" title="Export / Share" style="font-size:12px;width:auto;padding:0 8px;gap:4px;display:flex;align-items:center">
       <svg width="12" height="12" viewBox="0 0 16 16" fill="none"><path d="M8 1v9M4 6l4 4 4-4M2 12v1a1 1 0 001 1h10a1 1 0 001-1v-1" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg>
@@ -523,6 +528,8 @@ const SAMPLE_QUERIES = [
   'What products does site LA-GOV-0041 have?',
   'Show me the seller hierarchy',
   'Does Louisiana have Cognos on all sites?',
+  'What products does LA-GOV-0117 not have?',
+  'Show ALT and TSL hierarchy',
   'Find expiring support contracts',
   'What opportunities does Cascadia have?',
   'Co-sell relationships',
@@ -874,6 +881,7 @@ function bindEvents() {
   document.getElementById('ohclose').onclick = () => {
     document.getElementById('ohp').style.display = 'none';
   };
+  document.getElementById('bhier').onclick = showFullHierarchyMode;
   document.getElementById('bexp').onclick = openExportModal;
   document.getElementById('exmclose').onclick = closeExportModal;
   document.getElementById('expmodal').addEventListener('click', e => {
@@ -1065,10 +1073,23 @@ function clearSelection() {
 }
 
 // ── Org Hierarchy Builder ─────────────────────────────────────────────────────
+// Role ordering: SLM=0, FLM=1, ALT=2, TSL/CE/SSR=3
+const ROLE_ORDER = { SLM:0, FLM:1, ALT:2, TSL:3, CE:3, SSR:3 };
+const ROLE_COLORS = {
+  SLM:  '#a56eff',
+  FLM:  '#1192e8',
+  ALT:  '#009d9a',
+  TSL:  '#0f62fe',
+  CE:   '#0f62fe',
+  SSR:  '#33b1ff',
+  MGR:  '#a56eff',
+  AE:   '#7878a0',
+};
+
 function showOrgHierarchy(focusNode) {
   const nodeMap = Object.fromEntries(SEED_NODES.map(n=>[n.id,n]));
 
-  // Walk up to find top of chain
+  // Walk up to find the absolute top of chain (no REPORTS_TO outgoing = top)
   function getTopManager(nodeId, visited=new Set()) {
     if (visited.has(nodeId)) return nodeId;
     visited.add(nodeId);
@@ -1077,7 +1098,6 @@ function showOrgHierarchy(focusNode) {
     return getTopManager(upEdge.t, visited);
   }
 
-  // Walk down to build subtree
   function getDirectReports(nodeId) {
     return SEED_EDGES.filter(e=>e.t===nodeId&&e.type==='REPORTS_TO').map(e=>e.s);
   }
@@ -1089,7 +1109,7 @@ function showOrgHierarchy(focusNode) {
     return { n, depth, reports: reports.map(r=>buildTree(r, depth+1)).filter(Boolean) };
   }
 
-  // Find the topmost manager
+  // Find top, starting from the manager if focusNode is a Seller
   const startId = focusNode.label === 'Seller'
     ? (SEED_EDGES.find(e=>e.s===focusNode.id&&e.type==='REPORTS_TO')||{}).t || focusNode.id
     : focusNode.id;
@@ -1097,25 +1117,71 @@ function showOrgHierarchy(focusNode) {
   const tree = buildTree(topId);
   if (!tree) return;
 
-  function renderNode(item, isFocus) {
+  function renderOrgNode(item) {
     const n = item.n;
     const col = COLORS[n.label] || '#888';
     const isHighlight = n.id === focusNode.id;
     const roleTag = n.role || n.sellerType || (n.label==='Manager'?'MGR':'AE');
-    const indent = 'oh-indent'.repeat ? ('  '.repeat(item.depth)) : '';
+    const roleColor = ROLE_COLORS[roleTag] || col;
+    const indentPx = item.depth * 16 + 7;
+
+    // Sites this seller owns (if seller)
+    let siteInfo = '';
+    if (n.label === 'Seller') {
+      const ownedAccs = SEED_EDGES.filter(e=>e.s===n.id&&e.type==='OWNS_ACCOUNT').map(e=>e.t);
+      const siteIds = SEED_EDGES.filter(e=>ownedAccs.includes(e.s)&&e.type==='HAS_SITE')
+        .map(e=>{ const s=SEED_NODES.find(x=>x.id===e.t); return s?s.siteId:null; }).filter(Boolean);
+      if (siteIds.length) siteInfo = `<span style="font-size:7px;color:var(--ts);margin-left:4px">${siteIds.join(', ')}</span>`;
+    }
+
     return `
-      <div class="oh-node${isHighlight?' oh-node-focus':''}" style="padding-left:${item.depth*14+7}px;${isHighlight?'background:rgba(15,98,254,0.1);border-left-color:var(--ibm-blue)':''}" onclick="focusNode('${n.id}')">
+      <div class="oh-node" style="padding-left:${indentPx}px;${isHighlight?'background:rgba(15,98,254,0.1);border-left-color:var(--ibm-blue)':''}" onclick="focusNode('${n.id}')">
         <span class="oh-dot" style="background:${col};box-shadow:0 0 5px ${col}88;flex-shrink:0"></span>
         <span class="oh-name" style="${isHighlight?'color:var(--tp)':''}">${n.name}</span>
-        <span class="oh-role" style="${isHighlight?'background:rgba(15,98,254,0.15);color:var(--ibm-blue)':''}">${roleTag}</span>
+        ${siteInfo}
+        <span class="oh-role" style="background:${roleColor}22;color:${roleColor};border:1px solid ${roleColor}44">${roleTag}</span>
       </div>
-      ${item.reports.map(r=>renderNode(r,false)).join('')}
+      ${item.reports.map(r=>renderOrgNode(r)).join('')}
     `;
   }
 
   const ohp = document.getElementById('ohp');
-  document.getElementById('ohtree').innerHTML = renderNode(tree, false);
+  document.getElementById('ohtree').innerHTML = renderOrgNode(tree);
   ohp.style.display = 'block';
+}
+
+// ── Full Hierarchy Mode — triggered by toolbar button ─────────────────────────
+function showFullHierarchyMode() {
+  // Find the SLM (highest manager)
+  const slm = SEED_NODES.find(n=>n.label==='Manager'&&n.role==='SLM');
+  const topNode = slm || SEED_NODES.find(n=>n.label==='Manager');
+  if (!topNode) return;
+
+  // Focus graph on org nodes only
+  const orgLabels = new Set(['Manager', 'Seller']);
+  activeLabels = new Set([...activeLabels, 'Manager', 'Seller']);
+  loadGraph();
+
+  // Build full hierarchy from top
+  showOrgHierarchy(topNode);
+
+  // Ensure right panel is visible and scroll to it
+  const ohp = document.getElementById('ohp');
+  ohp.style.display = 'block';
+  ohp.scrollIntoView({ behavior: 'smooth', block: 'start' });
+
+  // Show narrative in AI insight box
+  const nb = document.getElementById('nb');
+  nb.style.display = 'block';
+  const alt = SEED_NODES.find(n=>n.role==='ALT');
+  const tsl = SEED_NODES.find(n=>n.sellerType==='TSL');
+  const flms = SEED_NODES.filter(n=>n.label==='Manager'&&n.role==='FLM');
+  document.getElementById('nt').innerHTML =
+    `Full org hierarchy from <strong style="color:#a56eff">${topNode.name} (SLM)</strong> → `+
+    `${flms.map(m=>`<strong style="color:#1192e8">${m.name} (FLM)</strong>`).join(', ')} → `+
+    (alt?`<strong style="color:#009d9a">${alt.name} (ALT)</strong> → `:'') +
+    (tsl?`<strong style="color:#0f62fe">${tsl.name} (TSL)</strong>`:'') +
+    `. Click any node to drill into their accounts and sites.`;
 }
 
 // ── Search ─────────────────────────────────────────────────────────────────
@@ -1141,9 +1207,9 @@ async function doSearch(q) {
     }
   } catch (_) {}
 
-  // ── Local scored results (always computed for graph highlighting) ─────────
+  // ── Local scored results ──────────────────────────────────────────────────
   let scored;
-  if (intent === 'site_spend') {
+  if (intent === 'site_spend' || intent === 'site_spend_table') {
     scored = SEED_NODES
       .filter(n => n.label === 'SiteNumber')
       .sort((a,b) => (b.annualSpend||0) - (a.annualSpend||0))
@@ -1153,6 +1219,13 @@ async function doSearch(q) {
       .filter(n => n.label === 'Manager' || n.label === 'Seller')
       .map(n => ({ n, sc: n.label==='Manager' ? 0.9 : 0.7 }))
       .sort((a,b) => b.sc - a.sc);
+    // Auto-open org hierarchy panel on hierarchy search
+    setTimeout(() => showFullHierarchyMode(), 200);
+  } else if (intent === 'site_product_matrix' || intent === 'product_coverage') {
+    // Surface all site numbers + the accounts they belong to
+    scored = SEED_NODES
+      .filter(n => n.label === 'SiteNumber' || n.label === 'Account')
+      .map(n => ({ n, sc: n.label==='SiteNumber' ? 0.9 : 0.7 }));
   } else {
     scored = SEED_NODES.map(n => {
       const text = (n.name + ' ' + (n.desc||'') + ' ' + n.label + ' ' + (n.siteId||'') + ' ' + (n.agency||'')).toLowerCase();
@@ -1167,15 +1240,15 @@ async function doSearch(q) {
 
   const nb = document.getElementById('nb');
   nb.style.display = 'block';
-  document.getElementById('nt').textContent = apiNarrative || buildNarrative(q, scored.map(x=>x.n), intent);
+  document.getElementById('nt').innerHTML = apiNarrative || buildNarrative(q, scored.map(x=>x.n), intent, ql);
 
   // Build and show trace (from API or synthesised locally)
   const localTrace = {
     intent_detected: intent,
-    intent_confidence: intent === 'general' ? 0.4 : 0.72,
+    intent_confidence: intent === 'general' ? 0.4 : 0.82,
     keywords_extracted: words,
     entity_types_matched: [...new Set(scored.slice(0,5).map(x=>x.n.label))],
-    cypher_generated: '-- mock mode: no Neo4j connected --\n-- local keyword scoring used instead',
+    cypher_generated: buildCypher(intent, ql),
     search_backend: 'mock',
     synthesis_mode: 'template',
     model_used: 'ibm/granite-13b-instruct-v2',
@@ -1189,6 +1262,21 @@ async function doSearch(q) {
     res.innerHTML = '<div style="color:var(--tm);font-size:11px;text-align:center;padding:16px">No results found.</div>';
     return;
   }
+
+  // ── Rich HTML result blocks for special intents ───────────────────────────
+  if (intent === 'site_spend' || intent === 'site_spend_table') {
+    res.innerHTML = buildSiteSpendTable(scored.map(x=>x.n));
+    return;
+  }
+  if (intent === 'site_product_matrix') {
+    res.innerHTML = buildSiteProductMatrix(ql);
+    return;
+  }
+  if (intent === 'product_coverage') {
+    res.innerHTML = buildProductCoverageReport(ql);
+    return;
+  }
+
   res.innerHTML = scored.slice(0,14).map(({n, sc}) => {
     const col = COLORS[n.label] || '#888';
     const stale = n.status === 'STALE' ? ' stale' : '';
@@ -1204,6 +1292,189 @@ async function doSearch(q) {
   }).join('');
 }
 
+// ── Cypher generator for trace panel ─────────────────────────────────────────
+function buildCypher(intent, ql) {
+  if (intent === 'site_spend' || intent === 'site_spend_table') {
+    return `MATCH (s:SiteNumber)\nRETURN s.siteId, s.agency, s.annualSpend\nORDER BY s.annualSpend DESC`;
+  }
+  if (intent === 'site_product_matrix') {
+    const accMatch = extractAccountFromQuery(ql);
+    return `MATCH (a:Account${accMatch ? ' {name: "'+accMatch+'"}' : ''})-[:HAS_SITE]->(s:SiteNumber)\nOPTIONAL MATCH (s)-[:HAS_PRODUCT]->(p:Product)\nRETURN a.name, s.siteId, s.agency, collect(p.name) AS products\nORDER BY s.annualSpend DESC`;
+  }
+  if (intent === 'product_coverage') {
+    const prodMatch = extractProductFromQuery(ql);
+    return `MATCH (a:Account)-[:HAS_SITE]->(s:SiteNumber)\nOPTIONAL MATCH (s)-[:HAS_PRODUCT]->(p:Product${prodMatch ? ' {name: "'+prodMatch+'"}' : ''})\nRETURN a.name, s.siteId, s.agency,\n  CASE WHEN p IS NOT NULL THEN true ELSE false END AS hasProduct\nORDER BY a.name, s.siteId`;
+  }
+  if (intent === 'hierarchy') {
+    return `MATCH path=(s:Seller)-[:REPORTS_TO*1..5]->(m:Manager)\nRETURN s.name, s.sellerType, [n IN nodes(path) | n.name] AS chain\nORDER BY length(path) DESC`;
+  }
+  if (intent === 'account_sites') {
+    return `MATCH (a:Account)-[:HAS_SITE]->(s:SiteNumber)\nRETURN a.name, collect(s.siteId) AS sites\nORDER BY a.name`;
+  }
+  return '-- mock mode: no Neo4j connected --\n-- local keyword scoring used instead';
+}
+
+function extractAccountFromQuery(ql) {
+  if (/louisiana|la.gov/.test(ql)) return 'State of Louisiana';
+  if (/first national|fnb/.test(ql)) return 'First National Bancorp';
+  return null;
+}
+
+function extractProductFromQuery(ql) {
+  if (/cognos/.test(ql)) return 'IBM Cognos Analytics';
+  if (/turbonomic/.test(ql)) return 'IBM Turbonomic';
+  if (/watsonx/.test(ql)) return 'watsonx.ai';
+  if (/openpage|grc/.test(ql)) return 'IBM OpenPages';
+  return null;
+}
+
+// ── Rich result builders ──────────────────────────────────────────────────────
+
+function buildSiteSpendTable(siteNodes) {
+  const totalSpend = siteNodes.reduce((a,s) => a + (s.annualSpend||0), 0);
+  const rows = siteNodes.map((s, i) => {
+    const pct = totalSpend ? ((s.annualSpend||0)/totalSpend*100).toFixed(0) : 0;
+    const prods = SEED_EDGES.filter(e=>e.s===s.id&&e.type==='HAS_PRODUCT')
+      .map(e=>{ const p=SEED_NODES.find(x=>x.id===e.t); return p?p.name:e.t; });
+    const acc = SEED_NODES.find(x=>x.id===s.accountId);
+    const rankColors = ['#f1c21b','#7878a0','#cd7f32'];
+    const medal = i < 3 ? `<span style="color:${rankColors[i]};margin-right:3px">${['①','②','③'][i]}</span>` : `<span style="color:var(--tm);margin-right:3px">${i+1}.</span>`;
+    return `<div class="ri" onclick="focusNode('${s.id}')" style="border-left:3px solid #33b1ff${i===0?'':i===1?'aa':'55'}">
+      <div class="rih">
+        ${medal}
+        <span class="rdot" style="background:#33b1ff"></span>
+        <span class="rl" style="color:#33b1ff">SITE</span>
+        <span style="margin-left:auto;font-size:9px;font-weight:700;color:#33b1ff">$${(s.annualSpend/1e6).toFixed(2)}M</span>
+      </div>
+      <div class="rn">${s.siteId} <span style="color:var(--ts);font-weight:400;font-size:10px">· ${s.agency||'–'}</span></div>
+      ${acc ? `<div class="rd">Account: ${acc.name}</div>` : ''}
+      <div style="margin-top:4px">
+        <div style="height:3px;border-radius:2px;background:linear-gradient(90deg,#33b1ff,#0f62fe);width:${pct}%;max-width:100%"></div>
+        <div style="display:flex;justify-content:space-between;margin-top:2px">
+          <div class="rd">${prods.length ? prods.join(' · ') : 'No products mapped'}</div>
+          <span style="font-size:8px;color:var(--tm)">${pct}% of total</span>
+        </div>
+      </div>
+    </div>`;
+  });
+  return `<div style="font-size:8px;font-weight:800;text-transform:uppercase;letter-spacing:1px;color:var(--ts);margin-bottom:8px;padding-bottom:4px;border-bottom:1px solid var(--border)">
+    Site Numbers by Annual Spend — ${siteNodes.length} total · $${(totalSpend/1e6).toFixed(2)}M combined
+  </div>${rows.join('')}`;
+}
+
+function buildSiteProductMatrix(ql) {
+  // Determine which account to focus on from query, or show all
+  const accTarget = extractAccountFromQuery(ql);
+  const accounts = SEED_NODES.filter(n => n.label==='Account');
+  const focusAccs = accTarget
+    ? accounts.filter(a => a.name.toLowerCase().includes(accTarget.toLowerCase()))
+    : accounts.filter(a => SEED_EDGES.some(e=>e.s===a.id&&e.type==='HAS_SITE'));
+
+  if (!focusAccs.length) return '<div style="color:var(--tm);font-size:11px;padding:12px">No accounts with site numbers found.</div>';
+
+  let html = '';
+  for (const acc of focusAccs) {
+    const sites = SEED_EDGES.filter(e=>e.s===acc.id&&e.type==='HAS_SITE')
+      .map(e=>SEED_NODES.find(x=>x.id===e.t)).filter(Boolean)
+      .sort((a,b)=>(b.annualSpend||0)-(a.annualSpend||0));
+    if (!sites.length) continue;
+
+    // Collect all products across all sites for this account
+    const allProds = [...new Set(
+      sites.flatMap(s => SEED_EDGES.filter(e=>e.s===s.id&&e.type==='HAS_PRODUCT').map(e=>e.t))
+    )].map(pid=>SEED_NODES.find(x=>x.id===pid)).filter(Boolean);
+
+    html += `<div style="font-size:8px;font-weight:800;text-transform:uppercase;letter-spacing:1px;color:var(--ibm-blue);margin-bottom:6px;margin-top:10px">${acc.name}</div>`;
+
+    if (!allProds.length) {
+      html += `<div style="color:var(--tm);font-size:10px;padding:6px 0">No product–site mappings found.</div>`;
+      continue;
+    }
+
+    // Header row
+    const colW = Math.floor(220 / (allProds.length || 1));
+    html += `<div style="overflow-x:auto"><table style="width:100%;border-collapse:collapse;font-size:9px">
+      <thead><tr>
+        <th style="text-align:left;padding:4px 6px;color:var(--ts);border-bottom:1px solid var(--border);min-width:100px">Site</th>
+        <th style="text-align:left;padding:4px 6px;color:var(--ts);border-bottom:1px solid var(--border)">Spend</th>
+        ${allProds.map(p=>`<th style="text-align:center;padding:4px 5px;color:var(--ibm-orange);border-bottom:1px solid var(--border);max-width:${colW}px;word-break:break-word;font-size:8px">${p.name.replace('IBM ','')}</th>`).join('')}
+      </tr></thead>
+      <tbody>`;
+
+    for (const s of sites) {
+      const siteProdIds = new Set(SEED_EDGES.filter(e=>e.s===s.id&&e.type==='HAS_PRODUCT').map(e=>e.t));
+      html += `<tr onclick="focusNode('${s.id}')" style="cursor:pointer;transition:background .15s" onmouseover="this.style.background='rgba(255,255,255,0.04)'" onmouseout="this.style.background=''">
+        <td style="padding:5px 6px;border-bottom:1px solid rgba(60,60,120,0.2)">
+          <div style="font-weight:700;color:var(--ibm-cyan)">${s.siteId}</div>
+          <div style="color:var(--tm);font-size:8px">${s.agency||'–'}</div>
+        </td>
+        <td style="padding:5px 6px;border-bottom:1px solid rgba(60,60,120,0.2);color:var(--ibm-cyan);font-weight:700;white-space:nowrap">$${(s.annualSpend/1e6).toFixed(2)}M</td>
+        ${allProds.map(p => {
+          const has = siteProdIds.has(p.id);
+          return `<td style="text-align:center;padding:5px;border-bottom:1px solid rgba(60,60,120,0.2)">
+            <span style="font-size:12px;${has ? 'color:#24a148' : 'color:rgba(255,255,255,0.12)'}">${has ? '✓' : '○'}</span>
+          </td>`;
+        }).join('')}
+      </tr>`;
+    }
+    html += `</tbody></table></div>`;
+  }
+  return html;
+}
+
+function buildProductCoverageReport(ql) {
+  const prodName = extractProductFromQuery(ql);
+  const prod = prodName ? SEED_NODES.find(n=>n.label==='Product'&&n.name===prodName) : null;
+
+  // Find accounts with multiple sites
+  const accounts = SEED_NODES.filter(n=>n.label==='Account')
+    .filter(a=>SEED_EDGES.some(e=>e.s===a.id&&e.type==='HAS_SITE'));
+
+  if (!accounts.length) return '<div style="color:var(--tm);font-size:11px;padding:12px">No multi-site accounts found.</div>';
+
+  let html = '';
+  if (prod) {
+    html += `<div style="font-size:8px;font-weight:800;text-transform:uppercase;letter-spacing:1px;color:var(--ibm-orange);margin-bottom:10px">Coverage: ${prod.name}</div>`;
+  }
+
+  for (const acc of accounts) {
+    const sites = SEED_EDGES.filter(e=>e.s===acc.id&&e.type==='HAS_SITE')
+      .map(e=>SEED_NODES.find(x=>x.id===e.t)).filter(Boolean)
+      .sort((a,b)=>(b.annualSpend||0)-(a.annualSpend||0));
+    if (!sites.length) continue;
+
+    const prodsToCheck = prod ? [prod] : [...new Set(
+      sites.flatMap(s => SEED_EDGES.filter(e=>e.s===s.id&&e.type==='HAS_PRODUCT').map(e=>e.t))
+    )].map(pid=>SEED_NODES.find(x=>x.id===pid)).filter(Boolean);
+
+    html += `<div style="font-size:8px;font-weight:800;text-transform:uppercase;letter-spacing:1px;color:var(--ibm-blue);margin-bottom:5px;margin-top:10px">${acc.name} (${sites.length} sites)</div>`;
+
+    for (const p of prodsToCheck) {
+      const sitesWithProd   = sites.filter(s=>SEED_EDGES.some(e=>e.s===s.id&&e.t===p.id&&e.type==='HAS_PRODUCT'));
+      const sitesWithout    = sites.filter(s=>!SEED_EDGES.some(e=>e.s===s.id&&e.t===p.id&&e.type==='HAS_PRODUCT'));
+      const coverage        = sitesWithProd.length;
+      const total           = sites.length;
+      const pct             = Math.round(coverage/total*100);
+      const fullCoverage    = coverage === total;
+      const statusColor     = fullCoverage ? '#24a148' : coverage > 0 ? '#ff832b' : '#da1e28';
+
+      html += `<div style="background:rgba(255,255,255,0.02);border:1px solid var(--border);border-radius:6px;padding:8px;margin-bottom:6px">
+        <div style="display:flex;align-items:center;gap:6px;margin-bottom:6px">
+          <span style="width:8px;height:8px;border-radius:50%;background:${COLORS.Product||'#ff832b'};flex-shrink:0"></span>
+          <span style="font-size:10px;font-weight:700;color:var(--tp)">${p.name.replace('IBM ','')}</span>
+          <span style="margin-left:auto;font-size:9px;font-weight:800;color:${statusColor}">${coverage}/${total} sites (${pct}%)</span>
+        </div>
+        <div style="height:3px;background:rgba(255,255,255,0.06);border-radius:2px;margin-bottom:6px">
+          <div style="height:3px;border-radius:2px;background:${statusColor};width:${pct}%"></div>
+        </div>
+        ${sitesWithProd.length ? `<div style="font-size:8px;color:#24a148;margin-bottom:3px">✓ Deployed: ${sitesWithProd.map(s=>`<span onclick="focusNode('${s.id}')" style="cursor:pointer;background:rgba(36,161,72,0.1);border:1px solid rgba(36,161,72,0.25);border-radius:3px;padding:1px 4px;margin:1px">${s.siteId}</span>`).join(' ')}</div>` : ''}
+        ${sitesWithout.length ? `<div style="font-size:8px;color:var(--ibm-orange)">○ Not deployed: ${sitesWithout.map(s=>`<span onclick="focusNode('${s.id}')" style="cursor:pointer;background:rgba(255,131,43,0.1);border:1px solid rgba(255,131,43,0.25);border-radius:3px;padding:1px 4px;margin:1px">${s.siteId}</span>`).join(' ')}</div>` : ''}
+      </div>`;
+    }
+  }
+  return html || '<div style="color:var(--tm);font-size:11px;padding:12px">No coverage data found.</div>';
+}
+
 function focusNode(id) {
   const n = nodes.find(x => x.id === id);
   if (!n) return;
@@ -1214,10 +1485,11 @@ function focusNode(id) {
 }
 
 function detectIntent(q) {
-  if (/site.*spend|spend.*site|most.*spend|highest spend/.test(q)) return 'site_spend';
-  if (/site.*product|product.*site|what.*site.*have|cognos.*site|site.*cognos/.test(q)) return 'site_product';
+  if (/site.*spend|spend.*site|most.*spend|highest spend|top.*site|rank.*site/.test(q)) return 'site_spend';
+  if (/all site|every site|on all|across.*site|coverage|have.*on.*site|not have/.test(q)) return 'product_coverage';
+  if (/site.*product|product.*site|what.*site.*have|cognos.*site|site.*cognos|product.*matrix|matrix/.test(q)) return 'site_product_matrix';
   if (/site.?number|what site|which site|sites.*for|account.*site|site.*account/.test(q)) return 'account_sites';
-  if (/hierarch|org chart|alt|tsl|chain of command/.test(q)) return 'hierarchy';
+  if (/hierarch|org chart|alt|tsl|chain of command|slm|flm|show.*team/.test(q)) return 'hierarchy';
   if (/report|manage|who.*manage/.test(q)) return 'org';
   if (/install|running|deployed|using|expir/.test(q)) return 'install';
   if (/territory|region|cover/.test(q)) return 'territory';
@@ -1227,28 +1499,35 @@ function detectIntent(q) {
   return 'general';
 }
 
-function buildNarrative(q, results, intent) {
+function buildNarrative(q, results, intent, ql) {
   if (!results.length) return `No results found for "${q}".`;
   const names = results.slice(0,3).map(r=>r.name);
   const n = results.length;
 
-  // For site spend: show ranked spend list
   if (intent === 'site_spend') {
     const sites = SEED_NODES.filter(x=>x.label==='SiteNumber')
       .sort((a,b)=>(b.annualSpend||0)-(a.annualSpend||0));
-    const top = sites.slice(0,3).map(s=>`${s.name} ($${(s.annualSpend/1e6).toFixed(2)}M)`);
-    return `Top sites by spend: ${top.join(' → ')}. ${sites.length} total site numbers in graph.`;
+    const top = sites.slice(0,3).map(s=>`<strong style="color:#33b1ff">${s.name}</strong> ($${(s.annualSpend/1e6).toFixed(2)}M)`);
+    const total = sites.reduce((a,s)=>a+(s.annualSpend||0),0);
+    return `Top sites by spend: ${top.join(' → ')}. ${sites.length} total · <strong style="color:#33b1ff">$${(total/1e6).toFixed(2)}M</strong> combined. Ranked table below ↓`;
   }
-  if (intent === 'site_product') {
-    const hits = results.filter(r=>r.label==='SiteNumber');
-    if (hits.length) {
-      const siteInfo = hits.map(s=>{
-        const prods = SEED_EDGES.filter(e=>e.s===s.id&&e.type==='HAS_PRODUCT')
-          .map(e=>{ const p=SEED_NODES.find(x=>x.id===e.t); return p?p.name:e.t; });
-        return `${s.name}: ${prods.join(', ')||'none'}`;
-      });
-      return siteInfo.join(' | ');
+  if (intent === 'site_product_matrix') {
+    const accTarget = extractAccountFromQuery(ql||'');
+    const accs = accTarget ? [accTarget] : [...new Set(SEED_NODES.filter(n=>n.label==='SiteNumber').map(s=>{ const e=SEED_EDGES.find(x=>x.t===s.id&&x.type==='HAS_SITE'); const a=e&&SEED_NODES.find(x=>x.id===e.s); return a?a.name:null; }).filter(Boolean))];
+    return `Site-product matrix for <strong>${accs.join(', ')}</strong>. ✓ = deployed, ○ = whitespace opportunity.`;
+  }
+  if (intent === 'product_coverage') {
+    const prodName = extractProductFromQuery(ql||'');
+    const prod = prodName ? SEED_NODES.find(n=>n.label==='Product'&&n.name===prodName) : null;
+    if (prod) {
+      const sites = SEED_NODES.filter(n=>n.label==='SiteNumber');
+      const withProd = sites.filter(s=>SEED_EDGES.some(e=>e.s===s.id&&e.t===prod.id&&e.type==='HAS_PRODUCT'));
+      const without  = sites.filter(s=>!SEED_EDGES.some(e=>e.s===s.id&&e.t===prod.id&&e.type==='HAS_PRODUCT'));
+      const pct = sites.length ? Math.round(withProd.length/sites.length*100) : 0;
+      const color = pct===100?'#24a148':pct>0?'#ff832b':'#da1e28';
+      return `<strong style="color:${COLORS.Product||'#ff832b'}">${prod.name}</strong> deployed on <strong style="color:${color}">${withProd.length}/${sites.length} sites (${pct}%)</strong>. ${without.length ? `Missing on: <span style="color:#ff832b">${without.map(s=>s.siteId).join(', ')}</span>` : 'Full coverage ✓'}`;
     }
+    return `Coverage report for all products across ${SEED_NODES.filter(n=>n.label==='SiteNumber').length} site numbers. Each row shows site, each column shows product.`;
   }
   if (intent === 'account_sites') {
     const accs = results.filter(r=>r.label==='Account');
@@ -1256,7 +1535,7 @@ function buildNarrative(q, results, intent) {
       const accInfo = accs.map(a=>{
         const sitesForAcc = SEED_EDGES.filter(e=>e.s===a.id&&e.type==='HAS_SITE')
           .map(e=>{ const s=SEED_NODES.find(x=>x.id===e.t); return s?s.siteId:e.t; });
-        return `${a.name} has ${sitesForAcc.length} site number${sitesForAcc.length!==1?'s':''}: ${sitesForAcc.join(', ')}`;
+        return `${a.name} has <strong>${sitesForAcc.length}</strong> site number${sitesForAcc.length!==1?'s':''}: ${sitesForAcc.join(', ')}`;
       });
       return accInfo.join(' | ');
     }
@@ -1264,7 +1543,9 @@ function buildNarrative(q, results, intent) {
   if (intent === 'hierarchy') {
     const mgrs = SEED_NODES.filter(x=>x.label==='Manager');
     const slm = mgrs.find(m=>m.role==='SLM');
-    return `Hierarchy: ${slm?slm.name+' (SLM)':''} → FLMs → ALTs → TSLs/Brand Sellers. Click any Manager or Seller node to see their full org tree.`;
+    const alt = mgrs.find(m=>m.role==='ALT');
+    const tsl = SEED_NODES.find(x=>x.sellerType==='TSL');
+    return `Full hierarchy: <strong style="color:#a56eff">${slm?slm.name+' (SLM)':''}</strong> → FLMs → <strong style="color:#a56eff">${alt?alt.name+' (ALT)':''}</strong> → <strong style="color:#0f62fe">${tsl?tsl.name+' (TSL)':''}</strong>. Hierarchy panel opened. Click any node to explore.`;
   }
 
   const m = {
