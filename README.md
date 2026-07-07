@@ -1,6 +1,6 @@
 # IBM DKG — Federated Provenance Knowledge Graph for IBM Sellers
 
-> **WatsonX Challenge Submission · v0.3.0** — Enterprise knowledge graph mapping every IBM seller relationship, account install base, product coverage, territory assignment, site-number hierarchy, business partner network, and modernization pipeline. Powered by IBM Granite + Neo4j. Fully operational in demo mode with zero backend dependencies.
+> **v0.4.0** — Enterprise knowledge graph mapping every IBM seller relationship, account install base, product coverage, territory assignment, site-number hierarchy, business partner network, and modernization pipeline. Powered by IBM Granite + Neo4j. Fully operational in demo mode with zero backend dependencies.
 
 ---
 
@@ -9,25 +9,43 @@
 The IBM DKG is a **living, agent-maintained knowledge graph** that turns raw CRM, Passport Advantage, w3, and IFC data into proactive seller intelligence. It answers questions sellers and leaders ask every day:
 
 **Sellers**
-- *"What are my next best actions today?"* → ranked list of expiring contracts, stalled deals, and co-sell gaps
+- *"What site numbers have the most spend?"* → ranked spend table with visual arc rings and bar fill
+- *"What site number is the State of Louisiana on?"* → account-to-site-number mapping
+- *"What products does site LA-GOV-0041 have?"* → site-product matrix with ✓ deployed / ○ whitespace
+- *"Does Louisiana have Cognos on all its sites?"* → per-site coverage report with clickable gap badges
+- *"What products does LA-GOV-0117 not have?"* → whitespace opportunity by site
 - *"Which accounts in my book have a renewal coming up — and what should I modernize them to?"*
 - *"Draft me a Why-Modernize email to the PO contact for the Cascadia OpenPages renewal."*
-- *"What site numbers does the State of Louisiana have, and what products are on each one?"*
-- *"Does Louisiana have Cognos on all its sites?"* → per-site coverage matrix + whitespace gaps
 - *"What business partners are selling into my accounts, and who is the IBM partner liaison?"*
 
 **Managers & Leadership**
 - *"Show me every account that has IBM installs but no open opportunity."* (Whitespace analysis)
-- *"What is the territory health scorecard across my managers?"*
+- *"Show me the seller hierarchy"* / *"Show ALT and TSL hierarchy"* → full-screen SVG hierarchy flow: SLM → FLM → ALT → TSL → Brand Seller, each card shows role badge and associated site IDs
 - *"Give me a weekly digest of my whole book — EOS, renewals, and pipeline."*
 - *"Can I trust this data? What is the freshness score by source system?"*
 
 **Any User**
 - *"Who manages Marcus Webb?"* → full org chart from SLM → FLM → ALT → TSL → Brand Seller
-- *"What site numbers have the most spend?"* → ranked spend table with visual arc rings
 - *"Is this account record still accurate?"* → confirm or correct any node with human write-back, automatically logged as a provenance-stamped KnowledgeAsset
 
 Every relationship is a **Knowledge Asset** with W3C PROV-DM provenance metadata (source system, confidence score, TTL, `last_verified`). A background **Pruning Agent** validates data freshness — stale records are flagged before they mislead anyone. Human confirmations and corrections close the loop, turning the DKG into a truly decentralized graph where data quality is a shared responsibility.
+
+---
+
+## What's New in v0.4.0
+
+| Area | Change |
+|---|---|
+| **Visual redesign** | Replaced dark force-directed canvas with a **light Glean-style SVG dual-graph** (IBM blue light theme, dotted grid background, white panels) |
+| **Enterprise Graph** | 6 clickable hub nodes (People, Accounts, Products, Pipeline, Partners, Knowledge) orbit a center IBM DKG node; child nodes cluster around each hub |
+| **Personal Graph** | 6 personal hubs (My Book, Next Best Actions, Renewals & EOS, Co-sell Network, Goals/Quota, Site Numbers) on the right half |
+| **Hub click filtering** | Clicking a hub filters the graph to that entity type and switches the matching sidebar tab |
+| **Hierarchy flow overlay** | Full-screen SVG org chart triggered by the Hierarchy toolbar button — card-per-person layout showing SLM → FLM → **ALT** → **TSL** chain with role badges and site IDs per seller |
+| **Site spend queries** | `"What site numbers have the most spend?"` → ranked table with medal icons, spend bars, product tags |
+| **Site-product matrix** | `"What site number is Louisiana on?"` / `"What products does a site have?"` → interactive cross-tab with ✓/○ per cell |
+| **Product coverage report** | `"Does Louisiana have Cognos on all sites?"` → per-account, per-product coverage with clickable site badges |
+| **Source rail** | Bottom bar shows data source logos (Salesforce, Passport Advantage, w3 Bluepages, Seismic, IFC) + DKG Protect governance badge |
+| **Spend arc rings** | SiteNumber nodes render a blue arc proportional to their annual spend vs. max site spend |
 
 ---
 
@@ -38,9 +56,19 @@ Every relationship is a **Knowledge Asset** with W3C PROV-DM provenance metadata
 │                    IBM DKG — Federated Provenance Knowledge Graph             │
 │                                                                               │
 │  ┌──────────────────────────────────────────────────────────────────────┐   │
-│  │              Zero-dependency Frontend (HTML/Canvas) — v0.3.0          │   │
-│  │  Graph │ Insights │ Modernize │ Partners │ Trust │ Hierarchy │ Export  │   │
-│  │  Role/Entitlement pill │ Write-back │ Conflict detection │ Explainability │
+│  │       Zero-dependency Frontend (HTML/SVG) — v0.4.0                    │   │
+│  │                                                                        │   │
+│  │   ┌─────────────────────┐   ┌─────────────────────────────────────┐  │   │
+│  │   │  Enterprise Graph   │   │        Personal Graph               │  │   │
+│  │   │  6 hub clusters     │───│  6 personal hubs (My Book, NBA,     │  │   │
+│  │   │  (People, Accounts, │   │   Renewals, Co-sell, Quota, Sites)  │  │   │
+│  │   │  Products, Pipeline,│   └─────────────────────────────────────┘  │   │
+│  │   │  Partners, Knowledge│                                             │   │
+│  │   └─────────────────────┘                                             │   │
+│  │                                                                        │   │
+│  │  Tabs: Graph │ Insights │ Modernize │ Partners │ Trust                 │   │
+│  │  Hierarchy flow overlay │ Role/Entitlement pill │ Write-back           │   │
+│  │  Conflict detection │ Explainability trail │ Export │ Granite trace    │   │
 │  └─────────────────────────────┬────────────────────────────────────────┘   │
 │                                 │ REST / Fetch (graceful fallback to mock)   │
 │  ┌──────────────────────────────▼────────────────────────────────────────┐  │
@@ -133,7 +161,7 @@ python -m uvicorn api.main:app --reload --port 8000
 open frontend/index.html
 ```
 
-The app starts in **DEMO MODE** with realistic seed data: 9 sellers (including 2 Partner Liaisons), 4 managers, 7 accounts, 8 products, 7 installs, 5 site numbers, 3 business partners, and 4 opportunities across 5 territories.
+The app starts in **DEMO MODE** with realistic seed data: 9 sellers (including 2 Partner Liaisons), 4 managers (SLM/FLM/ALT + TSL chain), 7 accounts, 8 products, 7 installs, 5 site numbers, 3 business partners, and 4 opportunities across 5 territories.
 
 ### Option B — Live Mode (Neo4j + watsonx.ai)
 
@@ -212,70 +240,106 @@ Interactive docs at: **http://localhost:8000/docs**
 
 ---
 
-## Frontend Features (v0.3.0)
+## Frontend Features (v0.4.0)
 
 The frontend is a single self-contained HTML file — no npm, no build step, no external assets.
 
-### Graph View
-- **Force-directed canvas** with glowing nebula aesthetic — nodes pulse, selected edges animate with travelling dots
-- **Node types**: Seller (blue), Manager (purple), Account (cyan), Product (orange), Install (green), Opportunity (yellow), Territory (teal), SiteNumber (sky-blue), BusinessPartner (purple), KnowledgeAsset (pink)
-- **SiteNumber nodes** render with a spend-proportion arc ring — longer arc = higher annual spend
-- **Filter panel** — toggle entity types on/off live
-- **👥 Hierarchy button** in graph toolbar — one click shows the full SLM → FLM → ALT → TSL org tree
-- **Org Hierarchy panel** — role-colored badges (SLM=purple, FLM=cyan, ALT=teal, TSL/CE=blue, SSR=light-blue), seller site IDs shown inline
+### SVG Dual-Graph (new in v0.4.0)
+
+The graph canvas is now a **light-themed SVG dual-graph** replacing the previous dark canvas physics simulation:
+
+- **Light theme** — `#f0f4ff` background, white panels, IBM blue accent palette, subtle dotted grid
+- **Enterprise Graph (left half)** — 6 hub nodes orbit a central IBM DKG node:
+  - **People** → Sellers + Managers (blue/purple child nodes)
+  - **Accounts** → Account nodes (cyan)
+  - **Products** → Product nodes (orange)
+  - **Pipeline** → Opportunity nodes (yellow) — hub click switches to Insights tab
+  - **Partners** → BusinessPartner nodes (purple) — hub click switches to Partners tab
+  - **Knowledge** → SiteNumber, Territory, Install, KnowledgeAsset nodes
+- **Personal Graph (right half)** — 6 personal hubs scoped to the current "View As" persona:
+  - My Book, Next Best Actions, Renewals & EOS, Co-sell Network, Goals/Quota, Site Numbers
+- **Hub click filtering** — clicking any enterprise hub filters child nodes to that type and switches the matching sidebar tab; clicking again resets to all types
+- **SiteNumber spend rings** — blue arc drawn proportional to site's annual spend vs. max spend across all sites
+- **Edge highlighting** — clicking a node dims unrelated edges, highlights connected ones
+- **Source rail** — bottom bar shows Salesforce · Passport Advantage · w3 Bluepages · Seismic · IFC logos + DKG Protect governance badge
+- **Hierarchy overlay** — full-screen SVG org flow opened by the Hierarchy toolbar button (see below)
+
+### Hierarchy Flow Overlay (new in v0.4.0)
+
+Click **Hierarchy** in the toolbar to open a full-screen, scrollable SVG org chart:
+
+- Card-per-person layout with role-coloured border and badge
+- **SLM → FLMs → ALT → TSL → Brand Sellers** full chain rendered
+- **ALT** (Area Leader/Territory) and **TSL** (Territory Sales Leader) roles rendered with distinct teal/blue badges
+- Each seller card shows their associated site IDs inline
+- Click any card to close the overlay and focus that node in the main graph + right sidebar
+
+### Site Number Intelligence (new in v0.4.0)
+
+Three dedicated query modes triggered by natural language search:
+
+**Site Spend Table** (`"What site numbers have the most spend?"`)
+- Ranked table with medal icons (①②③), spend bar fill, % of total, active products
+- Click any row to focus that site node
+
+**Site-Product Matrix** (`"What site number is Louisiana on?"`, `"Louisiana site products"`)
+- Cross-tab: sites as rows, products as columns
+- ✓ (green) = deployed, ○ (grey) = whitespace opportunity
+- Spend column for each site; click any row to focus
+
+**Product Coverage Report** (`"Does Louisiana have Cognos on all sites?"`, `"Does DHH have Cognos?"`)
+- Per-account, per-product coverage with progress bar and % badge
+- Colour-coded: green = full coverage, orange = partial, red = none
+- Clickable site badges (deployed and not-deployed) to focus nodes directly
+
+### Toolbar
+
+| Button | Action |
+|---|---|
+| ⊡ Fit / Reset | Rebuilds the SVG graph at current canvas size |
+| ↺ Rebuild | Resets all filters and rebuilds the full graph |
+| Hierarchy | Opens the full-screen SVG org hierarchy flow |
+| Export | Opens the export modal (PNG / CSV / JSON) |
 
 ### Insights Tab
 - **4 summary tiles** — Expired Support, Expiring 90d, Whitespace Gaps, NBA Actions
-- **Support alert cards** — severity-badged (CRITICAL / HIGH / MEDIUM), click → pan graph to account
+- **Support alert cards** — severity-badged (CRITICAL / HIGH / MEDIUM), click → focus account
 - **Whitespace gap cards** — accounts with IBM installs but zero open pipeline
 
-### Modernize Tab *(new in v0.3.0)*
+### Modernize Tab
 - **Scoped to your book** — shows only installs for accounts you own (switches automatically with View As role)
 - **3 urgency tiers**: EOS/Expired (red), Renewal < 90d (yellow), Upgrade (cyan) — sorted by urgency
-- Every card shows: product, account, renewal date, **PO contact name + email from Passport Advantage**, contract value, and exact **modernization path** (e.g. `v8.3 → v9 SaaS — automated controls, AI risk scoring`)
+- Every card shows: product, account, renewal date, **PO contact name + email from Passport Advantage**, contract value, and exact **modernization path**
 - **✉ Draft Email button** → opens pre-filled Why-Modernize email modal (Granite template)
-  - To field pre-filled with PO contact email
-  - Subject and body generated with product details, renewal date, upgrade path, and IBM seller signature
-  - Edit then **Send via mailto** or **Copy to clipboard**
-- **✉ Weekly Digest tile** → formatted book-of-business digest showing EOS, renewals, whitespace gaps, total addressable pipeline ($M), and Next Best Actions — copy-ready for Slack/Teams
+- **✉ Weekly Digest tile** → formatted book-of-business digest — copy-ready for Slack/Teams
 
-### Partners Tab *(new in v0.3.0)*
-- Lists **Business Partners** aligned to your accounts (row-scoped by role)
-- Each card shows: partner tier (★ Gold / ◆ Silver), **IBM Partner Liaison** name + type, accounts covered, products sold, and PO contact
+### Partners Tab
+- Lists Business Partners aligned to your accounts (row-scoped by role)
+- Partner tier (★ Gold / ◆ Silver), IBM Partner Liaison, accounts covered, products sold, PO contact
 - **Historical IFC data** — sales by year, product, and account with running total
-- **Partner-linked opportunities** — any open deals at your accounts sourced through this partner
-- Click any account name to focus it on the graph canvas
+- Partner-linked opportunities shown inline
 
 ### Trust Tab
 - **Overall trust score** — colour-coded % (green ≥80%, amber ≥50%, red <50%)
 - **Per-source freshness bars** — each source system with total nodes, stale count, and freshness %
-- **Provenance explanation** — W3C PROV-DM metadata note visible to leadership
 
-### Human Validation (Write-Back) *(new in v0.3.0)*
+### Human Validation (Write-Back)
 Every selected node shows a **Human Validation** panel in the right sidebar:
-- **✓ Confirm** — logs confirmation, simulates confidence +0.05, resets TTL. Closes the loop with the pruning agent — a recently confirmed node won't be marked stale
-- **✎ Correct** — opens a correction modal with field / current value / corrected value / evidence fields. Submissions are:
-  1. Logged to the session write-back ledger
-  2. **Automatically create a `KnowledgeAsset` node** stamped with `source: human_writeback`, author, date, and evidence text
-  3. The graph rebuilds live to include the new KnowledgeAsset
+- **✓ Confirm** — logs confirmation, simulates confidence +0.05, resets TTL
+- **✎ Correct** — opens a correction modal; submissions automatically create a `KnowledgeAsset` node stamped with `source: human_writeback`, author, date, and evidence text
 - History log under each node shows all confirmations and corrections with timestamps and confidence delta
-- **Why this matters for decentralization**: data no longer flows only in from source systems — sellers validate and correct facts, raising confidence and resetting TTL, which is exactly what makes a decentralized graph graph trustworthy
 
-### Conflict Detection *(new in v0.3.0)*
-- Seeded conflicts between Salesforce CRM, w3 Bluepages, and Passport Advantage on the same node
+### Conflict Detection
+- Seeded conflicts between Salesforce CRM, w3 Bluepages, and Passport Advantage
 - **⚠ CONFLICT** badge appears on affected nodes in the detail panel
-- Conflict panel shows both sources with confidence % and last-verified date, then the **resolved value** and resolution method (confidence-weighted merge or recency preference)
-- Turning provenance metadata from decoration into a working governance feature — scores well on responsible-AI criteria
+- Conflict panel shows both sources with confidence % and last-verified date, then the resolved value and resolution method
 
-### Explainability Trail *(new in v0.3.0)*
+### Explainability Trail
 Every node detail panel includes a collapsible **▸ Explainability Trail**:
-- Source system, confidence %, last verified date, TTL status
-- Human confirmation count (live-updated by write-back)
-- Graph edges used to derive the answer
-- W3C PROV-DM attribution tag
-- *"Here is the answer and here is exactly why I believe it."*
+- Source system, confidence %, last verified date, TTL status, human confirmation count
+- Graph edges used to derive the answer, W3C PROV-DM attribution tag
 
-### Role / Entitlement System *(new in v0.3.0)*
+### Role / Entitlement System
 - **"View As" pill** in the right sidebar header — switch between 7 personas without reloading
 - **Row-level scoping**: Sellers see only their book; Managers see their org; Admin sees everything
 - Switching persona reloads Graph, Modernize, Partners, and Insights panels automatically
@@ -284,12 +348,11 @@ Every node detail panel includes a collapsible **▸ Explainability Trail**:
 ### Granite Query Trace
 Every search shows a **Show Trace** toggle revealing:
 - Detected intent + confidence bar, keywords extracted, entity types matched
-- Exact **Cypher generated** (intent-specific, not just "mock mode")
+- Exact **Cypher generated** (intent-specific)
 - Model ID and synthesis mode
 
 ### Export / Share
-- **Full Graph PNG** — 2400×1400px with header, timestamp, node counts, legend
-- **Subgraph PNG** — BFS walk from selected node → top-down hierarchical layout
+- **Full Graph PNG** — 2400×1400px with header, timestamp, node counts
 - **CSV** — nodes + edges with all metadata fields
 - **JSON** — structured graph for programmatic import
 - Live preview thumbnail; Copy to Clipboard
@@ -301,9 +364,9 @@ Every search shows a **Show Trace** toggle revealing:
 ```
 "What site numbers have the most spend?"
 "What site number is State of Louisiana on?"
+"What products does site LA-GOV-0041 have?"
 "Does Louisiana have Cognos on all its sites?"
 "What products does LA-GOV-0117 not have?"
-"Louisiana site products"
 "Show me the seller hierarchy"
 "Show ALT and TSL hierarchy"
 "Who manages Marcus Webb?"
@@ -321,13 +384,14 @@ Every search shows a **Show Trace** toggle revealing:
 ```
 Priya Nambiar (SLM — Band 11)
 ├── Sandra Okafor (FLM — Band 10, Northeast)
-│   ├── Marcus Webb (CE — NYC Metro)
+│   ├── Marcus Webb (CE — NYC Metro)         sites: FNB-CORP-0012, FNB-RET-0031
 │   └── Aisha Thornton (SSR — New England, watsonx)
 └── David Reyes (FLM — Band 10, Southeast)
     ├── James Kowalski (CE — Atlanta)
     ├── Lin Mei Zhang (SSR — Miami)
     └── Derek Callahan (ALT — Band 9, Public Sector South)
         └── Monique Tureaud (TSL — Baton Rouge, Cognos/LA Public Sector)
+                                               sites: LA-GOV-0041, LA-GOV-0089, LA-GOV-0117
 
 Partner Liaisons (independent of FLM chain)
 ├── Carlos Muniz (PL — Southeast & Mid-Atlantic)
@@ -337,7 +401,10 @@ Partner Liaisons (independent of FLM chain)
     └── Onix Networking Corp. (Gold BP)
 ```
 
-Click any node to see their full org position in the **Org Hierarchy panel**. Click the **👥 Hierarchy** toolbar button to open the full tree without selecting a node first.
+- **ALT** = Area Leader/Territory — owns a geographic public sector segment, reports through FLM chain
+- **TSL** = Territory Sales Leader — product/segment specialist reporting to ALT
+
+Click any node to see their full org position in the **Org Hierarchy panel** in the right sidebar. Click the **Hierarchy** toolbar button to open the full-screen SVG hierarchy flow without selecting a node first.
 
 ---
 
@@ -347,12 +414,12 @@ Large accounts like the State of Louisiana have multiple site numbers — one pe
 
 ```
 State of Louisiana (Account)
-├── LA-GOV-0041 — DCFS ($1.84M/yr)  → Cognos Analytics + watsonx.ai
-├── LA-GOV-0089 — DOTD ($1.12M/yr)  → Cognos Analytics only
-└── LA-GOV-0117 — DHH  ($670K/yr)   → Turbonomic only  ⚠ Cognos whitespace
+├── LA-GOV-0041 — DCFS ($1.84M/yr)  → Cognos Analytics ✓  + watsonx.ai ✓
+├── LA-GOV-0089 — DOTD ($1.12M/yr)  → Cognos Analytics ✓  (no watsonx)
+└── LA-GOV-0117 — DHH  ($670K/yr)   → Turbonomic ✓         ⚠ Cognos whitespace
 
 First National Bancorp (Account)
-├── FNB-CORP-0012 — HQ ($3.2M/yr)     → Turbonomic + CP4Security
+├── FNB-CORP-0012 — HQ ($3.2M/yr)     → Turbonomic ✓ + CP4Security ✓
 └── FNB-RET-0031  — Retail ($2.6M/yr) → watsonx.ai expansion in progress
 ```
 
@@ -390,17 +457,8 @@ Partners are visible in the **Partners tab**, scoped to your book:
 
 ## Demo Scenarios
 
-### 1. Modernization renewal action
-Open the **Modernize** tab. Cards appear sorted by urgency. Click **✉ Draft Email** on the OpenPages @ Cascadia renewal (53 days out, $890K) → pre-filled email to Monica Estrada (grc@cascadia.com) with the `v8.3 → v9 SaaS` upgrade path.
-
-### 2. Human write-back loop
-Click any Account node → right sidebar shows the **Human Validation** panel. Click **✓ Confirm** → confirmation logged, confidence updated. Click **✎ Correct**, fill in `field: Primary CE`, `new value: James Kowalski`, `evidence: Customer call 2025-07-10` → a new `KnowledgeAsset` node appears in the graph.
-
-### 3. Conflict resolution
-Click **First National Bancorp** → the detail panel shows a **⚠ CONFLICT** badge. Expanding it reveals: Salesforce says `Marcus Webb` (91% confidence), w3 says `James Kowalski` (74% confidence) → resolved to `Marcus Webb` by confidence + recency.
-
-### 4. Site number product gap
-*"Does Louisiana have Cognos on all its sites?"*
+### 1. Site number product gap (new in v0.4.0)
+Search *"Does Louisiana have Cognos on all its sites?"*
 ```
 LA-GOV-0041 (DCFS): Cognos Analytics ✓  $1.84M/yr
 LA-GOV-0089 (DOTD): Cognos Analytics ✓  $1.12M/yr
@@ -408,13 +466,36 @@ LA-GOV-0117 (DHH):  Cognos Analytics ○  $670K/yr  ← Whitespace opportunity
 ```
 Coverage: 2/3 sites (67%). Orange progress bar. Clickable site badges to focus on graph.
 
-### 5. Business partner discovery
+### 2. Top spend sites (new in v0.4.0)
+Search *"What site numbers have the most spend?"* → ranked table:
+```
+① FNB-CORP-0012 (HQ)      $3.20M  Turbonomic · CP4Security
+② FNB-RET-0031  (Retail)  $2.60M  watsonx.ai
+③ LA-GOV-0041   (DCFS)    $1.84M  Cognos Analytics · watsonx.ai
+```
+
+### 3. Hierarchy flow (new in v0.4.0)
+Click **Hierarchy** toolbar button → full-screen SVG card layout:
+- Priya Nambiar (SLM) at top, FLMs below, Derek Callahan (ALT) → Monique Tureaud (TSL) at bottom
+- Each card shows role badge colour-coded by level, site IDs for sellers
+- Click any card to navigate to that person's node detail
+
+### 4. Modernization renewal action
+Open the **Modernize** tab. Cards appear sorted by urgency. Click **✉ Draft Email** on the OpenPages @ Cascadia renewal (53 days out, $890K) → pre-filled email to Monica Estrada (grc@cascadia.com) with the `v8.3 → v9 SaaS` upgrade path.
+
+### 5. Human write-back loop
+Click any Account node → right sidebar shows the **Human Validation** panel. Click **✓ Confirm** → confirmation logged, confidence updated. Click **✎ Correct**, fill in `field: Primary CE`, `new value: James Kowalski`, `evidence: Customer call 2025-07-10` → a new `KnowledgeAsset` node appears in the graph.
+
+### 6. Conflict resolution
+Click **First National Bancorp** → the detail panel shows a **⚠ CONFLICT** badge. Expanding it reveals: Salesforce says `Marcus Webb` (91% confidence), w3 says `James Kowalski` (74% confidence) → resolved to `Marcus Webb` by confidence + recency.
+
+### 7. Business partner discovery
 Switch **View As → Monique Tureaud (TSL)** → Partners tab shows Perficient Digital with 3 years of Cognos Analytics IFC data at State of Louisiana, IBM liaison Carlos Muniz, and partner-linked opportunity tags.
 
-### 6. Manager view scoping
+### 8. Manager view scoping
 Switch **View As → David Reyes (FLM)** → graph filters to his org, Modernize tab shows all installs across James Kowalski, Lin Mei Zhang, and Monique Tureaud's accounts, Weekly Digest totals their combined pipeline.
 
-### 7. Explainability trail
+### 9. Explainability trail
 Click any Install node → expand **▸ Explainability Trail** → source: `Passport Advantage`, confidence: `87%`, last verified: `2025-07-01`, TTL: `90 days`, edges used: `HAS_INSTALL→First National Bancorp, RUNS_PRODUCT→IBM Turbonomic`.
 
 ---
@@ -428,8 +509,6 @@ The pruning agent runs every 6 hours (`PRUNING_INTERVAL_HOURS`) and:
 3. **Deletes** nodes STALE for > `stale_delete_threshold_days` (default 90)
 4. **Prunes** orphaned relationships where both endpoints are DELETED
 5. **Reports** a structured `PruningReport` for audit logging
-
-Human write-back confirmations directly feed the pruning agent — a seller confirming *"yes, I still own this account"* resets TTL and raises confidence, preventing unnecessary staleness flags. This is the core loop that makes "decentralized" meaningful beyond just graph topology.
 
 Trigger manually: `POST /pruning/run` or **▶ Run Cycle** button in the dashboard.
 
@@ -482,12 +561,13 @@ IBM DKG/
 ├── orchestrate/
 │   └── dkg_seller_skill.yaml    # watsonx Orchestrate skill definition (8 tools)
 ├── frontend/
-│   └── index.html               # Self-contained canvas graph dashboard (~3,200 lines)
+│   └── index.html               # Self-contained SVG graph dashboard (~2,200 lines)
 │                                # Tabs: Graph / Insights / Modernize / Partners / Trust
-│                                # Features: modernization engine, write-back, conflict
-│                                #           detection, explainability trail, role scoping,
-│                                #           partner panel, email draft, weekly digest,
-│                                #           org hierarchy, export, query trace
+│                                # Features: dual-graph SVG, hub clusters, hierarchy flow,
+│                                #           site spend/matrix/coverage, modernization engine,
+│                                #           write-back, conflict detection, explainability
+│                                #           trail, role scoping, partner panel, email draft,
+│                                #           weekly digest, org hierarchy, export, query trace
 ├── data/
 ├── docker-compose.yml
 ├── Dockerfile
