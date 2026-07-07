@@ -199,8 +199,16 @@ def _extract_keywords(query: str) -> list[str]:
 
 async def search(query: SearchQuery) -> dict[str, Any]:
     """
-    Entry point for enterprise search. Returns structured results + narrative.
+    Entry point for enterprise search. Returns structured results + narrative + explainability trace.
     Works in both live (Neo4j) and mock mode.
+
+    The query_trace block shows:
+      - detected intent and confidence score
+      - entity types matched
+      - the exact Cypher query generated
+      - keywords extracted from the NL query
+      - which model/backend was used
+    This makes the Granite reasoning step explicit and auditable.
     """
     from api.graph import neo4j_client as db  # lazy import to avoid circular deps
 
@@ -208,17 +216,22 @@ async def search(query: SearchQuery) -> dict[str, Any]:
     keywords = _extract_keywords(query.query)
     intent = _detect_intent(query.query)
     entity_types = query.entity_types or _detect_entity_types(query.query)
+    intent_confidence = _score_intent_confidence(query.query, intent)
 
     logger.info(
-        "[SearchAgent] query=%r intent=%s entities=%s keywords=%s",
-        query.query, intent, entity_types, keywords,
+        "[SearchAgent] query=%r intent=%s confidence=%.2f entities=%s keywords=%s",
+        query.query, intent, intent_confidence, entity_types, keywords,
     )
+
+    # Build Cypher ahead of time so it appears in trace regardless of execution path
+    cypher, params = _build_cypher_for_intent(intent, keywords, entity_types, query.max_results)
 
     # ── Try graph search ──────────────────────────────────────────────────
     graph_results: list[dict] = []
+    search_mode = "mock"
     try:
-        cypher, params = _build_cypher_for_intent(intent, keywords, entity_types, query.max_results)
         graph_results = await db.run_query(cypher, params)
+        search_mode = "live"
     except Exception as exc:
         logger.warning("[SearchAgent] Graph query failed, falling back to mock: %s", exc)
         graph_results = _mock_search(query.query, entity_types, query.max_results)
@@ -229,15 +242,52 @@ async def search(query: SearchQuery) -> dict[str, Any]:
     # ── Narrative synthesis ───────────────────────────────────────────────
     narrative = await _synthesize_narrative(query.query, results, intent)
 
+    # ── Explainability trace ──────────────────────────────────────────────
+    query_trace = {
+        "query_text": query.query,
+        "keywords_extracted": keywords,
+        "intent_detected": intent,
+        "intent_confidence": round(intent_confidence, 3),
+        "entity_types_matched": entity_types,
+        "cypher_generated": cypher.strip(),
+        "cypher_params_preview": {k: v for k, v in params.items() if k != "limit"},
+        "result_count": len(results),
+        "search_backend": search_mode,
+        "model_used": cfg.watsonx_model_id,
+        "synthesis_mode": "watsonx_granite" if search_mode == "live" else "template",
+        "trace_note": (
+            "Intent matched with high confidence — targeted Cypher query executed."
+            if intent_confidence >= 0.7
+            else "Low-confidence intent — broad fulltext fallback used. Refine query for better results."
+        ),
+    }
+
     return {
         "query": query.query,
         "intent": intent,
         "result_count": len(results),
         "results": results,
         "narrative": narrative,
+        "query_trace": query_trace,
         "generated_at": datetime.now(timezone.utc).isoformat(),
-        "mode": "live" if graph_results and not _is_mock_data(graph_results) else "mock",
+        "mode": search_mode,
     }
+
+
+def _score_intent_confidence(query: str, intent: str) -> float:
+    """Score how confidently the intent was detected (0.0–1.0)."""
+    if intent == "general":
+        return 0.4  # fallback = low confidence by definition
+    pattern = INTENT_PATTERNS.get(intent)
+    if pattern is None:
+        return 0.5
+    match = pattern.search(query)
+    if not match:
+        return 0.5
+    match_len = len(match.group(0))
+    word_count = len(query.split())
+    specificity = min(1.0, match_len / max(word_count * 3, 1))
+    return round(0.6 + specificity * 0.4, 3)
 
 
 def _is_mock_data(results: list[dict]) -> bool:

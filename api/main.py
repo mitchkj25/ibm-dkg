@@ -78,13 +78,20 @@ async def lifespan(app: FastAPI):
 
 def create_app() -> FastAPI:
     app = FastAPI(
-        title="IBM DKG — Decentralized Knowledge Graph",
+        title="IBM DKG — Federated Provenance Knowledge Graph",
         description=(
-            "Enterprise knowledge graph for IBM sellers. "
-            "Maps sellers, managers, accounts, products, territories, and installs. "
-            "Includes pruning agent (data freshness), enterprise search, and graph visualization."
+            "Enterprise knowledge graph for IBM sellers and leadership. "
+            "Each node carries W3C PROV-DM provenance metadata (source, confidence, TTL, last_verified), "
+            "enabling trust scoring at the edge — the architectural foundation for decentralized, "
+            "federated knowledge contribution. Source systems (Salesforce, W3 directory, manual) "
+            "each contribute signed, provenance-stamped Knowledge Assets that can be independently "
+            "verified and pruned. "
+            "\n\nCapabilities: proactive NBA alerts, whitespace/coverage gap analysis, "
+            "account 360 briefings, co-sell matchmaking, territory health scorecards, "
+            "data trust dashboard, NL-to-Cypher with explainability trace, "
+            "and watsonx Orchestrate integration."
         ),
-        version="0.1.0",
+        version="0.2.0",
         lifespan=lifespan,
         docs_url="/docs",
         redoc_url="/redoc",
@@ -104,11 +111,13 @@ def create_app() -> FastAPI:
     from api.routers.search import router as search_router
     from api.routers.ingest import router as ingest_router
     from api.routers.pruning import router as pruning_router
+    from api.routers.insights import router as insights_router
 
     app.include_router(graph_router)
     app.include_router(search_router)
     app.include_router(ingest_router)
     app.include_router(pruning_router)
+    app.include_router(insights_router)
 
     # ── Health check ──────────────────────────────────────────────────────────
     @app.get("/healthz", tags=["Health"])

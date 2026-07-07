@@ -122,6 +122,56 @@ hr{border:none;border-top:1px solid var(--border);margin:10px 0}
 .psk{color:var(--tm)}
 .psv{color:var(--tp);font-weight:600;font-variant-numeric:tabular-nums}
 
+/* ── View tabs ────────────────────────────────────────────────────────── */
+.vtabs{display:flex;gap:4px;margin-bottom:12px}
+.vtab{flex:1;padding:5px 8px;border-radius:5px;border:1px solid var(--border);background:rgba(255,255,255,0.02);cursor:pointer;font-size:9px;font-weight:800;text-transform:uppercase;letter-spacing:.6px;color:var(--ts);text-align:center;transition:all .15s}
+.vtab.active{background:rgba(15,98,254,0.12);border-color:rgba(15,98,254,0.4);color:var(--ibm-blue)}
+.vtab:hover:not(.active){background:rgba(255,255,255,0.04);color:var(--tp)}
+
+/* ── Insights cards ──────────────────────────────────────────────────── */
+#ins-panel{display:none}
+.ins-sumgrid{display:grid;grid-template-columns:1fr 1fr;gap:6px;margin-bottom:12px}
+.ins-sc{background:rgba(255,255,255,0.03);border:1px solid var(--border);border-radius:var(--r);padding:9px;text-align:center;cursor:pointer;transition:border-color .2s}
+.ins-sc:hover{border-color:rgba(15,98,254,0.4)}
+.ins-sc .iv{font-size:22px;font-weight:700;line-height:1;font-variant-numeric:tabular-nums}
+.ins-sc .il{font-size:8px;color:var(--tm);text-transform:uppercase;letter-spacing:.5px;margin-top:2px}
+.ins-sc.critical .iv{color:var(--ibm-red)}
+.ins-sc.high .iv{color:var(--ibm-orange)}
+.ins-sc.ok .iv{color:var(--ibm-green)}
+.ins-sc.neutral .iv{color:var(--ibm-blue)}
+
+.icard{background:rgba(255,255,255,0.02);border:1px solid var(--border);border-radius:var(--r);padding:9px;margin-bottom:6px;transition:border-color .2s,background .2s;cursor:pointer}
+.icard:hover{border-color:rgba(15,98,254,0.4);background:rgba(15,98,254,0.04)}
+.icard-hdr{display:flex;align-items:flex-start;gap:6px;margin-bottom:4px}
+.icard-badge{padding:1px 6px;border-radius:4px;font-size:8px;font-weight:800;text-transform:uppercase;letter-spacing:.4px;flex-shrink:0;margin-top:1px}
+.icard-badge.critical{background:rgba(218,30,40,.15);color:var(--ibm-red)}
+.icard-badge.high{background:rgba(255,131,43,.15);color:var(--ibm-orange)}
+.icard-badge.medium{background:rgba(241,194,27,.12);color:var(--ibm-yellow)}
+.icard-badge.low{background:rgba(36,161,72,.12);color:var(--ibm-green)}
+.icard-badge.gap{background:rgba(17,146,232,.12);color:var(--ibm-cyan)}
+.icard-title{font-size:11px;font-weight:600;color:var(--tp);line-height:1.35}
+.icard-body{font-size:9px;color:var(--ts);line-height:1.5;margin-top:2px}
+.icard-meta{display:flex;gap:8px;margin-top:5px;flex-wrap:wrap}
+.icard-tag{font-size:8px;color:var(--tm);background:rgba(255,255,255,0.04);padding:1px 5px;border-radius:3px}
+
+.ins-section-title{font-size:8px;font-weight:800;text-transform:uppercase;letter-spacing:1px;color:var(--ts);margin:10px 0 5px 0;padding:4px 0;border-bottom:1px solid var(--border)}
+
+/* ── Trace panel ─────────────────────────────────────────────────────── */
+#trace-panel{background:rgba(0,0,0,0.3);border:1px solid rgba(60,60,120,0.4);border-radius:var(--r);padding:10px;display:none;margin-top:6px;font-family:'IBM Plex Mono',monospace}
+.trace-row{display:flex;gap:8px;padding:2px 0;border-bottom:1px solid rgba(60,60,120,0.15)}
+.trace-row:last-child{border-bottom:none}
+.trace-k{font-size:8px;color:var(--ts);min-width:110px;flex-shrink:0}
+.trace-v{font-size:8px;color:#e8e8f8;word-break:break-all}
+.trace-cypher{background:rgba(15,98,254,0.06);border:1px solid rgba(15,98,254,0.15);border-radius:4px;padding:6px 8px;font-size:8px;color:#7eb3ff;white-space:pre-wrap;word-break:break-all;margin-top:4px;line-height:1.5}
+.trace-conf-bar{height:3px;border-radius:2px;margin-top:2px}
+
+/* ── Trust meter ─────────────────────────────────────────────────────── */
+.trust-row{display:flex;align-items:center;gap:8px;padding:4px 0}
+.trust-src{font-size:10px;flex:1}
+.trust-bar-wrap{width:60px;height:4px;background:rgba(255,255,255,0.06);border-radius:2px}
+.trust-bar{height:4px;border-radius:2px}
+.trust-score{font-size:9px;font-weight:700;min-width:30px;text-align:right;font-variant-numeric:tabular-nums}
+
 /* ── Scrollbar ────────────────────────────────────────────────────────── */
 ::-webkit-scrollbar{width:4px}
 ::-webkit-scrollbar-track{background:transparent}
@@ -157,21 +207,62 @@ hr{border:none;border-top:1px solid var(--border);margin:10px 0}
 
 <!-- ── Left sidebar ────────────────────────────────────────────────────── -->
 <aside id="sl">
-  <div class="ptitle">Graph Overview</div>
-  <div class="sgrid">
-    <div class="sc"><div class="v" id="sn">–</div><div class="l">Nodes</div></div>
-    <div class="sc"><div class="v" id="se">–</div><div class="l">Edges</div></div>
-    <div class="sc"><div class="v" id="ss">–</div><div class="l">Sellers</div></div>
-    <div class="sc"><div class="v" id="sa">–</div><div class="l">Accounts</div></div>
-    <div class="sc"><div class="v" id="ssite">–</div><div class="l">Sites</div></div>
-    <div class="sc"><div class="v" id="sprod">–</div><div class="l">Products</div></div>
+  <!-- Tab navigation -->
+  <div class="vtabs">
+    <div class="vtab active" id="tab-graph" onclick="switchTab('graph')">Graph</div>
+    <div class="vtab" id="tab-insights" onclick="switchTab('insights')">Insights</div>
+    <div class="vtab" id="tab-trust" onclick="switchTab('trust')">Trust</div>
   </div>
-  <hr>
-  <div class="ptitle">Filter Entity Types</div>
-  <div id="fl"></div>
-  <hr>
-  <div class="ptitle">Sample Queries</div>
-  <div id="ql"></div>
+
+  <!-- Graph panel -->
+  <div id="graph-panel">
+    <div class="ptitle">Graph Overview</div>
+    <div class="sgrid">
+      <div class="sc"><div class="v" id="sn">–</div><div class="l">Nodes</div></div>
+      <div class="sc"><div class="v" id="se">–</div><div class="l">Edges</div></div>
+      <div class="sc"><div class="v" id="ss">–</div><div class="l">Sellers</div></div>
+      <div class="sc"><div class="v" id="sa">–</div><div class="l">Accounts</div></div>
+      <div class="sc"><div class="v" id="ssite">–</div><div class="l">Sites</div></div>
+      <div class="sc"><div class="v" id="sprod">–</div><div class="l">Products</div></div>
+    </div>
+    <hr>
+    <div class="ptitle">Filter Entity Types</div>
+    <div id="fl"></div>
+    <hr>
+    <div class="ptitle">Sample Queries</div>
+    <div id="ql"></div>
+  </div>
+
+  <!-- Insights panel -->
+  <div id="ins-panel">
+    <div class="ptitle">Proactive Insights</div>
+    <!-- Summary stat cards -->
+    <div class="ins-sumgrid" id="ins-sum">
+      <div class="ins-sc critical" onclick="showInsightSection('expiring')">
+        <div class="iv" id="ic-crit">–</div><div class="il">Expired Support</div>
+      </div>
+      <div class="ins-sc high" onclick="showInsightSection('expiring')">
+        <div class="iv" id="ic-exp">–</div><div class="il">Expiring 90d</div>
+      </div>
+      <div class="ins-sc neutral" onclick="showInsightSection('whitespace')">
+        <div class="iv" id="ic-ws">–</div><div class="il">Whitespace Gaps</div>
+      </div>
+      <div class="ins-sc neutral" onclick="showInsightSection('nba')">
+        <div class="iv" id="ic-nba">–</div><div class="il">NBA Actions</div>
+      </div>
+    </div>
+    <div id="ins-cards"></div>
+  </div>
+
+  <!-- Trust panel -->
+  <div id="trust-panel" style="display:none">
+    <div class="ptitle">Data Trust &amp; Provenance</div>
+    <div id="trust-overall" style="text-align:center;padding:10px 0 8px">
+      <div style="font-size:28px;font-weight:700;font-variant-numeric:tabular-nums" id="trust-score-big">–</div>
+      <div style="font-size:9px;color:var(--ts);text-transform:uppercase;letter-spacing:.8px" id="trust-label-big">Loading…</div>
+    </div>
+    <div id="trust-sources"></div>
+  </div>
 </aside>
 
 <!-- ── Graph canvas ────────────────────────────────────────────────────── -->
@@ -257,7 +348,11 @@ hr{border:none;border-top:1px solid var(--border);margin:10px 0}
 <!-- ── Right sidebar ───────────────────────────────────────────────────── -->
 <aside id="sr">
   <div class="ptitle">Enterprise Search</div>
-  <div id="nb"><div class="nbl"><svg width="10" height="10" viewBox="0 0 10 10" fill="none"><circle cx="5" cy="5" r="4" stroke="currentColor" stroke-width="1.5"/><circle cx="5" cy="5" r="1.5" fill="currentColor"/></svg>AI Insight</div><div id="nt"></div></div>
+  <div id="nb"><div class="nbl"><svg width="10" height="10" viewBox="0 0 10 10" fill="none"><circle cx="5" cy="5" r="4" stroke="currentColor" stroke-width="1.5"/><circle cx="5" cy="5" r="1.5" fill="currentColor"/></svg>AI Insight<button id="trace-toggle" onclick="toggleTrace()" style="margin-left:auto;background:rgba(15,98,254,0.1);border:1px solid rgba(15,98,254,0.3);color:var(--ibm-blue);padding:1px 7px;border-radius:3px;cursor:pointer;font-size:8px;font-weight:700;display:none">Show Trace</button></div><div id="nt"></div></div>
+  <div id="trace-panel">
+    <div style="font-size:8px;font-weight:800;text-transform:uppercase;letter-spacing:.8px;color:var(--ibm-cyan);margin-bottom:6px">⚙ Granite Query Trace</div>
+    <div id="trace-content"></div>
+  </div>
   <div id="results"><div style="color:var(--tm);font-size:11px;text-align:center;padding:24px 0;line-height:1.8">Click any node to explore<br>or search the graph above.</div></div>
   <hr>
   <div id="dp">
@@ -1024,7 +1119,7 @@ function showOrgHierarchy(focusNode) {
 }
 
 // ── Search ─────────────────────────────────────────────────────────────────
-function doSearch(q) {
+async function doSearch(q) {
   q = q.trim();
   if (!q) return;
   document.getElementById('si').value = q;
@@ -1032,7 +1127,21 @@ function doSearch(q) {
   const words = ql.split(/\s+/).filter(w => w.length > 2);
   const intent = detectIntent(ql);
 
-  // For site_spend, return all sites ranked by spend regardless of keyword match
+  // ── Try API for live results + trace ──────────────────────────────────────
+  let apiNarrative = null, apiTrace = null;
+  try {
+    const resp = await fetch(API + '/search', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ query: q, max_results: 14 }),
+    }).then(r => r.ok ? r.json() : null).catch(() => null);
+    if (resp) {
+      apiNarrative = resp.narrative;
+      apiTrace = resp.query_trace;
+    }
+  } catch (_) {}
+
+  // ── Local scored results (always computed for graph highlighting) ─────────
   let scored;
   if (intent === 'site_spend') {
     scored = SEED_NODES
@@ -1058,7 +1167,22 @@ function doSearch(q) {
 
   const nb = document.getElementById('nb');
   nb.style.display = 'block';
-  document.getElementById('nt').textContent = buildNarrative(q, scored.map(x=>x.n), intent);
+  document.getElementById('nt').textContent = apiNarrative || buildNarrative(q, scored.map(x=>x.n), intent);
+
+  // Build and show trace (from API or synthesised locally)
+  const localTrace = {
+    intent_detected: intent,
+    intent_confidence: intent === 'general' ? 0.4 : 0.72,
+    keywords_extracted: words,
+    entity_types_matched: [...new Set(scored.slice(0,5).map(x=>x.n.label))],
+    cypher_generated: '-- mock mode: no Neo4j connected --\n-- local keyword scoring used instead',
+    search_backend: 'mock',
+    synthesis_mode: 'template',
+    model_used: 'ibm/granite-13b-instruct-v2',
+    trace_note: 'Running in DEMO MODE. Connect Neo4j + watsonx credentials for live Cypher execution.',
+    result_count: scored.length,
+  };
+  renderTrace(apiTrace || localTrace);
 
   const res = document.getElementById('results');
   if (!scored.length) {
@@ -1068,7 +1192,6 @@ function doSearch(q) {
   res.innerHTML = scored.slice(0,14).map(({n, sc}) => {
     const col = COLORS[n.label] || '#888';
     const stale = n.status === 'STALE' ? ' stale' : '';
-    // Extra metadata line for SiteNumber nodes
     const meta = n.label === 'SiteNumber'
       ? `<div class="rd" style="margin-top:2px">Spend: <strong style="color:var(--ibm-cyan)">$${(n.annualSpend/1e6).toFixed(2)}M</strong> · Agency: ${n.agency||'–'}</div>`
       : '';
@@ -1794,6 +1917,265 @@ async function runExportCopy() {
   } finally {
     document.getElementById('exmcopybtn').textContent = 'Copy';
   }
+}
+
+// ══════════════════════════════════════════════════════════════════════════════
+// ── TAB NAVIGATION ──────────────────────────────────────────────────────────
+// ══════════════════════════════════════════════════════════════════════════════
+
+function switchTab(tab) {
+  ['graph', 'insights', 'trust'].forEach(t => {
+    document.getElementById('tab-' + t).classList.toggle('active', t === tab);
+  });
+  document.getElementById('graph-panel').style.display  = tab === 'graph'    ? '' : 'none';
+  document.getElementById('ins-panel').style.display    = tab === 'insights' ? '' : 'none';
+  document.getElementById('trust-panel').style.display  = tab === 'trust'    ? 'block' : 'none';
+
+  if (tab === 'insights' && !window._insightsLoaded) loadInsights();
+  if (tab === 'trust'    && !window._trustLoaded)    loadTrustDashboard();
+}
+
+// ══════════════════════════════════════════════════════════════════════════════
+// ── INSIGHTS ENGINE (mock-first, API-enhanced) ──────────────────────────────
+// ══════════════════════════════════════════════════════════════════════════════
+
+function computeInsightsMock() {
+  const results = { expiring: [], whitespace: [], nba: [] };
+  const nodeMap = Object.fromEntries(SEED_NODES.map(n => [n.id, n]));
+  const edgesByFrom = {}, edgesByTo = {};
+  SEED_EDGES.forEach(e => {
+    (edgesByFrom[e.s] = edgesByFrom[e.s] || []).push(e);
+    (edgesByTo[e.t]   = edgesByTo[e.t]   || []).push(e);
+  });
+
+  function edgesOf(id, type, dir = 'out') {
+    const list = dir === 'out' ? (edgesByFrom[id] || []) : (edgesByTo[id] || []);
+    return list.filter(e => !type || e.type === type);
+  }
+
+  // Expiring / stale installs
+  SEED_NODES.filter(n => n.label === 'Install').forEach(inst => {
+    const isStale = inst.status === 'STALE';
+    const accEdge = (edgesByTo[inst.id] || []).find(e => e.type === 'HAS_INSTALL');
+    const acc = accEdge ? nodeMap[accEdge.s] : null;
+    const prodEdge = edgesOf(inst.id, 'RUNS_PRODUCT').find(e => e);
+    const prod = prodEdge ? nodeMap[prodEdge.t] : null;
+    let seller = null;
+    if (acc) {
+      const selEdge = (edgesByTo[acc.id] || []).find(e => e.type === 'OWNS_ACCOUNT');
+      seller = selEdge ? nodeMap[selEdge.s] : null;
+    }
+    if (isStale) {
+      results.expiring.push({
+        headline: `⚠ Expired: ${prod ? prod.name : 'Unknown'} @ ${acc ? acc.name : '?'}`,
+        body: `Support has expired. ${seller ? seller.name + ' should action immediately.' : 'No seller assigned.'}`,
+        severity: 'critical',
+        account: acc ? acc.name : '?',
+        product: prod ? prod.name : '?',
+        seller: seller ? seller.name : 'Unassigned',
+        accountId: acc ? acc.id : null,
+        value: inst.contractValue,
+      });
+    }
+  });
+
+  // Whitespace gaps
+  SEED_NODES.filter(n => n.label === 'Account').forEach(acc => {
+    const installs = edgesOf(acc.id, 'HAS_INSTALL').map(e => nodeMap[e.t]).filter(Boolean);
+    const opps = edgesOf(acc.id, 'HAS_OPPORTUNITY').map(e => nodeMap[e.t]).filter(Boolean);
+    const activeOpps = opps.filter(o => o && o.status !== 'DELETED');
+    if (!installs.length) return;
+    const prods = new Set();
+    installs.forEach(inst => {
+      const pe = edgesOf(inst.id, 'RUNS_PRODUCT').find(e => e);
+      if (pe && nodeMap[pe.t]) prods.add(nodeMap[pe.t].name);
+    });
+    if (!activeOpps.length) {
+      const selEdge = (edgesByTo[acc.id] || []).find(e => e.type === 'OWNS_ACCOUNT');
+      const seller = selEdge ? nodeMap[selEdge.s] : null;
+      results.whitespace.push({
+        headline: `No pipeline: ${acc.name}`,
+        body: `Active IBM installs (${[...prods].join(', ')}) but zero open opportunities.${seller ? ' Owner: ' + seller.name + '.' : ''}`,
+        severity: 'gap',
+        account: acc.name,
+        accountId: acc.id,
+        products: [...prods],
+        seller: seller ? seller.name : 'Unassigned',
+      });
+    }
+  });
+
+  results.nba = [...results.expiring, ...results.whitespace];
+  return results;
+}
+
+async function loadInsights() {
+  window._insightsLoaded = true;
+  document.getElementById('ins-cards').innerHTML = '<div style="color:var(--tm);font-size:11px;padding:12px 0;text-align:center">Computing insights…</div>';
+
+  let data = computeInsightsMock();
+
+  try {
+    const [expResp, wsResp] = await Promise.all([
+      fetch(API + '/insights/expiring?days=90').then(r => r.ok ? r.json() : null).catch(() => null),
+      fetch(API + '/insights/whitespace').then(r => r.ok ? r.json() : null).catch(() => null),
+    ]);
+    if (expResp && expResp.alerts) {
+      data.expiring = expResp.alerts.map(a => ({
+        headline: a.action ? a.action.split('.')[0] : `Alert: ${a.product}`,
+        body: a.action || '',
+        severity: a.severity,
+        account: a.account,
+        accountId: a.account_id,
+        product: a.product,
+        seller: a.seller,
+        value: a.contract_value,
+      }));
+    }
+    if (wsResp && wsResp.gaps) {
+      data.whitespace = wsResp.gaps.map(g => ({
+        headline: `No pipeline: ${g.account_name}`,
+        body: g.recommendation,
+        severity: 'gap',
+        account: g.account_name,
+        accountId: g.account_id,
+        seller: g.owner_seller,
+      }));
+    }
+  } catch (_) {}
+
+  document.getElementById('ic-crit').textContent = data.expiring.filter(a => a.severity === 'critical').length;
+  document.getElementById('ic-exp').textContent  = data.expiring.length;
+  document.getElementById('ic-ws').textContent   = data.whitespace.length;
+  document.getElementById('ic-nba').textContent  = data.expiring.length + data.whitespace.length;
+
+  renderInsightSection('all', data);
+}
+
+function showInsightSection(section) {
+  if (!window._insightsLoaded) return loadInsights();
+  if (!window._insightsData)  return;
+  renderInsightSection(section, window._insightsData);
+}
+
+function renderInsightSection(section, data) {
+  window._insightsData = data;
+  const container = document.getElementById('ins-cards');
+  let html = '';
+
+  const renderCard = (item) => {
+    const accId = item.accountId || '';
+    return `<div class="icard" onclick="if('${accId}') focusNode('${accId}')">
+      <div class="icard-hdr">
+        <span class="icard-badge ${item.severity}">${item.severity.toUpperCase()}</span>
+        <div class="icard-title">${item.headline}</div>
+      </div>
+      <div class="icard-body">${item.body || ''}</div>
+      <div class="icard-meta">
+        ${item.account ? `<span class="icard-tag">${item.account}</span>` : ''}
+        ${item.product ? `<span class="icard-tag">${item.product}</span>` : ''}
+        ${item.seller  ? `<span class="icard-tag">${item.seller}</span>`  : ''}
+        ${item.value   ? `<span class="icard-tag">$${(item.value/1000).toFixed(0)}K</span>` : ''}
+      </div>
+    </div>`;
+  };
+
+  if (section === 'all' || section === 'expiring') {
+    if (data.expiring.length) {
+      html += `<div class="ins-section-title">⚠ Support Alerts (${data.expiring.length})</div>`;
+      html += data.expiring.map(renderCard).join('');
+    }
+  }
+  if (section === 'all' || section === 'whitespace') {
+    if (data.whitespace.length) {
+      html += `<div class="ins-section-title">◉ Whitespace Gaps (${data.whitespace.length})</div>`;
+      html += data.whitespace.map(renderCard).join('');
+    }
+  }
+  if (!html) html = '<div style="color:var(--tm);font-size:11px;padding:12px 0;text-align:center">No insights — graph data looks healthy.</div>';
+  container.innerHTML = html;
+}
+
+// ── Trust dashboard ───────────────────────────────────────────────────────────
+async function loadTrustDashboard() {
+  window._trustLoaded = true;
+  let sources = [], overallScore = 0, overallLabel = 'Computing…';
+
+  try {
+    const resp = await fetch(API + '/insights/trust').then(r => r.ok ? r.json() : null).catch(() => null);
+    if (resp) { overallScore = resp.overall_trust_score; overallLabel = resp.overall_trust_label; sources = resp.by_source || []; }
+  } catch (_) {}
+
+  if (!sources.length) {
+    const srcMap = {};
+    SEED_NODES.forEach(n => {
+      const src = n.source || 'unknown';
+      srcMap[src] = srcMap[src] || { total: 0, active: 0, stale: 0 };
+      srcMap[src].total++;
+      if (n.status === 'STALE') srcMap[src].stale++; else srcMap[src].active++;
+    });
+    sources = Object.entries(srcMap).map(([src, s]) => ({
+      source: src, total_nodes: s.total, active: s.active, stale: s.stale,
+      freshness_score: Math.round((s.active / s.total) * 100),
+    }));
+    overallScore = Math.round(sources.reduce((a, s) => a + s.freshness_score, 0) / sources.length);
+    overallLabel = overallScore >= 80 ? 'Trusted' : overallScore >= 50 ? 'Degraded' : 'At Risk';
+  }
+
+  const scoreColor = overallScore >= 80 ? 'var(--ibm-green)' : overallScore >= 50 ? 'var(--ibm-orange)' : 'var(--ibm-red)';
+  document.getElementById('trust-score-big').textContent = overallScore + '%';
+  document.getElementById('trust-score-big').style.color = scoreColor;
+  document.getElementById('trust-label-big').textContent = overallLabel;
+
+  document.getElementById('trust-sources').innerHTML = `
+    <div class="ptitle" style="margin-bottom:8px">By Source System</div>
+    ${sources.map(s => {
+      const sc = s.freshness_score || 0;
+      const bc = sc >= 80 ? '#24a148' : sc >= 50 ? '#ff832b' : '#da1e28';
+      return `<div class="trust-row">
+        <div class="trust-src">${s.source}<br><span style="font-size:8px;color:var(--tm)">${s.total_nodes} nodes · ${s.stale||0} stale</span></div>
+        <div class="trust-bar-wrap"><div class="trust-bar" style="width:${sc}%;background:${bc}"></div></div>
+        <div class="trust-score" style="color:${bc}">${sc}%</div>
+      </div>`;
+    }).join('')}
+    <div style="margin-top:12px;font-size:9px;color:var(--tm);line-height:1.6;border-top:1px solid var(--border);padding-top:8px">
+      Each node carries W3C PROV-DM provenance metadata: source system, confidence score, TTL, and last_verified timestamp.
+      The pruning agent enforces freshness by marking and eventually removing stale nodes.
+    </div>`;
+}
+
+// ── Trace panel ───────────────────────────────────────────────────────────────
+function toggleTrace() {
+  const tp = document.getElementById('trace-panel');
+  const btn = document.getElementById('trace-toggle');
+  const showing = tp.style.display !== 'none';
+  tp.style.display = showing ? 'none' : 'block';
+  btn.textContent = showing ? 'Show Trace' : 'Hide Trace';
+}
+
+function renderTrace(trace) {
+  if (!trace) return;
+  const btn = document.getElementById('trace-toggle');
+  if (btn) btn.style.display = 'inline-flex';
+  const conf = trace.intent_confidence || 0;
+  const confColor = conf >= 0.7 ? '#24a148' : conf >= 0.5 ? '#ff832b' : '#da1e28';
+  document.getElementById('trace-content').innerHTML = `
+    <div class="trace-row"><span class="trace-k">Intent</span><span class="trace-v" style="color:var(--ibm-cyan)">${trace.intent_detected}</span></div>
+    <div class="trace-row">
+      <span class="trace-k">Confidence</span>
+      <span class="trace-v">
+        <span style="color:${confColor};font-weight:700">${(conf*100).toFixed(0)}%</span>
+        <div class="trace-conf-bar" style="width:${Math.round(conf*100)}%;background:${confColor};max-width:120px"></div>
+        <span style="color:var(--tm);font-size:7px">${trace.trace_note||''}</span>
+      </span>
+    </div>
+    <div class="trace-row"><span class="trace-k">Keywords</span><span class="trace-v">${(trace.keywords_extracted||[]).join(', ')}</span></div>
+    <div class="trace-row"><span class="trace-k">Entities</span><span class="trace-v">${(trace.entity_types_matched||[]).join(', ')}</span></div>
+    <div class="trace-row"><span class="trace-k">Backend</span><span class="trace-v">${trace.search_backend||'mock'} · ${trace.synthesis_mode||'template'}</span></div>
+    <div class="trace-row"><span class="trace-k">Model</span><span class="trace-v" style="color:var(--ibm-purple)">${trace.model_used||'ibm/granite-13b'}</span></div>
+    <div style="margin-top:5px;font-size:8px;color:var(--ts)">Cypher Generated:</div>
+    <div class="trace-cypher">${(trace.cypher_generated||'N/A (mock mode — no Neo4j)').replace(/</g,'&lt;').replace(/>/g,'&gt;')}</div>
+  `;
 }
 
 // ── Boot ───────────────────────────────────────────────────────────────────

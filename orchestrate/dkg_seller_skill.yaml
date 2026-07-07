@@ -1,0 +1,301 @@
+##############################################################################
+# IBM DKG — watsonx Orchestrate Agent Skill Definition
+#
+# This skill exposes the IBM Decentralized Knowledge Graph as a callable
+# tool inside any watsonx Orchestrate agent flow. A seller can ask their
+# Orchestrate assistant natural-language questions about accounts, sellers,
+# installs, or opportunities and receive Granite-synthesised answers without
+# leaving their existing workflow.
+#
+# Deploy: orchestrate skills import -f dkg_seller_skill.yaml
+##############################################################################
+
+apiVersion: "orchestrate/v1"
+kind: Skill
+
+metadata:
+  name: ibm-dkg-seller-intelligence
+  displayName: "IBM DKG — Seller Intelligence"
+  description: >
+    Query the IBM Decentralized Knowledge Graph for real-time seller intelligence.
+    Ask natural-language questions about accounts, expiring support contracts,
+    co-sell opportunities, whitespace gaps, and territory health.
+    Powered by graph traversal + IBM Granite synthesis.
+  version: "0.2.0"
+  tags:
+    - sales-intelligence
+    - knowledge-graph
+    - ibm-granite
+    - watsonx
+
+# ── Tool functions exposed to the Orchestrate agent ──────────────────────────
+tools:
+
+  # 1. Natural-language graph search with Cypher trace
+  - name: search_knowledge_graph
+    displayName: "Search Knowledge Graph"
+    description: >
+      Ask any natural-language question about sellers, accounts, products,
+      installs, or territories. Returns structured results, a Granite-synthesised
+      narrative answer, and an explainability trace showing the Cypher query
+      that was executed and the confidence of intent detection.
+    endpoint:
+      method: POST
+      path: /search
+      baseUrl: "${DKG_API_URL}"
+    inputSchema:
+      type: object
+      required: [query]
+      properties:
+        query:
+          type: string
+          description: "Natural language question, e.g. 'Who manages Marcus Webb?' or 'What does First National have installed?'"
+        entity_types:
+          type: array
+          items:
+            type: string
+            enum: [Seller, Manager, Account, Product, Territory, Install, Opportunity, SiteNumber]
+          description: "Optional entity type filter"
+        max_results:
+          type: integer
+          default: 10
+          minimum: 1
+          maximum: 50
+    outputSchema:
+      type: object
+      properties:
+        narrative:
+          type: string
+          description: "Granite-synthesised answer to the question"
+        intent:
+          type: string
+          description: "Detected query intent"
+        result_count:
+          type: integer
+        results:
+          type: array
+          description: "Matching graph nodes"
+        query_trace:
+          type: object
+          description: "Explainability: intent confidence, Cypher generated, keywords extracted"
+
+  # 2. Next Best Actions for a seller
+  - name: get_next_best_actions
+    displayName: "Get Next Best Actions"
+    description: >
+      Returns a ranked list of proactive sales actions for a seller, combining:
+      expiring support contracts on owned accounts, stalled opportunities,
+      and co-sell coverage gaps. The seller should action these today.
+    endpoint:
+      method: GET
+      path: /insights/nba/{seller_id}
+      baseUrl: "${DKG_API_URL}"
+    inputSchema:
+      type: object
+      required: [seller_id]
+      properties:
+        seller_id:
+          type: string
+          description: "Seller node ID (e.g. sel-001)"
+    outputSchema:
+      type: object
+      properties:
+        seller_name:
+          type: string
+        action_count:
+          type: integer
+        critical_count:
+          type: integer
+        actions:
+          type: array
+          description: "Ranked list of actions with urgency, headline, and recommended action text"
+
+  # 3. Account 360 call-prep briefing
+  - name: get_account_360
+    displayName: "Account 360 Briefing"
+    description: >
+      Generate a Granite-written call-prep briefing for an account:
+      install base, support expiry alerts, open pipeline, and who else
+      at IBM is co-selling on the account. Perfect for pre-meeting prep.
+    endpoint:
+      method: GET
+      path: /insights/account360/{account_id}
+      baseUrl: "${DKG_API_URL}"
+    inputSchema:
+      type: object
+      required: [account_id]
+      properties:
+        account_id:
+          type: string
+          description: "Account node ID (e.g. acc-001)"
+    outputSchema:
+      type: object
+      properties:
+        account_name:
+          type: string
+        narrative:
+          type: string
+          description: "Granite-written Markdown briefing"
+        install_base:
+          type: array
+        open_opportunities:
+          type: array
+        sellers:
+          type: array
+        cosellers:
+          type: array
+        site_numbers:
+          type: array
+
+  # 4. Whitespace gap analysis
+  - name: get_whitespace_gaps
+    displayName: "Whitespace & Coverage Gap Analysis"
+    description: >
+      Find accounts that have IBM installs but no open opportunities,
+      or accounts with thin product coverage. The most compelling view
+      for IBM leadership — shows expansion revenue at risk.
+    endpoint:
+      method: GET
+      path: /insights/whitespace
+      baseUrl: "${DKG_API_URL}"
+    inputSchema:
+      type: object
+      properties:
+        min_revenue:
+          type: number
+          default: 0
+          description: "Minimum account revenue (USD) to include in results"
+    outputSchema:
+      type: object
+      properties:
+        total_gaps:
+          type: integer
+        no_opp_count:
+          type: integer
+        gaps:
+          type: array
+          description: "Accounts with whitespace, ranked by priority score"
+
+  # 5. Expiring support alerts
+  - name: get_expiring_support
+    displayName: "Expiring Support Alerts"
+    description: >
+      List all installs with support ending within N days, ranked by severity.
+      Critical items are support already expired. High items expire within 30 days.
+    endpoint:
+      method: GET
+      path: /insights/expiring
+      baseUrl: "${DKG_API_URL}"
+    inputSchema:
+      type: object
+      properties:
+        days:
+          type: integer
+          default: 90
+          description: "Alert window in days"
+    outputSchema:
+      type: object
+      properties:
+        total_alerts:
+          type: integer
+        critical_count:
+          type: integer
+        alerts:
+          type: array
+
+  # 6. Co-sell matchmaker
+  - name: find_cosell_match
+    displayName: "Co-sell Matchmaker"
+    description: >
+      Given a product and geography, find the best-fit IBM certified seller
+      to bring in as a co-seller. Scores candidates by product certification,
+      geo proximity, workload, and existing co-sell network.
+    endpoint:
+      method: GET
+      path: /insights/cosell-match
+      baseUrl: "${DKG_API_URL}"
+    inputSchema:
+      type: object
+      required: [product_id]
+      properties:
+        product_id:
+          type: string
+          description: "Product node ID needing specialist coverage (e.g. prd-001)"
+        geo:
+          type: string
+          description: "Geography filter (e.g. 'Atlanta', 'Southeast')"
+        exclude_seller_id:
+          type: string
+          description: "Seller ID to exclude (the requesting seller)"
+    outputSchema:
+      type: object
+      properties:
+        product_name:
+          type: string
+        top_match:
+          type: object
+          description: "Best-fit co-seller with match score and recommendation"
+        candidates:
+          type: array
+
+  # 7. Territory health scorecard
+  - name: get_territory_health
+    displayName: "Territory Health Scorecard"
+    description: >
+      Leadership view: quota vs pipeline coverage percentage, stale data %,
+      product breadth, and a composite health score per manager and region.
+    endpoint:
+      method: GET
+      path: /insights/territory-health
+      baseUrl: "${DKG_API_URL}"
+    outputSchema:
+      type: object
+      properties:
+        total_quota:
+          type: number
+        total_pipeline:
+          type: number
+        avg_health_score:
+          type: number
+        scorecards:
+          type: array
+
+  # 8. Data trust dashboard
+  - name: get_trust_dashboard
+    displayName: "Data Trust Dashboard"
+    description: >
+      Provenance and freshness trust score per source system (Salesforce, W3, manual).
+      Answers the leadership question "Can I trust this data?" before they ask it.
+    endpoint:
+      method: GET
+      path: /insights/trust
+      baseUrl: "${DKG_API_URL}"
+    outputSchema:
+      type: object
+      properties:
+        overall_trust_score:
+          type: number
+        overall_trust_label:
+          type: string
+        by_source:
+          type: array
+
+# ── Orchestrate flow configuration ───────────────────────────────────────────
+agent:
+  model: "ibm/granite-13b-instruct-v2"
+  systemPrompt: >
+    You are an IBM Seller Intelligence assistant powered by the IBM Knowledge Graph.
+    You have access to real-time data about sellers, accounts, install bases, 
+    opportunities, and territories. Always ground your answers in the data returned 
+    by the tools — do not invent information. When you surface a next best action,
+    include the urgency level and estimated revenue impact. When answering questions
+    about site numbers or accounts, mention the specific site IDs and product coverage.
+    Show the Cypher query trace when the user asks "how did you get that" or "explain".
+  maxIterations: 5
+  temperature: 0.1
+
+# ── Environment variables required ───────────────────────────────────────────
+environment:
+  - name: DKG_API_URL
+    description: "Base URL of the IBM DKG FastAPI service (e.g. http://localhost:8000)"
+    required: true
