@@ -1,0 +1,869 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+<title>IBM DKG — Decentralized Knowledge Graph</title>
+<style>
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+:root{
+  --ibm-blue:#0f62fe;--ibm-blue-dk:#0043ce;--ibm-cyan:#1192e8;
+  --ibm-teal:#009d9a;--ibm-purple:#a56eff;--ibm-orange:#ff832b;
+  --ibm-red:#da1e28;--ibm-green:#24a148;--ibm-yellow:#f1c21b;
+  --bg:#04040c;--panel:rgba(8,8,20,0.92);--card:rgba(15,15,30,0.9);
+  --border:rgba(60,60,120,0.4);--tp:#e8e8f8;--ts:#7878a0;--tm:#44445a;--r:8px;
+  --sw:300px;
+}
+html,body{height:100%;background:var(--bg);color:var(--tp);font-family:'IBM Plex Sans',-apple-system,BlinkMacSystemFont,sans-serif;font-size:13px;line-height:1.5;overflow:hidden}
+#app{display:grid;grid-template-rows:52px 1fr;grid-template-columns:var(--sw) 1fr var(--sw);height:100vh}
+
+/* ── Header ───────────────────────────────────────────────────────────── */
+#hdr{grid-column:1/-1;background:var(--panel);border-bottom:1px solid var(--border);display:flex;align-items:center;padding:0 16px;gap:12px;backdrop-filter:blur(12px);z-index:100}
+.logo{display:flex;align-items:center;gap:9px;font-weight:700;font-size:14px;white-space:nowrap}
+.pill{background:var(--ibm-blue);color:#fff;padding:2px 7px;border-radius:4px;font-size:9px;font-weight:800;letter-spacing:1.5px}
+.hdiv{width:1px;height:22px;background:var(--border)}
+#sbar{flex:1;display:flex;align-items:center;background:rgba(255,255,255,0.04);border:1px solid var(--border);border-radius:var(--r);padding:0 12px;gap:8px;max-width:580px;transition:border-color .2s}
+#sbar:focus-within{border-color:rgba(15,98,254,0.6);box-shadow:0 0 0 2px rgba(15,98,254,0.12)}
+#sbar input{flex:1;background:none;border:none;outline:none;color:var(--tp);font-size:12px;padding:8px 0;font-family:inherit}
+#sbar input::placeholder{color:var(--tm)}
+#sbtn{background:var(--ibm-blue);color:#fff;border:none;cursor:pointer;padding:5px 12px;border-radius:5px;font-size:11px;font-weight:700;transition:background .2s}
+#sbtn:hover{background:var(--ibm-blue-dk)}
+.badge{padding:3px 9px;border-radius:10px;font-size:9px;font-weight:800;letter-spacing:.5px;text-transform:uppercase;margin-left:auto}
+.badge.mock{background:rgba(255,131,43,.12);color:var(--ibm-orange);border:1px solid rgba(255,131,43,.25)}
+.badge.live{background:rgba(36,161,72,.12);color:var(--ibm-green);border:1px solid rgba(36,161,72,.25)}
+
+/* ── Sidebars ─────────────────────────────────────────────────────────── */
+#sl,#sr{background:var(--panel);overflow-y:auto;padding:14px;backdrop-filter:blur(12px)}
+#sl{border-right:1px solid var(--border)}
+#sr{border-left:1px solid var(--border);display:flex;flex-direction:column;gap:10px}
+.ptitle{font-size:9px;font-weight:800;letter-spacing:1.2px;text-transform:uppercase;color:var(--ts);margin-bottom:10px}
+.sgrid{display:grid;grid-template-columns:1fr 1fr;gap:6px;margin-bottom:14px}
+.sc{background:rgba(255,255,255,0.03);border:1px solid var(--border);border-radius:var(--r);padding:9px;text-align:center}
+.sc .v{font-size:22px;font-weight:700;color:var(--ibm-blue);line-height:1;font-variant-numeric:tabular-nums}
+.sc .l{font-size:8px;color:var(--tm);text-transform:uppercase;letter-spacing:.5px;margin-top:2px}
+hr{border:none;border-top:1px solid var(--border);margin:10px 0}
+.fi{display:flex;align-items:center;gap:7px;padding:5px 7px;border-radius:5px;cursor:pointer;transition:background .15s;user-select:none}
+.fi:hover{background:rgba(255,255,255,0.04)}
+.fi input{accent-color:var(--ibm-blue);width:12px;height:12px}
+.fdot{width:8px;height:8px;border-radius:50%;flex-shrink:0}
+.fl{flex:1;font-size:11px}
+.fc{color:var(--tm);font-size:10px}
+.qitem{padding:5px 8px;border-radius:5px;cursor:pointer;font-size:10px;color:var(--ts);transition:color .15s,background .15s;border-left:2px solid transparent;margin-bottom:2px}
+.qitem:hover{color:var(--ibm-cyan);background:rgba(17,146,232,0.08);border-left-color:var(--ibm-cyan)}
+
+/* ── Canvas ───────────────────────────────────────────────────────────── */
+#cw{position:relative;overflow:hidden;background:var(--bg)}
+#gc{position:absolute;inset:0;cursor:crosshair}
+
+/* ── Graph overlay controls ───────────────────────────────────────────── */
+#gctrls{position:absolute;bottom:16px;left:50%;transform:translateX(-50%);display:flex;gap:5px;background:var(--panel);border:1px solid var(--border);border-radius:8px;padding:5px;backdrop-filter:blur(10px)}
+.gcb{background:rgba(255,255,255,0.04);border:1px solid var(--border);color:var(--tp);width:30px;height:30px;border-radius:5px;cursor:pointer;font-size:14px;display:flex;align-items:center;justify-content:center;transition:background .15s}
+.gcb:hover{background:rgba(255,255,255,0.1)}
+
+/* ── Legend ───────────────────────────────────────────────────────────── */
+#leg{position:absolute;top:12px;right:12px;background:var(--panel);border:1px solid var(--border);border-radius:var(--r);padding:10px 12px;backdrop-filter:blur(10px)}
+.li{display:flex;align-items:center;gap:6px;margin:3px 0;font-size:9px;color:var(--ts)}
+.ld{width:8px;height:8px;border-radius:50%;flex-shrink:0}
+
+/* ── Tooltip ──────────────────────────────────────────────────────────── */
+#tip{position:absolute;pointer-events:none;background:var(--card);border:1px solid rgba(100,100,200,0.3);border-radius:var(--r);padding:10px 13px;max-width:240px;z-index:200;display:none;backdrop-filter:blur(12px);box-shadow:0 4px 24px rgba(0,0,0,.6),0 0 20px rgba(15,98,254,.08)}
+.tl{font-size:8px;font-weight:800;text-transform:uppercase;letter-spacing:.8px;margin-bottom:3px}
+.tn{font-size:13px;font-weight:700;color:var(--tp)}
+.td{color:var(--ts);margin-top:4px;font-size:10px;line-height:1.5}
+
+/* ── Search results ───────────────────────────────────────────────────── */
+.ri{background:rgba(255,255,255,0.02);border:1px solid var(--border);border-radius:var(--r);padding:9px;margin-bottom:6px;cursor:pointer;transition:border-color .2s,background .2s}
+.ri:hover{border-color:rgba(15,98,254,0.5);background:rgba(15,98,254,0.06)}
+.ri.stale{opacity:.5;border-color:rgba(255,131,43,.25)}
+.rih{display:flex;align-items:center;gap:6px;margin-bottom:3px}
+.rdot{width:6px;height:6px;border-radius:50%;flex-shrink:0}
+.rl{font-size:8px;font-weight:800;text-transform:uppercase;letter-spacing:.5px}
+.rs{margin-left:auto;font-size:8px;color:var(--tm)}
+.rn{font-size:12px;font-weight:600;color:var(--tp)}
+.rd{font-size:10px;color:var(--ts);margin-top:2px;line-height:1.4}
+#nb{background:rgba(15,98,254,0.06);border:1px solid rgba(15,98,254,0.2);border-radius:var(--r);padding:10px;font-size:10px;color:var(--ts);line-height:1.6;display:none}
+.nbl{font-size:8px;font-weight:800;text-transform:uppercase;letter-spacing:.8px;color:var(--ibm-cyan);margin-bottom:4px;display:flex;align-items:center;gap:5px}
+
+/* ── Detail panel ─────────────────────────────────────────────────────── */
+#dp{background:rgba(255,255,255,0.02);border:1px solid var(--border);border-radius:var(--r);padding:12px;display:none}
+.dpt{font-size:8px;font-weight:800;text-transform:uppercase;letter-spacing:.8px;margin-bottom:4px}
+.dpn{font-size:14px;font-weight:700;margin-bottom:5px;line-height:1.2}
+.dprow{display:flex;gap:8px;margin:3px 0}
+.dpk{font-size:9px;color:var(--tm);min-width:78px;flex-shrink:0}
+.dpv{font-size:9px;color:var(--ts);word-break:break-all}
+.dps{display:inline-block;padding:2px 7px;border-radius:8px;font-size:8px;font-weight:800;margin-bottom:8px;letter-spacing:.3px}
+.dps.ACTIVE{background:rgba(36,161,72,.15);color:#3ddc84}
+.dps.STALE{background:rgba(255,131,43,.15);color:var(--ibm-orange)}
+.conn-badge{display:inline-block;padding:1px 6px;border-radius:6px;font-size:9px;margin:2px;background:rgba(255,255,255,0.05);border:1px solid var(--border);color:var(--ts)}
+
+/* ── Pruning panel ────────────────────────────────────────────────────── */
+#ps{background:rgba(255,255,255,0.02);border:1px solid var(--border);border-radius:var(--r);padding:11px}
+.psh{display:flex;align-items:center;justify-content:space-between;margin-bottom:8px}
+#rpb{background:rgba(165,110,255,0.1);border:1px solid rgba(165,110,255,0.25);color:var(--ibm-purple);padding:3px 10px;border-radius:5px;cursor:pointer;font-size:9px;font-weight:700;transition:background .15s}
+#rpb:hover{background:rgba(165,110,255,.25)}
+.psr{display:flex;justify-content:space-between;font-size:10px;padding:2px 0}
+.psk{color:var(--tm)}
+.psv{color:var(--tp);font-weight:600;font-variant-numeric:tabular-nums}
+
+/* ── Scrollbar ────────────────────────────────────────────────────────── */
+::-webkit-scrollbar{width:4px}
+::-webkit-scrollbar-track{background:transparent}
+::-webkit-scrollbar-thumb{background:rgba(100,100,160,0.3);border-radius:10px}
+</style>
+</head>
+<body>
+<div id="app">
+
+<!-- ── Header ─────────────────────────────────────────────────────────── -->
+<header id="hdr">
+  <div class="logo">
+    <svg width="26" height="26" viewBox="0 0 32 32" fill="none">
+      <circle cx="16" cy="16" r="14.5" stroke="rgba(15,98,254,0.6)" stroke-width="1"/>
+      <circle cx="16" cy="7"  r="2.5" fill="#0f62fe"/>
+      <circle cx="7"  cy="21" r="2.5" fill="#1192e8"/>
+      <circle cx="25" cy="21" r="2.5" fill="#009d9a"/>
+      <circle cx="16" cy="16" r="3"   fill="#a56eff"/>
+      <line x1="16" y1="9.5"  x2="16" y2="13"  stroke="rgba(15,98,254,.7)"  stroke-width="1.2"/>
+      <line x1="9"  y1="19.5" x2="13.5" y2="17" stroke="rgba(17,146,232,.7)" stroke-width="1.2"/>
+      <line x1="23" y1="19.5" x2="18.5" y2="17" stroke="rgba(0,157,154,.7)"  stroke-width="1.2"/>
+    </svg>
+    IBM <span class="pill">DKG</span>
+  </div>
+  <div class="hdiv"></div>
+  <div id="sbar">
+    <svg width="13" height="13" viewBox="0 0 16 16" fill="none" style="opacity:.35;flex-shrink:0"><circle cx="6.5" cy="6.5" r="5" stroke="#7878a0" stroke-width="1.5"/><line x1="10.5" y1="10.5" x2="14" y2="14" stroke="#7878a0" stroke-width="1.5" stroke-linecap="round"/></svg>
+    <input id="si" type="text" placeholder='Try: "who manages Marcus Webb" · "watsonx installs" · "expiring support"'/>
+    <button id="sbtn">Search</button>
+  </div>
+  <span class="badge mock" id="badge">DEMO MODE</span>
+</header>
+
+<!-- ── Left sidebar ────────────────────────────────────────────────────── -->
+<aside id="sl">
+  <div class="ptitle">Graph Overview</div>
+  <div class="sgrid">
+    <div class="sc"><div class="v" id="sn">35</div><div class="l">Nodes</div></div>
+    <div class="sc"><div class="v" id="se">42</div><div class="l">Edges</div></div>
+    <div class="sc"><div class="v" id="ss">6</div><div class="l">Sellers</div></div>
+    <div class="sc"><div class="v" id="sa">6</div><div class="l">Accounts</div></div>
+  </div>
+  <hr>
+  <div class="ptitle">Filter Entity Types</div>
+  <div id="fl"></div>
+  <hr>
+  <div class="ptitle">Sample Queries</div>
+  <div id="ql"></div>
+</aside>
+
+<!-- ── Graph canvas ────────────────────────────────────────────────────── -->
+<main id="cw">
+  <canvas id="gc"></canvas>
+  <div id="leg"></div>
+  <div id="tip"></div>
+  <div id="gctrls">
+    <button class="gcb" id="bzi" title="Zoom in">+</button>
+    <button class="gcb" id="bzo" title="Zoom out">−</button>
+    <button class="gcb" id="bfit" title="Fit to view">⊡</button>
+    <button class="gcb" id="brst" title="Restart layout">↺</button>
+  </div>
+</main>
+
+<!-- ── Right sidebar ───────────────────────────────────────────────────── -->
+<aside id="sr">
+  <div class="ptitle">Enterprise Search</div>
+  <div id="nb"><div class="nbl"><svg width="10" height="10" viewBox="0 0 10 10" fill="none"><circle cx="5" cy="5" r="4" stroke="currentColor" stroke-width="1.5"/><circle cx="5" cy="5" r="1.5" fill="currentColor"/></svg>AI Insight</div><div id="nt"></div></div>
+  <div id="results"><div style="color:var(--tm);font-size:11px;text-align:center;padding:24px 0;line-height:1.8">Click any node to explore<br>or search the graph above.</div></div>
+  <hr>
+  <div id="dp">
+    <div class="ptitle">Selected Node</div>
+    <div id="dc"></div>
+  </div>
+  <hr>
+  <div id="ps">
+    <div class="psh"><span class="ptitle" style="margin:0">Pruning Agent</span><button id="rpb">▶ Run Cycle</button></div>
+    <div class="psr"><span class="psk">Status</span><span class="psv" id="pss">Idle</span></div>
+    <div class="psr"><span class="psk">Last run</span><span class="psv" id="psl">Never</span></div>
+    <div class="psr"><span class="psk">Nodes scanned</span><span class="psv" id="psc">–</span></div>
+    <div class="psr"><span class="psk">Marked stale</span><span class="psv" id="pst">–</span></div>
+    <div class="psr"><span class="psk">Deleted</span><span class="psv" id="psd">–</span></div>
+  </div>
+</aside>
+</div>
+
+<script>
+// ╔══════════════════════════════════════════════════════════════════════════╗
+// ║  IBM DKG — Glowing Nebula Graph Visualization                           ║
+// ╚══════════════════════════════════════════════════════════════════════════╝
+
+const API = 'http://localhost:8000';
+
+// ── Color palette ─────────────────────────────────────────────────────────
+const COLORS = {
+  Seller:         '#0f62fe',
+  Manager:        '#a56eff',
+  Account:        '#1192e8',
+  Territory:      '#009d9a',
+  Product:        '#ff832b',
+  Install:        '#24a148',
+  Opportunity:    '#f1c21b',
+  KnowledgeAsset: '#ee5396',
+};
+
+const EDGE_COLORS = {
+  REPORTS_TO:      '#a56eff',
+  MANAGES:         '#a56eff',
+  OWNS_TERRITORY:  '#009d9a',
+  COVERS_PRODUCT:  '#ff832b',
+  OWNS_ACCOUNT:    '#1192e8',
+  HAS_INSTALL:     '#24a148',
+  RUNS_PRODUCT:    '#ff832b',
+  HAS_OPPORTUNITY: '#f1c21b',
+  CO_SELLS:        '#0f62fe',
+};
+
+const NODE_RADII = { Manager:16, Seller:13, Account:14, Territory:12, Product:11, Install:8, Opportunity:9, KnowledgeAsset:8 };
+
+// ── Seed data ─────────────────────────────────────────────────────────────
+const SEED_NODES = [
+  {id:'mgr-001',label:'Manager',  name:'Sandra Okafor',           desc:'First-line manager, Northeast. Oversees Marcus Webb & Aisha Thornton.'},
+  {id:'mgr-002',label:'Manager',  name:'David Reyes',             desc:'First-line manager, Southeast. Manages James Kowalski & Lin Mei Zhang.'},
+  {id:'mgr-003',label:'Manager',  name:'Priya Nambiar',           desc:'Second-line manager, West Coast. Tyler Oduya & Rachel Patel report to her.'},
+  {id:'sel-001',label:'Seller',   name:'Marcus Webb',             desc:'Client Executive — NYC Metro. Primary CE for First National Bancorp & Cascadia Insurance.'},
+  {id:'sel-002',label:'Seller',   name:'Aisha Thornton',          desc:'watsonx AI & Automation specialist — New England. Certified watsonx.ai & watsonx.data.'},
+  {id:'sel-003',label:'Seller',   name:'James Kowalski',          desc:'Client Executive — Atlanta. Owns Meridian Health Systems & Nova Retail Group.'},
+  {id:'sel-004',label:'Seller',   name:'Lin Mei Zhang',           desc:'Technology Sales Specialist — Miami. Owns SunCoast Logistics.'},
+  {id:'sel-005',label:'Seller',   name:'Tyler Oduya',             desc:'Client Executive — San Francisco. Primary CE for Apex Technology Partners.'},
+  {id:'sel-006',label:'Seller',   name:'Rachel Patel',            desc:'Security & Compliance specialist — LA. Certified CP4Security & OpenPages.'},
+  {id:'ter-001',label:'Territory',name:'NYC Metro Enterprise',    desc:'Quota: $8.5M — Large enterprise accounts in NY/NJ metro.'},
+  {id:'ter-002',label:'Territory',name:'New England Mid-Market',  desc:'Quota: $4.2M — Tech-focused mid-market across MA, CT, RI.'},
+  {id:'ter-003',label:'Territory',name:'Southeast Enterprise',    desc:'Quota: $6.1M — Enterprise accounts across GA, FL, SC, NC.'},
+  {id:'ter-004',label:'Territory',name:'Bay Area Tech',           desc:'Quota: $9.2M — Technology companies in Silicon Valley & Bay Area.'},
+  {id:'ter-005',label:'Territory',name:'Southern California',     desc:'Quota: $5.8M — Entertainment, media, and financial accounts in SoCal.'},
+  {id:'prd-001',label:'Product',  name:'watsonx.ai',              desc:'AI studio for training, validating, tuning and deploying AI models.'},
+  {id:'prd-002',label:'Product',  name:'watsonx.data',            desc:'Fit-for-purpose data store on open lakehouse architecture.'},
+  {id:'prd-003',label:'Product',  name:'watsonx.governance',      desc:'AI governance and risk management platform.'},
+  {id:'prd-004',label:'Product',  name:'IBM Cloud Pak for Security', desc:'Unified security platform with threat intelligence and SOAR.'},
+  {id:'prd-005',label:'Product',  name:'IBM OpenPages',           desc:'Integrated GRC platform for risk, compliance and audit management.'},
+  {id:'prd-006',label:'Product',  name:'IBM Sterling OMS',        desc:'Omnichannel order orchestration and fulfillment.'},
+  {id:'prd-007',label:'Product',  name:'IBM Turbonomic',          desc:'Application resource management and FinOps platform.'},
+  {id:'acc-001',label:'Account',  name:'First National Bancorp',  desc:'Top-10 US retail bank — $24B revenue. Heavy IBM footprint. watsonx expansion in progress.'},
+  {id:'acc-002',label:'Account',  name:'Meridian Health Systems', desc:'Regional hospital network — $8.7B revenue. Epic EHR integration in Southeast US.'},
+  {id:'acc-003',label:'Account',  name:'Nova Retail Group',       desc:'Omnichannel retailer — $2.1B revenue. 400+ stores, supply chain modernization focus.'},
+  {id:'acc-004',label:'Account',  name:'Apex Technology Partners',desc:'SaaS platform company — $15B revenue. AI and governance expansion opportunity.'},
+  {id:'acc-005',label:'Account',  name:'Cascadia Insurance Group',desc:'Multi-line P&C insurer — $6.5B revenue. Risk compliance modernization underway.'},
+  {id:'acc-006',label:'Account',  name:'SunCoast Logistics',      desc:'Regional 3PL — $890M revenue. Evaluating AI-driven order orchestration.'},
+  {id:'ins-001',label:'Install',  name:'Turbonomic @ First National',   desc:'v8.10 — managing 4,200 VMs across hybrid cloud. Support ends Apr 2026.'},
+  {id:'ins-002',label:'Install',  name:'watsonx.ai @ Apex Tech',        desc:'v2.0 — internal developer copilot + fraud model training. Support ends Jan 2027.'},
+  {id:'ins-003',label:'Install',  name:'OpenPages @ Cascadia',          desc:'v8.3 — GRC platform. ⚠ Renewal at risk — upgrade to v9 needed.'},
+  {id:'ins-004',label:'Install',  name:'Sterling OMS @ Nova Retail',    desc:'v9.5 — ⚠ OUT OF SUPPORT since Nov 2024. Upgrade to v10 opportunity.', status:'STALE'},
+  {id:'ins-005',label:'Install',  name:'CP4Security @ First National',  desc:'v1.9 — SIEM consolidation project. Support ends Jul 2026.'},
+  {id:'opp-001',label:'Opportunity',name:'FNB watsonx Expansion',       desc:'Stage: Validate — $2.4M. Expand watsonx.ai to 8 LOBs. Close: Q3 2025.'},
+  {id:'opp-002',label:'Opportunity',name:'Cascadia OpenPages Upgrade',  desc:'Stage: Propose — $890K. Renewal + upgrade from v8.3. Risk of churn.'},
+  {id:'opp-003',label:'Opportunity',name:'Nova Retail Sterling v10',    desc:'Stage: Identify — $640K. Upgrade out-of-support v9.5 to v10.'},
+  {id:'opp-004',label:'Opportunity',name:'Apex watsonx.governance',     desc:'Stage: Qualify — $560K. AI governance layer for existing watsonx.ai install.'},
+].map(n=>({...n, status: n.status||'ACTIVE'}));
+
+const SEED_EDGES = [
+  {s:'sel-001',t:'mgr-001',type:'REPORTS_TO'},{s:'sel-002',t:'mgr-001',type:'REPORTS_TO'},
+  {s:'sel-003',t:'mgr-002',type:'REPORTS_TO'},{s:'sel-004',t:'mgr-002',type:'REPORTS_TO'},
+  {s:'sel-005',t:'mgr-003',type:'REPORTS_TO'},{s:'sel-006',t:'mgr-003',type:'REPORTS_TO'},
+  {s:'mgr-001',t:'mgr-003',type:'REPORTS_TO'},{s:'mgr-002',t:'mgr-003',type:'REPORTS_TO'},
+  {s:'sel-001',t:'ter-001',type:'OWNS_TERRITORY'},{s:'sel-002',t:'ter-002',type:'OWNS_TERRITORY'},
+  {s:'sel-003',t:'ter-003',type:'OWNS_TERRITORY'},{s:'sel-004',t:'ter-003',type:'OWNS_TERRITORY'},
+  {s:'sel-005',t:'ter-004',type:'OWNS_TERRITORY'},{s:'sel-006',t:'ter-005',type:'OWNS_TERRITORY'},
+  {s:'sel-001',t:'acc-001',type:'OWNS_ACCOUNT'},{s:'sel-003',t:'acc-002',type:'OWNS_ACCOUNT'},
+  {s:'sel-003',t:'acc-003',type:'OWNS_ACCOUNT'},{s:'sel-005',t:'acc-004',type:'OWNS_ACCOUNT'},
+  {s:'sel-001',t:'acc-005',type:'OWNS_ACCOUNT'},{s:'sel-004',t:'acc-006',type:'OWNS_ACCOUNT'},
+  {s:'sel-001',t:'prd-004',type:'COVERS_PRODUCT'},{s:'sel-002',t:'prd-001',type:'COVERS_PRODUCT'},
+  {s:'sel-002',t:'prd-003',type:'COVERS_PRODUCT'},{s:'sel-005',t:'prd-001',type:'COVERS_PRODUCT'},
+  {s:'sel-005',t:'prd-007',type:'COVERS_PRODUCT'},{s:'sel-006',t:'prd-004',type:'COVERS_PRODUCT'},
+  {s:'acc-001',t:'ins-001',type:'HAS_INSTALL'},{s:'acc-001',t:'ins-005',type:'HAS_INSTALL'},
+  {s:'acc-004',t:'ins-002',type:'HAS_INSTALL'},{s:'acc-005',t:'ins-003',type:'HAS_INSTALL'},
+  {s:'acc-003',t:'ins-004',type:'HAS_INSTALL'},
+  {s:'ins-001',t:'prd-007',type:'RUNS_PRODUCT'},{s:'ins-002',t:'prd-001',type:'RUNS_PRODUCT'},
+  {s:'ins-003',t:'prd-005',type:'RUNS_PRODUCT'},{s:'ins-004',t:'prd-006',type:'RUNS_PRODUCT'},
+  {s:'ins-005',t:'prd-004',type:'RUNS_PRODUCT'},
+  {s:'acc-001',t:'opp-001',type:'HAS_OPPORTUNITY'},{s:'acc-005',t:'opp-002',type:'HAS_OPPORTUNITY'},
+  {s:'acc-003',t:'opp-003',type:'HAS_OPPORTUNITY'},{s:'acc-004',t:'opp-004',type:'HAS_OPPORTUNITY'},
+  {s:'sel-001',t:'sel-002',type:'CO_SELLS'},{s:'sel-003',t:'sel-004',type:'CO_SELLS'},
+];
+
+const SAMPLE_QUERIES = [
+  'Who manages Marcus Webb?',
+  'What does First National Bancorp have installed?',
+  'Which sellers cover watsonx.ai?',
+  'Show me Southeast Enterprise territory',
+  'Find expiring support contracts',
+  'What opportunities does Cascadia have?',
+  'Co-sell relationships',
+];
+
+// ── State ─────────────────────────────────────────────────────────────────
+let canvas, ctx, W, H;
+let nodes = [], edges = [];
+let cam = { x: 0, y: 0, z: 1 };
+let drag = null, hovNode = null, selNode = null;
+let lastMx = 0, lastMy = 0;
+let activeLabels = new Set(Object.keys(COLORS));
+let tick = 0;
+// particle system for ambient nebula
+let particles = [];
+
+// ── Init ──────────────────────────────────────────────────────────────────
+function init() {
+  canvas = document.getElementById('gc');
+  ctx = canvas.getContext('2d');
+  resize();
+  buildParticles();
+  buildFilters();
+  buildLegend();
+  buildQueryList();
+  loadGraph();
+  bindEvents();
+  loop();
+}
+
+function resize() {
+  const cw = document.getElementById('cw');
+  W = canvas.width = cw.clientWidth;
+  H = canvas.height = cw.clientHeight;
+}
+
+// ── Ambient particles ─────────────────────────────────────────────────────
+function buildParticles() {
+  particles = [];
+  for (let i = 0; i < 120; i++) {
+    particles.push({
+      x: Math.random() * W,
+      y: Math.random() * H,
+      r: Math.random() * 1.2 + 0.3,
+      a: Math.random() * Math.PI * 2,
+      speed: Math.random() * 0.15 + 0.05,
+      opacity: Math.random() * 0.4 + 0.05,
+    });
+  }
+}
+
+function drawParticles() {
+  for (const p of particles) {
+    p.x += Math.cos(p.a) * p.speed;
+    p.y += Math.sin(p.a) * p.speed;
+    p.a += (Math.random() - 0.5) * 0.02;
+    if (p.x < 0) p.x = W;
+    if (p.x > W) p.x = 0;
+    if (p.y < 0) p.y = H;
+    if (p.y > H) p.y = 0;
+    ctx.beginPath();
+    ctx.arc(p.x, p.y, p.r, 0, Math.PI * 2);
+    ctx.fillStyle = `rgba(80,80,160,${p.opacity})`;
+    ctx.fill();
+  }
+}
+
+// ── Build graph from seed data ────────────────────────────────────────────
+function loadGraph() {
+  const cx = W / 2, cy = H / 2;
+  const angle = (2 * Math.PI) / SEED_NODES.length;
+  nodes = SEED_NODES.filter(n => activeLabels.has(n.label)).map((n, i) => {
+    const r = 220 + Math.random() * 80;
+    return {
+      ...n,
+      r: NODE_RADII[n.label] || 10,
+      x: n.x || (cx + r * Math.cos(i * angle + Math.random() * 0.5)),
+      y: n.y || (cy + r * Math.sin(i * angle + Math.random() * 0.5)),
+      vx: 0, vy: 0,
+      pulseOffset: Math.random() * Math.PI * 2,
+    };
+  });
+
+  const nodeMap = Object.fromEntries(nodes.map(n => [n.id, n]));
+  edges = SEED_EDGES
+    .filter(e => nodeMap[e.s] && nodeMap[e.t])
+    .map(e => ({ ...e, sn: nodeMap[e.s], tn: nodeMap[e.t] }));
+}
+
+// ── Force simulation (one step per frame) ─────────────────────────────────
+function simulate() {
+  const alpha = 0.04;
+  // Repulsion
+  for (let i = 0; i < nodes.length; i++) {
+    for (let j = i + 1; j < nodes.length; j++) {
+      const a = nodes[i], b = nodes[j];
+      const dx = b.x - a.x, dy = b.y - a.y;
+      const dist2 = dx * dx + dy * dy || 0.1;
+      const dist = Math.sqrt(dist2);
+      const minD = (a.r + b.r) * 3.8;
+      if (dist < minD) {
+        const f = (minD - dist) / dist * alpha * 0.9;
+        a.vx -= dx * f; a.vy -= dy * f;
+        b.vx += dx * f; b.vy += dy * f;
+      }
+    }
+  }
+  // Spring attraction on edges
+  for (const e of edges) {
+    const dx = e.tn.x - e.sn.x, dy = e.tn.y - e.sn.y;
+    const dist = Math.sqrt(dx * dx + dy * dy) || 1;
+    const ideal = 110;
+    const f = (dist - ideal) / dist * alpha * 0.35;
+    e.sn.vx += dx * f; e.sn.vy += dy * f;
+    e.tn.vx -= dx * f; e.tn.vy -= dy * f;
+  }
+  // Centre gravity
+  for (const n of nodes) {
+    n.vx += (W / 2 - n.x) * 0.0006;
+    n.vy += (H / 2 - n.y) * 0.0006;
+    n.vx *= 0.82; n.vy *= 0.82;
+    if (n !== drag) { n.x += n.vx; n.y += n.vy; }
+    n.x = Math.max(n.r + 8, Math.min(W - n.r - 8, n.x));
+    n.y = Math.max(n.r + 8, Math.min(H - n.r - 8, n.y));
+  }
+}
+
+// ── Main render ───────────────────────────────────────────────────────────
+function loop() {
+  simulate();
+  tick++;
+  render();
+  requestAnimationFrame(loop);
+}
+
+function render() {
+  ctx.clearRect(0, 0, W, H);
+
+  // Deep space background gradient
+  const bg = ctx.createRadialGradient(W / 2, H / 2, 0, W / 2, H / 2, Math.max(W, H) * 0.7);
+  bg.addColorStop(0, 'rgba(6,4,20,1)');
+  bg.addColorStop(1, 'rgba(2,2,8,1)');
+  ctx.fillStyle = bg;
+  ctx.fillRect(0, 0, W, H);
+
+  drawParticles();
+
+  ctx.save();
+  ctx.translate(cam.x, cam.y);
+  ctx.scale(cam.z, cam.z);
+
+  drawEdges();
+  drawNodes();
+
+  ctx.restore();
+}
+
+// ── Edge rendering — glowing luminous threads ─────────────────────────────
+function drawEdges() {
+  for (const e of edges) {
+    const sn = e.sn, tn = e.tn;
+    const col = EDGE_COLORS[e.type] || '#5050a0';
+    const isHighlight = selNode && (sn === selNode || tn === selNode);
+    const isHovEdge = hovNode && (sn === hovNode || tn === hovNode);
+
+    const dx = tn.x - sn.x, dy = tn.y - sn.y;
+    const dist = Math.sqrt(dx * dx + dy * dy) || 1;
+    const ux = dx / dist, uy = dy / dist;
+
+    // Start and end points (offset by node radius)
+    const x1 = sn.x + ux * sn.r, y1 = sn.y + uy * sn.r;
+    const x2 = tn.x - ux * (tn.r + 4), y2 = tn.y - uy * (tn.r + 4);
+
+    const baseAlpha = isHighlight ? 0.9 : isHovEdge ? 0.6 : 0.22;
+
+    // Outer glow
+    ctx.beginPath();
+    ctx.moveTo(x1, y1);
+    ctx.lineTo(x2, y2);
+    ctx.strokeStyle = col + Math.round(baseAlpha * 0.4 * 255).toString(16).padStart(2,'0');
+    ctx.lineWidth = isHighlight ? 6 : 4;
+    ctx.shadowColor = col;
+    ctx.shadowBlur = isHighlight ? 14 : 6;
+    ctx.stroke();
+
+    // Core line
+    ctx.beginPath();
+    ctx.moveTo(x1, y1);
+    ctx.lineTo(x2, y2);
+    ctx.strokeStyle = col + Math.round(baseAlpha * 255).toString(16).padStart(2,'0');
+    ctx.lineWidth = isHighlight ? 2 : 1.2;
+    ctx.shadowBlur = 0;
+    ctx.stroke();
+
+    // Arrowhead
+    const ang = Math.atan2(y2 - y1, x2 - x1);
+    ctx.beginPath();
+    ctx.moveTo(x2, y2);
+    ctx.lineTo(x2 - 8 * Math.cos(ang - 0.38), y2 - 8 * Math.sin(ang - 0.38));
+    ctx.lineTo(x2 - 8 * Math.cos(ang + 0.38), y2 - 8 * Math.sin(ang + 0.38));
+    ctx.closePath();
+    ctx.fillStyle = col + Math.round(baseAlpha * 255).toString(16).padStart(2,'0');
+    ctx.fill();
+
+    // Animated travelling dot on highlighted edges
+    if (isHighlight) {
+      const t = ((tick * 0.008) % 1);
+      const px = x1 + (x2 - x1) * t;
+      const py = y1 + (y2 - y1) * t;
+      ctx.beginPath();
+      ctx.arc(px, py, 2.5, 0, Math.PI * 2);
+      ctx.fillStyle = '#fff';
+      ctx.shadowColor = col;
+      ctx.shadowBlur = 10;
+      ctx.fill();
+      ctx.shadowBlur = 0;
+    }
+  }
+  ctx.shadowBlur = 0;
+}
+
+// ── Node rendering — glowing orbs with bloom ──────────────────────────────
+function drawNodes() {
+  for (const n of nodes) {
+    const col = COLORS[n.label] || '#5050c0';
+    const isHov = n === hovNode;
+    const isSel = n === selNode;
+    const isStale = n.status === 'STALE';
+    const pulse = Math.sin(tick * 0.04 + n.pulseOffset) * 0.5 + 0.5; // 0–1
+
+    const glowR = n.r * (isSel ? 3.5 : isHov ? 3 : 2.4 + pulse * 0.6);
+    const glowAlpha = isSel ? 0.5 : isHov ? 0.35 : 0.18 + pulse * 0.08;
+
+    // Outer nebula glow
+    const grad = ctx.createRadialGradient(n.x, n.y, 0, n.x, n.y, glowR);
+    grad.addColorStop(0,   col + 'aa');
+    grad.addColorStop(0.4, col + '44');
+    grad.addColorStop(1,   col + '00');
+    ctx.beginPath();
+    ctx.arc(n.x, n.y, glowR, 0, Math.PI * 2);
+    ctx.fillStyle = grad;
+    ctx.fill();
+
+    // Mid glow ring
+    ctx.beginPath();
+    ctx.arc(n.x, n.y, n.r + (isSel ? 5 : 3), 0, Math.PI * 2);
+    ctx.fillStyle = col + (isStale ? '22' : '33');
+    ctx.shadowColor = col;
+    ctx.shadowBlur = isSel ? 20 : isHov ? 14 : 8;
+    ctx.fill();
+
+    // Core node
+    const coreGrad = ctx.createRadialGradient(n.x - n.r * 0.25, n.y - n.r * 0.25, 0, n.x, n.y, n.r);
+    const baseColor = isStale ? '#444' : col;
+    coreGrad.addColorStop(0, lighten(baseColor, 60));
+    coreGrad.addColorStop(1, baseColor);
+    ctx.beginPath();
+    ctx.arc(n.x, n.y, n.r, 0, Math.PI * 2);
+    ctx.fillStyle = coreGrad;
+    ctx.shadowColor = col;
+    ctx.shadowBlur = isSel ? 24 : isHov ? 16 : 10;
+    ctx.fill();
+
+    // Stale ring
+    if (isStale) {
+      ctx.beginPath();
+      ctx.arc(n.x, n.y, n.r + 2, 0, Math.PI * 2);
+      ctx.strokeStyle = '#ff832b88';
+      ctx.lineWidth = 1.5;
+      ctx.setLineDash([3, 3]);
+      ctx.stroke();
+      ctx.setLineDash([]);
+    }
+
+    // Selected ring
+    if (isSel) {
+      ctx.beginPath();
+      ctx.arc(n.x, n.y, n.r + 4, 0, Math.PI * 2);
+      ctx.strokeStyle = '#ffffff66';
+      ctx.lineWidth = 1.5;
+      ctx.stroke();
+    }
+
+    ctx.shadowBlur = 0;
+
+    // Label
+    const maxLen = isHov || isSel ? 24 : 15;
+    const label = n.name.length > maxLen ? n.name.slice(0, maxLen - 1) + '…' : n.name;
+    ctx.font = `${isHov || isSel ? '11px' : '10px'} "IBM Plex Sans",-apple-system,sans-serif`;
+    ctx.textAlign = 'center';
+    // Shadow for readability
+    ctx.fillStyle = 'rgba(4,4,12,0.85)';
+    ctx.fillText(label, n.x + 0.5, n.y + n.r + 12.5);
+    ctx.fillStyle = isHov || isSel
+      ? (COLORS[n.label] + 'ee')
+      : 'rgba(140,140,180,0.8)';
+    ctx.fillText(label, n.x, n.y + n.r + 12);
+  }
+}
+
+function lighten(hex, amt) {
+  const num = parseInt(hex.replace('#', ''), 16);
+  const r = Math.min(255, (num >> 16) + amt);
+  const g = Math.min(255, ((num >> 8) & 0xff) + amt);
+  const b = Math.min(255, (num & 0xff) + amt);
+  return `rgb(${r},${g},${b})`;
+}
+
+// ── Events ────────────────────────────────────────────────────────────────
+function bindEvents() {
+  canvas.addEventListener('mousemove', onMouseMove);
+  canvas.addEventListener('mousedown', onMouseDown);
+  canvas.addEventListener('mouseup', () => drag = null);
+  canvas.addEventListener('click', onClick);
+  canvas.addEventListener('wheel', onWheel, { passive: true });
+  document.getElementById('bzi').onclick = () => zoomAt(W/2, H/2, 1.3);
+  document.getElementById('bzo').onclick = () => zoomAt(W/2, H/2, 0.77);
+  document.getElementById('bfit').onclick = fitView;
+  document.getElementById('brst').onclick = () => { cam = { x:0, y:0, z:1 }; loadGraph(); };
+  document.getElementById('sbtn').onclick = () => doSearch(document.getElementById('si').value);
+  document.getElementById('si').addEventListener('keydown', e => { if (e.key === 'Enter') doSearch(e.target.value); });
+  document.getElementById('rpb').onclick = runPruning;
+  window.addEventListener('resize', () => { resize(); buildParticles(); });
+}
+
+function graphXY(ex, ey) {
+  return { x: (ex - cam.x) / cam.z, y: (ey - cam.y) / cam.z };
+}
+
+function nodeAt(gx, gy) {
+  for (let i = nodes.length - 1; i >= 0; i--) {
+    const n = nodes[i];
+    if ((n.x-gx)**2 + (n.y-gy)**2 <= (n.r+4)**2) return n;
+  }
+  return null;
+}
+
+function onMouseMove(e) {
+  const g = graphXY(e.offsetX, e.offsetY);
+  hovNode = nodeAt(g.x, g.y);
+  const tip = document.getElementById('tip');
+  if (hovNode) {
+    const col = COLORS[hovNode.label] || '#888';
+    tip.style.display = 'block';
+    tip.style.left = (e.offsetX + 16) + 'px';
+    tip.style.top  = (e.offsetY + 16) + 'px';
+    tip.innerHTML = `<div class="tl" style="color:${col}">${hovNode.label}</div><div class="tn">${hovNode.name}</div><div class="td">${hovNode.desc || ''}</div>`;
+    canvas.style.cursor = 'pointer';
+  } else {
+    tip.style.display = 'none';
+    canvas.style.cursor = drag ? 'grabbing' : 'crosshair';
+  }
+  if (drag) {
+    if (drag === true) {
+      cam.x += e.offsetX - lastMx;
+      cam.y += e.offsetY - lastMy;
+    } else {
+      drag.x = g.x; drag.y = g.y;
+      drag.vx = 0; drag.vy = 0;
+    }
+  }
+  lastMx = e.offsetX; lastMy = e.offsetY;
+}
+
+function onMouseDown(e) {
+  lastMx = e.offsetX; lastMy = e.offsetY;
+  const g = graphXY(e.offsetX, e.offsetY);
+  drag = nodeAt(g.x, g.y) || true;
+}
+
+function onClick(e) {
+  const g = graphXY(e.offsetX, e.offsetY);
+  const n = nodeAt(g.x, g.y);
+  if (n) selectNode(n);
+  else clearSelection();
+}
+
+function onWheel(e) {
+  const f = e.deltaY < 0 ? 1.1 : 0.9;
+  zoomAt(e.offsetX, e.offsetY, f);
+}
+
+function zoomAt(mx, my, f) {
+  cam.x = (cam.x - mx) * f + mx;
+  cam.y = (cam.y - my) * f + my;
+  cam.z = Math.max(0.1, Math.min(5, cam.z * f));
+}
+
+function fitView() {
+  if (!nodes.length) return;
+  let minX=Infinity, minY=Infinity, maxX=-Infinity, maxY=-Infinity;
+  for (const n of nodes) {
+    minX=Math.min(minX,n.x-n.r); minY=Math.min(minY,n.y-n.r);
+    maxX=Math.max(maxX,n.x+n.r); maxY=Math.max(maxY,n.y+n.r);
+  }
+  const pad = 60;
+  const scaleX = (W - pad*2) / (maxX - minX);
+  const scaleY = (H - pad*2) / (maxY - minY);
+  const z = Math.min(scaleX, scaleY, 2);
+  cam.z = z;
+  cam.x = W/2 - ((minX + maxX)/2) * z;
+  cam.y = H/2 - ((minY + maxY)/2) * z;
+}
+
+// ── Node detail ────────────────────────────────────────────────────────────
+function selectNode(n) {
+  selNode = n;
+  const dp = document.getElementById('dp');
+  const dc = document.getElementById('dc');
+  dp.style.display = 'block';
+  const col = COLORS[n.label] || '#888';
+
+  // Find connections
+  const conns = edges.filter(e => e.sn === n || e.tn === n);
+
+  const propRows = [];
+  if (n.label === 'Seller') propRows.push(['Geo', n.geo||'–'], ['Role', n.role||'AE']);
+  if (n.label === 'Manager') propRows.push(['Team size', conns.filter(e=>e.tn===n&&e.type==='REPORTS_TO').length + ' direct reports']);
+  if (n.label === 'Territory') propRows.push(['Region', n.region||'–'], ['Quota', n.quota ? '$'+n.quota.toLocaleString() : '–']);
+  if (n.label === 'Product') propRows.push(['Family', n.family||'–'], ['Version', n.version||'–']);
+  if (n.label === 'Account') propRows.push(['Industry', n.industry||'–'], ['Revenue', n.revenue ? '$'+(n.revenue/1e9).toFixed(1)+'B' : '–']);
+
+  const connHtml = conns.slice(0, 6).map(e => {
+    const other = e.sn === n ? e.tn : e.sn;
+    const oc = COLORS[other.label] || '#888';
+    return `<span class="conn-badge" style="border-color:${oc}22;color:${oc}">${other.name}</span>`;
+  }).join('');
+
+  dc.innerHTML = `
+    <div class="dpt" style="color:${col}">${n.label}</div>
+    <div class="dpn">${n.name}</div>
+    <span class="dps ${n.status}">${n.status}</span>
+    <div style="color:var(--ts);font-size:10px;line-height:1.5;margin-bottom:10px">${n.desc||''}</div>
+    ${propRows.map(([k,v])=>`<div class="dprow"><span class="dpk">${k}</span><span class="dpv">${v}</span></div>`).join('')}
+    ${conns.length ? `<div style="margin-top:10px;padding-top:8px;border-top:1px solid var(--border)"><div style="font-size:8px;color:var(--tm);text-transform:uppercase;letter-spacing:.8px;margin-bottom:6px">${conns.length} Connection${conns.length>1?'s':''}</div>${connHtml}</div>` : ''}
+  `;
+}
+
+function clearSelection() {
+  selNode = null;
+  document.getElementById('dp').style.display = 'none';
+}
+
+// ── Search ─────────────────────────────────────────────────────────────────
+function doSearch(q) {
+  q = q.trim();
+  if (!q) return;
+  document.getElementById('si').value = q;
+  const ql = q.toLowerCase();
+  const words = ql.split(/\s+/).filter(w => w.length > 2);
+
+  const scored = SEED_NODES.map(n => {
+    const text = (n.name + ' ' + (n.desc||'') + ' ' + n.label).toLowerCase();
+    let sc = 0;
+    for (const w of words) {
+      if (n.name.toLowerCase().includes(w)) sc += 0.7;
+      else if (text.includes(w)) sc += 0.3;
+    }
+    return { n, sc };
+  }).filter(x => x.sc > 0).sort((a,b) => b.sc - a.sc).slice(0, 12);
+
+  const intent = detectIntent(ql);
+  const nb = document.getElementById('nb');
+  nb.style.display = 'block';
+  document.getElementById('nt').textContent = buildNarrative(q, scored.map(x=>x.n), intent);
+
+  const res = document.getElementById('results');
+  if (!scored.length) {
+    res.innerHTML = '<div style="color:var(--tm);font-size:11px;text-align:center;padding:16px">No results found.</div>';
+    return;
+  }
+  res.innerHTML = scored.map(({n, sc}) => {
+    const col = COLORS[n.label] || '#888';
+    const stale = n.status === 'STALE' ? ' stale' : '';
+    return `<div class="ri${stale}" onclick="focusNode('${n.id}')">
+      <div class="rih"><span class="rdot" style="background:${col}"></span><span class="rl" style="color:${col}">${n.label}</span><span class="rs">${sc.toFixed(2)}</span></div>
+      <div class="rn">${n.name}</div>
+      <div class="rd">${(n.desc||'').slice(0,90)}${(n.desc||'').length>90?'…':''}</div>
+    </div>`;
+  }).join('');
+}
+
+function focusNode(id) {
+  const n = nodes.find(x => x.id === id);
+  if (!n) return;
+  // Pan camera to node
+  cam.x = W/2 - n.x * cam.z;
+  cam.y = H/2 - n.y * cam.z;
+  selectNode(n);
+}
+
+function detectIntent(q) {
+  if (/report|manage|who.*manage/.test(q)) return 'org';
+  if (/install|running|deployed|using|expir/.test(q)) return 'install';
+  if (/territory|region|cover/.test(q)) return 'territory';
+  if (/product|certif|sell/.test(q)) return 'product';
+  if (/opport|deal|pipeline/.test(q)) return 'opportunity';
+  if (/co.sell|partner|together/.test(q)) return 'cosell';
+  return 'general';
+}
+
+function buildNarrative(q, results, intent) {
+  if (!results.length) return `No results found for "${q}".`;
+  const names = results.slice(0,3).map(r=>r.name);
+  const n = results.length;
+  const m = {
+    org:`Found ${n} org match${n>1?'es':''}. Key people: ${names.join(', ')}.`,
+    install:`Found ${n} install record${n>1?'s':''}. Check highlighted nodes for ⚠ expiring support.`,
+    territory:`Found ${n} territory match${n>1?'es':''}. Covering: ${names.join(', ')}.`,
+    product:`Found ${n} product match${n>1?'es':''}. See graph for certified sellers.`,
+    opportunity:`Found ${n} opportunit${n>1?'ies':'y'}. Top: ${names.join(', ')}.`,
+    cosell:`Found ${n} co-sell connection${n>1?'s':''}. Sellers: ${names.join(', ')}.`,
+    general:`Found ${n} result${n>1?'s':''}. Top: ${names.join(', ')}. Click to explore.`,
+  };
+  return m[intent] || m.general;
+}
+
+// ── Filters ────────────────────────────────────────────────────────────────
+function buildFilters() {
+  const fl = document.getElementById('fl');
+  fl.innerHTML = '';
+  for (const [label, col] of Object.entries(COLORS)) {
+    const cnt = SEED_NODES.filter(n => n.label === label).length;
+    if (!cnt) continue;
+    const el = document.createElement('label');
+    el.className = 'fi';
+    el.innerHTML = `<input type="checkbox" checked data-lbl="${label}"><span class="fdot" style="background:${col}"></span><span class="fl">${label}</span><span class="fc">${cnt}</span>`;
+    el.querySelector('input').addEventListener('change', e => {
+      if (e.target.checked) activeLabels.add(label);
+      else activeLabels.delete(label);
+      loadGraph();
+    });
+    fl.appendChild(el);
+  }
+}
+
+function buildLegend() {
+  document.getElementById('leg').innerHTML =
+    Object.entries(COLORS).map(([l,c]) =>
+      `<div class="li"><span class="ld" style="background:${c};box-shadow:0 0 4px ${c}88"></span>${l}</div>`
+    ).join('');
+}
+
+function buildQueryList() {
+  document.getElementById('ql').innerHTML = SAMPLE_QUERIES.map(q =>
+    `<div class="qitem" onclick="doSearch('${q.replace(/'/g,"\\'")}')">⟶ ${q}</div>`
+  ).join('');
+}
+
+// ── Pruning simulation ─────────────────────────────────────────────────────
+function runPruning() {
+  const btn = document.getElementById('rpb');
+  btn.textContent = '⏳ Running…';
+  btn.disabled = true;
+  document.getElementById('pss').textContent = 'Scanning…';
+
+  setTimeout(() => {
+    const stale = SEED_NODES.filter(n => n.status === 'STALE').length;
+    document.getElementById('pss').textContent = 'Complete';
+    document.getElementById('psl').textContent = new Date().toLocaleTimeString();
+    document.getElementById('psc').textContent = SEED_NODES.length;
+    document.getElementById('pst').textContent = stale;
+    document.getElementById('psd').textContent = 0;
+    btn.textContent = '▶ Run Cycle';
+    btn.disabled = false;
+  }, 1800);
+}
+
+// ── Boot ───────────────────────────────────────────────────────────────────
+window.addEventListener('load', init);
+window.addEventListener('resize', () => { resize(); buildParticles(); });
+</script>
+</body>
+</html>

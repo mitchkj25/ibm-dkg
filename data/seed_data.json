@@ -1,0 +1,367 @@
+{
+  "nodes": [
+    {
+      "id": "mgr-001", "label": "Manager", "name": "Patricia Walsh",
+      "email": "p.walsh@ibm.com", "bandLevel": "8", "territory": "Northeast Enterprise",
+      "status": "ACTIVE", "source": "w3", "confidence": 1.0, "ttlDays": 90,
+      "lastVerified": "2025-06-01T00:00:00Z", "createdAt": "2024-01-10T00:00:00Z",
+      "description": "First-line manager for Northeast Enterprise sales team"
+    },
+    {
+      "id": "mgr-002", "label": "Manager", "name": "David Kim",
+      "email": "d.kim@ibm.com", "bandLevel": "8", "territory": "West Coast Mid-Market",
+      "status": "ACTIVE", "source": "w3", "confidence": 1.0, "ttlDays": 90,
+      "lastVerified": "2025-06-01T00:00:00Z", "createdAt": "2024-01-10T00:00:00Z",
+      "description": "First-line manager for West Coast Mid-Market team"
+    },
+    {
+      "id": "mgr-003", "label": "Manager", "name": "Sandra Torres",
+      "email": "s.torres@ibm.com", "bandLevel": "9", "territory": "Central & Federal",
+      "status": "ACTIVE", "source": "w3", "confidence": 1.0, "ttlDays": 90,
+      "lastVerified": "2025-06-01T00:00:00Z", "createdAt": "2023-09-01T00:00:00Z",
+      "description": "Second-line manager overseeing Central region and Federal vertical"
+    },
+    {
+      "id": "sel-001", "label": "Seller", "name": "James Okafor",
+      "email": "j.okafor@ibm.com", "bandLevel": "7", "geo": "New York, NY",
+      "role": "Account Executive", "hireDate": "2021-03-15",
+      "lastActive": "2025-06-10T00:00:00Z", "status": "ACTIVE",
+      "source": "salesforce", "confidence": 1.0, "ttlDays": 30,
+      "lastVerified": "2025-06-10T00:00:00Z", "createdAt": "2021-03-15T00:00:00Z",
+      "description": "AE focused on Financial Services in Greater New York area"
+    },
+    {
+      "id": "sel-002", "label": "Seller", "name": "Mia Chen",
+      "email": "m.chen@ibm.com", "bandLevel": "6", "geo": "San Francisco, CA",
+      "role": "Sales Specialist – watsonx", "hireDate": "2022-07-01",
+      "lastActive": "2025-06-09T00:00:00Z", "status": "ACTIVE",
+      "source": "salesforce", "confidence": 1.0, "ttlDays": 30,
+      "lastVerified": "2025-06-09T00:00:00Z", "createdAt": "2022-07-01T00:00:00Z",
+      "description": "watsonx AI specialist covering Silicon Valley tech accounts"
+    },
+    {
+      "id": "sel-003", "label": "Seller", "name": "Carlos Rivera",
+      "email": "c.rivera@ibm.com", "bandLevel": "7", "geo": "Chicago, IL",
+      "role": "Account Executive", "hireDate": "2019-11-01",
+      "lastActive": "2025-06-08T00:00:00Z", "status": "ACTIVE",
+      "source": "salesforce", "confidence": 1.0, "ttlDays": 30,
+      "lastVerified": "2025-06-08T00:00:00Z", "createdAt": "2019-11-01T00:00:00Z",
+      "description": "Senior AE covering Manufacturing and Energy in the Midwest"
+    },
+    {
+      "id": "sel-004", "label": "Seller", "name": "Aisha Patel",
+      "email": "a.patel@ibm.com", "bandLevel": "6", "geo": "Washington, DC",
+      "role": "Federal Sales Specialist", "hireDate": "2023-02-01",
+      "lastActive": "2025-05-30T00:00:00Z", "status": "ACTIVE",
+      "source": "salesforce", "confidence": 1.0, "ttlDays": 30,
+      "lastVerified": "2025-05-30T00:00:00Z", "createdAt": "2023-02-01T00:00:00Z",
+      "description": "Covers DoD and civilian Federal agencies in the DC Metro area"
+    },
+    {
+      "id": "sel-005", "label": "Seller", "name": "Tom Nguyen",
+      "email": "t.nguyen@ibm.com", "bandLevel": "6", "geo": "Austin, TX",
+      "role": "Sales Specialist – Hybrid Cloud", "hireDate": "2022-01-10",
+      "lastActive": "2025-06-07T00:00:00Z", "status": "ACTIVE",
+      "source": "salesforce", "confidence": 1.0, "ttlDays": 30,
+      "lastVerified": "2025-06-07T00:00:00Z", "createdAt": "2022-01-10T00:00:00Z",
+      "description": "OpenShift and Hybrid Cloud specialist covering Texas and South-Central"
+    },
+    {
+      "id": "sel-006", "label": "Seller", "name": "Rachel Goldstein",
+      "email": "r.goldstein@ibm.com", "bandLevel": "7", "geo": "Boston, MA",
+      "role": "Account Executive", "hireDate": "2020-06-01",
+      "lastActive": "2024-12-01T00:00:00Z", "status": "STALE",
+      "source": "salesforce", "confidence": 0.6, "ttlDays": 30,
+      "lastVerified": "2024-12-01T00:00:00Z", "createdAt": "2020-06-01T00:00:00Z",
+      "description": "AE for New England Healthcare — record not verified since Dec 2024"
+    },
+    {
+      "id": "terr-001", "label": "Territory", "name": "Northeast Enterprise",
+      "region": "Northeast", "geo": "NY, NJ, CT, MA, RI, VT, NH, ME",
+      "quota": 12500000, "status": "ACTIVE", "source": "crm", "confidence": 1.0,
+      "ttlDays": 180, "lastVerified": "2025-01-01T00:00:00Z", "createdAt": "2020-01-01T00:00:00Z",
+      "description": "Primary enterprise territory for the Northeastern US states"
+    },
+    {
+      "id": "terr-002", "label": "Territory", "name": "West Coast Mid-Market",
+      "region": "West", "geo": "CA, WA, OR, NV, AZ",
+      "quota": 9800000, "status": "ACTIVE", "source": "crm", "confidence": 1.0,
+      "ttlDays": 180, "lastVerified": "2025-01-01T00:00:00Z", "createdAt": "2020-01-01T00:00:00Z",
+      "description": "Mid-market and tech-scale territory for the US West Coast"
+    },
+    {
+      "id": "terr-003", "label": "Territory", "name": "Federal & Public Sector",
+      "region": "National", "geo": "DC, VA, MD",
+      "quota": 18000000, "status": "ACTIVE", "source": "crm", "confidence": 1.0,
+      "ttlDays": 180, "lastVerified": "2025-01-01T00:00:00Z", "createdAt": "2020-01-01T00:00:00Z",
+      "description": "DoD, civilian Federal agencies, and state & local government"
+    },
+    {
+      "id": "terr-004", "label": "Territory", "name": "Midwest & Central",
+      "region": "Central", "geo": "IL, TX, OH, MI, MN, MO",
+      "quota": 10200000, "status": "ACTIVE", "source": "crm", "confidence": 1.0,
+      "ttlDays": 180, "lastVerified": "2025-01-01T00:00:00Z", "createdAt": "2020-01-01T00:00:00Z",
+      "description": "Manufacturing, Energy, and Financial Services in Central US"
+    },
+    {
+      "id": "prod-001", "label": "Product", "name": "watsonx.ai",
+      "brand": "IBM", "family": "watsonx", "version": "2.1",
+      "eolDate": null, "status": "ACTIVE", "source": "seismic", "confidence": 1.0,
+      "ttlDays": 180, "lastVerified": "2025-06-01T00:00:00Z", "createdAt": "2023-07-01T00:00:00Z",
+      "description": "IBM AI studio for building, governing, and deploying generative AI models"
+    },
+    {
+      "id": "prod-002", "label": "Product", "name": "watsonx.governance",
+      "brand": "IBM", "family": "watsonx", "version": "1.2",
+      "eolDate": null, "status": "ACTIVE", "source": "seismic", "confidence": 1.0,
+      "ttlDays": 180, "lastVerified": "2025-06-01T00:00:00Z", "createdAt": "2023-09-01T00:00:00Z",
+      "description": "AI governance platform for monitoring, auditing, and explainability"
+    },
+    {
+      "id": "prod-003", "label": "Product", "name": "IBM Cloud Pak for Data",
+      "brand": "IBM", "family": "Data & AI", "version": "4.8",
+      "eolDate": null, "status": "ACTIVE", "source": "seismic", "confidence": 1.0,
+      "ttlDays": 180, "lastVerified": "2025-06-01T00:00:00Z", "createdAt": "2019-06-01T00:00:00Z",
+      "description": "Integrated data and AI platform — collect, organize, analyze, and infuse"
+    },
+    {
+      "id": "prod-004", "label": "Product", "name": "Red Hat OpenShift",
+      "brand": "Red Hat", "family": "Hybrid Cloud", "version": "4.15",
+      "eolDate": null, "status": "ACTIVE", "source": "seismic", "confidence": 1.0,
+      "ttlDays": 180, "lastVerified": "2025-06-01T00:00:00Z", "createdAt": "2019-01-01T00:00:00Z",
+      "description": "Enterprise Kubernetes platform for hybrid and multi-cloud deployments"
+    },
+    {
+      "id": "prod-005", "label": "Product", "name": "IBM Security QRadar SIEM",
+      "brand": "IBM", "family": "Security", "version": "7.5",
+      "eolDate": null, "status": "ACTIVE", "source": "seismic", "confidence": 1.0,
+      "ttlDays": 180, "lastVerified": "2025-06-01T00:00:00Z", "createdAt": "2015-01-01T00:00:00Z",
+      "description": "AI-driven SIEM for threat detection, investigation, and response"
+    },
+    {
+      "id": "prod-006", "label": "Product", "name": "IBM Storage Scale",
+      "brand": "IBM", "family": "Storage", "version": "5.2",
+      "eolDate": null, "status": "ACTIVE", "source": "seismic", "confidence": 1.0,
+      "ttlDays": 180, "lastVerified": "2025-06-01T00:00:00Z", "createdAt": "2010-01-01T00:00:00Z",
+      "description": "Software-defined storage for AI and data-intensive workloads"
+    },
+    {
+      "id": "prod-007", "label": "Product", "name": "IBM MQ",
+      "brand": "IBM", "family": "Integration", "version": "9.3",
+      "eolDate": null, "status": "ACTIVE", "source": "seismic", "confidence": 1.0,
+      "ttlDays": 180, "lastVerified": "2025-06-01T00:00:00Z", "createdAt": "2000-01-01T00:00:00Z",
+      "description": "Enterprise messaging middleware for reliable application integration"
+    },
+    {
+      "id": "acct-001", "label": "Account", "name": "First National Bank",
+      "industry": "Financial Services", "segment": "Enterprise",
+      "revenue": 42000000000, "country": "USA", "status": "ACTIVE",
+      "source": "salesforce", "confidence": 1.0, "ttlDays": 60,
+      "lastVerified": "2025-06-01T00:00:00Z", "createdAt": "2018-01-01T00:00:00Z",
+      "description": "Top-5 US bank with major IBM infrastructure and growing AI interest"
+    },
+    {
+      "id": "acct-002", "label": "Account", "name": "Apex Health Systems",
+      "industry": "Healthcare", "segment": "Enterprise",
+      "revenue": 8500000000, "country": "USA", "status": "ACTIVE",
+      "source": "salesforce", "confidence": 1.0, "ttlDays": 60,
+      "lastVerified": "2025-06-01T00:00:00Z", "createdAt": "2019-03-01T00:00:00Z",
+      "description": "Regional hospital network evaluating watsonx for clinical decision support"
+    },
+    {
+      "id": "acct-003", "label": "Account", "name": "Synergy Manufacturing Co.",
+      "industry": "Manufacturing", "segment": "Mid-Market",
+      "revenue": 1200000000, "country": "USA", "status": "ACTIVE",
+      "source": "salesforce", "confidence": 1.0, "ttlDays": 60,
+      "lastVerified": "2025-05-20T00:00:00Z", "createdAt": "2021-07-01T00:00:00Z",
+      "description": "Mid-size manufacturer running IBM MQ and evaluating OpenShift modernization"
+    },
+    {
+      "id": "acct-004", "label": "Account", "name": "US Dept. of Veterans Affairs",
+      "industry": "Government", "segment": "Federal",
+      "revenue": null, "country": "USA", "status": "ACTIVE",
+      "source": "salesforce", "confidence": 1.0, "ttlDays": 60,
+      "lastVerified": "2025-06-05T00:00:00Z", "createdAt": "2020-01-01T00:00:00Z",
+      "description": "Federal agency with large IBM footprint; key opportunity for watsonx governance"
+    },
+    {
+      "id": "acct-005", "label": "Account", "name": "NovaTech Solutions",
+      "industry": "Technology", "segment": "Mid-Market",
+      "revenue": 650000000, "country": "USA", "status": "ACTIVE",
+      "source": "salesforce", "confidence": 1.0, "ttlDays": 60,
+      "lastVerified": "2025-06-03T00:00:00Z", "createdAt": "2022-04-01T00:00:00Z",
+      "description": "SaaS company running on OpenShift, expanding into AI pipelines"
+    },
+    {
+      "id": "acct-006", "label": "Account", "name": "Meridian Energy Group",
+      "industry": "Energy & Utilities", "segment": "Enterprise",
+      "revenue": 15000000000, "country": "USA", "status": "ACTIVE",
+      "source": "salesforce", "confidence": 1.0, "ttlDays": 60,
+      "lastVerified": "2025-05-15T00:00:00Z", "createdAt": "2017-01-01T00:00:00Z",
+      "description": "Large utility with IBM Storage Scale and QRadar SIEM deployments"
+    },
+    {
+      "id": "inst-001", "label": "Install", "name": "IBM MQ @ Synergy Manufacturing",
+      "productId": "prod-007", "accountId": "acct-003",
+      "version": "9.1", "installDate": "2018-06-01", "supportEnd": "2026-12-31",
+      "contractValue": 480000, "status": "ACTIVE",
+      "source": "passport_advantage", "confidence": 1.0, "ttlDays": 365,
+      "lastVerified": "2025-01-01T00:00:00Z", "createdAt": "2018-06-01T00:00:00Z",
+      "description": "IBM MQ 9.1 installed at Synergy — upgrade path to 9.3 + OpenShift identified"
+    },
+    {
+      "id": "inst-002", "label": "Install", "name": "QRadar SIEM @ Meridian Energy",
+      "productId": "prod-005", "accountId": "acct-006",
+      "version": "7.4", "installDate": "2020-03-01", "supportEnd": "2025-12-31",
+      "contractValue": 1200000, "status": "ACTIVE",
+      "source": "passport_advantage", "confidence": 1.0, "ttlDays": 365,
+      "lastVerified": "2025-01-01T00:00:00Z", "createdAt": "2020-03-01T00:00:00Z",
+      "description": "QRadar 7.4 nearing end of support — upgrade or migration to QRadar on Cloud"
+    },
+    {
+      "id": "inst-003", "label": "Install", "name": "Cloud Pak for Data @ First National Bank",
+      "productId": "prod-003", "accountId": "acct-001",
+      "version": "4.6", "installDate": "2022-09-01", "supportEnd": "2027-09-01",
+      "contractValue": 3800000, "status": "ACTIVE",
+      "source": "passport_advantage", "confidence": 1.0, "ttlDays": 365,
+      "lastVerified": "2025-01-01T00:00:00Z", "createdAt": "2022-09-01T00:00:00Z",
+      "description": "CP4D 4.6 at FNB — watsonx.ai layer being evaluated as next expansion"
+    },
+    {
+      "id": "inst-004", "label": "Install", "name": "OpenShift @ NovaTech Solutions",
+      "productId": "prod-004", "accountId": "acct-005",
+      "version": "4.12", "installDate": "2023-01-15", "supportEnd": "2026-01-15",
+      "contractValue": 920000, "status": "ACTIVE",
+      "source": "passport_advantage", "confidence": 1.0, "ttlDays": 365,
+      "lastVerified": "2025-01-01T00:00:00Z", "createdAt": "2023-01-15T00:00:00Z",
+      "description": "OCP 4.12 at NovaTech — upgrade to 4.15 recommended this quarter"
+    },
+    {
+      "id": "inst-005", "label": "Install", "name": "IBM Storage Scale @ Meridian Energy",
+      "productId": "prod-006", "accountId": "acct-006",
+      "version": "5.1", "installDate": "2019-04-01", "supportEnd": "2026-04-01",
+      "contractValue": 2100000, "status": "ACTIVE",
+      "source": "passport_advantage", "confidence": 1.0, "ttlDays": 365,
+      "lastVerified": "2025-01-01T00:00:00Z", "createdAt": "2019-04-01T00:00:00Z",
+      "description": "Storage Scale 5.1 supporting AI data pipelines at Meridian"
+    },
+    {
+      "id": "opp-001", "label": "Opportunity", "name": "FNB watsonx.ai Expansion",
+      "stage": "Proposal", "closeDate": "2025-09-30",
+      "value": 4500000, "productId": "prod-001", "status": "ACTIVE",
+      "source": "salesforce", "confidence": 0.85, "ttlDays": 30,
+      "lastVerified": "2025-06-05T00:00:00Z", "createdAt": "2025-01-15T00:00:00Z",
+      "description": "Expanding watsonx.ai usage from CP4D base into new LOBs at First National Bank"
+    },
+    {
+      "id": "opp-002", "label": "Opportunity", "name": "VA watsonx.governance Pilot",
+      "stage": "Discovery", "closeDate": "2025-12-31",
+      "value": 2800000, "productId": "prod-002", "status": "ACTIVE",
+      "source": "salesforce", "confidence": 0.65, "ttlDays": 30,
+      "lastVerified": "2025-06-04T00:00:00Z", "createdAt": "2025-02-01T00:00:00Z",
+      "description": "AI governance pilot for the VA — requires FedRAMP authorization"
+    },
+    {
+      "id": "opp-003", "label": "Opportunity", "name": "Synergy OpenShift Migration",
+      "stage": "Negotiation", "closeDate": "2025-07-31",
+      "value": 1100000, "productId": "prod-004", "status": "ACTIVE",
+      "source": "salesforce", "confidence": 0.9, "ttlDays": 30,
+      "lastVerified": "2025-06-08T00:00:00Z", "createdAt": "2025-03-01T00:00:00Z",
+      "description": "Migrate Synergy's on-prem workloads to OpenShift — close Q3 2025"
+    },
+    {
+      "id": "opp-004", "label": "Opportunity", "name": "Meridian QRadar Upgrade",
+      "stage": "Proposal", "closeDate": "2025-08-15",
+      "value": 1800000, "productId": "prod-005", "status": "ACTIVE",
+      "source": "salesforce", "confidence": 0.8, "ttlDays": 30,
+      "lastVerified": "2025-06-07T00:00:00Z", "createdAt": "2025-04-01T00:00:00Z",
+      "description": "Upgrade QRadar 7.4 → 7.5 or migrate to QRadar on Cloud before EOS"
+    },
+    {
+      "id": "ka-001", "label": "KnowledgeAsset", "name": "IBM watsonx Sales Battlecard Q2 2025",
+      "assetType": "battlecard", "title": "IBM watsonx Sales Battlecard Q2 2025",
+      "content": "watsonx.ai vs OpenAI and Azure: IBM differentiators include on-prem deployment, enterprise data privacy, Granite models, and integrated governance via watsonx.governance. Key objection handlers: cost (flexible licensing), hallucination (RAG + guardrails), and vendor lock-in (open standards).",
+      "tags": ["watsonx", "AI", "competitive", "battlecard"],
+      "linkedEntityIds": ["prod-001", "prod-002"],
+      "status": "ACTIVE", "source": "seismic", "confidence": 1.0, "ttlDays": 90,
+      "lastVerified": "2025-05-01T00:00:00Z", "createdAt": "2025-04-01T00:00:00Z"
+    },
+    {
+      "id": "ka-002", "label": "KnowledgeAsset", "name": "OpenShift ROI Calculator Guide",
+      "assetType": "sales_tool", "title": "OpenShift ROI Calculator Guide",
+      "content": "Use the ROI calculator at ibm.com/redhat/roi to generate a client-specific business case. Average customer sees 37% infra cost reduction and 4.2x faster app deployment. Key inputs: current VM count, team size, deployment frequency.",
+      "tags": ["OpenShift", "ROI", "hybrid cloud", "sales tool"],
+      "linkedEntityIds": ["prod-004"],
+      "status": "ACTIVE", "source": "seismic", "confidence": 1.0, "ttlDays": 180,
+      "lastVerified": "2025-04-01T00:00:00Z", "createdAt": "2024-09-01T00:00:00Z"
+    },
+    {
+      "id": "ka-003", "label": "KnowledgeAsset", "name": "Federal AI Compliance Guide — FedRAMP + NIST AI RMF",
+      "assetType": "process", "title": "Federal AI Compliance Guide",
+      "content": "IBM watsonx products are pursuing FedRAMP High authorization. Current status: watsonx.ai — FedRAMP Moderate authorized. watsonx.governance — In Process (expected Q4 2025). Use IBM Technology Zone for authorized demo environments for Federal clients.",
+      "tags": ["federal", "FedRAMP", "compliance", "watsonx", "government"],
+      "linkedEntityIds": ["prod-001", "prod-002", "acct-004"],
+      "status": "ACTIVE", "source": "internal_wiki", "confidence": 0.95, "ttlDays": 60,
+      "lastVerified": "2025-05-15T00:00:00Z", "createdAt": "2025-01-01T00:00:00Z"
+    }
+  ],
+  "edges": [
+    { "from": "sel-001", "to": "mgr-001", "type": "REPORTS_TO", "active": true, "since": "2021-03-15", "createdAt": "2021-03-15T00:00:00Z" },
+    { "from": "sel-002", "to": "mgr-002", "type": "REPORTS_TO", "active": true, "since": "2022-07-01", "createdAt": "2022-07-01T00:00:00Z" },
+    { "from": "sel-003", "to": "mgr-003", "type": "REPORTS_TO", "active": true, "since": "2019-11-01", "createdAt": "2019-11-01T00:00:00Z" },
+    { "from": "sel-004", "to": "mgr-003", "type": "REPORTS_TO", "active": true, "since": "2023-02-01", "createdAt": "2023-02-01T00:00:00Z" },
+    { "from": "sel-005", "to": "mgr-002", "type": "REPORTS_TO", "active": true, "since": "2022-01-10", "createdAt": "2022-01-10T00:00:00Z" },
+    { "from": "sel-006", "to": "mgr-001", "type": "REPORTS_TO", "active": true, "since": "2020-06-01", "createdAt": "2020-06-01T00:00:00Z" },
+
+    { "from": "mgr-001", "to": "sel-001", "type": "MANAGES", "active": true, "createdAt": "2021-03-15T00:00:00Z" },
+    { "from": "mgr-001", "to": "sel-006", "type": "MANAGES", "active": true, "createdAt": "2020-06-01T00:00:00Z" },
+    { "from": "mgr-002", "to": "sel-002", "type": "MANAGES", "active": true, "createdAt": "2022-07-01T00:00:00Z" },
+    { "from": "mgr-002", "to": "sel-005", "type": "MANAGES", "active": true, "createdAt": "2022-01-10T00:00:00Z" },
+    { "from": "mgr-003", "to": "sel-003", "type": "MANAGES", "active": true, "createdAt": "2019-11-01T00:00:00Z" },
+    { "from": "mgr-003", "to": "sel-004", "type": "MANAGES", "active": true, "createdAt": "2023-02-01T00:00:00Z" },
+
+    { "from": "sel-001", "to": "terr-001", "type": "OWNS_TERRITORY", "active": true, "assignedDate": "2021-03-15", "quota": 4200000 },
+    { "from": "sel-002", "to": "terr-002", "type": "OWNS_TERRITORY", "active": true, "assignedDate": "2022-07-01", "quota": 3100000 },
+    { "from": "sel-003", "to": "terr-004", "type": "OWNS_TERRITORY", "active": true, "assignedDate": "2019-11-01", "quota": 5100000 },
+    { "from": "sel-004", "to": "terr-003", "type": "OWNS_TERRITORY", "active": true, "assignedDate": "2023-02-01", "quota": 6000000 },
+    { "from": "sel-005", "to": "terr-004", "type": "OWNS_TERRITORY", "active": true, "assignedDate": "2022-01-10", "quota": 3200000 },
+
+    { "from": "sel-001", "to": "prod-001", "type": "COVERS_PRODUCT", "active": true, "certified": true, "primary": false },
+    { "from": "sel-001", "to": "prod-003", "type": "COVERS_PRODUCT", "active": true, "certified": true, "primary": true },
+    { "from": "sel-002", "to": "prod-001", "type": "COVERS_PRODUCT", "active": true, "certified": true, "primary": true },
+    { "from": "sel-002", "to": "prod-002", "type": "COVERS_PRODUCT", "active": true, "certified": true, "primary": false },
+    { "from": "sel-003", "to": "prod-004", "type": "COVERS_PRODUCT", "active": true, "certified": true, "primary": true },
+    { "from": "sel-003", "to": "prod-007", "type": "COVERS_PRODUCT", "active": true, "certified": true, "primary": false },
+    { "from": "sel-004", "to": "prod-001", "type": "COVERS_PRODUCT", "active": true, "certified": false, "primary": false },
+    { "from": "sel-004", "to": "prod-002", "type": "COVERS_PRODUCT", "active": true, "certified": true, "primary": true },
+    { "from": "sel-005", "to": "prod-004", "type": "COVERS_PRODUCT", "active": true, "certified": true, "primary": true },
+
+    { "from": "sel-001", "to": "acct-001", "type": "OWNS_ACCOUNT", "active": true, "role": "Primary AE", "assignedDate": "2022-01-01" },
+    { "from": "sel-001", "to": "acct-002", "type": "OWNS_ACCOUNT", "active": true, "role": "Primary AE", "assignedDate": "2021-06-01" },
+    { "from": "sel-002", "to": "acct-005", "type": "OWNS_ACCOUNT", "active": true, "role": "Specialist", "assignedDate": "2023-01-01" },
+    { "from": "sel-003", "to": "acct-003", "type": "OWNS_ACCOUNT", "active": true, "role": "Primary AE", "assignedDate": "2021-07-01" },
+    { "from": "sel-003", "to": "acct-006", "type": "OWNS_ACCOUNT", "active": true, "role": "Primary AE", "assignedDate": "2019-11-01" },
+    { "from": "sel-004", "to": "acct-004", "type": "OWNS_ACCOUNT", "active": true, "role": "Federal Specialist", "assignedDate": "2023-02-01" },
+    { "from": "sel-005", "to": "acct-005", "type": "OWNS_ACCOUNT", "active": true, "role": "Hybrid Cloud Specialist", "assignedDate": "2023-01-01" },
+
+    { "from": "acct-001", "to": "inst-003", "type": "HAS_INSTALL", "active": true },
+    { "from": "acct-003", "to": "inst-001", "type": "HAS_INSTALL", "active": true },
+    { "from": "acct-006", "to": "inst-002", "type": "HAS_INSTALL", "active": true },
+    { "from": "acct-006", "to": "inst-005", "type": "HAS_INSTALL", "active": true },
+    { "from": "acct-005", "to": "inst-004", "type": "HAS_INSTALL", "active": true },
+
+    { "from": "inst-001", "to": "prod-007", "type": "RUNS_PRODUCT", "active": true },
+    { "from": "inst-002", "to": "prod-005", "type": "RUNS_PRODUCT", "active": true },
+    { "from": "inst-003", "to": "prod-003", "type": "RUNS_PRODUCT", "active": true },
+    { "from": "inst-004", "to": "prod-004", "type": "RUNS_PRODUCT", "active": true },
+    { "from": "inst-005", "to": "prod-006", "type": "RUNS_PRODUCT", "active": true },
+
+    { "from": "acct-001", "to": "opp-001", "type": "HAS_OPPORTUNITY", "active": true },
+    { "from": "acct-004", "to": "opp-002", "type": "HAS_OPPORTUNITY", "active": true },
+    { "from": "acct-003", "to": "opp-003", "type": "HAS_OPPORTUNITY", "active": true },
+    { "from": "acct-006", "to": "opp-004", "type": "HAS_OPPORTUNITY", "active": true },
+
+    { "from": "sel-001", "to": "sel-002", "type": "CO_SELLS", "active": true, "product": "watsonx.ai", "account": "acct-001" },
+    { "from": "sel-003", "to": "sel-005", "type": "CO_SELLS", "active": true, "product": "OpenShift", "account": "acct-003" }
+  ]
+}

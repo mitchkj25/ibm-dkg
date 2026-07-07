@@ -1,0 +1,558 @@
+{
+  "nodes": [
+    {
+      "label": "Manager",
+      "props": {
+        "id": "mgr-001",
+        "name": "Sandra Okafor",
+        "email": "sokafor@ibm.com",
+        "bandLevel": "Band 10",
+        "territory": "Northeast US",
+        "description": "First Line Manager, Northeast Enterprise Sales",
+        "source": "seed",
+        "status": "ACTIVE"
+      }
+    },
+    {
+      "label": "Manager",
+      "props": {
+        "id": "mgr-002",
+        "name": "David Reyes",
+        "email": "dreyes@ibm.com",
+        "bandLevel": "Band 10",
+        "territory": "Southeast US",
+        "description": "First Line Manager, Southeast Mid-Market",
+        "source": "seed",
+        "status": "ACTIVE"
+      }
+    },
+    {
+      "label": "Manager",
+      "props": {
+        "id": "mgr-003",
+        "name": "Priya Nambiar",
+        "email": "pnambiar@ibm.com",
+        "bandLevel": "Band 11",
+        "territory": "West US",
+        "description": "Second Line Manager, West Coast Enterprise",
+        "source": "seed",
+        "status": "ACTIVE"
+      }
+    },
+    {
+      "label": "Seller",
+      "props": {
+        "id": "sel-001",
+        "name": "Marcus Webb",
+        "email": "mwebb@ibm.com",
+        "bandLevel": "Band 8",
+        "geo": "New York, NY",
+        "role": "Client Executive",
+        "hireDate": "2019-03-15",
+        "lastActive": "2025-07-01",
+        "description": "Enterprise CE covering BFSI accounts in NYC metro",
+        "source": "seed",
+        "status": "ACTIVE"
+      }
+    },
+    {
+      "label": "Seller",
+      "props": {
+        "id": "sel-002",
+        "name": "Aisha Thornton",
+        "email": "athornton@ibm.com",
+        "bandLevel": "Band 7",
+        "geo": "Boston, MA",
+        "role": "Software Sales Specialist",
+        "hireDate": "2021-06-01",
+        "lastActive": "2025-07-03",
+        "description": "Watsonx AI & Automation specialist for New England",
+        "source": "seed",
+        "status": "ACTIVE"
+      }
+    },
+    {
+      "label": "Seller",
+      "props": {
+        "id": "sel-003",
+        "name": "James Kowalski",
+        "email": "jkowalski@ibm.com",
+        "bandLevel": "Band 8",
+        "geo": "Atlanta, GA",
+        "role": "Client Executive",
+        "hireDate": "2017-09-20",
+        "lastActive": "2025-06-28",
+        "description": "Healthcare and retail verticals, Southeast region",
+        "source": "seed",
+        "status": "ACTIVE"
+      }
+    },
+    {
+      "label": "Seller",
+      "props": {
+        "id": "sel-004",
+        "name": "Lin Mei Zhang",
+        "email": "lzhang@ibm.com",
+        "bandLevel": "Band 7",
+        "geo": "Miami, FL",
+        "role": "Technology Sales Specialist",
+        "hireDate": "2022-01-10",
+        "lastActive": "2025-07-02",
+        "description": "Cloud and Infrastructure specialist, Florida",
+        "source": "seed",
+        "status": "ACTIVE"
+      }
+    },
+    {
+      "label": "Seller",
+      "props": {
+        "id": "sel-005",
+        "name": "Tyler Oduya",
+        "email": "toduya@ibm.com",
+        "bandLevel": "Band 8",
+        "geo": "San Francisco, CA",
+        "role": "Client Executive",
+        "hireDate": "2018-11-05",
+        "lastActive": "2025-07-01",
+        "description": "Tech and media accounts in Bay Area",
+        "source": "seed",
+        "status": "ACTIVE"
+      }
+    },
+    {
+      "label": "Seller",
+      "props": {
+        "id": "sel-006",
+        "name": "Rachel Patel",
+        "email": "rpatel@ibm.com",
+        "bandLevel": "Band 7",
+        "geo": "Los Angeles, CA",
+        "role": "Software Sales Specialist",
+        "hireDate": "2023-03-01",
+        "lastActive": "2025-07-04",
+        "description": "Security and Compliance specialist, Southern California",
+        "source": "seed",
+        "status": "ACTIVE"
+      }
+    },
+    {
+      "label": "Territory",
+      "props": {
+        "id": "ter-001",
+        "name": "NYC Metro Enterprise",
+        "region": "Northeast US",
+        "geo": "New York, NJ",
+        "quota": 8500000,
+        "description": "Large enterprise accounts in New York metro area",
+        "source": "seed",
+        "status": "ACTIVE"
+      }
+    },
+    {
+      "label": "Territory",
+      "props": {
+        "id": "ter-002",
+        "name": "New England Mid-Market",
+        "region": "Northeast US",
+        "geo": "MA, CT, RI, NH, VT, ME",
+        "quota": 4200000,
+        "description": "Mid-market technology focus across New England states",
+        "source": "seed",
+        "status": "ACTIVE"
+      }
+    },
+    {
+      "label": "Territory",
+      "props": {
+        "id": "ter-003",
+        "name": "Southeast Enterprise",
+        "region": "Southeast US",
+        "geo": "GA, FL, SC, NC, TN",
+        "quota": 6100000,
+        "description": "Enterprise accounts across the Southeast",
+        "source": "seed",
+        "status": "ACTIVE"
+      }
+    },
+    {
+      "label": "Territory",
+      "props": {
+        "id": "ter-004",
+        "name": "Bay Area Tech",
+        "region": "West US",
+        "geo": "San Francisco Bay Area, CA",
+        "quota": 9200000,
+        "description": "Technology companies in Silicon Valley and Bay Area",
+        "source": "seed",
+        "status": "ACTIVE"
+      }
+    },
+    {
+      "label": "Territory",
+      "props": {
+        "id": "ter-005",
+        "name": "Southern California",
+        "region": "West US",
+        "geo": "Los Angeles, San Diego, CA",
+        "quota": 5800000,
+        "description": "Entertainment, media, and financial accounts in SoCal",
+        "source": "seed",
+        "status": "ACTIVE"
+      }
+    },
+    {
+      "label": "Product",
+      "props": {
+        "id": "prd-001",
+        "name": "watsonx.ai",
+        "brand": "IBM",
+        "family": "watsonx",
+        "version": "2.1",
+        "description": "AI studio for training, validating, tuning and deploying AI models",
+        "source": "seed",
+        "status": "ACTIVE"
+      }
+    },
+    {
+      "label": "Product",
+      "props": {
+        "id": "prd-002",
+        "name": "watsonx.data",
+        "brand": "IBM",
+        "family": "watsonx",
+        "version": "2.0",
+        "description": "Fit-for-purpose data store built on open lakehouse architecture",
+        "source": "seed",
+        "status": "ACTIVE"
+      }
+    },
+    {
+      "label": "Product",
+      "props": {
+        "id": "prd-003",
+        "name": "watsonx.governance",
+        "brand": "IBM",
+        "family": "watsonx",
+        "version": "1.5",
+        "description": "AI governance and risk management platform",
+        "source": "seed",
+        "status": "ACTIVE"
+      }
+    },
+    {
+      "label": "Product",
+      "props": {
+        "id": "prd-004",
+        "name": "IBM Cloud Pak for Security",
+        "brand": "IBM",
+        "family": "Security",
+        "version": "1.10",
+        "description": "Unified security platform with threat intelligence and SOAR",
+        "source": "seed",
+        "status": "ACTIVE"
+      }
+    },
+    {
+      "label": "Product",
+      "props": {
+        "id": "prd-005",
+        "name": "IBM OpenPages",
+        "brand": "IBM",
+        "family": "Risk & Compliance",
+        "version": "9.0",
+        "description": "Integrated GRC platform for risk, compliance and audit management",
+        "source": "seed",
+        "status": "ACTIVE"
+      }
+    },
+    {
+      "label": "Product",
+      "props": {
+        "id": "prd-006",
+        "name": "IBM Sterling Order Management",
+        "brand": "IBM",
+        "family": "Supply Chain",
+        "version": "10.0",
+        "description": "Omnichannel order orchestration and fulfillment",
+        "source": "seed",
+        "status": "ACTIVE"
+      }
+    },
+    {
+      "label": "Product",
+      "props": {
+        "id": "prd-007",
+        "name": "IBM Turbonomic",
+        "brand": "IBM",
+        "family": "AIOps",
+        "version": "8.12",
+        "description": "Application resource management and FinOps platform",
+        "source": "seed",
+        "status": "ACTIVE"
+      }
+    },
+    {
+      "label": "Account",
+      "props": {
+        "id": "acc-001",
+        "name": "First National Bancorp",
+        "industry": "Financial Services",
+        "segment": "Enterprise",
+        "revenue": 24000000000,
+        "country": "USA",
+        "description": "Top-10 US retail bank, heavy mainframe and cloud modernization initiative",
+        "source": "seed",
+        "status": "ACTIVE"
+      }
+    },
+    {
+      "label": "Account",
+      "props": {
+        "id": "acc-002",
+        "name": "Meridian Health Systems",
+        "industry": "Healthcare",
+        "segment": "Enterprise",
+        "revenue": 8700000000,
+        "country": "USA",
+        "description": "Regional hospital network across Southeast US, Epic EHR integration",
+        "source": "seed",
+        "status": "ACTIVE"
+      }
+    },
+    {
+      "label": "Account",
+      "props": {
+        "id": "acc-003",
+        "name": "Nova Retail Group",
+        "industry": "Retail",
+        "segment": "Mid-Market",
+        "revenue": 2100000000,
+        "country": "USA",
+        "description": "Omnichannel retailer with 400+ stores, supply chain modernization focus",
+        "source": "seed",
+        "status": "ACTIVE"
+      }
+    },
+    {
+      "label": "Account",
+      "props": {
+        "id": "acc-004",
+        "name": "Apex Technology Partners",
+        "industry": "Technology",
+        "segment": "Enterprise",
+        "revenue": 15000000000,
+        "country": "USA",
+        "description": "SaaS platform company, AI and governance expansion opportunity",
+        "source": "seed",
+        "status": "ACTIVE"
+      }
+    },
+    {
+      "label": "Account",
+      "props": {
+        "id": "acc-005",
+        "name": "Cascadia Insurance Group",
+        "industry": "Insurance",
+        "segment": "Enterprise",
+        "revenue": 6500000000,
+        "country": "USA",
+        "description": "Multi-line P&C insurer, risk compliance modernization underway",
+        "source": "seed",
+        "status": "ACTIVE"
+      }
+    },
+    {
+      "label": "Account",
+      "props": {
+        "id": "acc-006",
+        "name": "SunCoast Logistics",
+        "industry": "Logistics",
+        "segment": "Mid-Market",
+        "revenue": 890000000,
+        "country": "USA",
+        "description": "Regional 3PL, evaluating AI-driven order orchestration",
+        "source": "seed",
+        "status": "ACTIVE"
+      }
+    },
+    {
+      "label": "Install",
+      "props": {
+        "id": "ins-001",
+        "productId": "prd-007",
+        "accountId": "acc-001",
+        "version": "8.10",
+        "installDate": "2023-04-12",
+        "supportEnd": "2026-04-12",
+        "contractValue": 480000,
+        "description": "Turbonomic managing 4,200 VMs across hybrid cloud",
+        "source": "seed",
+        "status": "ACTIVE"
+      }
+    },
+    {
+      "label": "Install",
+      "props": {
+        "id": "ins-002",
+        "productId": "prd-001",
+        "accountId": "acc-004",
+        "version": "2.0",
+        "installDate": "2024-01-20",
+        "supportEnd": "2027-01-20",
+        "contractValue": 1200000,
+        "description": "watsonx.ai for internal developer copilot and fraud model training",
+        "source": "seed",
+        "status": "ACTIVE"
+      }
+    },
+    {
+      "label": "Install",
+      "props": {
+        "id": "ins-003",
+        "productId": "prd-005",
+        "accountId": "acc-005",
+        "version": "8.3",
+        "installDate": "2022-09-01",
+        "supportEnd": "2025-09-01",
+        "contractValue": 640000,
+        "description": "OpenPages GRC — support renewal at risk, upgrade path to v9 needed",
+        "source": "seed",
+        "status": "ACTIVE"
+      }
+    },
+    {
+      "label": "Install",
+      "props": {
+        "id": "ins-004",
+        "productId": "prd-006",
+        "accountId": "acc-003",
+        "version": "9.5",
+        "installDate": "2021-11-15",
+        "supportEnd": "2024-11-15",
+        "contractValue": 380000,
+        "description": "Sterling OMS — version out of standard support, upgrade opportunity",
+        "source": "seed",
+        "status": "STALE"
+      }
+    },
+    {
+      "label": "Install",
+      "props": {
+        "id": "ins-005",
+        "productId": "prd-004",
+        "accountId": "acc-001",
+        "version": "1.9",
+        "installDate": "2023-07-01",
+        "supportEnd": "2026-07-01",
+        "contractValue": 920000,
+        "description": "Cloud Pak for Security — SIEM consolidation project",
+        "source": "seed",
+        "status": "ACTIVE"
+      }
+    },
+    {
+      "label": "Opportunity",
+      "props": {
+        "id": "opp-001",
+        "name": "First National — watsonx Expansion",
+        "stage": "Validate",
+        "closeDate": "2025-09-30",
+        "value": 2400000,
+        "productId": "prd-001",
+        "description": "Expand watsonx.ai from POC to production — 8 use cases identified",
+        "source": "seed",
+        "status": "ACTIVE"
+      }
+    },
+    {
+      "label": "Opportunity",
+      "props": {
+        "id": "opp-002",
+        "name": "Cascadia — OpenPages Upgrade to v9",
+        "stage": "Propose",
+        "closeDate": "2025-08-15",
+        "value": 890000,
+        "productId": "prd-005",
+        "description": "Renewal + upgrade from v8.3 — risk of churn without upgrade path",
+        "source": "seed",
+        "status": "ACTIVE"
+      }
+    },
+    {
+      "label": "Opportunity",
+      "props": {
+        "id": "opp-003",
+        "name": "Nova Retail — Sterling OMS v10 Upgrade",
+        "stage": "Identify",
+        "closeDate": "2025-12-01",
+        "value": 640000,
+        "productId": "prd-006",
+        "description": "Upgrade out-of-support v9.5 to v10, modernize fulfillment layer",
+        "source": "seed",
+        "status": "ACTIVE"
+      }
+    },
+    {
+      "label": "Opportunity",
+      "props": {
+        "id": "opp-004",
+        "name": "Apex — watsonx.governance Pilot",
+        "stage": "Qualify",
+        "closeDate": "2025-10-31",
+        "value": 560000,
+        "productId": "prd-003",
+        "description": "AI governance layer for watsonx.ai install — compliance-driven",
+        "source": "seed",
+        "status": "ACTIVE"
+      }
+    }
+  ],
+  "relationships": [
+    { "type": "relationship", "from_label": "Seller", "from_id": "sel-001", "rel_type": "REPORTS_TO", "to_label": "Manager", "to_id": "mgr-001", "props": { "since": "2019-03-15", "active": true } },
+    { "type": "relationship", "from_label": "Seller", "from_id": "sel-002", "rel_type": "REPORTS_TO", "to_label": "Manager", "to_id": "mgr-001", "props": { "since": "2021-06-01", "active": true } },
+    { "type": "relationship", "from_label": "Seller", "from_id": "sel-003", "rel_type": "REPORTS_TO", "to_label": "Manager", "to_id": "mgr-002", "props": { "since": "2017-09-20", "active": true } },
+    { "type": "relationship", "from_label": "Seller", "from_id": "sel-004", "rel_type": "REPORTS_TO", "to_label": "Manager", "to_id": "mgr-002", "props": { "since": "2022-01-10", "active": true } },
+    { "type": "relationship", "from_label": "Seller", "from_id": "sel-005", "rel_type": "REPORTS_TO", "to_label": "Manager", "to_id": "mgr-003", "props": { "since": "2018-11-05", "active": true } },
+    { "type": "relationship", "from_label": "Seller", "from_id": "sel-006", "rel_type": "REPORTS_TO", "to_label": "Manager", "to_id": "mgr-003", "props": { "since": "2023-03-01", "active": true } },
+    { "type": "relationship", "from_label": "Manager", "from_id": "mgr-001", "rel_type": "REPORTS_TO", "to_label": "Manager", "to_id": "mgr-003", "props": { "since": "2020-01-01", "active": true } },
+    { "type": "relationship", "from_label": "Manager", "from_id": "mgr-002", "rel_type": "REPORTS_TO", "to_label": "Manager", "to_id": "mgr-003", "props": { "since": "2020-01-01", "active": true } },
+    { "type": "relationship", "from_label": "Seller", "from_id": "sel-001", "rel_type": "OWNS_TERRITORY", "to_label": "Territory", "to_id": "ter-001", "props": { "assignedDate": "2019-03-15", "quota": 8500000 } },
+    { "type": "relationship", "from_label": "Seller", "from_id": "sel-002", "rel_type": "OWNS_TERRITORY", "to_label": "Territory", "to_id": "ter-002", "props": { "assignedDate": "2021-06-01", "quota": 4200000 } },
+    { "type": "relationship", "from_label": "Seller", "from_id": "sel-003", "rel_type": "OWNS_TERRITORY", "to_label": "Territory", "to_id": "ter-003", "props": { "assignedDate": "2017-09-20", "quota": 6100000 } },
+    { "type": "relationship", "from_label": "Seller", "from_id": "sel-004", "rel_type": "OWNS_TERRITORY", "to_label": "Territory", "to_id": "ter-003", "props": { "assignedDate": "2022-01-10", "quota": 2800000 } },
+    { "type": "relationship", "from_label": "Seller", "from_id": "sel-005", "rel_type": "OWNS_TERRITORY", "to_label": "Territory", "to_id": "ter-004", "props": { "assignedDate": "2018-11-05", "quota": 9200000 } },
+    { "type": "relationship", "from_label": "Seller", "from_id": "sel-006", "rel_type": "OWNS_TERRITORY", "to_label": "Territory", "to_id": "ter-005", "props": { "assignedDate": "2023-03-01", "quota": 5800000 } },
+    { "type": "relationship", "from_label": "Seller", "from_id": "sel-001", "rel_type": "OWNS_ACCOUNT", "to_label": "Account", "to_id": "acc-001", "props": { "role": "Primary CE", "assignedDate": "2020-01-15" } },
+    { "type": "relationship", "from_label": "Seller", "from_id": "sel-003", "rel_type": "OWNS_ACCOUNT", "to_label": "Account", "to_id": "acc-002", "props": { "role": "Primary CE", "assignedDate": "2018-03-01" } },
+    { "type": "relationship", "from_label": "Seller", "from_id": "sel-003", "rel_type": "OWNS_ACCOUNT", "to_label": "Account", "to_id": "acc-003", "props": { "role": "Primary CE", "assignedDate": "2021-07-01" } },
+    { "type": "relationship", "from_label": "Seller", "from_id": "sel-005", "rel_type": "OWNS_ACCOUNT", "to_label": "Account", "to_id": "acc-004", "props": { "role": "Primary CE", "assignedDate": "2019-05-01" } },
+    { "type": "relationship", "from_label": "Seller", "from_id": "sel-001", "rel_type": "OWNS_ACCOUNT", "to_label": "Account", "to_id": "acc-005", "props": { "role": "Primary CE", "assignedDate": "2022-02-01" } },
+    { "type": "relationship", "from_label": "Seller", "from_id": "sel-004", "rel_type": "OWNS_ACCOUNT", "to_label": "Account", "to_id": "acc-006", "props": { "role": "Primary CE", "assignedDate": "2022-08-01" } },
+    { "type": "relationship", "from_label": "Seller", "from_id": "sel-001", "rel_type": "COVERS_PRODUCT", "to_label": "Product", "to_id": "prd-004", "props": { "certified": true, "primary": true } },
+    { "type": "relationship", "from_label": "Seller", "from_id": "sel-001", "rel_type": "COVERS_PRODUCT", "to_label": "Product", "to_id": "prd-007", "props": { "certified": true, "primary": false } },
+    { "type": "relationship", "from_label": "Seller", "from_id": "sel-002", "rel_type": "COVERS_PRODUCT", "to_label": "Product", "to_id": "prd-001", "props": { "certified": true, "primary": true } },
+    { "type": "relationship", "from_label": "Seller", "from_id": "sel-002", "rel_type": "COVERS_PRODUCT", "to_label": "Product", "to_id": "prd-002", "props": { "certified": true, "primary": false } },
+    { "type": "relationship", "from_label": "Seller", "from_id": "sel-002", "rel_type": "COVERS_PRODUCT", "to_label": "Product", "to_id": "prd-003", "props": { "certified": false, "primary": false } },
+    { "type": "relationship", "from_label": "Seller", "from_id": "sel-003", "rel_type": "COVERS_PRODUCT", "to_label": "Product", "to_id": "prd-006", "props": { "certified": true, "primary": true } },
+    { "type": "relationship", "from_label": "Seller", "from_id": "sel-005", "rel_type": "COVERS_PRODUCT", "to_label": "Product", "to_id": "prd-001", "props": { "certified": true, "primary": false } },
+    { "type": "relationship", "from_label": "Seller", "from_id": "sel-005", "rel_type": "COVERS_PRODUCT", "to_label": "Product", "to_id": "prd-007", "props": { "certified": true, "primary": true } },
+    { "type": "relationship", "from_label": "Seller", "from_id": "sel-006", "rel_type": "COVERS_PRODUCT", "to_label": "Product", "to_id": "prd-004", "props": { "certified": true, "primary": true } },
+    { "type": "relationship", "from_label": "Seller", "from_id": "sel-006", "rel_type": "COVERS_PRODUCT", "to_label": "Product", "to_id": "prd-005", "props": { "certified": false, "primary": false } },
+    { "type": "relationship", "from_label": "Account", "from_id": "acc-001", "rel_type": "HAS_INSTALL", "to_label": "Install", "to_id": "ins-001", "props": {} },
+    { "type": "relationship", "from_label": "Account", "from_id": "acc-001", "rel_type": "HAS_INSTALL", "to_label": "Install", "to_id": "ins-005", "props": {} },
+    { "type": "relationship", "from_label": "Account", "from_id": "acc-004", "rel_type": "HAS_INSTALL", "to_label": "Install", "to_id": "ins-002", "props": {} },
+    { "type": "relationship", "from_label": "Account", "from_id": "acc-005", "rel_type": "HAS_INSTALL", "to_label": "Install", "to_id": "ins-003", "props": {} },
+    { "type": "relationship", "from_label": "Account", "from_id": "acc-003", "rel_type": "HAS_INSTALL", "to_label": "Install", "to_id": "ins-004", "props": {} },
+    { "type": "relationship", "from_label": "Install", "from_id": "ins-001", "rel_type": "RUNS_PRODUCT", "to_label": "Product", "to_id": "prd-007", "props": {} },
+    { "type": "relationship", "from_label": "Install", "from_id": "ins-002", "rel_type": "RUNS_PRODUCT", "to_label": "Product", "to_id": "prd-001", "props": {} },
+    { "type": "relationship", "from_label": "Install", "from_id": "ins-003", "rel_type": "RUNS_PRODUCT", "to_label": "Product", "to_id": "prd-005", "props": {} },
+    { "type": "relationship", "from_label": "Install", "from_id": "ins-004", "rel_type": "RUNS_PRODUCT", "to_label": "Product", "to_id": "prd-006", "props": {} },
+    { "type": "relationship", "from_label": "Install", "from_id": "ins-005", "rel_type": "RUNS_PRODUCT", "to_label": "Product", "to_id": "prd-004", "props": {} },
+    { "type": "relationship", "from_label": "Account", "from_id": "acc-001", "rel_type": "HAS_OPPORTUNITY", "to_label": "Opportunity", "to_id": "opp-001", "props": {} },
+    { "type": "relationship", "from_label": "Account", "from_id": "acc-005", "rel_type": "HAS_OPPORTUNITY", "to_label": "Opportunity", "to_id": "opp-002", "props": {} },
+    { "type": "relationship", "from_label": "Account", "from_id": "acc-003", "rel_type": "HAS_OPPORTUNITY", "to_label": "Opportunity", "to_id": "opp-003", "props": {} },
+    { "type": "relationship", "from_label": "Account", "from_id": "acc-004", "rel_type": "HAS_OPPORTUNITY", "to_label": "Opportunity", "to_id": "opp-004", "props": {} },
+    { "type": "relationship", "from_label": "Seller", "from_id": "sel-001", "rel_type": "CO_SELLS", "to_label": "Seller", "to_id": "sel-002", "props": { "product": "watsonx.ai", "account": "First National Bancorp" } },
+    { "type": "relationship", "from_label": "Seller", "from_id": "sel-003", "rel_type": "CO_SELLS", "to_label": "Seller", "to_id": "sel-004", "props": { "product": "Sterling OMS", "account": "Nova Retail Group" } }
+  ]
+}

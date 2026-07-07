@@ -1,0 +1,25 @@
+# IBM DKG — Python dependencies
+# Install: pip install -r requirements.txt
+#
+# Mock/demo mode: only the top block is required (no external services)
+# Live mode: install all blocks
+
+# ── Core API (always required) ───────────────────────────────────────────────
+fastapi==0.115.5
+uvicorn[standard]==0.32.1
+pydantic==2.9.2
+pydantic-settings==2.6.1
+python-multipart==0.0.18    # CSV file uploads
+
+# ── Scheduling (pruning agent) ───────────────────────────────────────────────
+apscheduler==3.10.4
+
+# ── Neo4j (live graph mode — optional for demo) ──────────────────────────────
+neo4j==5.26.0
+
+# ── IBM watsonx.ai (live AI synthesis — optional for demo) ───────────────────
+ibm-watsonx-ai==1.1.15
+
+# ── Vector search (semantic layer — optional) ────────────────────────────────
+chromadb==0.5.23
+sentence-transformers==3.3.1
