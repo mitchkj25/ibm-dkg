@@ -37,22 +37,27 @@ except ImportError:
 # ── Intent patterns ──────────────────────────────────────────────────────────
 
 INTENT_PATTERNS = {
-    "seller_manager": re.compile(r"(who.*manage|manager.*for|report.*to|reports to)", re.I),
+    "seller_manager": re.compile(r"(who.*manage|manager.*for|report.*to|reports to|hierarchy|org chart|alt|tsl)", re.I),
     "seller_territory": re.compile(r"(territory|region|geo|area).*seller|seller.*(territory|region)", re.I),
     "account_install": re.compile(r"(install|running|deployed|product.*on|what.*using)", re.I),
     "seller_account": re.compile(r"(own|cover|responsible|account.*seller|seller.*account)", re.I),
     "seller_product": re.compile(r"(certified|sell|product.*seller|seller.*product)", re.I),
     "co_sell": re.compile(r"(co.sell|partner|team|together|collaborat)", re.I),
+    # Site number intents
+    "site_spend": re.compile(r"(site.*spend|spend.*site|most.*spend|highest.*spend|site number.*spend|how much.*site)", re.I),
+    "site_product": re.compile(r"(site.*product|product.*site|site number.*product|what.*site.*have|cognos.*site|site.*cognos)", re.I),
+    "account_sites": re.compile(r"(site.*number|site number|what site|which site|sites.*for|account.*site)", re.I),
 }
 
 ENTITY_KEYWORDS = {
-    "Seller": ["seller", "rep", "sales rep", "account executive", "ae", "ssr"],
-    "Manager": ["manager", "director", "vp", "first line", "second line", "flm", "slm"],
-    "Account": ["account", "client", "customer", "company", "enterprise"],
-    "Product": ["product", "software", "solution", "platform", "tool", "ibm"],
+    "Seller": ["seller", "rep", "sales rep", "account executive", "ae", "ssr", "alt", "tsl"],
+    "Manager": ["manager", "director", "vp", "first line", "second line", "flm", "slm", "alt", "tsl"],
+    "Account": ["account", "client", "customer", "company", "enterprise", "state", "louisiana", "government"],
+    "Product": ["product", "software", "solution", "platform", "tool", "ibm", "cognos", "watsonx"],
     "Territory": ["territory", "region", "geo", "area", "patch"],
     "Install": ["install", "deployment", "running", "using", "license"],
     "Opportunity": ["opportunity", "opp", "deal", "pipeline", "forecast"],
+    "SiteNumber": ["site", "site number", "sitenumber", "customer number", "location"],
 }
 
 
@@ -75,6 +80,48 @@ def _detect_intent(query: str) -> str:
 
 def _build_cypher_for_intent(intent: str, keywords: list[str], entity_types: list[str], limit: int) -> tuple[str, dict]:
     """Generate a targeted Cypher query based on detected intent."""
+
+    if intent == "site_spend":
+        return (
+            """
+            MATCH (sn:SiteNumber)
+            WHERE sn.status <> 'DELETED'
+            RETURN sn {.*, _label: 'SiteNumber'} AS node, sn.annualSpend AS spend
+            ORDER BY sn.annualSpend DESC
+            LIMIT $limit
+            """,
+            {"limit": limit},
+        )
+
+    if intent == "site_product":
+        return (
+            """
+            MATCH (sn:SiteNumber)-[:HAS_PRODUCT]->(p:Product)
+            WHERE toLower(sn.siteId) CONTAINS toLower($kw)
+               OR toLower(p.name) CONTAINS toLower($kw)
+            WHERE sn.status <> 'DELETED'
+            RETURN sn {.*, _label: 'SiteNumber'} AS node,
+                   p {.*, _label: 'Product'} AS related,
+                   'HAS_PRODUCT' AS relationship
+            LIMIT $limit
+            """,
+            {"kw": keywords[0] if keywords else "", "limit": limit},
+        )
+
+    if intent == "account_sites":
+        return (
+            """
+            MATCH (a:Account)-[:HAS_SITE]->(sn:SiteNumber)
+            WHERE toLower(a.name) CONTAINS toLower($kw)
+               OR toLower(sn.siteId) CONTAINS toLower($kw)
+            WHERE a.status <> 'DELETED'
+            RETURN a {.*, _label: 'Account'} AS node,
+                   sn {.*, _label: 'SiteNumber'} AS related,
+                   'HAS_SITE' AS relationship
+            LIMIT $limit
+            """,
+            {"kw": keywords[0] if keywords else "", "limit": limit},
+        )
 
     if intent == "seller_manager":
         return (
@@ -233,6 +280,9 @@ async def _synthesize_narrative(query: str, results: list[dict], intent: str) ->
         "account_install": f"Found {len(results)} account install record(s). Key accounts: {', '.join(names)}.",
         "seller_territory": f"Found {len(results)} territory assignment(s). Sellers: {', '.join(names)}.",
         "seller_product": f"Found {len(results)} product coverage record(s). Top: {', '.join(names)}.",
+        "site_spend": f"Found {len(results)} site number(s) ranked by spend. Highest spend sites: {', '.join(names)}.",
+        "site_product": f"Found {len(results)} site-product relationship(s). Sites: {', '.join(names)}.",
+        "account_sites": f"Found {len(results)} site number(s). Account-to-site mappings: {', '.join(names)}.",
         "general": f"Found {len(results)} {label}(s) matching '{query}'. Top results: {', '.join(names)}.",
     }
     base_narrative = templates.get(intent, templates["general"])

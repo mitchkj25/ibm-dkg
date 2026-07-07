@@ -505,6 +505,164 @@
         "source": "seed",
         "status": "ACTIVE"
       }
+    },
+    {
+      "label": "Manager",
+      "props": {
+        "id": "mgr-004",
+        "name": "Derek Callahan",
+        "email": "dcallahan@ibm.com",
+        "bandLevel": "Band 9",
+        "territory": "Public Sector South",
+        "role": "ALT",
+        "description": "Area Line Trigger Manager — Public Sector South. Oversees brand sellers covering Louisiana, Mississippi, Arkansas.",
+        "source": "seed",
+        "status": "ACTIVE"
+      }
+    },
+    {
+      "label": "Seller",
+      "props": {
+        "id": "sel-007",
+        "name": "Monique Tureaud",
+        "email": "mtureaud@ibm.com",
+        "bandLevel": "Band 7",
+        "geo": "Baton Rouge, LA",
+        "role": "Technology Sales Leader",
+        "sellerType": "TSL",
+        "hireDate": "2020-08-01",
+        "lastActive": "2025-07-03",
+        "description": "TSL covering IBM Cognos Analytics and Planning Analytics for Louisiana Public Sector accounts",
+        "source": "seed",
+        "status": "ACTIVE"
+      }
+    },
+    {
+      "label": "Product",
+      "props": {
+        "id": "prd-008",
+        "name": "IBM Cognos Analytics",
+        "brand": "IBM",
+        "family": "Business Intelligence",
+        "version": "12.0",
+        "description": "Business intelligence and analytics platform for enterprise reporting and dashboards",
+        "source": "seed",
+        "status": "ACTIVE"
+      }
+    },
+    {
+      "label": "Account",
+      "props": {
+        "id": "acc-007",
+        "name": "State of Louisiana",
+        "industry": "Government / Public Sector",
+        "segment": "Public Sector",
+        "revenue": 0,
+        "country": "USA",
+        "description": "State government of Louisiana — multiple agencies across several site numbers. Includes DCFS, DOTD, DHH and others.",
+        "source": "seed",
+        "status": "ACTIVE"
+      }
+    },
+    {
+      "label": "SiteNumber",
+      "props": {
+        "id": "site-001",
+        "siteId": "LA-GOV-0041",
+        "name": "LA-GOV-0041",
+        "accountId": "acc-007",
+        "agency": "Dept. of Children & Family Services",
+        "annualSpend": 1840000,
+        "description": "Site number for Louisiana DCFS — IBM Cognos Analytics and watsonx.ai active. Highest spend site.",
+        "source": "seed",
+        "status": "ACTIVE"
+      }
+    },
+    {
+      "label": "SiteNumber",
+      "props": {
+        "id": "site-002",
+        "siteId": "LA-GOV-0089",
+        "name": "LA-GOV-0089",
+        "accountId": "acc-007",
+        "agency": "Dept. of Transportation & Development",
+        "annualSpend": 1120000,
+        "description": "Site number for Louisiana DOTD — IBM Cognos Analytics deployed. No watsonx footprint yet.",
+        "source": "seed",
+        "status": "ACTIVE"
+      }
+    },
+    {
+      "label": "SiteNumber",
+      "props": {
+        "id": "site-003",
+        "siteId": "LA-GOV-0117",
+        "name": "LA-GOV-0117",
+        "accountId": "acc-007",
+        "agency": "Dept. of Health & Hospitals",
+        "annualSpend": 670000,
+        "description": "Site number for Louisiana DHH — IBM Turbonomic only. Cognos not yet deployed — expansion opportunity.",
+        "source": "seed",
+        "status": "ACTIVE"
+      }
+    },
+    {
+      "label": "SiteNumber",
+      "props": {
+        "id": "site-004",
+        "siteId": "FNB-CORP-0012",
+        "name": "FNB-CORP-0012",
+        "accountId": "acc-001",
+        "agency": "Corporate HQ",
+        "annualSpend": 3200000,
+        "description": "Primary site number for First National Bancorp HQ — Turbonomic and CP4Security active.",
+        "source": "seed",
+        "status": "ACTIVE"
+      }
+    },
+    {
+      "label": "SiteNumber",
+      "props": {
+        "id": "site-005",
+        "siteId": "FNB-RET-0031",
+        "name": "FNB-RET-0031",
+        "accountId": "acc-001",
+        "agency": "Retail Banking Division",
+        "annualSpend": 2600000,
+        "description": "Retail banking division site — watsonx.ai expansion in progress. Second largest FNB site by spend.",
+        "source": "seed",
+        "status": "ACTIVE"
+      }
+    },
+    {
+      "label": "Install",
+      "props": {
+        "id": "ins-006",
+        "productId": "prd-008",
+        "accountId": "acc-007",
+        "version": "12.0",
+        "installDate": "2023-02-01",
+        "supportEnd": "2026-02-01",
+        "contractValue": 290000,
+        "description": "Cognos Analytics at LA-GOV-0041 (DCFS) — dashboards for child welfare reporting",
+        "source": "seed",
+        "status": "ACTIVE"
+      }
+    },
+    {
+      "label": "Install",
+      "props": {
+        "id": "ins-007",
+        "productId": "prd-008",
+        "accountId": "acc-007",
+        "version": "11.2",
+        "installDate": "2021-06-15",
+        "supportEnd": "2025-06-15",
+        "contractValue": 210000,
+        "description": "Cognos Analytics at LA-GOV-0089 (DOTD) — older version, support nearly expired",
+        "source": "seed",
+        "status": "STALE"
+      }
     }
   ],
   "relationships": [
@@ -553,6 +711,26 @@
     { "type": "relationship", "from_label": "Account", "from_id": "acc-003", "rel_type": "HAS_OPPORTUNITY", "to_label": "Opportunity", "to_id": "opp-003", "props": {} },
     { "type": "relationship", "from_label": "Account", "from_id": "acc-004", "rel_type": "HAS_OPPORTUNITY", "to_label": "Opportunity", "to_id": "opp-004", "props": {} },
     { "type": "relationship", "from_label": "Seller", "from_id": "sel-001", "rel_type": "CO_SELLS", "to_label": "Seller", "to_id": "sel-002", "props": { "product": "watsonx.ai", "account": "First National Bancorp" } },
-    { "type": "relationship", "from_label": "Seller", "from_id": "sel-003", "rel_type": "CO_SELLS", "to_label": "Seller", "to_id": "sel-004", "props": { "product": "Sterling OMS", "account": "Nova Retail Group" } }
+    { "type": "relationship", "from_label": "Seller", "from_id": "sel-003", "rel_type": "CO_SELLS", "to_label": "Seller", "to_id": "sel-004", "props": { "product": "Sterling OMS", "account": "Nova Retail Group" } },
+    { "type": "relationship", "from_label": "Seller", "from_id": "sel-007", "rel_type": "REPORTS_TO", "to_label": "Manager", "to_id": "mgr-004", "props": { "since": "2020-08-01", "active": true } },
+    { "type": "relationship", "from_label": "Manager", "from_id": "mgr-004", "rel_type": "REPORTS_TO", "to_label": "Manager", "to_id": "mgr-002", "props": { "since": "2019-01-01", "active": true } },
+    { "type": "relationship", "from_label": "Seller", "from_id": "sel-007", "rel_type": "OWNS_ACCOUNT", "to_label": "Account", "to_id": "acc-007", "props": { "role": "Primary TSL", "assignedDate": "2020-08-01" } },
+    { "type": "relationship", "from_label": "Seller", "from_id": "sel-007", "rel_type": "COVERS_PRODUCT", "to_label": "Product", "to_id": "prd-008", "props": { "certified": true, "primary": true } },
+    { "type": "relationship", "from_label": "Account", "from_id": "acc-007", "rel_type": "HAS_SITE", "to_label": "SiteNumber", "to_id": "site-001", "props": { "since": "2021-01-01" } },
+    { "type": "relationship", "from_label": "Account", "from_id": "acc-007", "rel_type": "HAS_SITE", "to_label": "SiteNumber", "to_id": "site-002", "props": { "since": "2021-01-01" } },
+    { "type": "relationship", "from_label": "Account", "from_id": "acc-007", "rel_type": "HAS_SITE", "to_label": "SiteNumber", "to_id": "site-003", "props": { "since": "2021-01-01" } },
+    { "type": "relationship", "from_label": "Account", "from_id": "acc-001", "rel_type": "HAS_SITE", "to_label": "SiteNumber", "to_id": "site-004", "props": { "since": "2019-01-01" } },
+    { "type": "relationship", "from_label": "Account", "from_id": "acc-001", "rel_type": "HAS_SITE", "to_label": "SiteNumber", "to_id": "site-005", "props": { "since": "2019-01-01" } },
+    { "type": "relationship", "from_label": "SiteNumber", "from_id": "site-001", "rel_type": "HAS_PRODUCT", "to_label": "Product", "to_id": "prd-008", "props": { "active": true } },
+    { "type": "relationship", "from_label": "SiteNumber", "from_id": "site-001", "rel_type": "HAS_PRODUCT", "to_label": "Product", "to_id": "prd-001", "props": { "active": true } },
+    { "type": "relationship", "from_label": "SiteNumber", "from_id": "site-002", "rel_type": "HAS_PRODUCT", "to_label": "Product", "to_id": "prd-008", "props": { "active": true } },
+    { "type": "relationship", "from_label": "SiteNumber", "from_id": "site-003", "rel_type": "HAS_PRODUCT", "to_label": "Product", "to_id": "prd-007", "props": { "active": true } },
+    { "type": "relationship", "from_label": "SiteNumber", "from_id": "site-004", "rel_type": "HAS_PRODUCT", "to_label": "Product", "to_id": "prd-007", "props": { "active": true } },
+    { "type": "relationship", "from_label": "SiteNumber", "from_id": "site-004", "rel_type": "HAS_PRODUCT", "to_label": "Product", "to_id": "prd-004", "props": { "active": true } },
+    { "type": "relationship", "from_label": "SiteNumber", "from_id": "site-005", "rel_type": "HAS_PRODUCT", "to_label": "Product", "to_id": "prd-001", "props": { "active": true } },
+    { "type": "relationship", "from_label": "Account", "from_id": "acc-007", "rel_type": "HAS_INSTALL", "to_label": "Install", "to_id": "ins-006", "props": {} },
+    { "type": "relationship", "from_label": "Account", "from_id": "acc-007", "rel_type": "HAS_INSTALL", "to_label": "Install", "to_id": "ins-007", "props": {} },
+    { "type": "relationship", "from_label": "Install", "from_id": "ins-006", "rel_type": "RUNS_PRODUCT", "to_label": "Product", "to_id": "prd-008", "props": {} },
+    { "type": "relationship", "from_label": "Install", "from_id": "ins-007", "rel_type": "RUNS_PRODUCT", "to_label": "Product", "to_id": "prd-008", "props": {} }
   ]
 }

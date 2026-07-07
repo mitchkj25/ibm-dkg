@@ -12,7 +12,7 @@
   --ibm-red:#da1e28;--ibm-green:#24a148;--ibm-yellow:#f1c21b;
   --bg:#04040c;--panel:rgba(8,8,20,0.92);--card:rgba(15,15,30,0.9);
   --border:rgba(60,60,120,0.4);--tp:#e8e8f8;--ts:#7878a0;--tm:#44445a;--r:8px;
-  --sw:300px;
+  --sw:320px;
 }
 html,body{height:100%;background:var(--bg);color:var(--tp);font-family:'IBM Plex Sans',-apple-system,BlinkMacSystemFont,sans-serif;font-size:13px;line-height:1.5;overflow:hidden}
 #app{display:grid;grid-template-rows:52px 1fr;grid-template-columns:var(--sw) 1fr var(--sw);height:100vh}
@@ -37,7 +37,7 @@ html,body{height:100%;background:var(--bg);color:var(--tp);font-family:'IBM Plex
 #sl{border-right:1px solid var(--border)}
 #sr{border-left:1px solid var(--border);display:flex;flex-direction:column;gap:10px}
 .ptitle{font-size:9px;font-weight:800;letter-spacing:1.2px;text-transform:uppercase;color:var(--ts);margin-bottom:10px}
-.sgrid{display:grid;grid-template-columns:1fr 1fr;gap:6px;margin-bottom:14px}
+.sgrid{display:grid;grid-template-columns:1fr 1fr 1fr;gap:6px;margin-bottom:14px}
 .sc{background:rgba(255,255,255,0.03);border:1px solid var(--border);border-radius:var(--r);padding:9px;text-align:center}
 .sc .v{font-size:22px;font-weight:700;color:var(--ibm-blue);line-height:1;font-variant-numeric:tabular-nums}
 .sc .l{font-size:8px;color:var(--tm);text-transform:uppercase;letter-spacing:.5px;margin-top:2px}
@@ -96,6 +96,23 @@ hr{border:none;border-top:1px solid var(--border);margin:10px 0}
 .dps.STALE{background:rgba(255,131,43,.15);color:var(--ibm-orange)}
 .conn-badge{display:inline-block;padding:1px 6px;border-radius:6px;font-size:9px;margin:2px;background:rgba(255,255,255,0.05);border:1px solid var(--border);color:var(--ts)}
 
+/* ── Org Hierarchy Panel ─────────────────────────────────────────────── */
+#ohp{background:rgba(255,255,255,0.02);border:1px solid var(--border);border-radius:var(--r);padding:12px;display:none;margin-top:6px}
+.oh-header{display:flex;align-items:center;justify-content:space-between;margin-bottom:10px}
+.oh-close{background:none;border:none;color:var(--ts);cursor:pointer;font-size:13px;padding:2px 6px;border-radius:4px;transition:color .15s}
+.oh-close:hover{color:var(--tp)}
+.oh-tree{display:flex;flex-direction:column;gap:0}
+.oh-level{display:flex;flex-direction:column;gap:3px;margin-bottom:2px}
+.oh-connector{width:1px;background:var(--border);height:10px;margin-left:18px}
+.oh-node{display:flex;align-items:center;gap:7px;padding:5px 7px;border-radius:5px;cursor:pointer;transition:background .15s;border-left:2px solid transparent}
+.oh-node:hover{background:rgba(255,255,255,0.04);border-left-color:var(--ibm-blue)}
+.oh-dot{width:8px;height:8px;border-radius:50%;flex-shrink:0}
+.oh-name{font-size:11px;font-weight:600;flex:1}
+.oh-role{font-size:8px;padding:1px 5px;border-radius:4px;background:rgba(255,255,255,0.06);color:var(--ts);letter-spacing:.3px;font-weight:700;text-transform:uppercase}
+.oh-indent{padding-left:14px}
+.oh-indent2{padding-left:28px}
+.oh-spend-bar{height:3px;border-radius:2px;margin-top:3px;background:linear-gradient(90deg,var(--ibm-blue),var(--ibm-cyan))}
+
 /* ── Pruning panel ────────────────────────────────────────────────────── */
 #ps{background:rgba(255,255,255,0.02);border:1px solid var(--border);border-radius:var(--r);padding:11px}
 .psh{display:flex;align-items:center;justify-content:space-between;margin-bottom:8px}
@@ -132,7 +149,7 @@ hr{border:none;border-top:1px solid var(--border);margin:10px 0}
   <div class="hdiv"></div>
   <div id="sbar">
     <svg width="13" height="13" viewBox="0 0 16 16" fill="none" style="opacity:.35;flex-shrink:0"><circle cx="6.5" cy="6.5" r="5" stroke="#7878a0" stroke-width="1.5"/><line x1="10.5" y1="10.5" x2="14" y2="14" stroke="#7878a0" stroke-width="1.5" stroke-linecap="round"/></svg>
-    <input id="si" type="text" placeholder='Try: "who manages Marcus Webb" · "watsonx installs" · "expiring support"'/>
+    <input id="si" type="text" placeholder='Try: "site numbers with most spend" · "what sites does Louisiana have" · "seller hierarchy" · "Cognos on site LA-GOV-0041"'/>
     <button id="sbtn">Search</button>
   </div>
   <span class="badge mock" id="badge">DEMO MODE</span>
@@ -142,10 +159,12 @@ hr{border:none;border-top:1px solid var(--border);margin:10px 0}
 <aside id="sl">
   <div class="ptitle">Graph Overview</div>
   <div class="sgrid">
-    <div class="sc"><div class="v" id="sn">35</div><div class="l">Nodes</div></div>
-    <div class="sc"><div class="v" id="se">42</div><div class="l">Edges</div></div>
-    <div class="sc"><div class="v" id="ss">6</div><div class="l">Sellers</div></div>
-    <div class="sc"><div class="v" id="sa">6</div><div class="l">Accounts</div></div>
+    <div class="sc"><div class="v" id="sn">–</div><div class="l">Nodes</div></div>
+    <div class="sc"><div class="v" id="se">–</div><div class="l">Edges</div></div>
+    <div class="sc"><div class="v" id="ss">–</div><div class="l">Sellers</div></div>
+    <div class="sc"><div class="v" id="sa">–</div><div class="l">Accounts</div></div>
+    <div class="sc"><div class="v" id="ssite">–</div><div class="l">Sites</div></div>
+    <div class="sc"><div class="v" id="sprod">–</div><div class="l">Products</div></div>
   </div>
   <hr>
   <div class="ptitle">Filter Entity Types</div>
@@ -165,6 +184,73 @@ hr{border:none;border-top:1px solid var(--border);margin:10px 0}
     <button class="gcb" id="bzo" title="Zoom out">−</button>
     <button class="gcb" id="bfit" title="Fit to view">⊡</button>
     <button class="gcb" id="brst" title="Restart layout">↺</button>
+    <div style="width:1px;height:20px;background:rgba(255,255,255,0.1);margin:0 2px"></div>
+    <button class="gcb" id="bexp" title="Export / Share" style="font-size:12px;width:auto;padding:0 8px;gap:4px;display:flex;align-items:center">
+      <svg width="12" height="12" viewBox="0 0 16 16" fill="none"><path d="M8 1v9M4 6l4 4 4-4M2 12v1a1 1 0 001 1h10a1 1 0 001-1v-1" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg>
+      Export
+    </button>
+  </div>
+
+  <!-- ── Export Modal ──────────────────────────────────────────────────── -->
+  <div id="expmodal" style="display:none;position:absolute;inset:0;background:rgba(0,0,0,0.7);z-index:500;display:none;align-items:center;justify-content:center;backdrop-filter:blur(6px)">
+    <div id="exmpanel" style="background:#0c0c1e;border:1px solid rgba(60,60,120,0.6);border-radius:10px;padding:22px;width:420px;max-width:92vw;box-shadow:0 8px 40px rgba(0,0,0,0.8)">
+      <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:16px">
+        <div style="font-size:13px;font-weight:700;color:#e8e8f8">Export / Share Graph</div>
+        <button id="exmclose" style="background:none;border:none;color:#7878a0;cursor:pointer;font-size:16px;line-height:1">✕</button>
+      </div>
+
+      <!-- Scope picker -->
+      <div style="font-size:9px;font-weight:800;text-transform:uppercase;letter-spacing:1px;color:#7878a0;margin-bottom:8px">Export Scope</div>
+      <div style="display:flex;gap:6px;margin-bottom:16px">
+        <label id="scope-full-lbl" style="flex:1;background:rgba(15,98,254,0.12);border:1px solid rgba(15,98,254,0.4);border-radius:6px;padding:8px;cursor:pointer;text-align:center">
+          <input type="radio" name="exscope" value="full" checked style="display:none">
+          <div style="font-size:11px;font-weight:700;color:#0f62fe;margin-bottom:2px">Full Graph</div>
+          <div style="font-size:9px;color:#7878a0">All visible nodes &amp; edges</div>
+        </label>
+        <label id="scope-sub-lbl" style="flex:1;background:rgba(255,255,255,0.02);border:1px solid rgba(60,60,120,0.4);border-radius:6px;padding:8px;cursor:pointer;text-align:center">
+          <input type="radio" name="exscope" value="subgraph" style="display:none">
+          <div style="font-size:11px;font-weight:700;color:#7878a0;margin-bottom:2px" id="scope-sub-name">Subgraph</div>
+          <div style="font-size:9px;color:#7878a0" id="scope-sub-hint">Select a node first</div>
+        </label>
+      </div>
+
+      <!-- Format picker -->
+      <div style="font-size:9px;font-weight:800;text-transform:uppercase;letter-spacing:1px;color:#7878a0;margin-bottom:8px">Format</div>
+      <div style="display:flex;gap:6px;margin-bottom:20px">
+        <label style="flex:1;background:rgba(255,255,255,0.03);border:1px solid rgba(60,60,120,0.35);border-radius:6px;padding:7px;cursor:pointer;text-align:center">
+          <input type="radio" name="exfmt" value="png" checked style="display:none">
+          <div style="font-size:11px;font-weight:700;color:#e8e8f8">PNG Image</div>
+          <div style="font-size:9px;color:#7878a0">Share-ready visual</div>
+        </label>
+        <label style="flex:1;background:rgba(255,255,255,0.03);border:1px solid rgba(60,60,120,0.35);border-radius:6px;padding:7px;cursor:pointer;text-align:center">
+          <input type="radio" name="exfmt" value="csv" style="display:none">
+          <div style="font-size:11px;font-weight:700;color:#e8e8f8">CSV Data</div>
+          <div style="font-size:9px;color:#7878a0">Nodes + Edges spreadsheet</div>
+        </label>
+        <label style="flex:1;background:rgba(255,255,255,0.03);border:1px solid rgba(60,60,120,0.35);border-radius:6px;padding:7px;cursor:pointer;text-align:center">
+          <input type="radio" name="exfmt" value="json" style="display:none">
+          <div style="font-size:11px;font-weight:700;color:#e8e8f8">JSON</div>
+          <div style="font-size:9px;color:#7878a0">Graph data for import</div>
+        </label>
+      </div>
+
+      <!-- Preview thumbnail -->
+      <div id="exprev-wrap" style="background:rgba(0,0,0,0.3);border:1px solid rgba(60,60,120,0.3);border-radius:6px;height:120px;margin-bottom:16px;overflow:hidden;display:flex;align-items:center;justify-content:center">
+        <canvas id="exprev" style="max-width:100%;max-height:100%;border-radius:4px"></canvas>
+        <div id="exprev-msg" style="color:#44445a;font-size:11px;display:none">Preview not available for this format</div>
+      </div>
+
+      <!-- Actions -->
+      <div style="display:flex;gap:8px">
+        <button id="exmbtn" style="flex:1;background:#0f62fe;color:#fff;border:none;border-radius:6px;padding:10px;font-size:12px;font-weight:700;cursor:pointer;transition:background .2s">
+          ↓ Download
+        </button>
+        <button id="exmcopybtn" style="background:rgba(255,255,255,0.05);border:1px solid rgba(60,60,120,0.4);color:#e8e8f8;border-radius:6px;padding:10px 14px;font-size:12px;cursor:pointer;transition:background .2s" title="Copy PNG to clipboard">
+          Copy
+        </button>
+      </div>
+      <div id="exmfeedback" style="text-align:center;font-size:10px;color:#24a148;margin-top:8px;min-height:16px"></div>
+    </div>
   </div>
 </main>
 
@@ -177,6 +263,13 @@ hr{border:none;border-top:1px solid var(--border);margin:10px 0}
   <div id="dp">
     <div class="ptitle">Selected Node</div>
     <div id="dc"></div>
+  </div>
+  <div id="ohp">
+    <div class="oh-header">
+      <span class="ptitle" style="margin:0">Org Hierarchy</span>
+      <button class="oh-close" id="ohclose">✕</button>
+    </div>
+    <div id="ohtree"></div>
   </div>
   <hr>
   <div id="ps">
@@ -207,6 +300,7 @@ const COLORS = {
   Install:        '#24a148',
   Opportunity:    '#f1c21b',
   KnowledgeAsset: '#ee5396',
+  SiteNumber:     '#33b1ff',
 };
 
 const EDGE_COLORS = {
@@ -219,80 +313,121 @@ const EDGE_COLORS = {
   RUNS_PRODUCT:    '#ff832b',
   HAS_OPPORTUNITY: '#f1c21b',
   CO_SELLS:        '#0f62fe',
+  HAS_SITE:        '#33b1ff',
+  HAS_PRODUCT:     '#ff832b',
 };
 
-const NODE_RADII = { Manager:16, Seller:13, Account:14, Territory:12, Product:11, Install:8, Opportunity:9, KnowledgeAsset:8 };
+const NODE_RADII = { Manager:16, Seller:13, Account:14, Territory:12, Product:11, Install:8, Opportunity:9, KnowledgeAsset:8, SiteNumber:10 };
 
 // ── Seed data ─────────────────────────────────────────────────────────────
 const SEED_NODES = [
-  {id:'mgr-001',label:'Manager',  name:'Sandra Okafor',           desc:'First-line manager, Northeast. Oversees Marcus Webb & Aisha Thornton.'},
-  {id:'mgr-002',label:'Manager',  name:'David Reyes',             desc:'First-line manager, Southeast. Manages James Kowalski & Lin Mei Zhang.'},
-  {id:'mgr-003',label:'Manager',  name:'Priya Nambiar',           desc:'Second-line manager, West Coast. Tyler Oduya & Rachel Patel report to her.'},
-  {id:'sel-001',label:'Seller',   name:'Marcus Webb',             desc:'Client Executive — NYC Metro. Primary CE for First National Bancorp & Cascadia Insurance.'},
-  {id:'sel-002',label:'Seller',   name:'Aisha Thornton',          desc:'watsonx AI & Automation specialist — New England. Certified watsonx.ai & watsonx.data.'},
-  {id:'sel-003',label:'Seller',   name:'James Kowalski',          desc:'Client Executive — Atlanta. Owns Meridian Health Systems & Nova Retail Group.'},
-  {id:'sel-004',label:'Seller',   name:'Lin Mei Zhang',           desc:'Technology Sales Specialist — Miami. Owns SunCoast Logistics.'},
-  {id:'sel-005',label:'Seller',   name:'Tyler Oduya',             desc:'Client Executive — San Francisco. Primary CE for Apex Technology Partners.'},
-  {id:'sel-006',label:'Seller',   name:'Rachel Patel',            desc:'Security & Compliance specialist — LA. Certified CP4Security & OpenPages.'},
+  {id:'mgr-001',label:'Manager',  name:'Sandra Okafor',           bandLevel:'Band 10', role:'FLM',  desc:'First-line manager, Northeast. Oversees Marcus Webb & Aisha Thornton.'},
+  {id:'mgr-002',label:'Manager',  name:'David Reyes',             bandLevel:'Band 10', role:'FLM',  desc:'First-line manager, Southeast. Manages James Kowalski & Lin Mei Zhang.'},
+  {id:'mgr-003',label:'Manager',  name:'Priya Nambiar',           bandLevel:'Band 11', role:'SLM',  desc:'Second-line manager, West Coast. Tyler Oduya & Rachel Patel report to her.'},
+  {id:'mgr-004',label:'Manager',  name:'Derek Callahan',          bandLevel:'Band 9',  role:'ALT',  desc:'ALT — Public Sector South. Oversees Monique Tureaud (TSL) covering Louisiana state agencies.'},
+  {id:'sel-001',label:'Seller',   name:'Marcus Webb',             sellerType:'CE',  desc:'Client Executive — NYC Metro. Primary CE for First National Bancorp & Cascadia Insurance.'},
+  {id:'sel-002',label:'Seller',   name:'Aisha Thornton',          sellerType:'SSR', desc:'watsonx AI & Automation specialist — New England. Certified watsonx.ai & watsonx.data.'},
+  {id:'sel-003',label:'Seller',   name:'James Kowalski',          sellerType:'CE',  desc:'Client Executive — Atlanta. Owns Meridian Health Systems & Nova Retail Group.'},
+  {id:'sel-004',label:'Seller',   name:'Lin Mei Zhang',           sellerType:'SSR', desc:'Technology Sales Specialist — Miami. Owns SunCoast Logistics.'},
+  {id:'sel-005',label:'Seller',   name:'Tyler Oduya',             sellerType:'CE',  desc:'Client Executive — San Francisco. Primary CE for Apex Technology Partners.'},
+  {id:'sel-006',label:'Seller',   name:'Rachel Patel',            sellerType:'SSR', desc:'Security & Compliance specialist — LA. Certified CP4Security & OpenPages.'},
+  {id:'sel-007',label:'Seller',   name:'Monique Tureaud',         sellerType:'TSL', desc:'TSL — Baton Rouge, LA. Covers IBM Cognos Analytics for Louisiana Public Sector accounts.'},
   {id:'ter-001',label:'Territory',name:'NYC Metro Enterprise',    desc:'Quota: $8.5M — Large enterprise accounts in NY/NJ metro.'},
   {id:'ter-002',label:'Territory',name:'New England Mid-Market',  desc:'Quota: $4.2M — Tech-focused mid-market across MA, CT, RI.'},
   {id:'ter-003',label:'Territory',name:'Southeast Enterprise',    desc:'Quota: $6.1M — Enterprise accounts across GA, FL, SC, NC.'},
   {id:'ter-004',label:'Territory',name:'Bay Area Tech',           desc:'Quota: $9.2M — Technology companies in Silicon Valley & Bay Area.'},
   {id:'ter-005',label:'Territory',name:'Southern California',     desc:'Quota: $5.8M — Entertainment, media, and financial accounts in SoCal.'},
-  {id:'prd-001',label:'Product',  name:'watsonx.ai',              desc:'AI studio for training, validating, tuning and deploying AI models.'},
-  {id:'prd-002',label:'Product',  name:'watsonx.data',            desc:'Fit-for-purpose data store on open lakehouse architecture.'},
-  {id:'prd-003',label:'Product',  name:'watsonx.governance',      desc:'AI governance and risk management platform.'},
-  {id:'prd-004',label:'Product',  name:'IBM Cloud Pak for Security', desc:'Unified security platform with threat intelligence and SOAR.'},
-  {id:'prd-005',label:'Product',  name:'IBM OpenPages',           desc:'Integrated GRC platform for risk, compliance and audit management.'},
-  {id:'prd-006',label:'Product',  name:'IBM Sterling OMS',        desc:'Omnichannel order orchestration and fulfillment.'},
-  {id:'prd-007',label:'Product',  name:'IBM Turbonomic',          desc:'Application resource management and FinOps platform.'},
-  {id:'acc-001',label:'Account',  name:'First National Bancorp',  desc:'Top-10 US retail bank — $24B revenue. Heavy IBM footprint. watsonx expansion in progress.'},
-  {id:'acc-002',label:'Account',  name:'Meridian Health Systems', desc:'Regional hospital network — $8.7B revenue. Epic EHR integration in Southeast US.'},
-  {id:'acc-003',label:'Account',  name:'Nova Retail Group',       desc:'Omnichannel retailer — $2.1B revenue. 400+ stores, supply chain modernization focus.'},
-  {id:'acc-004',label:'Account',  name:'Apex Technology Partners',desc:'SaaS platform company — $15B revenue. AI and governance expansion opportunity.'},
-  {id:'acc-005',label:'Account',  name:'Cascadia Insurance Group',desc:'Multi-line P&C insurer — $6.5B revenue. Risk compliance modernization underway.'},
-  {id:'acc-006',label:'Account',  name:'SunCoast Logistics',      desc:'Regional 3PL — $890M revenue. Evaluating AI-driven order orchestration.'},
+  {id:'prd-001',label:'Product',  name:'watsonx.ai',              family:'watsonx',  desc:'AI studio for training, validating, tuning and deploying AI models.'},
+  {id:'prd-002',label:'Product',  name:'watsonx.data',            family:'watsonx',  desc:'Fit-for-purpose data store on open lakehouse architecture.'},
+  {id:'prd-003',label:'Product',  name:'watsonx.governance',      family:'watsonx',  desc:'AI governance and risk management platform.'},
+  {id:'prd-004',label:'Product',  name:'IBM Cloud Pak for Security', family:'Security', desc:'Unified security platform with threat intelligence and SOAR.'},
+  {id:'prd-005',label:'Product',  name:'IBM OpenPages',           family:'Risk & Compliance', desc:'Integrated GRC platform for risk, compliance and audit management.'},
+  {id:'prd-006',label:'Product',  name:'IBM Sterling OMS',        family:'Supply Chain', desc:'Omnichannel order orchestration and fulfillment.'},
+  {id:'prd-007',label:'Product',  name:'IBM Turbonomic',          family:'AIOps', desc:'Application resource management and FinOps platform.'},
+  {id:'prd-008',label:'Product',  name:'IBM Cognos Analytics',    family:'Business Intelligence', desc:'Enterprise BI and analytics platform for reporting and dashboards.'},
+  {id:'acc-001',label:'Account',  name:'First National Bancorp',  industry:'Financial Services', revenue:24000000000, desc:'Top-10 US retail bank — $24B revenue. Heavy IBM footprint. watsonx expansion in progress.'},
+  {id:'acc-002',label:'Account',  name:'Meridian Health Systems', industry:'Healthcare',          revenue:8700000000,  desc:'Regional hospital network — $8.7B revenue. Epic EHR integration in Southeast US.'},
+  {id:'acc-003',label:'Account',  name:'Nova Retail Group',       industry:'Retail',              revenue:2100000000,  desc:'Omnichannel retailer — $2.1B revenue. 400+ stores, supply chain modernization focus.'},
+  {id:'acc-004',label:'Account',  name:'Apex Technology Partners',industry:'Technology',          revenue:15000000000, desc:'SaaS platform company — $15B revenue. AI and governance expansion opportunity.'},
+  {id:'acc-005',label:'Account',  name:'Cascadia Insurance Group',industry:'Insurance',           revenue:6500000000,  desc:'Multi-line P&C insurer — $6.5B revenue. Risk compliance modernization underway.'},
+  {id:'acc-006',label:'Account',  name:'SunCoast Logistics',      industry:'Logistics',           revenue:890000000,   desc:'Regional 3PL — $890M revenue. Evaluating AI-driven order orchestration.'},
+  {id:'acc-007',label:'Account',  name:'State of Louisiana',      industry:'Government / Public Sector', revenue:0, desc:'State of Louisiana — multiple agencies under separate site numbers. DCFS, DOTD, DHH & others.'},
   {id:'ins-001',label:'Install',  name:'Turbonomic @ First National',   desc:'v8.10 — managing 4,200 VMs across hybrid cloud. Support ends Apr 2026.'},
   {id:'ins-002',label:'Install',  name:'watsonx.ai @ Apex Tech',        desc:'v2.0 — internal developer copilot + fraud model training. Support ends Jan 2027.'},
   {id:'ins-003',label:'Install',  name:'OpenPages @ Cascadia',          desc:'v8.3 — GRC platform. ⚠ Renewal at risk — upgrade to v9 needed.'},
   {id:'ins-004',label:'Install',  name:'Sterling OMS @ Nova Retail',    desc:'v9.5 — ⚠ OUT OF SUPPORT since Nov 2024. Upgrade to v10 opportunity.', status:'STALE'},
   {id:'ins-005',label:'Install',  name:'CP4Security @ First National',  desc:'v1.9 — SIEM consolidation project. Support ends Jul 2026.'},
+  {id:'ins-006',label:'Install',  name:'Cognos @ LA DCFS (0041)',       desc:'v12.0 — dashboards for child welfare reporting. Support ends Feb 2026.'},
+  {id:'ins-007',label:'Install',  name:'Cognos @ LA DOTD (0089)',       desc:'v11.2 — older version, ⚠ support nearly expired Jun 2025.', status:'STALE'},
   {id:'opp-001',label:'Opportunity',name:'FNB watsonx Expansion',       desc:'Stage: Validate — $2.4M. Expand watsonx.ai to 8 LOBs. Close: Q3 2025.'},
   {id:'opp-002',label:'Opportunity',name:'Cascadia OpenPages Upgrade',  desc:'Stage: Propose — $890K. Renewal + upgrade from v8.3. Risk of churn.'},
   {id:'opp-003',label:'Opportunity',name:'Nova Retail Sterling v10',    desc:'Stage: Identify — $640K. Upgrade out-of-support v9.5 to v10.'},
   {id:'opp-004',label:'Opportunity',name:'Apex watsonx.governance',     desc:'Stage: Qualify — $560K. AI governance layer for existing watsonx.ai install.'},
+  {id:'site-001',label:'SiteNumber',name:'LA-GOV-0041',  siteId:'LA-GOV-0041', agency:'DCFS',  annualSpend:1840000, accountId:'acc-007', desc:'LA DCFS — Cognos Analytics + watsonx.ai active. Highest spend Louisiana site ($1.84M).'},
+  {id:'site-002',label:'SiteNumber',name:'LA-GOV-0089',  siteId:'LA-GOV-0089', agency:'DOTD',  annualSpend:1120000, accountId:'acc-007', desc:'LA DOTD — Cognos Analytics deployed. No watsonx footprint. Upgrade opportunity ($1.12M).'},
+  {id:'site-003',label:'SiteNumber',name:'LA-GOV-0117',  siteId:'LA-GOV-0117', agency:'DHH',   annualSpend:670000,  accountId:'acc-007', desc:'LA DHH — IBM Turbonomic only. Cognos not yet deployed — whitespace opportunity ($670K).'},
+  {id:'site-004',label:'SiteNumber',name:'FNB-CORP-0012',siteId:'FNB-CORP-0012',agency:'HQ',   annualSpend:3200000, accountId:'acc-001', desc:'First National Bancorp HQ site — Turbonomic + CP4Security active ($3.2M spend).'},
+  {id:'site-005',label:'SiteNumber',name:'FNB-RET-0031', siteId:'FNB-RET-0031', agency:'Retail',annualSpend:2600000, accountId:'acc-001', desc:'FNB Retail Banking Division — watsonx.ai expansion in progress ($2.6M spend).'},
 ].map(n=>({...n, status: n.status||'ACTIVE'}));
 
 const SEED_EDGES = [
+  // Seller → Manager reporting chain
   {s:'sel-001',t:'mgr-001',type:'REPORTS_TO'},{s:'sel-002',t:'mgr-001',type:'REPORTS_TO'},
   {s:'sel-003',t:'mgr-002',type:'REPORTS_TO'},{s:'sel-004',t:'mgr-002',type:'REPORTS_TO'},
   {s:'sel-005',t:'mgr-003',type:'REPORTS_TO'},{s:'sel-006',t:'mgr-003',type:'REPORTS_TO'},
   {s:'mgr-001',t:'mgr-003',type:'REPORTS_TO'},{s:'mgr-002',t:'mgr-003',type:'REPORTS_TO'},
+  // ALT/TSL hierarchy
+  {s:'sel-007',t:'mgr-004',type:'REPORTS_TO'},
+  {s:'mgr-004',t:'mgr-002',type:'REPORTS_TO'},
+  // Territories
   {s:'sel-001',t:'ter-001',type:'OWNS_TERRITORY'},{s:'sel-002',t:'ter-002',type:'OWNS_TERRITORY'},
   {s:'sel-003',t:'ter-003',type:'OWNS_TERRITORY'},{s:'sel-004',t:'ter-003',type:'OWNS_TERRITORY'},
   {s:'sel-005',t:'ter-004',type:'OWNS_TERRITORY'},{s:'sel-006',t:'ter-005',type:'OWNS_TERRITORY'},
+  // Account ownership
   {s:'sel-001',t:'acc-001',type:'OWNS_ACCOUNT'},{s:'sel-003',t:'acc-002',type:'OWNS_ACCOUNT'},
   {s:'sel-003',t:'acc-003',type:'OWNS_ACCOUNT'},{s:'sel-005',t:'acc-004',type:'OWNS_ACCOUNT'},
   {s:'sel-001',t:'acc-005',type:'OWNS_ACCOUNT'},{s:'sel-004',t:'acc-006',type:'OWNS_ACCOUNT'},
+  {s:'sel-007',t:'acc-007',type:'OWNS_ACCOUNT'},
+  // Product coverage
   {s:'sel-001',t:'prd-004',type:'COVERS_PRODUCT'},{s:'sel-002',t:'prd-001',type:'COVERS_PRODUCT'},
   {s:'sel-002',t:'prd-003',type:'COVERS_PRODUCT'},{s:'sel-005',t:'prd-001',type:'COVERS_PRODUCT'},
   {s:'sel-005',t:'prd-007',type:'COVERS_PRODUCT'},{s:'sel-006',t:'prd-004',type:'COVERS_PRODUCT'},
+  {s:'sel-007',t:'prd-008',type:'COVERS_PRODUCT'},
+  // Installs
   {s:'acc-001',t:'ins-001',type:'HAS_INSTALL'},{s:'acc-001',t:'ins-005',type:'HAS_INSTALL'},
   {s:'acc-004',t:'ins-002',type:'HAS_INSTALL'},{s:'acc-005',t:'ins-003',type:'HAS_INSTALL'},
   {s:'acc-003',t:'ins-004',type:'HAS_INSTALL'},
+  {s:'acc-007',t:'ins-006',type:'HAS_INSTALL'},{s:'acc-007',t:'ins-007',type:'HAS_INSTALL'},
   {s:'ins-001',t:'prd-007',type:'RUNS_PRODUCT'},{s:'ins-002',t:'prd-001',type:'RUNS_PRODUCT'},
   {s:'ins-003',t:'prd-005',type:'RUNS_PRODUCT'},{s:'ins-004',t:'prd-006',type:'RUNS_PRODUCT'},
   {s:'ins-005',t:'prd-004',type:'RUNS_PRODUCT'},
+  {s:'ins-006',t:'prd-008',type:'RUNS_PRODUCT'},{s:'ins-007',t:'prd-008',type:'RUNS_PRODUCT'},
+  // Opportunities
   {s:'acc-001',t:'opp-001',type:'HAS_OPPORTUNITY'},{s:'acc-005',t:'opp-002',type:'HAS_OPPORTUNITY'},
   {s:'acc-003',t:'opp-003',type:'HAS_OPPORTUNITY'},{s:'acc-004',t:'opp-004',type:'HAS_OPPORTUNITY'},
+  // Co-sells
   {s:'sel-001',t:'sel-002',type:'CO_SELLS'},{s:'sel-003',t:'sel-004',type:'CO_SELLS'},
+  // Account → SiteNumber
+  {s:'acc-007',t:'site-001',type:'HAS_SITE'},{s:'acc-007',t:'site-002',type:'HAS_SITE'},
+  {s:'acc-007',t:'site-003',type:'HAS_SITE'},
+  {s:'acc-001',t:'site-004',type:'HAS_SITE'},{s:'acc-001',t:'site-005',type:'HAS_SITE'},
+  // SiteNumber → Product
+  {s:'site-001',t:'prd-008',type:'HAS_PRODUCT'},{s:'site-001',t:'prd-001',type:'HAS_PRODUCT'},
+  {s:'site-002',t:'prd-008',type:'HAS_PRODUCT'},
+  {s:'site-003',t:'prd-007',type:'HAS_PRODUCT'},
+  {s:'site-004',t:'prd-007',type:'HAS_PRODUCT'},{s:'site-004',t:'prd-004',type:'HAS_PRODUCT'},
+  {s:'site-005',t:'prd-001',type:'HAS_PRODUCT'},
 ];
 
 const SAMPLE_QUERIES = [
   'Who manages Marcus Webb?',
   'What does First National Bancorp have installed?',
   'Which sellers cover watsonx.ai?',
-  'Show me Southeast Enterprise territory',
+  'What site numbers have the most spend?',
+  'What site number is State of Louisiana on?',
+  'What products does site LA-GOV-0041 have?',
+  'Show me the seller hierarchy',
+  'Does Louisiana have Cognos on all sites?',
   'Find expiring support contracts',
   'What opportunities does Cascadia have?',
   'Co-sell relationships',
@@ -319,8 +454,18 @@ function init() {
   buildLegend();
   buildQueryList();
   loadGraph();
+  updateStats();
   bindEvents();
   loop();
+}
+
+function updateStats() {
+  document.getElementById('sn').textContent = SEED_NODES.length;
+  document.getElementById('se').textContent = SEED_EDGES.length;
+  document.getElementById('ss').textContent = SEED_NODES.filter(n=>n.label==='Seller').length;
+  document.getElementById('sa').textContent = SEED_NODES.filter(n=>n.label==='Account').length;
+  document.getElementById('ssite').textContent = SEED_NODES.filter(n=>n.label==='SiteNumber').length;
+  document.getElementById('sprod').textContent = SEED_NODES.filter(n=>n.label==='Product').length;
 }
 
 function resize() {
@@ -567,6 +712,22 @@ function drawNodes() {
       ctx.setLineDash([]);
     }
 
+    // SiteNumber spend ring — arc length proportional to spend vs max spend
+    if (n.label === 'SiteNumber' && n.annualSpend) {
+      const maxSpend = Math.max(...SEED_NODES.filter(x=>x.label==='SiteNumber').map(x=>x.annualSpend||0));
+      const fraction = n.annualSpend / maxSpend;
+      const startAngle = -Math.PI / 2;
+      const endAngle = startAngle + fraction * Math.PI * 2;
+      ctx.beginPath();
+      ctx.arc(n.x, n.y, n.r + 3.5, startAngle, endAngle);
+      ctx.strokeStyle = '#33b1ffcc';
+      ctx.lineWidth = 2.5;
+      ctx.shadowColor = '#33b1ff';
+      ctx.shadowBlur = 6;
+      ctx.stroke();
+      ctx.shadowBlur = 0;
+    }
+
     // Selected ring
     if (isSel) {
       ctx.beginPath();
@@ -615,6 +776,29 @@ function bindEvents() {
   document.getElementById('sbtn').onclick = () => doSearch(document.getElementById('si').value);
   document.getElementById('si').addEventListener('keydown', e => { if (e.key === 'Enter') doSearch(e.target.value); });
   document.getElementById('rpb').onclick = runPruning;
+  document.getElementById('ohclose').onclick = () => {
+    document.getElementById('ohp').style.display = 'none';
+  };
+  document.getElementById('bexp').onclick = openExportModal;
+  document.getElementById('exmclose').onclick = closeExportModal;
+  document.getElementById('expmodal').addEventListener('click', e => {
+    if (e.target === document.getElementById('expmodal')) closeExportModal();
+  });
+  // Scope/format radio changes update preview
+  document.querySelectorAll('input[name="exscope"], input[name="exfmt"]').forEach(r => {
+    r.addEventListener('change', refreshExportPreview);
+  });
+  // Scope label click styling
+  document.querySelectorAll('input[name="exscope"]').forEach(r => {
+    r.addEventListener('change', () => {
+      document.getElementById('scope-full-lbl').style.borderColor = r.value==='full' ? 'rgba(15,98,254,0.6)' : 'rgba(60,60,120,0.4)';
+      document.getElementById('scope-sub-lbl').style.borderColor  = r.value==='subgraph' ? 'rgba(15,98,254,0.6)' : 'rgba(60,60,120,0.4)';
+      document.getElementById('scope-full-lbl').querySelector('div').style.color = r.value==='full' ? '#0f62fe' : '#7878a0';
+      document.getElementById('scope-sub-lbl').querySelector('div').style.color  = r.value==='subgraph' ? '#0f62fe' : '#7878a0';
+    });
+  });
+  document.getElementById('exmbtn').onclick = runExportDownload;
+  document.getElementById('exmcopybtn').onclick = runExportCopy;
   window.addEventListener('resize', () => { resize(); buildParticles(); });
 }
 
@@ -639,7 +823,13 @@ function onMouseMove(e) {
     tip.style.display = 'block';
     tip.style.left = (e.offsetX + 16) + 'px';
     tip.style.top  = (e.offsetY + 16) + 'px';
-    tip.innerHTML = `<div class="tl" style="color:${col}">${hovNode.label}</div><div class="tn">${hovNode.name}</div><div class="td">${hovNode.desc || ''}</div>`;
+    const spendLine = hovNode.label==='SiteNumber' && hovNode.annualSpend
+      ? `<div class="td" style="margin-top:4px">💰 Annual Spend: <strong style="color:#33b1ff">$${(hovNode.annualSpend/1e6).toFixed(2)}M</strong></div>`
+      : '';
+    const roleLine = (hovNode.label==='Manager'||hovNode.label==='Seller') && (hovNode.role||hovNode.sellerType)
+      ? `<div class="td" style="margin-top:3px">Role: <strong>${hovNode.role||hovNode.sellerType}</strong></div>`
+      : '';
+    tip.innerHTML = `<div class="tl" style="color:${col}">${hovNode.label}</div><div class="tn">${hovNode.name}</div><div class="td">${hovNode.desc || ''}</div>${spendLine}${roleLine}`;
     canvas.style.cursor = 'pointer';
   } else {
     tip.style.display = 'none';
@@ -709,13 +899,48 @@ function selectNode(n) {
   const conns = edges.filter(e => e.sn === n || e.tn === n);
 
   const propRows = [];
-  if (n.label === 'Seller') propRows.push(['Geo', n.geo||'–'], ['Role', n.role||'AE']);
-  if (n.label === 'Manager') propRows.push(['Team size', conns.filter(e=>e.tn===n&&e.type==='REPORTS_TO').length + ' direct reports']);
+  if (n.label === 'Seller') {
+    propRows.push(['Type', n.sellerType||'CE'], ['Geo', n.geo||'–']);
+  }
+  if (n.label === 'Manager') {
+    propRows.push(
+      ['Role', n.role||'FLM'],
+      ['Band', n.bandLevel||'–'],
+      ['Direct reports', conns.filter(e=>e.tn===n&&e.type==='REPORTS_TO').length]
+    );
+  }
   if (n.label === 'Territory') propRows.push(['Region', n.region||'–'], ['Quota', n.quota ? '$'+n.quota.toLocaleString() : '–']);
   if (n.label === 'Product') propRows.push(['Family', n.family||'–'], ['Version', n.version||'–']);
-  if (n.label === 'Account') propRows.push(['Industry', n.industry||'–'], ['Revenue', n.revenue ? '$'+(n.revenue/1e9).toFixed(1)+'B' : '–']);
+  if (n.label === 'Account') {
+    propRows.push(['Industry', n.industry||'–'], ['Revenue', n.revenue ? '$'+(n.revenue/1e9).toFixed(1)+'B' : (n.revenue===0?'Gov/Public':'–')]);
+    // Show site numbers for this account
+    const sites = conns.filter(e=>e.sn===n&&e.type==='HAS_SITE').map(e=>e.tn);
+    if (sites.length) propRows.push(['Site Numbers', sites.map(s=>s.siteId||s.name).join(', ')]);
+  }
+  if (n.label === 'SiteNumber') {
+    const spendFmt = n.annualSpend ? '$'+(n.annualSpend/1e6).toFixed(2)+'M' : '–';
+    propRows.push(
+      ['Site ID', n.siteId||n.name],
+      ['Agency', n.agency||'–'],
+      ['Annual Spend', spendFmt]
+    );
+    // Products on this site
+    const prods = conns.filter(e=>e.sn===n&&e.type==='HAS_PRODUCT').map(e=>e.tn.name);
+    if (prods.length) propRows.push(['Products Active', prods.join(', ')]);
+    // Missing products vs sibling sites (same account)
+    const sibSites = SEED_EDGES.filter(e=>e.type==='HAS_SITE')
+      .filter(e=>{ const acc = SEED_NODES.find(x=>x.id===e.s); return acc && acc.id===n.accountId; })
+      .map(e=>SEED_NODES.find(x=>x.id===e.t)).filter(Boolean);
+    const allProds = [...new Set(SEED_EDGES.filter(e=>e.type==='HAS_PRODUCT')
+      .filter(e=>sibSites.some(s=>s.id===e.s)).map(e=>e.t))];
+    const missingProds = allProds.filter(pid=>!conns.some(e=>e.tn&&e.tn.id===pid&&e.type==='HAS_PRODUCT'));
+    if (missingProds.length) {
+      const mpNames = missingProds.map(pid=>{ const p=SEED_NODES.find(x=>x.id===pid); return p?p.name:pid; });
+      propRows.push(['Whitespace Opp.', mpNames.join(', ')]);
+    }
+  }
 
-  const connHtml = conns.slice(0, 6).map(e => {
+  const connHtml = conns.slice(0, 8).map(e => {
     const other = e.sn === n ? e.tn : e.sn;
     const oc = COLORS[other.label] || '#888';
     return `<span class="conn-badge" style="border-color:${oc}22;color:${oc}">${other.name}</span>`;
@@ -729,11 +954,73 @@ function selectNode(n) {
     ${propRows.map(([k,v])=>`<div class="dprow"><span class="dpk">${k}</span><span class="dpv">${v}</span></div>`).join('')}
     ${conns.length ? `<div style="margin-top:10px;padding-top:8px;border-top:1px solid var(--border)"><div style="font-size:8px;color:var(--tm);text-transform:uppercase;letter-spacing:.8px;margin-bottom:6px">${conns.length} Connection${conns.length>1?'s':''}</div>${connHtml}</div>` : ''}
   `;
+
+  // Show org hierarchy panel for Manager or Seller nodes
+  if (n.label === 'Manager' || n.label === 'Seller') {
+    showOrgHierarchy(n);
+  } else {
+    document.getElementById('ohp').style.display = 'none';
+  }
 }
 
 function clearSelection() {
   selNode = null;
   document.getElementById('dp').style.display = 'none';
+  document.getElementById('ohp').style.display = 'none';
+}
+
+// ── Org Hierarchy Builder ─────────────────────────────────────────────────────
+function showOrgHierarchy(focusNode) {
+  const nodeMap = Object.fromEntries(SEED_NODES.map(n=>[n.id,n]));
+
+  // Walk up to find top of chain
+  function getTopManager(nodeId, visited=new Set()) {
+    if (visited.has(nodeId)) return nodeId;
+    visited.add(nodeId);
+    const upEdge = SEED_EDGES.find(e=>e.s===nodeId && e.type==='REPORTS_TO');
+    if (!upEdge) return nodeId;
+    return getTopManager(upEdge.t, visited);
+  }
+
+  // Walk down to build subtree
+  function getDirectReports(nodeId) {
+    return SEED_EDGES.filter(e=>e.t===nodeId&&e.type==='REPORTS_TO').map(e=>e.s);
+  }
+
+  function buildTree(nodeId, depth=0) {
+    const n = nodeMap[nodeId];
+    if (!n) return null;
+    const reports = getDirectReports(nodeId);
+    return { n, depth, reports: reports.map(r=>buildTree(r, depth+1)).filter(Boolean) };
+  }
+
+  // Find the topmost manager
+  const startId = focusNode.label === 'Seller'
+    ? (SEED_EDGES.find(e=>e.s===focusNode.id&&e.type==='REPORTS_TO')||{}).t || focusNode.id
+    : focusNode.id;
+  const topId = getTopManager(startId);
+  const tree = buildTree(topId);
+  if (!tree) return;
+
+  function renderNode(item, isFocus) {
+    const n = item.n;
+    const col = COLORS[n.label] || '#888';
+    const isHighlight = n.id === focusNode.id;
+    const roleTag = n.role || n.sellerType || (n.label==='Manager'?'MGR':'AE');
+    const indent = 'oh-indent'.repeat ? ('  '.repeat(item.depth)) : '';
+    return `
+      <div class="oh-node${isHighlight?' oh-node-focus':''}" style="padding-left:${item.depth*14+7}px;${isHighlight?'background:rgba(15,98,254,0.1);border-left-color:var(--ibm-blue)':''}" onclick="focusNode('${n.id}')">
+        <span class="oh-dot" style="background:${col};box-shadow:0 0 5px ${col}88;flex-shrink:0"></span>
+        <span class="oh-name" style="${isHighlight?'color:var(--tp)':''}">${n.name}</span>
+        <span class="oh-role" style="${isHighlight?'background:rgba(15,98,254,0.15);color:var(--ibm-blue)':''}">${roleTag}</span>
+      </div>
+      ${item.reports.map(r=>renderNode(r,false)).join('')}
+    `;
+  }
+
+  const ohp = document.getElementById('ohp');
+  document.getElementById('ohtree').innerHTML = renderNode(tree, false);
+  ohp.style.display = 'block';
 }
 
 // ── Search ─────────────────────────────────────────────────────────────────
@@ -743,18 +1030,32 @@ function doSearch(q) {
   document.getElementById('si').value = q;
   const ql = q.toLowerCase();
   const words = ql.split(/\s+/).filter(w => w.length > 2);
-
-  const scored = SEED_NODES.map(n => {
-    const text = (n.name + ' ' + (n.desc||'') + ' ' + n.label).toLowerCase();
-    let sc = 0;
-    for (const w of words) {
-      if (n.name.toLowerCase().includes(w)) sc += 0.7;
-      else if (text.includes(w)) sc += 0.3;
-    }
-    return { n, sc };
-  }).filter(x => x.sc > 0).sort((a,b) => b.sc - a.sc).slice(0, 12);
-
   const intent = detectIntent(ql);
+
+  // For site_spend, return all sites ranked by spend regardless of keyword match
+  let scored;
+  if (intent === 'site_spend') {
+    scored = SEED_NODES
+      .filter(n => n.label === 'SiteNumber')
+      .sort((a,b) => (b.annualSpend||0) - (a.annualSpend||0))
+      .map((n,i) => ({ n, sc: 1 - i * 0.05 }));
+  } else if (intent === 'hierarchy') {
+    scored = SEED_NODES
+      .filter(n => n.label === 'Manager' || n.label === 'Seller')
+      .map(n => ({ n, sc: n.label==='Manager' ? 0.9 : 0.7 }))
+      .sort((a,b) => b.sc - a.sc);
+  } else {
+    scored = SEED_NODES.map(n => {
+      const text = (n.name + ' ' + (n.desc||'') + ' ' + n.label + ' ' + (n.siteId||'') + ' ' + (n.agency||'')).toLowerCase();
+      let sc = 0;
+      for (const w of words) {
+        if (n.name.toLowerCase().includes(w)) sc += 0.7;
+        else if (text.includes(w)) sc += 0.3;
+      }
+      return { n, sc };
+    }).filter(x => x.sc > 0).sort((a,b) => b.sc - a.sc).slice(0, 14);
+  }
+
   const nb = document.getElementById('nb');
   nb.style.display = 'block';
   document.getElementById('nt').textContent = buildNarrative(q, scored.map(x=>x.n), intent);
@@ -764,13 +1065,18 @@ function doSearch(q) {
     res.innerHTML = '<div style="color:var(--tm);font-size:11px;text-align:center;padding:16px">No results found.</div>';
     return;
   }
-  res.innerHTML = scored.map(({n, sc}) => {
+  res.innerHTML = scored.slice(0,14).map(({n, sc}) => {
     const col = COLORS[n.label] || '#888';
     const stale = n.status === 'STALE' ? ' stale' : '';
+    // Extra metadata line for SiteNumber nodes
+    const meta = n.label === 'SiteNumber'
+      ? `<div class="rd" style="margin-top:2px">Spend: <strong style="color:var(--ibm-cyan)">$${(n.annualSpend/1e6).toFixed(2)}M</strong> · Agency: ${n.agency||'–'}</div>`
+      : '';
     return `<div class="ri${stale}" onclick="focusNode('${n.id}')">
       <div class="rih"><span class="rdot" style="background:${col}"></span><span class="rl" style="color:${col}">${n.label}</span><span class="rs">${sc.toFixed(2)}</span></div>
       <div class="rn">${n.name}</div>
       <div class="rd">${(n.desc||'').slice(0,90)}${(n.desc||'').length>90?'…':''}</div>
+      ${meta}
     </div>`;
   }).join('');
 }
@@ -785,6 +1091,10 @@ function focusNode(id) {
 }
 
 function detectIntent(q) {
+  if (/site.*spend|spend.*site|most.*spend|highest spend/.test(q)) return 'site_spend';
+  if (/site.*product|product.*site|what.*site.*have|cognos.*site|site.*cognos/.test(q)) return 'site_product';
+  if (/site.?number|what site|which site|sites.*for|account.*site|site.*account/.test(q)) return 'account_sites';
+  if (/hierarch|org chart|alt|tsl|chain of command/.test(q)) return 'hierarchy';
   if (/report|manage|who.*manage/.test(q)) return 'org';
   if (/install|running|deployed|using|expir/.test(q)) return 'install';
   if (/territory|region|cover/.test(q)) return 'territory';
@@ -798,6 +1108,42 @@ function buildNarrative(q, results, intent) {
   if (!results.length) return `No results found for "${q}".`;
   const names = results.slice(0,3).map(r=>r.name);
   const n = results.length;
+
+  // For site spend: show ranked spend list
+  if (intent === 'site_spend') {
+    const sites = SEED_NODES.filter(x=>x.label==='SiteNumber')
+      .sort((a,b)=>(b.annualSpend||0)-(a.annualSpend||0));
+    const top = sites.slice(0,3).map(s=>`${s.name} ($${(s.annualSpend/1e6).toFixed(2)}M)`);
+    return `Top sites by spend: ${top.join(' → ')}. ${sites.length} total site numbers in graph.`;
+  }
+  if (intent === 'site_product') {
+    const hits = results.filter(r=>r.label==='SiteNumber');
+    if (hits.length) {
+      const siteInfo = hits.map(s=>{
+        const prods = SEED_EDGES.filter(e=>e.s===s.id&&e.type==='HAS_PRODUCT')
+          .map(e=>{ const p=SEED_NODES.find(x=>x.id===e.t); return p?p.name:e.t; });
+        return `${s.name}: ${prods.join(', ')||'none'}`;
+      });
+      return siteInfo.join(' | ');
+    }
+  }
+  if (intent === 'account_sites') {
+    const accs = results.filter(r=>r.label==='Account');
+    if (accs.length) {
+      const accInfo = accs.map(a=>{
+        const sitesForAcc = SEED_EDGES.filter(e=>e.s===a.id&&e.type==='HAS_SITE')
+          .map(e=>{ const s=SEED_NODES.find(x=>x.id===e.t); return s?s.siteId:e.t; });
+        return `${a.name} has ${sitesForAcc.length} site number${sitesForAcc.length!==1?'s':''}: ${sitesForAcc.join(', ')}`;
+      });
+      return accInfo.join(' | ');
+    }
+  }
+  if (intent === 'hierarchy') {
+    const mgrs = SEED_NODES.filter(x=>x.label==='Manager');
+    const slm = mgrs.find(m=>m.role==='SLM');
+    return `Hierarchy: ${slm?slm.name+' (SLM)':''} → FLMs → ALTs → TSLs/Brand Sellers. Click any Manager or Seller node to see their full org tree.`;
+  }
+
   const m = {
     org:`Found ${n} org match${n>1?'es':''}. Key people: ${names.join(', ')}.`,
     install:`Found ${n} install record${n>1?'s':''}. Check highlighted nodes for ⚠ expiring support.`,
@@ -859,6 +1205,595 @@ function runPruning() {
     btn.textContent = '▶ Run Cycle';
     btn.disabled = false;
   }, 1800);
+}
+
+// ══════════════════════════════════════════════════════════════════════════════
+// ── EXPORT / SHARE ENGINE ────────────────────────────────────────────────────
+// ══════════════════════════════════════════════════════════════════════════════
+
+function openExportModal() {
+  const modal = document.getElementById('expmodal');
+  modal.style.display = 'flex';
+  // Update subgraph label
+  if (selNode) {
+    document.getElementById('scope-sub-name').textContent = selNode.name;
+    document.getElementById('scope-sub-hint').textContent = `${selNode.label} subgraph`;
+    document.getElementById('scope-sub-lbl').style.opacity = '1';
+    document.getElementById('scope-sub-lbl').style.cursor = 'pointer';
+  } else {
+    document.getElementById('scope-sub-name').textContent = 'Subgraph';
+    document.getElementById('scope-sub-hint').textContent = 'Select a node first';
+    document.getElementById('scope-sub-lbl').style.opacity = '0.4';
+    document.getElementById('scope-sub-lbl').style.cursor = 'not-allowed';
+    // Force full-graph scope if no node selected
+    document.querySelector('input[name="exscope"][value="full"]').checked = true;
+  }
+  document.getElementById('exmfeedback').textContent = '';
+  refreshExportPreview();
+}
+
+function closeExportModal() {
+  document.getElementById('expmodal').style.display = 'none';
+}
+
+function getExportScope() {
+  return document.querySelector('input[name="exscope"]:checked')?.value || 'full';
+}
+
+function getExportFormat() {
+  return document.querySelector('input[name="exfmt"]:checked')?.value || 'png';
+}
+
+// ── Collect nodes/edges for export scope ──────────────────────────────────────
+function collectSubgraph(rootId, maxDepth = 4) {
+  const visited = new Set();
+  const queue = [{ id: rootId, depth: 0 }];
+  const resultEdges = [];
+
+  while (queue.length) {
+    const { id, depth } = queue.shift();
+    if (visited.has(id) || depth > maxDepth) continue;
+    visited.add(id);
+    if (depth === maxDepth) continue;
+
+    // All SEED_EDGES connected to this node (bidirectional BFS)
+    for (const e of SEED_EDGES) {
+      if (e.s === id && !visited.has(e.t)) {
+        queue.push({ id: e.t, depth: depth + 1 });
+        resultEdges.push(e);
+      }
+      if (e.t === id && !visited.has(e.s)) {
+        queue.push({ id: e.s, depth: depth + 1 });
+        resultEdges.push(e);
+      }
+    }
+  }
+
+  const resultNodes = SEED_NODES.filter(n => visited.has(n.id));
+  return { nodes: resultNodes, edges: resultEdges };
+}
+
+function getScopeData() {
+  const scope = getExportScope();
+  if (scope === 'subgraph' && selNode) {
+    return collectSubgraph(selNode.id, 5);
+  }
+  // Full graph — use only currently visible (filtered) nodes
+  const nodeMap = Object.fromEntries(nodes.map(n => [n.id, n]));
+  const visNodes = SEED_NODES.filter(n => activeLabels.has(n.label));
+  const visEdges = SEED_EDGES.filter(e => nodeMap[e.s] && nodeMap[e.t]);
+  return { nodes: visNodes, edges: visEdges };
+}
+
+// ── Refresh preview thumbnail ─────────────────────────────────────────────────
+function refreshExportPreview() {
+  const fmt = getExportFormat();
+  const prevCanvas = document.getElementById('exprev');
+  const prevMsg = document.getElementById('exprev-msg');
+
+  if (fmt !== 'png') {
+    prevCanvas.style.display = 'none';
+    prevMsg.style.display = 'block';
+    prevMsg.textContent = fmt === 'csv' ? 'CSV: nodes and edges as spreadsheet rows' : 'JSON: full graph data structure';
+    return;
+  }
+
+  prevCanvas.style.display = 'block';
+  prevMsg.style.display = 'none';
+
+  const { nodes: expNodes, edges: expEdges } = getScopeData();
+  // Draw tiny preview into the 120px tall preview canvas
+  const scope = getExportScope();
+  if (scope === 'subgraph' && selNode) {
+    renderSubgraphToCanvas(prevCanvas, expNodes, expEdges, selNode, 380, 114, 0.6, true);
+  } else {
+    renderFullGraphToCanvas(prevCanvas, expNodes, expEdges, 380, 114, 0.6, true);
+  }
+}
+
+// ── Full-graph canvas render ──────────────────────────────────────────────────
+function renderFullGraphToCanvas(targetCanvas, expNodes, expEdges, W2, H2, scaleFactor, isPreview) {
+  const HEADER_H = isPreview ? 0 : 52;
+  const TOTAL_H  = H2 + HEADER_H;
+
+  targetCanvas.width  = W2;
+  targetCanvas.height = TOTAL_H;
+  const c = targetCanvas.getContext('2d');
+
+  // Background
+  const bg = c.createRadialGradient(W2/2, TOTAL_H/2, 0, W2/2, TOTAL_H/2, Math.max(W2,TOTAL_H)*0.7);
+  bg.addColorStop(0, '#060414');
+  bg.addColorStop(1, '#020208');
+  c.fillStyle = bg;
+  c.fillRect(0, 0, W2, TOTAL_H);
+
+  if (!isPreview) {
+    // Header bar
+    c.fillStyle = 'rgba(8,8,20,0.95)';
+    c.fillRect(0, 0, W2, HEADER_H);
+    c.strokeStyle = 'rgba(60,60,120,0.5)';
+    c.lineWidth = 1;
+    c.beginPath(); c.moveTo(0, HEADER_H); c.lineTo(W2, HEADER_H); c.stroke();
+
+    // IBM DKG logo text
+    c.font = 'bold 15px "IBM Plex Sans",system-ui,sans-serif';
+    c.fillStyle = '#e8e8f8';
+    c.fillText('IBM', 18, 33);
+    c.fillStyle = '#0f62fe';
+    c.font = 'bold 10px "IBM Plex Sans",system-ui,sans-serif';
+    c.fillText('DKG', 44, 33);
+
+    // Title
+    c.font = '12px "IBM Plex Sans",system-ui,sans-serif';
+    c.fillStyle = '#7878a0';
+    const subtitle = `Knowledge Graph Export  ·  ${expNodes.length} nodes, ${expEdges.length} edges`;
+    c.fillText(subtitle, 80, 33);
+
+    // Timestamp
+    c.textAlign = 'right';
+    c.fillText(new Date().toLocaleString(), W2 - 18, 33);
+    c.textAlign = 'left';
+  }
+
+  // Fit nodes into the draw area
+  if (!expNodes.length) return;
+  const drawY0 = HEADER_H + 10;
+  const drawH  = H2 - 20;
+
+  // Use current canvas positions if available, else layout in a circle
+  const nodeMap = Object.fromEntries(nodes.map(n => [n.id, n]));
+  const laid = layoutNodesForExport(expNodes, W2, drawH, nodeMap, 10, drawY0);
+
+  // Draw edges
+  const laidMap = Object.fromEntries(laid.map(n => [n.id, n]));
+  for (const e of expEdges) {
+    const sn = laidMap[e.s], tn = laidMap[e.t];
+    if (!sn || !tn) continue;
+    const col = EDGE_COLORS[e.type] || '#4040a0';
+    const dx = tn.x - sn.x, dy = tn.y - sn.y;
+    const dist = Math.sqrt(dx*dx + dy*dy) || 1;
+    const ux = dx/dist, uy = dy/dist;
+    const x1 = sn.x + ux * sn.r, y1 = sn.y + uy * sn.r;
+    const x2 = tn.x - ux * (tn.r + 3), y2 = tn.y - uy * (tn.r + 3);
+    c.beginPath(); c.moveTo(x1, y1); c.lineTo(x2, y2);
+    c.strokeStyle = col + '55'; c.lineWidth = 1; c.stroke();
+    // arrowhead
+    const ang = Math.atan2(y2-y1, x2-x1);
+    c.beginPath();
+    c.moveTo(x2, y2);
+    c.lineTo(x2 - 6*Math.cos(ang-0.38), y2 - 6*Math.sin(ang-0.38));
+    c.lineTo(x2 - 6*Math.cos(ang+0.38), y2 - 6*Math.sin(ang+0.38));
+    c.closePath(); c.fillStyle = col + '88'; c.fill();
+  }
+
+  // Draw nodes
+  for (const n of laid) {
+    const col = COLORS[n.label] || '#5050c0';
+    const grad = c.createRadialGradient(n.x - n.r*0.25, n.y - n.r*0.25, 0, n.x, n.y, n.r);
+    grad.addColorStop(0, lighten(col, 60));
+    grad.addColorStop(1, col);
+    c.beginPath(); c.arc(n.x, n.y, n.r, 0, Math.PI*2);
+    c.fillStyle = grad;
+    c.shadowColor = col; c.shadowBlur = 10; c.fill(); c.shadowBlur = 0;
+    // label
+    if (!isPreview || n.r > 7) {
+      c.font = `${Math.max(8, n.r - 1)}px "IBM Plex Sans",system-ui,sans-serif`;
+      c.textAlign = 'center';
+      const lbl = n.name.length > 14 ? n.name.slice(0,13)+'…' : n.name;
+      c.fillStyle = 'rgba(4,4,12,0.8)';
+      c.fillText(lbl, n.x+0.5, n.y + n.r + 9.5);
+      c.fillStyle = COLORS[n.label] + 'cc';
+      c.fillText(lbl, n.x, n.y + n.r + 9);
+    }
+  }
+
+  if (!isPreview) {
+    // Legend bottom-right
+    drawExportLegend(c, W2, TOTAL_H);
+  }
+}
+
+// ── Subgraph hierarchical render ──────────────────────────────────────────────
+function renderSubgraphToCanvas(targetCanvas, expNodes, expEdges, rootNode, W2, H2, scaleFactor, isPreview) {
+  const HEADER_H = isPreview ? 0 : 64;
+  const TOTAL_H  = H2 + HEADER_H;
+
+  targetCanvas.width  = W2;
+  targetCanvas.height = TOTAL_H;
+  const c = targetCanvas.getContext('2d');
+
+  // Background
+  const bg = c.createRadialGradient(W2/2, TOTAL_H/2, 0, W2/2, TOTAL_H/2, Math.max(W2,TOTAL_H)*0.8);
+  bg.addColorStop(0, '#060414');
+  bg.addColorStop(1, '#020208');
+  c.fillStyle = bg;
+  c.fillRect(0, 0, W2, TOTAL_H);
+
+  if (!isPreview) {
+    c.fillStyle = 'rgba(8,8,20,0.95)';
+    c.fillRect(0, 0, W2, HEADER_H);
+    c.strokeStyle = 'rgba(60,60,120,0.5)';
+    c.lineWidth = 1;
+    c.beginPath(); c.moveTo(0, HEADER_H); c.lineTo(W2, HEADER_H); c.stroke();
+
+    c.font = 'bold 13px "IBM Plex Sans",system-ui,sans-serif';
+    c.fillStyle = '#e8e8f8';
+    c.fillText('IBM DKG', 18, 28);
+
+    c.font = '11px "IBM Plex Sans",system-ui,sans-serif';
+    c.fillStyle = '#7878a0';
+    c.fillText(`Subgraph: ${rootNode.name}`, 18, 46);
+
+    c.textAlign = 'right';
+    c.fillStyle = '#44445a';
+    c.font = '10px "IBM Plex Sans",system-ui,sans-serif';
+    c.fillText(`${expNodes.length} nodes · ${expEdges.length} edges · ${new Date().toLocaleString()}`, W2 - 18, 28);
+    c.textAlign = 'left';
+
+    // root node label badge
+    const rootCol = COLORS[rootNode.label] || '#0f62fe';
+    c.fillStyle = rootCol + '22';
+    c.strokeStyle = rootCol + '55';
+    c.lineWidth = 1;
+    roundRect(c, W2 - 18 - 90, 36, 90, 18, 4);
+    c.fill(); c.stroke();
+    c.font = 'bold 9px "IBM Plex Sans",system-ui,sans-serif';
+    c.fillStyle = rootCol;
+    c.textAlign = 'right';
+    c.fillText(rootNode.label.toUpperCase(), W2 - 24, 48);
+    c.textAlign = 'left';
+  }
+
+  if (!expNodes.length) return;
+  const drawY0 = HEADER_H + 16;
+  const drawH  = H2 - 24;
+
+  // Build BFS levels from root for a top-down hierarchical layout
+  const levels = buildLevels(rootNode.id, expNodes, expEdges);
+  const laid   = layoutHierarchical(levels, W2, drawH, drawY0);
+  const laidMap = Object.fromEntries(laid.map(n => [n.id, n]));
+
+  // Draw edges
+  for (const e of expEdges) {
+    const sn = laidMap[e.s], tn = laidMap[e.t];
+    if (!sn || !tn) continue;
+    const col = EDGE_COLORS[e.type] || '#4040a0';
+    c.beginPath(); c.moveTo(sn.x, sn.y + sn.r); c.lineTo(tn.x, tn.y - tn.r - 2);
+    c.strokeStyle = col + '66'; c.lineWidth = isPreview ? 0.8 : 1.2; c.stroke();
+    if (!isPreview) {
+      const midX = (sn.x + tn.x) / 2, midY = (sn.y + sn.r + tn.y - tn.r) / 2;
+      c.font = '8px "IBM Plex Sans",system-ui,sans-serif';
+      c.textAlign = 'center';
+      c.fillStyle = col + '88';
+      c.fillText(e.type.replace(/_/g,' '), midX, midY);
+      c.textAlign = 'left';
+    }
+  }
+
+  // Draw nodes
+  for (const n of laid) {
+    const col = COLORS[n.label] || '#5050c0';
+    const isRoot = n.id === rootNode.id;
+    const r = isRoot ? n.r * 1.3 : n.r;
+
+    const grad = c.createRadialGradient(n.x - r*0.25, n.y - r*0.25, 0, n.x, n.y, r);
+    grad.addColorStop(0, lighten(col, 60));
+    grad.addColorStop(1, col);
+    c.beginPath(); c.arc(n.x, n.y, r, 0, Math.PI*2);
+    c.fillStyle = grad;
+    c.shadowColor = col; c.shadowBlur = isRoot ? 18 : 8; c.fill(); c.shadowBlur = 0;
+
+    if (isRoot) {
+      c.beginPath(); c.arc(n.x, n.y, r + 4, 0, Math.PI*2);
+      c.strokeStyle = '#ffffff44'; c.lineWidth = 1.5; c.stroke();
+    }
+
+    // SiteNumber spend ring
+    if (n.label === 'SiteNumber' && n.annualSpend) {
+      const maxSpend = Math.max(...expNodes.filter(x=>x.label==='SiteNumber').map(x=>x.annualSpend||0));
+      const frac = n.annualSpend / maxSpend;
+      c.beginPath();
+      c.arc(n.x, n.y, r + 3, -Math.PI/2, -Math.PI/2 + frac * Math.PI*2);
+      c.strokeStyle = '#33b1ffcc'; c.lineWidth = 2; c.stroke();
+    }
+
+    if (!isPreview) {
+      c.font = `bold ${Math.max(9, r)}px "IBM Plex Sans",system-ui,sans-serif`;
+      c.textAlign = 'center';
+      const lbl = n.name.length > 18 ? n.name.slice(0,17)+'…' : n.name;
+      c.fillStyle = 'rgba(4,4,12,0.85)';
+      c.fillText(lbl, n.x+0.5, n.y + r + 11.5);
+      c.fillStyle = col + 'dd';
+      c.fillText(lbl, n.x, n.y + r + 11);
+
+      // Sub-label: siteId / agency for SiteNumber
+      if (n.label === 'SiteNumber' && n.agency) {
+        c.font = '8px "IBM Plex Sans",system-ui,sans-serif';
+        c.fillStyle = '#33b1ff88';
+        c.fillText(n.agency, n.x, n.y + r + 21);
+      }
+      if (n.label === 'SiteNumber' && n.annualSpend) {
+        c.font = '8px "IBM Plex Sans",system-ui,sans-serif';
+        c.fillStyle = '#33b1ffbb';
+        c.fillText('$'+(n.annualSpend/1e6).toFixed(2)+'M', n.x, n.y + r + 31);
+      }
+    }
+  }
+
+  if (!isPreview) {
+    drawExportLegend(c, W2, TOTAL_H);
+  }
+}
+
+// ── BFS Level builder ─────────────────────────────────────────────────────────
+function buildLevels(rootId, expNodes, expEdges) {
+  const visited = new Set([rootId]);
+  const levels  = [[rootId]];
+  let current   = [rootId];
+
+  while (current.length) {
+    const next = [];
+    for (const id of current) {
+      for (const e of expEdges) {
+        const neighbour = e.s === id ? e.t : e.t === id ? e.s : null;
+        if (neighbour && !visited.has(neighbour)) {
+          visited.add(neighbour);
+          next.push(neighbour);
+        }
+      }
+    }
+    if (next.length) levels.push(next);
+    current = next;
+  }
+  return levels;
+}
+
+// ── Hierarchical layout ───────────────────────────────────────────────────────
+function layoutHierarchical(levels, canvasW, canvasH, topY) {
+  const nodeMap = Object.fromEntries(SEED_NODES.map(n => [n.id, n]));
+  const totalLevels = levels.length;
+  const levelH = totalLevels > 1 ? canvasH / (totalLevels - 1) : canvasH / 2;
+  const laid = [];
+
+  levels.forEach((level, li) => {
+    const y = topY + li * levelH * 0.85;
+    const spacing = canvasW / (level.length + 1);
+    level.forEach((id, idx) => {
+      const n = nodeMap[id];
+      if (!n) return;
+      const r = (NODE_RADII[n.label] || 10) * 1.1;
+      laid.push({ ...n, x: spacing * (idx + 1), y, r });
+    });
+  });
+  return laid;
+}
+
+// ── Fallback circle layout for full graph export ──────────────────────────────
+function layoutNodesForExport(expNodes, canvasW, canvasH, liveNodeMap, padX, topY) {
+  const cx = canvasW / 2, cy = topY + canvasH / 2;
+  const angle = (2 * Math.PI) / expNodes.length;
+  return expNodes.map((n, i) => {
+    const live = liveNodeMap[n.id];
+    const r = NODE_RADII[n.label] || 10;
+    if (live) {
+      // Scale live positions to fit the new canvas
+      const liveMinX = Math.min(...Object.values(liveNodeMap).map(x=>x.x));
+      const liveMaxX = Math.max(...Object.values(liveNodeMap).map(x=>x.x));
+      const liveMinY = Math.min(...Object.values(liveNodeMap).map(x=>x.y));
+      const liveMaxY = Math.max(...Object.values(liveNodeMap).map(x=>x.y));
+      const scaleX = (canvasW - padX*2) / (liveMaxX - liveMinX || 1);
+      const scaleY = (canvasH - padX*2) / (liveMaxY - liveMinY || 1);
+      const sc = Math.min(scaleX, scaleY, 1.8);
+      return { ...n, r, x: padX + (live.x - liveMinX) * sc, y: topY + padX + (live.y - liveMinY) * sc };
+    }
+    const radius = Math.min(canvasW, canvasH) * 0.38;
+    return { ...n, r, x: cx + radius * Math.cos(i * angle), y: cy + radius * Math.sin(i * angle) };
+  });
+}
+
+// ── Legend painter ────────────────────────────────────────────────────────────
+function drawExportLegend(c, canvasW, canvasH) {
+  const entries = Object.entries(COLORS);
+  const itemH = 16, padX = 14, padY = 14;
+  const totalH = entries.length * itemH + padY * 2;
+  const boxW = 130;
+  const bx = canvasW - boxW - 14, by = canvasH - totalH - 14;
+
+  c.fillStyle = 'rgba(8,8,20,0.82)';
+  c.strokeStyle = 'rgba(60,60,120,0.5)';
+  c.lineWidth = 1;
+  roundRect(c, bx, by, boxW, totalH, 6);
+  c.fill(); c.stroke();
+
+  entries.forEach(([label, col], i) => {
+    const y = by + padY + i * itemH + 6;
+    c.beginPath(); c.arc(bx + padX, y, 4, 0, Math.PI*2);
+    c.fillStyle = col; c.shadowColor = col; c.shadowBlur = 5; c.fill(); c.shadowBlur = 0;
+    c.font = '9px "IBM Plex Sans",system-ui,sans-serif';
+    c.fillStyle = '#7878a0';
+    c.textAlign = 'left';
+    c.fillText(label, bx + padX + 10, y + 3);
+  });
+}
+
+// ── roundRect helper ──────────────────────────────────────────────────────────
+function roundRect(c, x, y, w, h, r) {
+  c.beginPath();
+  c.moveTo(x + r, y);
+  c.lineTo(x + w - r, y); c.quadraticCurveTo(x + w, y, x + w, y + r);
+  c.lineTo(x + w, y + h - r); c.quadraticCurveTo(x + w, y + h, x + w - r, y + h);
+  c.lineTo(x + r, y + h); c.quadraticCurveTo(x, y + h, x, y + h - r);
+  c.lineTo(x, y + r); c.quadraticCurveTo(x, y, x + r, y);
+  c.closePath();
+}
+
+// ── Build the full export canvas (high-res) ───────────────────────────────────
+function buildExportCanvas() {
+  const scope  = getExportScope();
+  const { nodes: expNodes, edges: expEdges } = getScopeData();
+
+  const EXP_W = 2400, EXP_H = 1400;
+  const offscreen = document.createElement('canvas');
+
+  if (scope === 'subgraph' && selNode) {
+    renderSubgraphToCanvas(offscreen, expNodes, expEdges, selNode, EXP_W, EXP_H, 1, false);
+  } else {
+    renderFullGraphToCanvas(offscreen, expNodes, expEdges, EXP_W, EXP_H, 1, false);
+  }
+  return offscreen;
+}
+
+// ── CSV builder ───────────────────────────────────────────────────────────────
+function buildCSV() {
+  const { nodes: expNodes, edges: expEdges } = getScopeData();
+  const scope = getExportScope();
+  const rootLabel = scope === 'subgraph' && selNode ? selNode.name : 'Full Graph';
+
+  // Nodes sheet
+  const nodeRows = [
+    ['# IBM DKG Export — Nodes'],
+    ['# Scope:', rootLabel],
+    ['# Generated:', new Date().toISOString()],
+    [],
+    ['id', 'label', 'name', 'status', 'siteId', 'agency', 'annualSpend', 'industry', 'revenue', 'sellerType', 'role', 'bandLevel', 'geo', 'family', 'desc'],
+    ...expNodes.map(n => [
+      n.id, n.label, n.name, n.status||'',
+      n.siteId||'', n.agency||'', n.annualSpend||'',
+      n.industry||'', n.revenue||'', n.sellerType||'',
+      n.role||'', n.bandLevel||'', n.geo||'',
+      n.family||'', (n.desc||'').replace(/"/g,"'")
+    ]),
+    [],
+    ['# --- EDGES ---'],
+    ['from_id', 'relationship', 'to_id', 'from_name', 'to_name'],
+    ...expEdges.map(e => {
+      const from = SEED_NODES.find(x=>x.id===e.s);
+      const to   = SEED_NODES.find(x=>x.id===e.t);
+      return [e.s, e.type, e.t, from?from.name:'', to?to.name:''];
+    }),
+  ];
+  return nodeRows.map(row => row.map(v => `"${String(v).replace(/"/g,'""')}"`).join(',')).join('\n');
+}
+
+// ── JSON builder ──────────────────────────────────────────────────────────────
+function buildJSON() {
+  const { nodes: expNodes, edges: expEdges } = getScopeData();
+  const scope = getExportScope();
+  return JSON.stringify({
+    meta: {
+      generator: 'IBM DKG',
+      scope: scope === 'subgraph' && selNode ? `Subgraph: ${selNode.name}` : 'Full Graph',
+      exportedAt: new Date().toISOString(),
+      nodeCount: expNodes.length,
+      edgeCount: expEdges.length,
+    },
+    nodes: expNodes,
+    edges: expEdges.map(e => ({
+      from: e.s, to: e.t, type: e.type,
+      fromName: (SEED_NODES.find(x=>x.id===e.s)||{}).name,
+      toName:   (SEED_NODES.find(x=>x.id===e.t)||{}).name,
+    })),
+  }, null, 2);
+}
+
+// ── Download trigger ──────────────────────────────────────────────────────────
+function downloadBlob(blob, filename) {
+  const url = URL.createObjectURL(blob);
+  const a = document.createElement('a');
+  a.href = url; a.download = filename; a.click();
+  setTimeout(() => URL.revokeObjectURL(url), 3000);
+}
+
+function getFilename(ext) {
+  const scope = getExportScope();
+  const label = scope === 'subgraph' && selNode
+    ? selNode.name.replace(/[^a-z0-9]/gi, '_')
+    : 'IBM_DKG_Full';
+  const ts = new Date().toISOString().slice(0,10);
+  return `${label}_${ts}.${ext}`;
+}
+
+function setFeedback(msg, ok = true) {
+  const el = document.getElementById('exmfeedback');
+  el.textContent = msg;
+  el.style.color = ok ? '#24a148' : '#da1e28';
+  setTimeout(() => { if (el.textContent === msg) el.textContent = ''; }, 3000);
+}
+
+async function runExportDownload() {
+  const fmt = getExportFormat();
+  document.getElementById('exmbtn').textContent = '⏳ Generating…';
+  document.getElementById('exmbtn').disabled = true;
+
+  try {
+    await new Promise(r => setTimeout(r, 50)); // yield for repaint
+
+    if (fmt === 'png') {
+      const offscreen = buildExportCanvas();
+      offscreen.toBlob(blob => {
+        downloadBlob(blob, getFilename('png'));
+        setFeedback('PNG downloaded ✓');
+      }, 'image/png');
+    } else if (fmt === 'csv') {
+      const csv = buildCSV();
+      downloadBlob(new Blob([csv], { type: 'text/csv;charset=utf-8;' }), getFilename('csv'));
+      setFeedback('CSV downloaded ✓');
+    } else if (fmt === 'json') {
+      const json = buildJSON();
+      downloadBlob(new Blob([json], { type: 'application/json' }), getFilename('json'));
+      setFeedback('JSON downloaded ✓');
+    }
+  } catch (err) {
+    setFeedback('Export failed: ' + err.message, false);
+  } finally {
+    document.getElementById('exmbtn').textContent = '↓ Download';
+    document.getElementById('exmbtn').disabled = false;
+  }
+}
+
+async function runExportCopy() {
+  const fmt = getExportFormat();
+  if (fmt !== 'png') {
+    setFeedback('Copy only supported for PNG', false);
+    return;
+  }
+  document.getElementById('exmcopybtn').textContent = '⏳';
+  try {
+    await new Promise(r => setTimeout(r, 50));
+    const offscreen = buildExportCanvas();
+    offscreen.toBlob(async blob => {
+      try {
+        await navigator.clipboard.write([new ClipboardItem({ 'image/png': blob })]);
+        setFeedback('PNG copied to clipboard ✓');
+      } catch {
+        setFeedback('Clipboard write blocked — use Download instead', false);
+      }
+    }, 'image/png');
+  } catch (err) {
+    setFeedback('Copy failed: ' + err.message, false);
+  } finally {
+    document.getElementById('exmcopybtn').textContent = 'Copy';
+  }
 }
 
 // ── Boot ───────────────────────────────────────────────────────────────────
