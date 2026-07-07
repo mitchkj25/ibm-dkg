@@ -663,24 +663,29 @@ const NODE_RADII = {
 
 // ── Seed data ─────────────────────────────────────────────────────────────
 const SEED_NODES = [
+  // ── Managers ────────────────────────────────────────────────────────────
   {id:'mgr-001',label:'Manager',  name:'Sandra Okafor',           bandLevel:'Band 10',role:'FLM', desc:'First-line manager, Northeast. Oversees Marcus Webb & Aisha Thornton.'},
   {id:'mgr-002',label:'Manager',  name:'David Reyes',             bandLevel:'Band 10',role:'FLM', desc:'First-line manager, Southeast. Manages James Kowalski & Lin Mei Zhang.'},
-  {id:'mgr-003',label:'Manager',  name:'Priya Nambiar',           bandLevel:'Band 11',role:'SLM', desc:'Second-line manager, West Coast. Tyler Oduya & Rachel Patel report to her.'},
-  {id:'mgr-004',label:'Manager',  name:'Derek Callahan',          bandLevel:'Band 9', role:'ALT', desc:'ALT — Public Sector South. Oversees Monique Tureaud (TSL) covering Louisiana state agencies.'},
+  {id:'mgr-003',label:'Manager',  name:'Priya Nambiar',           bandLevel:'Band 11',role:'SLM', desc:'Second-line manager. Tyler Oduya & Rachel Patel report to her. Priya oversees 3 FLMs and the Public Sector ALT.'},
+  {id:'mgr-004',label:'Manager',  name:'Derek Callahan',          bandLevel:'Band 9', role:'ALT', desc:'ALT — Area Leader / Territory, Public Sector South. Oversees Monique Tureaud (TSL) covering all Louisiana state agencies.'},
+  // ── Sellers ─────────────────────────────────────────────────────────────
   {id:'sel-001',label:'Seller',   name:'Marcus Webb',             sellerType:'CE',  desc:'Client Executive — NYC Metro. Primary CE for First National Bancorp & Cascadia Insurance.'},
   {id:'sel-002',label:'Seller',   name:'Aisha Thornton',          sellerType:'SSR', desc:'watsonx AI & Automation specialist — New England. Certified watsonx.ai & watsonx.data.'},
   {id:'sel-003',label:'Seller',   name:'James Kowalski',          sellerType:'CE',  desc:'Client Executive — Atlanta. Owns Meridian Health Systems & Nova Retail Group.'},
   {id:'sel-004',label:'Seller',   name:'Lin Mei Zhang',           sellerType:'SSR', desc:'Technology Sales Specialist — Miami. Owns SunCoast Logistics.'},
   {id:'sel-005',label:'Seller',   name:'Tyler Oduya',             sellerType:'CE',  desc:'Client Executive — San Francisco. Primary CE for Apex Technology Partners.'},
   {id:'sel-006',label:'Seller',   name:'Rachel Patel',            sellerType:'SSR', desc:'Security & Compliance specialist — LA. Certified CP4Security & OpenPages.'},
-  {id:'sel-007',label:'Seller',   name:'Monique Tureaud',         sellerType:'TSL', desc:'TSL — Baton Rouge, LA. Covers IBM Cognos Analytics for Louisiana Public Sector accounts.'},
+  {id:'sel-007',label:'Seller',   name:'Monique Tureaud',         sellerType:'TSL', desc:'TSL (Territory Sales Leader) — Baton Rouge, LA. Covers IBM Cognos Analytics for all Louisiana Public Sector accounts across 6 site numbers.'},
   {id:'sel-008',label:'Seller',   name:'Carlos Muniz',            sellerType:'PL',  desc:'IBM Partner Liaison — Southeast & Mid-Atlantic. Covers Presidio and Perficient.'},
   {id:'sel-009',label:'Seller',   name:'Dana Whitfield',          sellerType:'PL',  desc:'IBM Partner Liaison — West. Covers Onix Networking Corp and Bay Area territory.'},
+  // ── Territories ─────────────────────────────────────────────────────────
   {id:'ter-001',label:'Territory',name:'NYC Metro Enterprise',    desc:'Quota: $8.5M — Large enterprise accounts in NY/NJ metro.'},
   {id:'ter-002',label:'Territory',name:'New England Mid-Market',  desc:'Quota: $4.2M — Tech-focused mid-market across MA, CT, RI.'},
   {id:'ter-003',label:'Territory',name:'Southeast Enterprise',    desc:'Quota: $6.1M — Enterprise accounts across GA, FL, SC, NC.'},
   {id:'ter-004',label:'Territory',name:'Bay Area Tech',           desc:'Quota: $9.2M — Technology companies in Silicon Valley & Bay Area.'},
   {id:'ter-005',label:'Territory',name:'Southern California',     desc:'Quota: $5.8M — Entertainment, media, and financial accounts in SoCal.'},
+  {id:'ter-006',label:'Territory',name:'Louisiana Public Sector', desc:'Quota: $3.1M — State agencies, DCFS, DOTD, DHH, OIT, LDH, LDWF. Managed by Monique Tureaud (TSL) under Derek Callahan (ALT).'},
+  // ── Products ────────────────────────────────────────────────────────────
   {id:'prd-001',label:'Product',  name:'watsonx.ai',              family:'watsonx',            desc:'AI studio for training, validating, tuning and deploying AI models.'},
   {id:'prd-002',label:'Product',  name:'watsonx.data',            family:'watsonx',            desc:'Fit-for-purpose data store on open lakehouse architecture.'},
   {id:'prd-003',label:'Product',  name:'watsonx.governance',      family:'watsonx',            desc:'AI governance and risk management platform.'},
@@ -689,13 +694,16 @@ const SEED_NODES = [
   {id:'prd-006',label:'Product',  name:'IBM Sterling OMS',        family:'Supply Chain',       desc:'Omnichannel order orchestration and fulfillment.'},
   {id:'prd-007',label:'Product',  name:'IBM Turbonomic',          family:'AIOps',              desc:'Application resource management and FinOps platform.'},
   {id:'prd-008',label:'Product',  name:'IBM Cognos Analytics',    family:'Business Intelligence',desc:'Enterprise BI and analytics platform for reporting and dashboards.'},
+  // ── Accounts ────────────────────────────────────────────────────────────
   {id:'acc-001',label:'Account',  name:'First National Bancorp',  industry:'Financial Services',revenue:24000000000,desc:'Top-10 US retail bank — $24B revenue. Heavy IBM footprint. watsonx expansion in progress.'},
   {id:'acc-002',label:'Account',  name:'Meridian Health Systems', industry:'Healthcare',        revenue:8700000000, desc:'Regional hospital network — $8.7B revenue. Epic EHR integration in Southeast US.'},
   {id:'acc-003',label:'Account',  name:'Nova Retail Group',       industry:'Retail',            revenue:2100000000, desc:'Omnichannel retailer — $2.1B revenue. 400+ stores, supply chain modernization focus.'},
   {id:'acc-004',label:'Account',  name:'Apex Technology Partners',industry:'Technology',        revenue:15000000000,desc:'SaaS platform company — $15B revenue. AI and governance expansion opportunity.'},
   {id:'acc-005',label:'Account',  name:'Cascadia Insurance Group',industry:'Insurance',         revenue:6500000000, desc:'Multi-line P&C insurer — $6.5B revenue. Risk compliance modernization underway.'},
   {id:'acc-006',label:'Account',  name:'SunCoast Logistics',      industry:'Logistics',         revenue:890000000,  desc:'Regional 3PL — $890M revenue. Evaluating AI-driven order orchestration.'},
-  {id:'acc-007',label:'Account',  name:'State of Louisiana',      industry:'Government / Public Sector',revenue:0,desc:'State of Louisiana — multiple agencies under separate site numbers. DCFS, DOTD, DHH & others.'},
+  {id:'acc-007',label:'Account',  name:'State of Louisiana',      industry:'Government / Public Sector',revenue:0,desc:'State of Louisiana — 6 active site numbers across agencies: DCFS, DOTD, DHH, OIT, LDH, LDWF. Largest public-sector IBM account in the South.'},
+  {id:'acc-008',label:'Account',  name:'Meridian Health — East',  industry:'Healthcare',        revenue:3200000000, desc:'East division of Meridian Health Systems — separate site number for AI initiatives.'},
+  // ── Installs ─────────────────────────────────────────────────────────────
   {id:'ins-001',label:'Install',  name:'Turbonomic @ First National',   desc:'v8.10 — managing 4,200 VMs across hybrid cloud. Support ends Apr 2026.'},
   {id:'ins-002',label:'Install',  name:'watsonx.ai @ Apex Tech',        desc:'v2.0 — internal developer copilot + fraud model training. Support ends Jan 2027.'},
   {id:'ins-003',label:'Install',  name:'OpenPages @ Cascadia',          desc:'v8.3 — GRC platform. ⚠ Renewal at risk — upgrade to v9 needed.'},
@@ -703,15 +711,32 @@ const SEED_NODES = [
   {id:'ins-005',label:'Install',  name:'CP4Security @ First National',  desc:'v1.9 — SIEM consolidation project. Support ends Jul 2026.'},
   {id:'ins-006',label:'Install',  name:'Cognos @ LA DCFS (0041)',       desc:'v12.0 — dashboards for child welfare reporting. Support ends Feb 2026.'},
   {id:'ins-007',label:'Install',  name:'Cognos @ LA DOTD (0089)',       desc:'v11.2 — older version, ⚠ support nearly expired Jun 2025.',status:'STALE'},
+  {id:'ins-008',label:'Install',  name:'Turbonomic @ LA OIT (0156)',    desc:'v9.0 — infrastructure resource management for state data center. Support ends Dec 2026.'},
+  {id:'ins-009',label:'Install',  name:'watsonx.ai @ Meridian East',   desc:'v2.1 — clinical trial data analysis pilot. Support ends Mar 2027.'},
+  {id:'ins-010',label:'Install',  name:'Cognos @ FNB Treasury (0047)', desc:'v12.0 — treasury reporting dashboards. Support ends Aug 2026.'},
+  // ── Opportunities ────────────────────────────────────────────────────────
   {id:'opp-001',label:'Opportunity',name:'FNB watsonx Expansion',       desc:'Stage: Validate — $2.4M. Expand watsonx.ai to 8 LOBs. Close: Q3 2025.'},
   {id:'opp-002',label:'Opportunity',name:'Cascadia OpenPages Upgrade',  desc:'Stage: Propose — $890K. Renewal + upgrade from v8.3. Risk of churn.'},
   {id:'opp-003',label:'Opportunity',name:'Nova Retail Sterling v10',    desc:'Stage: Identify — $640K. Upgrade out-of-support v9.5 to v10.'},
   {id:'opp-004',label:'Opportunity',name:'Apex watsonx.governance',     desc:'Stage: Qualify — $560K. AI governance layer for existing watsonx.ai install.'},
-  {id:'site-001',label:'SiteNumber',name:'LA-GOV-0041', siteId:'LA-GOV-0041', agency:'DCFS',   annualSpend:1840000,accountId:'acc-007',desc:'LA DCFS — Cognos Analytics + watsonx.ai active. Highest spend Louisiana site ($1.84M).'},
-  {id:'site-002',label:'SiteNumber',name:'LA-GOV-0089', siteId:'LA-GOV-0089', agency:'DOTD',   annualSpend:1120000,accountId:'acc-007',desc:'LA DOTD — Cognos Analytics deployed. No watsonx footprint. Upgrade opportunity ($1.12M).'},
-  {id:'site-003',label:'SiteNumber',name:'LA-GOV-0117', siteId:'LA-GOV-0117', agency:'DHH',    annualSpend:670000, accountId:'acc-007',desc:'LA DHH — IBM Turbonomic only. Cognos not yet deployed — whitespace opportunity ($670K).'},
-  {id:'site-004',label:'SiteNumber',name:'FNB-CORP-0012',siteId:'FNB-CORP-0012',agency:'HQ',   annualSpend:3200000,accountId:'acc-001',desc:'First National Bancorp HQ site — Turbonomic + CP4Security active ($3.2M spend).'},
-  {id:'site-005',label:'SiteNumber',name:'FNB-RET-0031', siteId:'FNB-RET-0031', agency:'Retail',annualSpend:2600000,accountId:'acc-001',desc:'FNB Retail Banking Division — watsonx.ai expansion in progress ($2.6M spend).'},
+  {id:'opp-005',label:'Opportunity',name:'LA DHH Cognos Deployment',    desc:'Stage: Identify — $320K. Deploy Cognos Analytics to DHH site 0117 — currently Turbonomic-only.'},
+  {id:'opp-006',label:'Opportunity',name:'LA LDH watsonx Pilot',        desc:'Stage: Explore — $480K. Initial watsonx.ai pilot for Louisiana LDH population health models.'},
+  // ── Site Numbers — Louisiana (6 sites) ────────────────────────────────
+  {id:'site-001',label:'SiteNumber',name:'LA-GOV-0041', siteId:'LA-GOV-0041', agency:'DCFS',   annualSpend:1840000,accountId:'acc-007',desc:'LA DCFS (Dept. of Children & Family Services) — Cognos Analytics v12 + watsonx.ai active. Highest spend Louisiana site ($1.84M).'},
+  {id:'site-002',label:'SiteNumber',name:'LA-GOV-0089', siteId:'LA-GOV-0089', agency:'DOTD',   annualSpend:1120000,accountId:'acc-007',desc:'LA DOTD (Dept. of Transportation) — Cognos Analytics deployed. No watsonx footprint. Upgrade opportunity ($1.12M).'},
+  {id:'site-003',label:'SiteNumber',name:'LA-GOV-0117', siteId:'LA-GOV-0117', agency:'DHH',    annualSpend:670000, accountId:'acc-007',desc:'LA DHH (Dept. of Health & Hospitals) — IBM Turbonomic only. Cognos not yet deployed — whitespace opportunity ($670K).'},
+  {id:'site-004',label:'SiteNumber',name:'LA-GOV-0156', siteId:'LA-GOV-0156', agency:'OIT',    annualSpend:980000, accountId:'acc-007',desc:'LA OIT (Office of Information Technology) — IBM Turbonomic v9.0 for state data center. No analytics product deployed yet ($980K).'},
+  {id:'site-005',label:'SiteNumber',name:'LA-GOV-0203', siteId:'LA-GOV-0203', agency:'LDH',    annualSpend:420000, accountId:'acc-007',desc:'LA LDH (Louisiana Dept. of Health) — new site, IBM footprint in evaluation phase. watsonx.ai pilot opportunity ($420K).'},
+  {id:'site-006',label:'SiteNumber',name:'LA-GOV-0228', siteId:'LA-GOV-0228', agency:'LDWF',   annualSpend:290000, accountId:'acc-007',desc:'LA LDWF (Dept. of Wildlife & Fisheries) — minimal IBM footprint. Early-stage Cognos opportunity ($290K).'},
+  // ── Site Numbers — First National Bancorp (4 sites) ───────────────────
+  {id:'site-007',label:'SiteNumber',name:'FNB-CORP-0012',siteId:'FNB-CORP-0012',agency:'HQ',      annualSpend:3200000,accountId:'acc-001',desc:'First National Bancorp HQ — Turbonomic + CP4Security active. Largest FNB site by spend ($3.2M).'},
+  {id:'site-008',label:'SiteNumber',name:'FNB-RET-0031', siteId:'FNB-RET-0031', agency:'Retail',   annualSpend:2600000,accountId:'acc-001',desc:'FNB Retail Banking Division — watsonx.ai expansion in progress ($2.6M spend).'},
+  {id:'site-009',label:'SiteNumber',name:'FNB-TRS-0047', siteId:'FNB-TRS-0047', agency:'Treasury', annualSpend:1950000,accountId:'acc-001',desc:'FNB Treasury Division — Cognos Analytics v12 for treasury reporting dashboards ($1.95M).'},
+  {id:'site-010',label:'SiteNumber',name:'FNB-RIS-0063', siteId:'FNB-RIS-0063', agency:'Risk',     annualSpend:1380000,accountId:'acc-001',desc:'FNB Risk Management — no IBM analytics deployed yet. OpenPages opportunity ($1.38M whitespace).'},
+  // ── Site Numbers — Meridian Health (2 sites) ──────────────────────────
+  {id:'site-011',label:'SiteNumber',name:'MHS-MAIN-0001',siteId:'MHS-MAIN-0001',agency:'Main',    annualSpend:1100000,accountId:'acc-002',desc:'Meridian Health Systems main site — IBM integration hub for Southeast hospital network ($1.1M).'},
+  {id:'site-012',label:'SiteNumber',name:'MHS-EAST-0022',siteId:'MHS-EAST-0022',agency:'East Div',annualSpend:740000, accountId:'acc-008',desc:'Meridian Health East division — watsonx.ai clinical pilot ($740K).'},
+  // ── Business Partners ────────────────────────────────────────────────────
   {id:'bp-001',label:'BusinessPartner',name:'Presidio Inc.',        partnerTier:'Gold',  poContact:'deals@presidio.com',  liaisonId:'sel-008',desc:'Gold BP — resells Turbonomic & CP4Security. Aligned to FNB and Cascadia accounts.'},
   {id:'bp-002',label:'BusinessPartner',name:'Perficient Digital',   partnerTier:'Silver',poContact:'ibm@perficient.com',  liaisonId:'sel-008',desc:'Silver BP — Watson & Cognos specialist. Covers Louisiana public sector accounts.'},
   {id:'bp-003',label:'BusinessPartner',name:'Onix Networking Corp.',partnerTier:'Gold',  poContact:'ibm-ops@onixnet.com', liaisonId:'sel-009',desc:'Gold BP — AIOps & hybrid cloud. Active on Apex Technology Partners.'},
@@ -741,43 +766,77 @@ const CONFLICTS = [
 const WRITEBACK_LOG = [];
 
 const SEED_EDGES = [
+  // ── Business partner edges ──────────────────────────────────────────────
   {s:'bp-001',t:'acc-001',type:'PARTNER_SELLS'},{s:'bp-001',t:'acc-005',type:'PARTNER_SELLS'},
   {s:'bp-002',t:'acc-007',type:'PARTNER_SELLS'},{s:'bp-003',t:'acc-004',type:'PARTNER_SELLS'},
   {s:'bp-001',t:'sel-008',type:'LIAISED_BY'},{s:'bp-002',t:'sel-008',type:'LIAISED_BY'},{s:'bp-003',t:'sel-009',type:'LIAISED_BY'},
+  // ── Org hierarchy — REPORTS_TO edges ────────────────────────────────────
+  // SLM (Priya) is the top; FLMs report to her; ALT reports to FLM; TSL reports to ALT
   {s:'sel-001',t:'mgr-001',type:'REPORTS_TO'},{s:'sel-002',t:'mgr-001',type:'REPORTS_TO'},
   {s:'sel-003',t:'mgr-002',type:'REPORTS_TO'},{s:'sel-004',t:'mgr-002',type:'REPORTS_TO'},
   {s:'sel-005',t:'mgr-003',type:'REPORTS_TO'},{s:'sel-006',t:'mgr-003',type:'REPORTS_TO'},
   {s:'mgr-001',t:'mgr-003',type:'REPORTS_TO'},{s:'mgr-002',t:'mgr-003',type:'REPORTS_TO'},
+  // ALT (Derek) reports to FLM David Reyes → flows: TSL → ALT → FLM → SLM
   {s:'sel-007',t:'mgr-004',type:'REPORTS_TO'},{s:'mgr-004',t:'mgr-002',type:'REPORTS_TO'},
+  // ── Territory ownership ──────────────────────────────────────────────────
   {s:'sel-001',t:'ter-001',type:'OWNS_TERRITORY'},{s:'sel-002',t:'ter-002',type:'OWNS_TERRITORY'},
   {s:'sel-003',t:'ter-003',type:'OWNS_TERRITORY'},{s:'sel-004',t:'ter-003',type:'OWNS_TERRITORY'},
   {s:'sel-005',t:'ter-004',type:'OWNS_TERRITORY'},{s:'sel-006',t:'ter-005',type:'OWNS_TERRITORY'},
+  {s:'sel-007',t:'ter-006',type:'OWNS_TERRITORY'},
+  // ── Account ownership ────────────────────────────────────────────────────
   {s:'sel-001',t:'acc-001',type:'OWNS_ACCOUNT'},{s:'sel-003',t:'acc-002',type:'OWNS_ACCOUNT'},
   {s:'sel-003',t:'acc-003',type:'OWNS_ACCOUNT'},{s:'sel-005',t:'acc-004',type:'OWNS_ACCOUNT'},
   {s:'sel-001',t:'acc-005',type:'OWNS_ACCOUNT'},{s:'sel-004',t:'acc-006',type:'OWNS_ACCOUNT'},
-  {s:'sel-007',t:'acc-007',type:'OWNS_ACCOUNT'},
+  {s:'sel-007',t:'acc-007',type:'OWNS_ACCOUNT'},{s:'sel-003',t:'acc-008',type:'OWNS_ACCOUNT'},
+  // ── Product coverage (sellers) ───────────────────────────────────────────
   {s:'sel-001',t:'prd-004',type:'COVERS_PRODUCT'},{s:'sel-002',t:'prd-001',type:'COVERS_PRODUCT'},
   {s:'sel-002',t:'prd-003',type:'COVERS_PRODUCT'},{s:'sel-005',t:'prd-001',type:'COVERS_PRODUCT'},
   {s:'sel-005',t:'prd-007',type:'COVERS_PRODUCT'},{s:'sel-006',t:'prd-004',type:'COVERS_PRODUCT'},
   {s:'sel-007',t:'prd-008',type:'COVERS_PRODUCT'},
+  // ── Account → Install ────────────────────────────────────────────────────
   {s:'acc-001',t:'ins-001',type:'HAS_INSTALL'},{s:'acc-001',t:'ins-005',type:'HAS_INSTALL'},
   {s:'acc-004',t:'ins-002',type:'HAS_INSTALL'},{s:'acc-005',t:'ins-003',type:'HAS_INSTALL'},
   {s:'acc-003',t:'ins-004',type:'HAS_INSTALL'},
-  {s:'acc-007',t:'ins-006',type:'HAS_INSTALL'},{s:'acc-007',t:'ins-007',type:'HAS_INSTALL'},
+  {s:'acc-007',t:'ins-006',type:'HAS_INSTALL'},{s:'acc-007',t:'ins-007',type:'HAS_INSTALL'},{s:'acc-007',t:'ins-008',type:'HAS_INSTALL'},
+  {s:'acc-008',t:'ins-009',type:'HAS_INSTALL'},{s:'acc-001',t:'ins-010',type:'HAS_INSTALL'},
+  // ── Install → Product ────────────────────────────────────────────────────
   {s:'ins-001',t:'prd-007',type:'RUNS_PRODUCT'},{s:'ins-002',t:'prd-001',type:'RUNS_PRODUCT'},
   {s:'ins-003',t:'prd-005',type:'RUNS_PRODUCT'},{s:'ins-004',t:'prd-006',type:'RUNS_PRODUCT'},
   {s:'ins-005',t:'prd-004',type:'RUNS_PRODUCT'},
   {s:'ins-006',t:'prd-008',type:'RUNS_PRODUCT'},{s:'ins-007',t:'prd-008',type:'RUNS_PRODUCT'},
+  {s:'ins-008',t:'prd-007',type:'RUNS_PRODUCT'},{s:'ins-009',t:'prd-001',type:'RUNS_PRODUCT'},
+  {s:'ins-010',t:'prd-008',type:'RUNS_PRODUCT'},
+  // ── Opportunities ────────────────────────────────────────────────────────
   {s:'acc-001',t:'opp-001',type:'HAS_OPPORTUNITY'},{s:'acc-005',t:'opp-002',type:'HAS_OPPORTUNITY'},
   {s:'acc-003',t:'opp-003',type:'HAS_OPPORTUNITY'},{s:'acc-004',t:'opp-004',type:'HAS_OPPORTUNITY'},
+  {s:'acc-007',t:'opp-005',type:'HAS_OPPORTUNITY'},{s:'acc-007',t:'opp-006',type:'HAS_OPPORTUNITY'},
+  // ── Co-sell ──────────────────────────────────────────────────────────────
   {s:'sel-001',t:'sel-002',type:'CO_SELLS'},{s:'sel-003',t:'sel-004',type:'CO_SELLS'},
-  {s:'acc-007',t:'site-001',type:'HAS_SITE'},{s:'acc-007',t:'site-002',type:'HAS_SITE'},{s:'acc-007',t:'site-003',type:'HAS_SITE'},
-  {s:'acc-001',t:'site-004',type:'HAS_SITE'},{s:'acc-001',t:'site-005',type:'HAS_SITE'},
+  // ── Account → Site Numbers ───────────────────────────────────────────────
+  // Louisiana — 6 sites
+  {s:'acc-007',t:'site-001',type:'HAS_SITE'},{s:'acc-007',t:'site-002',type:'HAS_SITE'},
+  {s:'acc-007',t:'site-003',type:'HAS_SITE'},{s:'acc-007',t:'site-004',type:'HAS_SITE'},
+  {s:'acc-007',t:'site-005',type:'HAS_SITE'},{s:'acc-007',t:'site-006',type:'HAS_SITE'},
+  // First National Bancorp — 4 sites
+  {s:'acc-001',t:'site-007',type:'HAS_SITE'},{s:'acc-001',t:'site-008',type:'HAS_SITE'},
+  {s:'acc-001',t:'site-009',type:'HAS_SITE'},{s:'acc-001',t:'site-010',type:'HAS_SITE'},
+  // Meridian Health — 2 sites
+  {s:'acc-002',t:'site-011',type:'HAS_SITE'},{s:'acc-008',t:'site-012',type:'HAS_SITE'},
+  // ── Site → Products ──────────────────────────────────────────────────────
+  // Louisiana sites
   {s:'site-001',t:'prd-008',type:'HAS_PRODUCT'},{s:'site-001',t:'prd-001',type:'HAS_PRODUCT'},
   {s:'site-002',t:'prd-008',type:'HAS_PRODUCT'},
   {s:'site-003',t:'prd-007',type:'HAS_PRODUCT'},
-  {s:'site-004',t:'prd-007',type:'HAS_PRODUCT'},{s:'site-004',t:'prd-004',type:'HAS_PRODUCT'},
-  {s:'site-005',t:'prd-001',type:'HAS_PRODUCT'},
+  {s:'site-004',t:'prd-007',type:'HAS_PRODUCT'},
+  // site-005 (LDH) and site-006 (LDWF) — no products yet (whitespace)
+  // FNB sites
+  {s:'site-007',t:'prd-007',type:'HAS_PRODUCT'},{s:'site-007',t:'prd-004',type:'HAS_PRODUCT'},
+  {s:'site-008',t:'prd-001',type:'HAS_PRODUCT'},
+  {s:'site-009',t:'prd-008',type:'HAS_PRODUCT'},
+  // site-010 (FNB Risk) — no products yet (OpenPages whitespace)
+  // Meridian sites
+  {s:'site-011',t:'prd-007',type:'HAS_PRODUCT'},
+  {s:'site-012',t:'prd-001',type:'HAS_PRODUCT'},
 ];
 
 const SAMPLE_QUERIES = [
@@ -786,13 +845,16 @@ const SAMPLE_QUERIES = [
   'What products does site LA-GOV-0041 have?',
   'Does Louisiana have Cognos on all sites?',
   'What products does LA-GOV-0117 not have?',
+  'Show site-product matrix for Louisiana',
   'Show me the seller hierarchy',
   'Show ALT and TSL hierarchy',
   'Who manages Marcus Webb?',
+  'Who is Monique Tureaud\'s manager chain?',
   'What does First National Bancorp have installed?',
+  'What site numbers does FNB have?',
   'Which sellers cover watsonx.ai?',
   'Find expiring support contracts',
-  'What opportunities does Cascadia have?',
+  'What opportunities does Louisiana have?',
   'Co-sell relationships',
 ];
 
@@ -1220,7 +1282,7 @@ function buildHierarchySVG() {
   const svg = document.getElementById('hf-svg');
   svg.innerHTML = '';
 
-  // Find top node
+  // Find top node (SLM)
   const topNode = SEED_NODES.find(n=>n.role==='SLM') || SEED_NODES.find(n=>n.label==='Manager');
   if (!topNode) return;
 
@@ -1237,8 +1299,8 @@ function buildHierarchySVG() {
   const tree = buildTree(topNode.id);
   if (!tree) return;
 
-  // Measure and lay out
-  const COL_W = 160, ROW_H = 68, PAD = 40;
+  // Collect levels
+  const COL_W = 172, ROW_H = 86, PAD_TOP = 60, PAD_SIDE = 50;
   const levels = [];
   function collectLevels(node, depth) {
     if (!levels[depth]) levels[depth] = [];
@@ -1247,38 +1309,81 @@ function buildHierarchySVG() {
   }
   collectLevels(tree, 0);
 
-  const svgW = Math.max(...levels.map(l=>l.length)) * COL_W + PAD * 2;
-  const svgH = levels.length * ROW_H + PAD * 2;
+  // Role-level swimlane configuration
+  const SWIMLANE_ROLES = [
+    { label:'SLM — Second-Line Manager', color:'#a56eff', bg:'rgba(165,110,255,0.04)' },
+    { label:'FLM — First-Line Manager',  color:'#1192e8', bg:'rgba(17,146,232,0.04)' },
+    { label:'ALT / TSL — Area & Territory Leaders', color:'#009d9a', bg:'rgba(0,157,154,0.04)' },
+    { label:'Sellers (CE / SSR / PL)',   color:'#0f62fe', bg:'rgba(15,98,254,0.04)' },
+  ];
+
+  const svgW = Math.max(...levels.map(l=>l.length)) * COL_W + PAD_SIDE * 2 + 120;
+  const svgH = levels.length * ROW_H + PAD_TOP + 30;
   svg.setAttribute('width', svgW);
   svg.setAttribute('height', svgH);
   svg.style.width  = svgW + 'px';
   svg.style.height = svgH + 'px';
 
-  // Assign positions
+  // Draw swimlane backgrounds + labels
+  levels.forEach((level, depth) => {
+    const rowY = PAD_TOP + depth * ROW_H;
+    const lane = SWIMLANE_ROLES[Math.min(depth, SWIMLANE_ROLES.length-1)];
+
+    // Background band
+    const band = document.createElementNS('http://www.w3.org/2000/svg','rect');
+    band.setAttribute('x', 0); band.setAttribute('y', rowY - 4);
+    band.setAttribute('width', svgW); band.setAttribute('height', ROW_H);
+    band.setAttribute('fill', lane.bg);
+    svg.appendChild(band);
+
+    // Top border line for this row
+    const sep = document.createElementNS('http://www.w3.org/2000/svg','line');
+    sep.setAttribute('x1',0); sep.setAttribute('y1', rowY - 4);
+    sep.setAttribute('x2', svgW); sep.setAttribute('y2', rowY - 4);
+    sep.setAttribute('stroke', lane.color); sep.setAttribute('stroke-width','0.5');
+    sep.setAttribute('opacity','0.3');
+    svg.appendChild(sep);
+
+    // Swimlane label (left side)
+    const lbl = document.createElementNS('http://www.w3.org/2000/svg','text');
+    lbl.setAttribute('x', 8); lbl.setAttribute('y', rowY + ROW_H/2 + 3);
+    lbl.setAttribute('font-size','8'); lbl.setAttribute('fill', lane.color);
+    lbl.setAttribute('font-weight','700'); lbl.setAttribute('font-family',"'IBM Plex Sans',system-ui,sans-serif");
+    lbl.setAttribute('letter-spacing','0.5');
+    // Rotate 90° and pin to left
+    lbl.setAttribute('transform', `rotate(-90, 8, ${rowY + ROW_H/2 + 3})`);
+    lbl.setAttribute('text-anchor','middle');
+    lbl.textContent = lane.label;
+    svg.appendChild(lbl);
+  });
+
+  // Assign positions (offset by 30px for left label column)
+  const CONTENT_X_OFFSET = 30;
   levels.forEach((level, depth) => {
     const levelW = level.length * COL_W;
-    const startX = (svgW - levelW) / 2 + COL_W / 2;
+    const startX = CONTENT_X_OFFSET + (svgW - CONTENT_X_OFFSET - levelW) / 2 + COL_W / 2;
     level.forEach((item, i) => {
       item.x = startX + i * COL_W;
-      item.y = PAD + depth * ROW_H + ROW_H / 2;
+      item.y = PAD_TOP + depth * ROW_H + ROW_H / 2 - 4;
     });
   });
 
-  // Draw edges first
+  // Draw connector edges
   function drawEdges(item) {
     item.children.forEach(child => {
       const line = document.createElementNS('http://www.w3.org/2000/svg','line');
-      line.setAttribute('x1', item.x); line.setAttribute('y1', item.y + 14);
-      line.setAttribute('x2', child.x); line.setAttribute('y2', child.y - 14);
+      line.setAttribute('x1', item.x); line.setAttribute('y1', item.y + 16);
+      line.setAttribute('x2', child.x); line.setAttribute('y2', child.y - 16);
       line.setAttribute('stroke', '#b0bec5');
       line.setAttribute('stroke-width', '1.5');
+      line.setAttribute('stroke-dasharray', item.depth >= 1 && child.depth >= 2 ? '4,3' : 'none');
       svg.appendChild(line);
       drawEdges(child);
     });
   }
   drawEdges(tree);
 
-  // Draw nodes
+  // Node role → color map
   const ROLE_COLORS = {SLM:'#a56eff',FLM:'#1192e8',ALT:'#009d9a',TSL:'#0f62fe',CE:'#0f62fe',SSR:'#33b1ff',PL:'#009d9a',AE:'#888',MGR:'#a56eff'};
 
   function drawNode(item) {
@@ -1286,63 +1391,80 @@ function buildHierarchySVG() {
     const col  = COLORS[n.label] || '#888';
     const tag  = n.role || n.sellerType || (n.label==='Manager'?'MGR':'');
     const tc   = ROLE_COLORS[tag] || col;
-    const g    = document.createElementNS('http://www.w3.org/2000/svg','g');
+
+    const g = document.createElementNS('http://www.w3.org/2000/svg','g');
     g.style.cursor = 'pointer';
     g.addEventListener('click', ()=>{closeHierFlow(); focusNode(n.id);});
 
-    // Card bg
+    // Card bg with colored left accent bar
     const rect = document.createElementNS('http://www.w3.org/2000/svg','rect');
-    rect.setAttribute('x', item.x - 58); rect.setAttribute('y', item.y - 22);
-    rect.setAttribute('width','116'); rect.setAttribute('height','44');
+    rect.setAttribute('x', item.x - 62); rect.setAttribute('y', item.y - 24);
+    rect.setAttribute('width','124'); rect.setAttribute('height','48');
     rect.setAttribute('rx','8'); rect.setAttribute('fill','#fff');
-    rect.setAttribute('stroke', col); rect.setAttribute('stroke-width','1.5');
-    rect.setAttribute('filter','drop-shadow(0 1px 4px rgba(0,0,60,.1))');
+    rect.setAttribute('stroke', col+'44'); rect.setAttribute('stroke-width','1.2');
+    rect.setAttribute('filter','drop-shadow(0 1px 5px rgba(0,0,60,.09))');
     g.appendChild(rect);
 
-    // Role badge
-    const badge = document.createElementNS('http://www.w3.org/2000/svg','rect');
-    badge.setAttribute('x', item.x + 22); badge.setAttribute('y', item.y - 22);
-    badge.setAttribute('width','36'); badge.setAttribute('height','14');
-    badge.setAttribute('rx','4'); badge.setAttribute('fill', tc); badge.setAttribute('opacity','0.15');
-    g.appendChild(badge);
+    // Colored left accent
+    const accent = document.createElementNS('http://www.w3.org/2000/svg','rect');
+    accent.setAttribute('x', item.x - 62); accent.setAttribute('y', item.y - 24);
+    accent.setAttribute('width','5'); accent.setAttribute('height','48');
+    accent.setAttribute('rx','4'); accent.setAttribute('fill', tc);
+    g.appendChild(accent);
+
+    // Role badge (top-right corner)
+    const badgeBg = document.createElementNS('http://www.w3.org/2000/svg','rect');
+    badgeBg.setAttribute('x', item.x + 22); badgeBg.setAttribute('y', item.y - 23);
+    badgeBg.setAttribute('width','40'); badgeBg.setAttribute('height','15');
+    badgeBg.setAttribute('rx','4'); badgeBg.setAttribute('fill', tc); badgeBg.setAttribute('opacity','0.15');
+    g.appendChild(badgeBg);
     const badgeTxt = document.createElementNS('http://www.w3.org/2000/svg','text');
-    badgeTxt.setAttribute('x', item.x+40); badgeTxt.setAttribute('y', item.y-11);
-    badgeTxt.setAttribute('font-size','7.5'); badgeTxt.setAttribute('fill',tc);
-    badgeTxt.setAttribute('text-anchor','middle'); badgeTxt.setAttribute('font-weight','700');
+    badgeTxt.setAttribute('x', item.x+42); badgeTxt.setAttribute('y', item.y-12);
+    badgeTxt.setAttribute('font-size','8'); badgeTxt.setAttribute('fill',tc);
+    badgeTxt.setAttribute('text-anchor','middle'); badgeTxt.setAttribute('font-weight','800');
+    badgeTxt.setAttribute('font-family',"'IBM Plex Sans',system-ui,sans-serif");
     badgeTxt.textContent = tag;
     g.appendChild(badgeTxt);
 
     // Dot
     const dot = document.createElementNS('http://www.w3.org/2000/svg','circle');
-    dot.setAttribute('cx', item.x-44); dot.setAttribute('cy', item.y);
-    dot.setAttribute('r','5'); dot.setAttribute('fill', col);
+    dot.setAttribute('cx', item.x-43); dot.setAttribute('cy', item.y-4);
+    dot.setAttribute('r','4.5'); dot.setAttribute('fill', col);
     g.appendChild(dot);
 
     // Name
     const nameEl = document.createElementNS('http://www.w3.org/2000/svg','text');
-    nameEl.setAttribute('x', item.x-34); nameEl.setAttribute('y', item.y-4);
-    nameEl.setAttribute('font-size','10'); nameEl.setAttribute('fill','#161616');
+    nameEl.setAttribute('x', item.x-34); nameEl.setAttribute('y', item.y-1);
+    nameEl.setAttribute('font-size','10.5'); nameEl.setAttribute('fill','#161616');
     nameEl.setAttribute('font-weight','700');
-    nameEl.textContent = n.name.length > 14 ? n.name.slice(0,13)+'…' : n.name;
+    nameEl.setAttribute('font-family',"'IBM Plex Sans',system-ui,sans-serif");
+    nameEl.textContent = n.name.length > 13 ? n.name.slice(0,12)+'…' : n.name;
     g.appendChild(nameEl);
 
-    // Sites for sellers
+    // Second line: sites for sellers OR band for managers
     if (n.label==='Seller') {
       const accs = SEED_EDGES.filter(e=>e.s===n.id&&e.type==='OWNS_ACCOUNT').map(e=>e.t);
       const siteIds = SEED_EDGES.filter(e=>accs.includes(e.s)&&e.type==='HAS_SITE')
         .map(e=>{ const s=SEED_NODES.find(x=>x.id===e.t); return s?s.siteId:null; }).filter(Boolean);
+      const accsOwned = SEED_EDGES.filter(e=>e.s===n.id&&e.type==='OWNS_ACCOUNT').map(e=>{ const a=SEED_NODES.find(x=>x.id===e.t); return a?a.name.split(' ')[0]:null; }).filter(Boolean);
+      const subEl = document.createElementNS('http://www.w3.org/2000/svg','text');
+      subEl.setAttribute('x', item.x-34); subEl.setAttribute('y', item.y+13);
+      subEl.setAttribute('font-size','7.5'); subEl.setAttribute('fill', siteIds.length ? '#33b1ff' : '#525252');
+      subEl.setAttribute('font-family',"'IBM Plex Sans',system-ui,sans-serif");
       if (siteIds.length) {
-        const siteEl = document.createElementNS('http://www.w3.org/2000/svg','text');
-        siteEl.setAttribute('x', item.x-34); siteEl.setAttribute('y', item.y+9);
-        siteEl.setAttribute('font-size','7'); siteEl.setAttribute('fill','#33b1ff');
-        siteEl.textContent = siteIds.slice(0,2).join(', ') + (siteIds.length>2?'…':'');
-        g.appendChild(siteEl);
+        subEl.textContent = siteIds.slice(0,2).join(', ') + (siteIds.length>2?` +${siteIds.length-2}`:'');
+      } else if (accsOwned.length) {
+        subEl.textContent = accsOwned.slice(0,2).join(', ');
       }
+      g.appendChild(subEl);
     } else {
       const subEl = document.createElementNS('http://www.w3.org/2000/svg','text');
-      subEl.setAttribute('x', item.x-34); subEl.setAttribute('y', item.y+9);
+      subEl.setAttribute('x', item.x-34); subEl.setAttribute('y', item.y+13);
       subEl.setAttribute('font-size','7.5'); subEl.setAttribute('fill','#525252');
-      subEl.textContent = n.bandLevel || n.desc?.slice(0,22) || '';
+      subEl.setAttribute('font-family',"'IBM Plex Sans',system-ui,sans-serif");
+      // Count reports
+      const reportCount = SEED_EDGES.filter(e=>e.t===n.id&&e.type==='REPORTS_TO').length;
+      subEl.textContent = reportCount ? `${reportCount} direct report${reportCount>1?'s':''}` : (n.bandLevel || '');
       g.appendChild(subEl);
     }
 
@@ -1403,10 +1525,11 @@ function showOrgHierarchy(focusNodeArg) {
 function detectIntent(q) {
   if (/site.*spend|spend.*site|most.*spend|highest spend|top.*site|rank.*site/.test(q)) return 'site_spend';
   if (/all site|every site|on all|across.*site|coverage|have.*on.*site|not have/.test(q)) return 'product_coverage';
-  if (/site.*product|product.*site|what.*site.*have|cognos.*site|site.*cognos|product.*matrix|matrix/.test(q)) return 'site_product_matrix';
-  if (/site.?number|what site|which site|sites.*for|account.*site|site.*account/.test(q)) return 'account_sites';
-  if (/hierarch|org chart|alt|tsl|chain of command|slm|flm|show.*team/.test(q)) return 'hierarchy';
-  if (/report|manage|who.*manage/.test(q)) return 'org';
+  if (/site.*product|product.*site|what.*(?:does\s+)?site.*have|cognos.*site|site.*cognos|product.*matrix|matrix/.test(q)) return 'site_product_matrix';
+  // "what site number is X on" → account_sites
+  if (/site.?number|what site|which site|sites.*for|account.*site|site.*account|what.*on/.test(q)) return 'account_sites';
+  if (/hierarch|org chart|alt\b|tsl\b|chain of command|slm\b|flm\b|show.*team|manager.*chain/.test(q)) return 'hierarchy';
+  if (/report|manage|who.*manage|who.*boss|who.*owns/.test(q)) return 'org';
   if (/install|running|deployed|using|expir/.test(q)) return 'install';
   if (/territory|region|cover/.test(q)) return 'territory';
   if (/product|certif|sell/.test(q)) return 'product';
@@ -1416,16 +1539,31 @@ function detectIntent(q) {
 }
 
 function extractAccountFromQuery(ql) {
-  if (/louisiana|la.gov/.test(ql)) return 'State of Louisiana';
-  if (/first national|fnb/.test(ql)) return 'First National Bancorp';
+  if (/louisiana|la.gov|la-gov|dcfs|dotd|dhh|oit|ldwf|ldh/.test(ql)) return 'State of Louisiana';
+  if (/first national|fnb|fnb-/.test(ql)) return 'First National Bancorp';
+  if (/meridian/.test(ql)) return 'Meridian Health Systems';
+  if (/apex/.test(ql)) return 'Apex Technology Partners';
+  if (/cascadia/.test(ql)) return 'Cascadia Insurance Group';
+  if (/nova retail/.test(ql)) return 'Nova Retail Group';
+  if (/suncoast/.test(ql)) return 'SunCoast Logistics';
   return null;
+}
+
+function extractSiteFromQuery(ql) {
+  // Extract a site ID directly mentioned in the query
+  const m = ql.match(/(?:la-gov-\d{4}|fnb-[a-z]+-\d{4}|mhs-[a-z]+-\d{4})/i);
+  return m ? m[0].toUpperCase() : null;
 }
 
 function extractProductFromQuery(ql) {
   if (/cognos/.test(ql)) return 'IBM Cognos Analytics';
   if (/turbonomic/.test(ql)) return 'IBM Turbonomic';
-  if (/watsonx/.test(ql)) return 'watsonx.ai';
+  if (/watsonx\.ai|watsonx ai/.test(ql)) return 'watsonx.ai';
+  if (/watsonx\.data|watsonx data/.test(ql)) return 'watsonx.data';
+  if (/watsonx\.gov|governance/.test(ql)) return 'watsonx.governance';
   if (/openpage|grc/.test(ql)) return 'IBM OpenPages';
+  if (/sterling/.test(ql)) return 'IBM Sterling OMS';
+  if (/cp4security|security/.test(ql)) return 'IBM Cloud Pak for Security';
   return null;
 }
 
@@ -1477,20 +1615,32 @@ function buildNarrative(q, results, intent, ql) {
     return `Coverage report for all products across ${SEED_NODES.filter(n=>n.label==='SiteNumber').length} site numbers.`;
   }
   if (intent === 'account_sites') {
+    // Check if a specific site was directly named
+    const siteIdFromQ = extractSiteFromQuery(ql||'');
+    if (siteIdFromQ) {
+      const site = SEED_NODES.find(n=>n.label==='SiteNumber'&&n.siteId===siteIdFromQ);
+      if (site) {
+        const prods = SEED_EDGES.filter(e=>e.s===site.id&&e.type==='HAS_PRODUCT').map(e=>{ const p=SEED_NODES.find(x=>x.id===e.t); return p?p.name:e.t; });
+        const acc = SEED_NODES.find(x=>x.id===site.accountId);
+        return `<strong style="color:#33b1ff">${site.siteId}</strong> (${site.agency||'–'}) · ${acc?`Account: <strong>${acc.name}</strong> · `:''}Spend: <strong style="color:#33b1ff">$${(site.annualSpend/1e6).toFixed(2)}M</strong> · Products: <strong style="color:#ff832b">${prods.length?prods.join(', '):'None deployed'}</strong>`;
+      }
+    }
     const accs = results.filter(r=>r.label==='Account');
     if (accs.length) {
       return accs.map(a=>{
         const sitesForAcc = SEED_EDGES.filter(e=>e.s===a.id&&e.type==='HAS_SITE').map(e=>{ const s=SEED_NODES.find(x=>x.id===e.t); return s?s.siteId:e.t; });
-        return `${a.name} has <strong>${sitesForAcc.length}</strong> site number${sitesForAcc.length!==1?'s':''}: <strong style="color:#33b1ff">${sitesForAcc.join(', ')}</strong>`;
-      }).join(' | ');
+        return `<strong>${a.name}</strong> has <strong style="color:#33b1ff">${sitesForAcc.length}</strong> site number${sitesForAcc.length!==1?'s':''}: <span style="color:#33b1ff">${sitesForAcc.join(' · ')}</span>`;
+      }).join('<br>');
     }
   }
   if (intent === 'hierarchy') {
     const mgrs = SEED_NODES.filter(x=>x.label==='Manager');
     const slm = mgrs.find(m=>m.role==='SLM');
+    const flms = mgrs.filter(m=>m.role==='FLM');
     const alt = mgrs.find(m=>m.role==='ALT');
     const tsl = SEED_NODES.find(x=>x.sellerType==='TSL');
-    return `Full hierarchy: <strong style="color:#a56eff">${slm?slm.name+' (SLM)':''}</strong> → FLMs → <strong style="color:#009d9a">${alt?alt.name+' (ALT)':''}</strong> → <strong style="color:#0f62fe">${tsl?tsl.name+' (TSL)':''}</strong>. Click any node to explore.`;
+    const sellers = SEED_NODES.filter(x=>x.label==='Seller'&&!['TSL','PL'].includes(x.sellerType));
+    return `Full hierarchy: <strong style="color:#a56eff">${slm?slm.name+' (SLM)':''}</strong> → <strong style="color:#1192e8">${flms.map(m=>m.name+' (FLM)').join(', ')}</strong> → <strong style="color:#009d9a">${alt?alt.name+' (ALT)':''}</strong> → <strong style="color:#0f62fe">${tsl?tsl.name+' (TSL)':''}</strong> → ${sellers.length} field sellers. Click any card to explore.`;
   }
   const m = {
     org:`Found ${n} org match${n>1?'es':''}. Key people: ${names.join(', ')}.`,
@@ -1507,26 +1657,40 @@ function buildNarrative(q, results, intent, ql) {
 // ── Rich result builders ──────────────────────────────────────────────────
 function buildSiteSpendTable(siteNodes) {
   const totalSpend = siteNodes.reduce((a,s)=>a+(s.annualSpend||0),0);
+
+  // Group by account for a summary header
+  const byAcc = {};
+  siteNodes.forEach(s => {
+    const acc = SEED_NODES.find(x=>x.id===s.accountId);
+    const key = acc ? acc.name : 'Unknown';
+    if (!byAcc[key]) byAcc[key] = {spend:0, count:0, id: acc?acc.id:null};
+    byAcc[key].spend += s.annualSpend||0;
+    byAcc[key].count++;
+  });
+  const accSummary = Object.entries(byAcc).sort((a,b)=>b[1].spend-a[1].spend)
+    .map(([name,d])=>`<span onclick="${d.id?`focusNode('${d.id}')`:'void 0'}" style="cursor:${d.id?'pointer':'default'};font-weight:700;color:var(--ibm-blue)">${name}</span> <span style="color:#33b1ff">$${(d.spend/1e6).toFixed(2)}M</span> (${d.count} site${d.count>1?'s':''})`).join('  ·  ');
+
   const rows = siteNodes.map((s, i) => {
     const pct = totalSpend ? ((s.annualSpend||0)/totalSpend*100).toFixed(0) : 0;
-    const prods = SEED_EDGES.filter(e=>e.s===s.id&&e.type==='HAS_PRODUCT').map(e=>{ const p=SEED_NODES.find(x=>x.id===e.t); return p?p.name:e.t; });
+    const prods = SEED_EDGES.filter(e=>e.s===s.id&&e.type==='HAS_PRODUCT').map(e=>{ const p=SEED_NODES.find(x=>x.id===e.t); return p?p.name.replace('IBM ',''):e.t; });
     const acc = SEED_NODES.find(x=>x.id===s.accountId);
     const rankColors = ['#f1c21b','#7878a0','#cd7f32'];
-    const medal = i < 3 ? `<span style="color:${rankColors[i]};margin-right:3px">${['①','②','③'][i]}</span>` : `<span style="color:var(--tm);margin-right:3px">${i+1}.</span>`;
+    const medal = i < 3 ? `<span style="color:${rankColors[i]};margin-right:3px;font-size:13px">${['①','②','③'][i]}</span>` : `<span style="color:var(--tm);margin-right:3px">${i+1}.</span>`;
     return `<div class="ri" onclick="focusNode('${s.id}')" style="border-left:3px solid #33b1ff${i===0?'':i===1?'88':'44'}">
       <div class="rih">${medal}<span class="rdot" style="background:#33b1ff"></span><span class="rl" style="color:#33b1ff">SITE</span><span style="margin-left:auto;font-size:9px;font-weight:700;color:#33b1ff">$${(s.annualSpend/1e6).toFixed(2)}M</span></div>
       <div class="rn">${s.siteId} <span style="color:var(--ts);font-weight:400;font-size:10px">· ${s.agency||'–'}</span></div>
-      ${acc?`<div class="rd">Account: ${acc.name}</div>`:''}
-      <div style="margin-top:4px">
+      ${acc?`<div class="rd" style="font-size:9px;color:var(--ts)">Account: <span onclick="event.stopPropagation();focusNode('${acc.id}')" style="cursor:pointer;color:var(--ibm-cyan);text-decoration:underline">${acc.name}</span></div>`:''}
+      <div style="margin-top:5px">
         <div style="height:3px;border-radius:2px;background:linear-gradient(90deg,#33b1ff,#0f62fe);width:${pct}%;max-width:100%"></div>
-        <div style="display:flex;justify-content:space-between;margin-top:2px">
-          <div class="rd">${prods.length?prods.join(' · '):'No products mapped'}</div>
-          <span style="font-size:8px;color:var(--tm)">${pct}% of total</span>
+        <div style="display:flex;justify-content:space-between;margin-top:3px;gap:6px">
+          <div class="rd" style="flex:1">${prods.length?prods.map(p=>`<span style="background:rgba(255,131,43,0.08);border:1px solid rgba(255,131,43,0.2);border-radius:3px;padding:1px 4px;font-size:7.5px;color:var(--ibm-orange);margin-right:2px">${p}</span>`).join(''):'<span style="color:var(--tm);font-size:8px">○ No products mapped</span>'}</div>
+          <span style="font-size:8px;color:var(--tm);flex-shrink:0">${pct}%</span>
         </div>
       </div>
     </div>`;
   });
-  return `<div style="font-size:8px;font-weight:800;text-transform:uppercase;letter-spacing:1px;color:var(--ts);margin-bottom:8px;padding-bottom:4px;border-bottom:1px solid var(--border)">Site Numbers by Annual Spend — ${siteNodes.length} total · $${(totalSpend/1e6).toFixed(2)}M combined</div>${rows.join('')}`;
+  return `<div style="font-size:8px;font-weight:800;text-transform:uppercase;letter-spacing:1px;color:var(--ts);margin-bottom:6px;padding-bottom:4px;border-bottom:1px solid var(--border)">Site Numbers by Annual Spend — ${siteNodes.length} total · $${(totalSpend/1e6).toFixed(2)}M combined</div>
+    <div style="font-size:8.5px;color:var(--ts);margin-bottom:10px;line-height:1.8">${accSummary}</div>${rows.join('')}`;
 }
 
 function buildSiteProductMatrix(ql) {
@@ -1611,16 +1775,54 @@ async function doSearch(q) {
   } catch(_) {}
 
   let scored;
+  const siteIdDirect = extractSiteFromQuery(ql);
+
   if (intent==='site_spend'||intent==='site_spend_table') {
-    scored = SEED_NODES.filter(n=>n.label==='SiteNumber').sort((a,b)=>(b.annualSpend||0)-(a.annualSpend||0)).map((n,i)=>({n,sc:1-i*0.05}));
+    scored = SEED_NODES.filter(n=>n.label==='SiteNumber').sort((a,b)=>(b.annualSpend||0)-(a.annualSpend||0)).map((n,i)=>({n,sc:1-i*0.03}));
   } else if (intent==='hierarchy') {
     scored = SEED_NODES.filter(n=>n.label==='Manager'||n.label==='Seller').map(n=>({n,sc:n.label==='Manager'?0.9:0.7})).sort((a,b)=>b.sc-a.sc);
     setTimeout(()=>showFullHierarchyMode(),200);
-  } else if (intent==='site_product_matrix'||intent==='product_coverage') {
+  } else if (intent==='site_product_matrix') {
+    const accName = extractAccountFromQuery(ql);
+    if (accName) {
+      const acc = SEED_NODES.find(n=>n.label==='Account'&&n.name.toLowerCase().includes(accName.toLowerCase()));
+      if (acc) {
+        // Scope scored to sites for this account
+        const accSites = SEED_EDGES.filter(e=>e.s===acc.id&&e.type==='HAS_SITE').map(e=>SEED_NODES.find(x=>x.id===e.t)).filter(Boolean);
+        scored = [{n:acc,sc:1.0},...accSites.map(s=>({n:s,sc:0.9}))];
+      } else {
+        scored = SEED_NODES.filter(n=>n.label==='SiteNumber'||n.label==='Account').map(n=>({n,sc:n.label==='SiteNumber'?0.9:0.7}));
+      }
+    } else if (siteIdDirect) {
+      // Single site direct lookup
+      const site = SEED_NODES.find(n=>n.label==='SiteNumber'&&n.siteId===siteIdDirect);
+      scored = site ? [{n:site,sc:1.0}] : [];
+    } else {
+      scored = SEED_NODES.filter(n=>n.label==='SiteNumber'||n.label==='Account').map(n=>({n,sc:n.label==='SiteNumber'?0.9:0.7}));
+    }
+  } else if (intent==='product_coverage') {
     scored = SEED_NODES.filter(n=>n.label==='SiteNumber'||n.label==='Account').map(n=>({n,sc:n.label==='SiteNumber'?0.9:0.7}));
+  } else if (intent==='account_sites') {
+    const accName = extractAccountFromQuery(ql);
+    if (siteIdDirect) {
+      // Specific site query
+      const site = SEED_NODES.find(n=>n.label==='SiteNumber'&&n.siteId===siteIdDirect);
+      const acc  = site ? SEED_NODES.find(x=>x.id===site.accountId) : null;
+      scored = [site, acc].filter(Boolean).map(n=>({n,sc:1.0}));
+    } else if (accName) {
+      const acc = SEED_NODES.find(n=>n.label==='Account'&&n.name.toLowerCase().includes(accName.toLowerCase()));
+      if (acc) {
+        const sites = SEED_EDGES.filter(e=>e.s===acc.id&&e.type==='HAS_SITE').map(e=>SEED_NODES.find(x=>x.id===e.t)).filter(Boolean).sort((a,b)=>(b.annualSpend||0)-(a.annualSpend||0));
+        scored = [{n:acc,sc:1.0},...sites.map(s=>({n:s,sc:0.9}))];
+      } else {
+        scored = SEED_NODES.filter(n=>n.label==='SiteNumber'||n.label==='Account').map(n=>({n,sc:0.7}));
+      }
+    } else {
+      scored = SEED_NODES.filter(n=>n.label==='SiteNumber'||n.label==='Account').map(n=>({n,sc:n.label==='Account'?0.9:0.7}));
+    }
   } else {
     scored = SEED_NODES.map(n=>{
-      const text=(n.name+' '+(n.desc||'')+' '+n.label+' '+(n.siteId||'')+' '+(n.agency||'')).toLowerCase();
+      const text=(n.name+' '+(n.desc||'')+' '+n.label+' '+(n.siteId||'')+' '+(n.agency||'')+' '+(n.role||'')+' '+(n.sellerType||'')).toLowerCase();
       let sc=0;
       for(const w of words){ if(n.name.toLowerCase().includes(w))sc+=0.7; else if(text.includes(w))sc+=0.3; }
       return{n,sc};
@@ -1646,17 +1848,81 @@ async function doSearch(q) {
   if (intent==='site_spend'||intent==='site_spend_table') { res.innerHTML=buildSiteSpendTable(scored.map(x=>x.n)); return; }
   if (intent==='site_product_matrix')                      { res.innerHTML=buildSiteProductMatrix(ql); return; }
   if (intent==='product_coverage')                         { res.innerHTML=buildProductCoverageReport(ql); return; }
+  if (intent==='account_sites')                            { res.innerHTML=buildAccountSitesList(scored.map(x=>x.n), ql); return; }
 
   res.innerHTML = scored.slice(0,14).map(({n,sc})=>{
     const col=COLORS[n.label]||'#888';
     const stale=n.status==='STALE'?' stale':'';
-    const meta=n.label==='SiteNumber'?`<div class="rd" style="margin-top:2px">Spend: <strong style="color:#33b1ff">$${(n.annualSpend/1e6).toFixed(2)}M</strong> · Agency: ${n.agency||'–'}</div>`:'';
+    const meta=n.label==='SiteNumber'?`<div class="rd" style="margin-top:3px">Spend: <strong style="color:#33b1ff">$${(n.annualSpend/1e6).toFixed(2)}M</strong> · Agency: ${n.agency||'–'}</div>`:'';
+    const roleMeta=(n.role||n.sellerType)?`<div class="rd" style="margin-top:2px"><span style="background:${(ROLE_COLORS[n.role||n.sellerType]||'#888')}18;color:${ROLE_COLORS[n.role||n.sellerType]||'#888'};border:1px solid ${ROLE_COLORS[n.role||n.sellerType]||'#888'}33;padding:1px 5px;border-radius:3px;font-size:7.5px;font-weight:800">${n.role||n.sellerType}</span></div>`:'';
     return `<div class="ri${stale}" onclick="focusNode('${n.id}')">
       <div class="rih"><span class="rdot" style="background:${col}"></span><span class="rl" style="color:${col}">${n.label}</span><span class="rs">${sc.toFixed(2)}</span></div>
       <div class="rn">${n.name}</div>
-      <div class="rd">${(n.desc||'').slice(0,90)}${(n.desc||'').length>90?'…':''}</div>${meta}
+      <div class="rd">${(n.desc||'').slice(0,90)}${(n.desc||'').length>90?'…':''}</div>${meta}${roleMeta}
     </div>`;
   }).join('');
+}
+
+// ── Account-sites list builder ────────────────────────────────────────────
+function buildAccountSitesList(nodes, ql) {
+  const siteIdDirect = extractSiteFromQuery(ql);
+
+  // Single site detail view
+  if (siteIdDirect) {
+    const site = SEED_NODES.find(n=>n.label==='SiteNumber'&&n.siteId===siteIdDirect);
+    if (site) {
+      const acc  = SEED_NODES.find(x=>x.id===site.accountId);
+      const prods = SEED_EDGES.filter(e=>e.s===site.id&&e.type==='HAS_PRODUCT').map(e=>SEED_NODES.find(x=>x.id===e.t)).filter(Boolean);
+      const sibSites = acc ? SEED_EDGES.filter(e=>e.s===acc.id&&e.type==='HAS_SITE').map(e=>SEED_NODES.find(x=>x.id===e.t)).filter(Boolean) : [];
+      return `<div style="background:#f0f8ff;border:1px solid rgba(51,177,255,0.3);border-radius:8px;padding:12px;margin-bottom:10px">
+        <div style="display:flex;align-items:center;gap:7px;margin-bottom:8px">
+          <span style="width:9px;height:9px;border-radius:50%;background:#33b1ff"></span>
+          <span style="font-size:14px;font-weight:700;color:#33b1ff">${site.siteId}</span>
+          <span style="font-size:9px;color:var(--ts);margin-left:4px">${site.agency||'–'}</span>
+          <span style="margin-left:auto;font-size:11px;font-weight:700;color:#33b1ff">$${(site.annualSpend/1e6).toFixed(2)}M/yr</span>
+        </div>
+        ${acc?`<div style="font-size:10px;color:var(--ts);margin-bottom:8px">Account: <span onclick="focusNode('${acc.id}')" style="cursor:pointer;color:var(--ibm-cyan);font-weight:600;text-decoration:underline">${acc.name}</span></div>`:''}
+        <div style="font-size:9px;color:var(--ts);margin-bottom:8px;line-height:1.6">${site.desc||''}</div>
+        <div style="font-size:8px;font-weight:800;text-transform:uppercase;letter-spacing:.8px;color:var(--ts);margin-bottom:5px">Products on this site</div>
+        <div style="display:flex;flex-wrap:wrap;gap:4px;margin-bottom:10px">${prods.length?prods.map(p=>`<span onclick="focusNode('${p.id}')" style="cursor:pointer;background:rgba(255,131,43,0.08);border:1px solid rgba(255,131,43,0.2);border-radius:4px;padding:2px 7px;font-size:8.5px;color:var(--ibm-orange);font-weight:700">${p.name.replace('IBM ','')}</span>`).join(''):'<span style="color:var(--tm);font-size:9px">○ No products mapped — whitespace opportunity</span>'}</div>
+        ${sibSites.length>1?`<div style="font-size:8px;font-weight:800;text-transform:uppercase;letter-spacing:.8px;color:var(--ts);margin-bottom:4px">Other sites for ${acc?acc.name:'this account'}</div><div style="display:flex;flex-wrap:wrap;gap:4px">${sibSites.filter(s=>s.id!==site.id).map(s=>`<span onclick="focusNode('${s.id}')" style="cursor:pointer;background:#f0f8ff;border:1px solid #33b1ff55;border-radius:4px;padding:2px 6px;font-size:8px;color:#33b1ff;font-weight:700">${s.siteId}<span style="font-weight:400;color:var(--ts)"> · ${s.agency}</span></span>`).join('')}</div>`:''}
+      </div>`;
+    }
+  }
+
+  // Account sites listing
+  const accounts = nodes.filter(n=>n.label==='Account');
+  if (!accounts.length) {
+    const sites = nodes.filter(n=>n.label==='SiteNumber').sort((a,b)=>(b.annualSpend||0)-(a.annualSpend||0));
+    return buildSiteSpendTable(sites);
+  }
+
+  let html = '';
+  for (const acc of accounts) {
+    const sites = SEED_EDGES.filter(e=>e.s===acc.id&&e.type==='HAS_SITE').map(e=>SEED_NODES.find(x=>x.id===e.t)).filter(Boolean).sort((a,b)=>(b.annualSpend||0)-(a.annualSpend||0));
+    if (!sites.length) continue;
+    const totalSpend = sites.reduce((a,s)=>a+(s.annualSpend||0),0);
+    html += `<div style="background:#f7f9ff;border:1px solid var(--border);border-radius:8px;padding:10px;margin-bottom:10px">
+      <div style="display:flex;align-items:center;gap:7px;margin-bottom:8px">
+        <span style="width:8px;height:8px;border-radius:50%;background:#1192e8"></span>
+        <span onclick="focusNode('${acc.id}')" style="cursor:pointer;font-size:12px;font-weight:700;color:var(--ibm-cyan);text-decoration:underline">${acc.name}</span>
+        <span style="margin-left:auto;font-size:9px;color:var(--ts)">${sites.length} site${sites.length>1?'s':''} · <strong style="color:#33b1ff">$${(totalSpend/1e6).toFixed(2)}M</strong></span>
+      </div>
+      <div style="display:flex;flex-direction:column;gap:5px">
+      ${sites.map(s=>{
+        const prods = SEED_EDGES.filter(e=>e.s===s.id&&e.type==='HAS_PRODUCT').map(e=>{ const p=SEED_NODES.find(x=>x.id===e.t); return p?p.name.replace('IBM ',''):null; }).filter(Boolean);
+        return `<div onclick="focusNode('${s.id}')" style="cursor:pointer;background:#fff;border:1px solid var(--border);border-radius:5px;padding:7px 8px;display:flex;align-items:center;gap:8px" onmouseover="this.style.borderColor='#33b1ff55'" onmouseout="this.style.borderColor='var(--border)'">
+          <div style="flex:1;min-width:0">
+            <div style="font-weight:700;color:#33b1ff;font-size:10px">${s.siteId} <span style="color:var(--ts);font-weight:400;font-size:9px">· ${s.agency||'–'}</span></div>
+            <div style="margin-top:3px;display:flex;flex-wrap:wrap;gap:3px">${prods.length?prods.map(p=>`<span style="background:rgba(255,131,43,0.08);border:1px solid rgba(255,131,43,0.2);border-radius:3px;padding:0px 4px;font-size:7.5px;color:var(--ibm-orange)">${p}</span>`).join(''):'<span style="color:var(--tm);font-size:8px">○ No products</span>'}</div>
+          </div>
+          <span style="font-size:10px;font-weight:700;color:#33b1ff;white-space:nowrap">$${(s.annualSpend/1e6).toFixed(2)}M</span>
+        </div>`;
+      }).join('')}
+      </div>
+    </div>`;
+  }
+  return html || buildSiteSpendTable(nodes.filter(n=>n.label==='SiteNumber'));
 }
 
 function renderTrace(trace) {
