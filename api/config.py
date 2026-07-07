@@ -11,11 +11,11 @@ class Settings(BaseSettings):
     # ── Neo4j ──────────────────────────────────────────────────────────────
     neo4j_uri: str = "bolt://localhost:7687"
     neo4j_user: str = "neo4j"
-    neo4j_password: str  # required — no default
+    neo4j_password: str = ""  # optional — leave blank for demo/mock mode
 
     # ── watsonx.ai ─────────────────────────────────────────────────────────
-    watsonx_api_key: str  # required
-    watsonx_project_id: str  # required
+    watsonx_api_key: str = ""   # optional — leave blank for demo/mock mode
+    watsonx_project_id: str = ""  # optional — leave blank for demo/mock mode
     watsonx_url: str = "https://us-south.ml.cloud.ibm.com"
     watsonx_model_id: str = "ibm/granite-13b-instruct-v2"
     watsonx_embed_model_id: str = "ibm/slate-125m-english-rtrvr"
