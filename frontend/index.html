@@ -12,10 +12,106 @@
   --ibm-red:#da1e28;--ibm-green:#24a148;--ibm-yellow:#f1c21b;
   --bg:#04040c;--panel:rgba(8,8,20,0.92);--card:rgba(15,15,30,0.9);
   --border:rgba(60,60,120,0.4);--tp:#e8e8f8;--ts:#7878a0;--tm:#44445a;--r:8px;
-  --sw:320px;
+  --sw:340px;
 }
 html,body{height:100%;background:var(--bg);color:var(--tp);font-family:'IBM Plex Sans',-apple-system,BlinkMacSystemFont,sans-serif;font-size:13px;line-height:1.5;overflow:hidden}
 #app{display:grid;grid-template-rows:52px 1fr;grid-template-columns:var(--sw) 1fr var(--sw);height:100vh}
+
+/* ── Role selector pill ──────────────────────────────────────────────────── */
+#role-pill{display:flex;align-items:center;gap:5px;background:rgba(255,255,255,0.04);border:1px solid var(--border);border-radius:6px;padding:3px 8px;cursor:pointer;position:relative}
+#role-pill .rp-name{font-size:10px;font-weight:700;color:var(--ibm-cyan)}
+#role-pill .rp-role{font-size:8px;color:var(--ts);text-transform:uppercase;letter-spacing:.4px}
+#role-dropdown{position:absolute;top:calc(100% + 6px);right:0;background:#0c0c1e;border:1px solid rgba(60,60,120,0.6);border-radius:8px;padding:6px;z-index:500;min-width:200px;display:none;box-shadow:0 8px 32px rgba(0,0,0,.7)}
+#role-dropdown.open{display:block}
+.rd-item{display:flex;align-items:center;gap:8px;padding:6px 8px;border-radius:5px;cursor:pointer;transition:background .15s}
+.rd-item:hover{background:rgba(255,255,255,0.06)}
+.rd-dot{width:7px;height:7px;border-radius:50%;flex-shrink:0}
+.rd-name{font-size:11px;font-weight:600}
+.rd-sub{font-size:8px;color:var(--ts)}
+.rd-item.active-role{background:rgba(15,98,254,0.1);border:1px solid rgba(15,98,254,0.25)}
+
+/* ── Modernization panel ─────────────────────────────────────────────────── */
+#mod-panel{display:none}
+.mod-card{background:rgba(255,255,255,0.02);border:1px solid var(--border);border-radius:var(--r);padding:10px;margin-bottom:8px;transition:border-color .2s}
+.mod-card:hover{border-color:rgba(15,98,254,0.4)}
+.mod-card-hdr{display:flex;align-items:flex-start;gap:6px;margin-bottom:5px}
+.mod-badge{padding:1px 7px;border-radius:4px;font-size:8px;font-weight:800;text-transform:uppercase;letter-spacing:.5px;flex-shrink:0}
+.mod-badge.renewal{background:rgba(241,194,27,.15);color:var(--ibm-yellow)}
+.mod-badge.eos{background:rgba(218,30,40,.15);color:var(--ibm-red)}
+.mod-badge.upgrade{background:rgba(17,146,232,.12);color:var(--ibm-cyan)}
+.mod-badge.partner{background:rgba(165,110,255,.12);color:var(--ibm-purple)}
+.mod-title{font-size:11px;font-weight:700;color:var(--tp);line-height:1.3}
+.mod-body{font-size:9px;color:var(--ts);line-height:1.5;margin-bottom:6px}
+.mod-path{font-size:9px;background:rgba(15,98,254,0.06);border:1px solid rgba(15,98,254,0.15);border-radius:4px;padding:4px 7px;color:#7eb3ff;margin-bottom:6px;font-family:'IBM Plex Mono',monospace}
+.mod-actions{display:flex;gap:5px;flex-wrap:wrap}
+.mod-btn{padding:3px 9px;border-radius:4px;font-size:8px;font-weight:800;cursor:pointer;border:1px solid;transition:all .15s;text-transform:uppercase;letter-spacing:.3px}
+.mod-btn.primary{background:rgba(15,98,254,0.12);border-color:rgba(15,98,254,0.4);color:var(--ibm-blue)}
+.mod-btn.primary:hover{background:rgba(15,98,254,0.25)}
+.mod-btn.secondary{background:rgba(255,255,255,0.03);border-color:var(--border);color:var(--ts)}
+.mod-btn.secondary:hover{background:rgba(255,255,255,0.07);color:var(--tp)}
+.mod-btn.green{background:rgba(36,161,72,.1);border-color:rgba(36,161,72,.3);color:var(--ibm-green)}
+
+/* ── Business Partner panel ──────────────────────────────────────────────── */
+#partner-panel{display:none}
+.bp-card{background:rgba(165,110,255,0.04);border:1px solid rgba(165,110,255,0.2);border-radius:var(--r);padding:9px;margin-bottom:7px;cursor:pointer;transition:border-color .2s}
+.bp-card:hover{border-color:rgba(165,110,255,0.5)}
+.bp-hdr{display:flex;align-items:center;gap:6px;margin-bottom:4px}
+.bp-dot{width:8px;height:8px;border-radius:50%;background:var(--ibm-purple);flex-shrink:0}
+.bp-name{font-size:11px;font-weight:700;color:var(--ibm-purple)}
+.bp-liaison{font-size:9px;color:var(--ts);margin-top:2px}
+.bp-products{display:flex;flex-wrap:wrap;gap:3px;margin-top:5px}
+.bp-prod-tag{font-size:8px;padding:1px 5px;border-radius:3px;background:rgba(255,131,43,0.1);border:1px solid rgba(255,131,43,0.25);color:var(--ibm-orange)}
+.bp-opp{font-size:9px;background:rgba(241,194,27,0.08);border:1px solid rgba(241,194,27,0.2);border-radius:4px;padding:3px 6px;margin-top:5px;color:var(--ibm-yellow)}
+
+/* ── Write-back panel ────────────────────────────────────────────────────── */
+#wb-panel{background:rgba(255,255,255,0.02);border:1px solid var(--border);border-radius:var(--r);padding:10px;display:none;margin-top:6px}
+.wb-header{font-size:8px;font-weight:800;text-transform:uppercase;letter-spacing:1px;color:var(--ibm-teal);margin-bottom:8px;display:flex;align-items:center;gap:5px}
+.wb-btn{padding:4px 10px;border-radius:4px;font-size:9px;font-weight:700;cursor:pointer;border:1px solid;transition:all .15s;width:100%;text-align:center;margin-bottom:4px}
+.wb-btn.confirm{background:rgba(36,161,72,.1);border-color:rgba(36,161,72,.35);color:var(--ibm-green)}
+.wb-btn.confirm:hover{background:rgba(36,161,72,.22)}
+.wb-btn.correct{background:rgba(255,131,43,.1);border-color:rgba(255,131,43,.35);color:var(--ibm-orange)}
+.wb-btn.correct:hover{background:rgba(255,131,43,.22)}
+.wb-history{margin-top:8px;font-size:8px;color:var(--tm);border-top:1px solid var(--border);padding-top:6px}
+.wb-hist-row{padding:3px 0;border-bottom:1px solid rgba(60,60,120,0.1);display:flex;gap:6px;align-items:flex-start}
+.wb-hist-badge{padding:0 4px;border-radius:3px;font-size:7px;font-weight:800;flex-shrink:0}
+.wb-hist-badge.confirmed{background:rgba(36,161,72,.15);color:var(--ibm-green)}
+.wb-hist-badge.corrected{background:rgba(255,131,43,.15);color:var(--ibm-orange)}
+
+/* ── Conflict badge ──────────────────────────────────────────────────────── */
+.conflict-badge{display:inline-flex;align-items:center;gap:3px;padding:1px 6px;border-radius:4px;font-size:8px;font-weight:800;background:rgba(218,30,40,.12);color:var(--ibm-red);border:1px solid rgba(218,30,40,.25);cursor:pointer}
+.conflict-row{background:rgba(218,30,40,0.04);border:1px solid rgba(218,30,40,0.2);border-radius:5px;padding:7px;margin-top:5px;font-size:9px}
+.conflict-src{display:flex;gap:8px;margin-bottom:3px;align-items:center}
+.conflict-source-a{color:var(--ibm-cyan)}
+.conflict-source-b{color:var(--ibm-orange)}
+.conflict-resolved{color:var(--ibm-green);font-size:8px;margin-top:3px}
+
+/* ── Explainability trail ────────────────────────────────────────────────── */
+.xplain-trail{background:rgba(0,0,0,.2);border:1px solid rgba(60,60,120,0.3);border-radius:5px;padding:7px;margin-top:5px;font-size:8px;font-family:'IBM Plex Mono',monospace}
+.xplain-row{display:flex;gap:6px;padding:2px 0;border-bottom:1px solid rgba(60,60,120,0.1)}
+.xplain-row:last-child{border-bottom:none}
+.xplain-k{color:var(--ts);min-width:90px;flex-shrink:0}
+.xplain-v{color:#c8c8e8;word-break:break-all}
+.xplain-conf{display:inline-block;width:40px;height:3px;border-radius:2px;vertical-align:middle;margin-left:4px}
+
+/* ── Email draft modal ───────────────────────────────────────────────────── */
+#email-modal{display:none;position:fixed;inset:0;background:rgba(0,0,0,0.75);z-index:600;align-items:center;justify-content:center;backdrop-filter:blur(8px)}
+#email-modal.open{display:flex}
+#email-panel{background:#0c0c1e;border:1px solid rgba(60,60,120,0.6);border-radius:10px;padding:22px;width:520px;max-width:94vw;max-height:88vh;overflow-y:auto;box-shadow:0 8px 48px rgba(0,0,0,.9)}
+.em-label{font-size:8px;font-weight:800;text-transform:uppercase;letter-spacing:.8px;color:var(--ts);margin-bottom:4px;margin-top:10px}
+.em-field{background:rgba(255,255,255,0.04);border:1px solid var(--border);border-radius:5px;padding:6px 9px;font-size:10px;color:var(--tp);width:100%;font-family:inherit}
+.em-field:focus{outline:none;border-color:rgba(15,98,254,0.5)}
+.em-body{min-height:180px;resize:vertical}
+.em-footer{display:flex;gap:8px;margin-top:14px}
+.em-btn{flex:1;padding:9px;border-radius:6px;font-size:11px;font-weight:700;cursor:pointer;border:none;transition:background .2s}
+.em-btn.send{background:var(--ibm-blue);color:#fff}
+.em-btn.send:hover{background:var(--ibm-blue-dk)}
+.em-btn.cancel{background:rgba(255,255,255,0.05);color:var(--ts);border:1px solid var(--border)}
+.em-btn.copy{background:rgba(36,161,72,0.12);color:var(--ibm-green);border:1px solid rgba(36,161,72,0.3)}
+
+/* ── Digest modal ────────────────────────────────────────────────────────── */
+#digest-modal{display:none;position:fixed;inset:0;background:rgba(0,0,0,0.75);z-index:600;align-items:center;justify-content:center;backdrop-filter:blur(8px)}
+#digest-modal.open{display:flex}
+#digest-panel{background:#0c0c1e;border:1px solid rgba(60,60,120,0.6);border-radius:10px;padding:22px;width:500px;max-width:94vw;max-height:88vh;overflow-y:auto;box-shadow:0 8px 48px rgba(0,0,0,.9)}
 
 /* ── Header ───────────────────────────────────────────────────────────── */
 #hdr{grid-column:1/-1;background:var(--panel);border-bottom:1px solid var(--border);display:flex;align-items:center;padding:0 16px;gap:12px;backdrop-filter:blur(12px);z-index:100}
@@ -208,10 +304,12 @@ hr{border:none;border-top:1px solid var(--border);margin:10px 0}
 <!-- ── Left sidebar ────────────────────────────────────────────────────── -->
 <aside id="sl">
   <!-- Tab navigation -->
-  <div class="vtabs">
-    <div class="vtab active" id="tab-graph" onclick="switchTab('graph')">Graph</div>
-    <div class="vtab" id="tab-insights" onclick="switchTab('insights')">Insights</div>
-    <div class="vtab" id="tab-trust" onclick="switchTab('trust')">Trust</div>
+  <div class="vtabs" style="flex-wrap:wrap;gap:3px">
+    <div class="vtab active" id="tab-graph" onclick="switchTab('graph')" style="flex:1 1 auto;min-width:52px">Graph</div>
+    <div class="vtab" id="tab-insights" onclick="switchTab('insights')" style="flex:1 1 auto;min-width:52px">Insights</div>
+    <div class="vtab" id="tab-mod" onclick="switchTab('mod')" style="flex:1 1 auto;min-width:52px">Modernize</div>
+    <div class="vtab" id="tab-partners" onclick="switchTab('partners')" style="flex:1 1 auto;min-width:52px">Partners</div>
+    <div class="vtab" id="tab-trust" onclick="switchTab('trust')" style="flex:1 1 auto;min-width:52px">Trust</div>
   </div>
 
   <!-- Graph panel -->
@@ -252,6 +350,35 @@ hr{border:none;border-top:1px solid var(--border);margin:10px 0}
       </div>
     </div>
     <div id="ins-cards"></div>
+  </div>
+
+  <!-- Modernization panel -->
+  <div id="mod-panel">
+    <div class="ptitle">Modernization Engine</div>
+    <div class="ins-sumgrid" id="mod-sum">
+      <div class="ins-sc high" onclick="filterModCards('renewal')">
+        <div class="iv" id="mc-renewal">–</div><div class="il">Renewals Due</div>
+      </div>
+      <div class="ins-sc critical" onclick="filterModCards('eos')">
+        <div class="iv" id="mc-eos">–</div><div class="il">EOS / Expired</div>
+      </div>
+      <div class="ins-sc neutral" onclick="filterModCards('all')">
+        <div class="iv" id="mc-total">–</div><div class="il">Total Actions</div>
+      </div>
+      <div class="ins-sc ok" onclick="showDigestModal()">
+        <div class="iv">✉</div><div class="il">Weekly Digest</div>
+      </div>
+    </div>
+    <div id="mod-cards"></div>
+  </div>
+
+  <!-- Business Partners panel -->
+  <div id="partner-panel">
+    <div class="ptitle">Business Partners</div>
+    <div style="font-size:9px;color:var(--ts);margin-bottom:10px;line-height:1.5">
+      Partner-sourced opportunities aligned to your accounts. IBM liaison and historical product sales included.
+    </div>
+    <div id="bp-cards"></div>
   </div>
 
   <!-- Trust panel -->
@@ -352,7 +479,19 @@ hr{border:none;border-top:1px solid var(--border);margin:10px 0}
 
 <!-- ── Right sidebar ───────────────────────────────────────────────────── -->
 <aside id="sr">
-  <div class="ptitle">Enterprise Search</div>
+  <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:10px">
+    <div class="ptitle" style="margin:0">Enterprise Search</div>
+    <div id="role-pill" onclick="toggleRoleDropdown()">
+      <div>
+        <div class="rp-name" id="rp-name">Marcus Webb</div>
+        <div class="rp-role" id="rp-role">CE · Seller</div>
+      </div>
+      <svg width="8" height="8" viewBox="0 0 8 8" fill="none" style="opacity:.4"><path d="M1 2.5l3 3 3-3" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/></svg>
+      <div id="role-dropdown">
+        <div style="font-size:8px;font-weight:800;text-transform:uppercase;letter-spacing:.8px;color:var(--ts);padding:2px 6px 6px">Switch View As</div>
+      </div>
+    </div>
+  </div>
   <div id="nb"><div class="nbl"><svg width="10" height="10" viewBox="0 0 10 10" fill="none"><circle cx="5" cy="5" r="4" stroke="currentColor" stroke-width="1.5"/><circle cx="5" cy="5" r="1.5" fill="currentColor"/></svg>AI Insight<button id="trace-toggle" onclick="toggleTrace()" style="margin-left:auto;background:rgba(15,98,254,0.1);border:1px solid rgba(15,98,254,0.3);color:var(--ibm-blue);padding:1px 7px;border-radius:3px;cursor:pointer;font-size:8px;font-weight:700;display:none">Show Trace</button></div><div id="nt"></div></div>
   <div id="trace-panel">
     <div style="font-size:8px;font-weight:800;text-transform:uppercase;letter-spacing:.8px;color:var(--ibm-cyan);margin-bottom:6px">⚙ Granite Query Trace</div>
@@ -371,6 +510,18 @@ hr{border:none;border-top:1px solid var(--border);margin:10px 0}
     </div>
     <div id="ohtree"></div>
   </div>
+
+  <!-- Write-back panel (shown when a node is selected) -->
+  <div id="wb-panel">
+    <div class="wb-header">
+      <svg width="10" height="10" viewBox="0 0 10 10" fill="none"><path d="M1 5h8M5 1v8" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/></svg>
+      Human Validation
+    </div>
+    <div style="font-size:9px;color:var(--ts);margin-bottom:7px" id="wb-node-label">Select a node to validate</div>
+    <button class="wb-btn confirm" onclick="submitWriteback('confirm')">✓ Confirm — data is correct</button>
+    <button class="wb-btn correct" onclick="openCorrectModal()">✎ Correct — submit a change</button>
+    <div class="wb-history" id="wb-history"></div>
+  </div>
   <hr>
   <div id="ps">
     <div class="psh"><span class="ptitle" style="margin:0">Pruning Agent</span><button id="rpb">▶ Run Cycle</button></div>
@@ -381,6 +532,73 @@ hr{border:none;border-top:1px solid var(--border);margin:10px 0}
     <div class="psr"><span class="psk">Deleted</span><span class="psv" id="psd">–</span></div>
   </div>
 </aside>
+</div>
+
+<!-- ── Email Draft Modal ─────────────────────────────────────────────────── -->
+<div id="email-modal">
+  <div id="email-panel">
+    <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:14px">
+      <div style="font-size:13px;font-weight:700;color:#e8e8f8">✉ Draft Why-Modernize Email</div>
+      <button onclick="document.getElementById('email-modal').classList.remove('open')" style="background:none;border:none;color:#7878a0;cursor:pointer;font-size:16px">✕</button>
+    </div>
+    <div class="em-label">To (PO Contact / Custom)</div>
+    <input id="em-to" class="em-field" type="text" placeholder="e.g. procurement@client.com"/>
+    <div class="em-label">From (IBM Seller)</div>
+    <input id="em-from" class="em-field" type="text" placeholder="your.name@ibm.com"/>
+    <div class="em-label">Subject</div>
+    <input id="em-subj" class="em-field" type="text"/>
+    <div class="em-label">Email Body</div>
+    <textarea id="em-body" class="em-field em-body"></textarea>
+    <div style="font-size:8px;color:var(--ts);margin-top:6px;line-height:1.5">
+      ⚙ Generated by IBM Granite 13B · Tone: professional · Template: Why-Modernize. Edit before sending.
+    </div>
+    <div class="em-footer">
+      <button class="em-btn send" onclick="sendEmail()">↗ Send via mailto</button>
+      <button class="em-btn copy" onclick="copyEmailToClipboard()">⧉ Copy</button>
+      <button class="em-btn cancel" onclick="document.getElementById('email-modal').classList.remove('open')">Cancel</button>
+    </div>
+    <div id="em-feedback" style="text-align:center;font-size:10px;color:var(--ibm-green);margin-top:6px;min-height:14px"></div>
+  </div>
+</div>
+
+<!-- ── Correct Fact Modal ─────────────────────────────────────────────────── -->
+<div id="correct-modal" style="display:none;position:fixed;inset:0;background:rgba(0,0,0,0.75);z-index:610;align-items:center;justify-content:center;backdrop-filter:blur(8px)">
+  <div style="background:#0c0c1e;border:1px solid rgba(255,131,43,0.4);border-radius:10px;padding:22px;width:440px;max-width:94vw;box-shadow:0 8px 48px rgba(0,0,0,.9)">
+    <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:14px">
+      <div style="font-size:13px;font-weight:700;color:#ff832b">✎ Submit a Correction</div>
+      <button onclick="document.getElementById('correct-modal').style.display='none'" style="background:none;border:none;color:#7878a0;cursor:pointer;font-size:16px">✕</button>
+    </div>
+    <div style="font-size:9px;color:var(--ts);margin-bottom:10px" id="correct-node-info">Node: —</div>
+    <div class="em-label">Field Being Corrected</div>
+    <input id="correct-field" class="em-field" placeholder="e.g. owner, install version, status"/>
+    <div class="em-label">Current Value (from source)</div>
+    <input id="correct-old" class="em-field" readonly style="opacity:.5"/>
+    <div class="em-label">Corrected Value</div>
+    <input id="correct-new" class="em-field" placeholder="Your corrected value"/>
+    <div class="em-label">Evidence / Source</div>
+    <input id="correct-src" class="em-field" placeholder="e.g. Customer call 2025-07-10, Salesforce ID 00Q…"/>
+    <div style="display:flex;gap:8px;margin-top:14px">
+      <button onclick="submitCorrection()" style="flex:1;background:rgba(255,131,43,0.15);border:1px solid rgba(255,131,43,0.4);color:#ff832b;border-radius:6px;padding:9px;font-size:11px;font-weight:700;cursor:pointer">Submit Correction</button>
+      <button onclick="document.getElementById('correct-modal').style.display='none'" style="background:rgba(255,255,255,0.04);border:1px solid var(--border);color:var(--ts);border-radius:6px;padding:9px 14px;font-size:11px;cursor:pointer">Cancel</button>
+    </div>
+    <div id="correct-feedback" style="text-align:center;font-size:10px;color:var(--ibm-green);margin-top:6px;min-height:14px"></div>
+  </div>
+</div>
+
+<!-- ── Weekly Digest Modal ────────────────────────────────────────────────── -->
+<div id="digest-modal">
+  <div id="digest-panel">
+    <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:14px">
+      <div style="font-size:13px;font-weight:700;color:#e8e8f8">📬 Weekly Book-of-Business Digest</div>
+      <button onclick="document.getElementById('digest-modal').classList.remove('open')" style="background:none;border:none;color:#7878a0;cursor:pointer;font-size:16px">✕</button>
+    </div>
+    <div id="digest-content" style="font-size:10px;color:var(--ts);line-height:1.7"></div>
+    <div style="display:flex;gap:8px;margin-top:16px">
+      <button onclick="copyDigest()" style="flex:1;background:rgba(36,161,72,0.12);border:1px solid rgba(36,161,72,0.3);color:var(--ibm-green);border-radius:6px;padding:9px;font-size:11px;font-weight:700;cursor:pointer">⧉ Copy Digest</button>
+      <button onclick="document.getElementById('digest-modal').classList.remove('open')" style="background:rgba(255,255,255,0.04);border:1px solid var(--border);color:var(--ts);border-radius:6px;padding:9px 14px;font-size:11px;cursor:pointer">Close</button>
+    </div>
+    <div style="font-size:8px;color:var(--tm);margin-top:8px;text-align:center">IBM DKG · Powered by IBM Granite · Weekly cadence · Slackbot / Teams bot integration planned</div>
+  </div>
 </div>
 
 <script>
@@ -417,7 +635,12 @@ const EDGE_COLORS = {
   HAS_PRODUCT:     '#ff832b',
 };
 
-const NODE_RADII = { Manager:16, Seller:13, Account:14, Territory:12, Product:11, Install:8, Opportunity:9, KnowledgeAsset:8, SiteNumber:10 };
+const NODE_RADII = { Manager:16, Seller:13, Account:14, Territory:12, Product:11, Install:8, Opportunity:9, KnowledgeAsset:8, SiteNumber:10, BusinessPartner:12 };
+
+EDGE_COLORS['PARTNER_SELLS']    = '#a56eff';
+EDGE_COLORS['COVERED_BY']       = '#009d9a';
+EDGE_COLORS['LIAISED_BY']       = '#009d9a';
+COLORS['BusinessPartner']       = '#a56eff';
 
 // ── Seed data ─────────────────────────────────────────────────────────────
 const SEED_NODES = [
@@ -468,9 +691,74 @@ const SEED_NODES = [
   {id:'site-003',label:'SiteNumber',name:'LA-GOV-0117',  siteId:'LA-GOV-0117', agency:'DHH',   annualSpend:670000,  accountId:'acc-007', desc:'LA DHH — IBM Turbonomic only. Cognos not yet deployed — whitespace opportunity ($670K).'},
   {id:'site-004',label:'SiteNumber',name:'FNB-CORP-0012',siteId:'FNB-CORP-0012',agency:'HQ',   annualSpend:3200000, accountId:'acc-001', desc:'First National Bancorp HQ site — Turbonomic + CP4Security active ($3.2M spend).'},
   {id:'site-005',label:'SiteNumber',name:'FNB-RET-0031', siteId:'FNB-RET-0031', agency:'Retail',annualSpend:2600000, accountId:'acc-001', desc:'FNB Retail Banking Division — watsonx.ai expansion in progress ($2.6M spend).'},
+  // Business Partner nodes
+  {id:'bp-001',label:'BusinessPartner',name:'Presidio Inc.',          partnerTier:'Gold',  poContact:'deals@presidio.com',    liaisonId:'sel-008', desc:'Gold BP — resells Turbonomic & CP4Security. Aligned to FNB and Cascadia accounts.'},
+  {id:'bp-002',label:'BusinessPartner',name:'Perficient Digital',     partnerTier:'Silver',poContact:'ibm@perficient.com',    liaisonId:'sel-008', desc:'Silver BP — Watson & Cognos specialist. Covers Louisiana public sector accounts.'},
+  {id:'bp-003',label:'BusinessPartner',name:'Onix Networking Corp.',  partnerTier:'Gold',  poContact:'ibm-ops@onixnet.com',   liaisonId:'sel-009', desc:'Gold BP — AIOps & hybrid cloud. Active on Apex Technology Partners.'},
+  // IBM Partner Liaison sellers
+  {id:'sel-008',label:'Seller',name:'Carlos Muniz',   sellerType:'PL', desc:'IBM Partner Liaison — Southeast & Mid-Atlantic. Covers Presidio and Perficient.'},
+  {id:'sel-009',label:'Seller',name:'Dana Whitfield', sellerType:'PL', desc:'IBM Partner Liaison — West. Covers Onix Networking Corp and Bay Area territory.'},
 ].map(n=>({...n, status: n.status||'ACTIVE'}));
 
+// ── Renewal & modernization metadata (enriches SEED_NODES installs) ───────────
+const RENEWAL_META = {
+  'ins-001': { renewalDate:'2026-04-15', daysOut:273, poContact:'procurement@fnb.com',    poName:'Janet Holloway',   modernizeTo:'IBM Turbonomic 9.0',       type:'renewal', contractValue:420000, modernPath:'v8.10 → v9.0 (AI-driven FinOps, cloud cost governance, +35% VM efficiency)' },
+  'ins-002': { renewalDate:'2027-01-20', daysOut:558, poContact:'it-contracts@apex.com',  poName:'Derek Tran',       modernizeTo:'watsonx.ai 3.0',            type:'upgrade', contractValue:680000, modernPath:'v2.0 → v3.0 (Granite 3 models, watsonx.governance integration)' },
+  'ins-003': { renewalDate:'2025-09-01', daysOut:53,  poContact:'grc@cascadia.com',       poName:'Monica Estrada',   modernizeTo:'IBM OpenPages v9',          type:'renewal', contractValue:890000, modernPath:'v8.3 → v9 (SaaS deployment, automated controls, AI risk scoring)' },
+  'ins-004': { renewalDate:'2024-11-01', daysOut:-240,poContact:'ops@novaretail.com',     poName:'Chris Yamamoto',   modernizeTo:'IBM Sterling OMS v10',      type:'eos',     contractValue:640000, modernPath:'v9.5 → v10 (microservices, MACH architecture, Order Hub AI)' },
+  'ins-005': { renewalDate:'2026-07-10', daysOut:349, poContact:'procurement@fnb.com',    poName:'Janet Holloway',   modernizeTo:'IBM QRadar SIEM on Cloud',  type:'upgrade', contractValue:310000, modernPath:'CP4Security v1.9 → QRadar SaaS (unified SIEM/SOAR, EDR + XDR integration)' },
+  'ins-006': { renewalDate:'2026-02-01', daysOut:205, poContact:'procurement@dcfs.la.gov',poName:'Renee Boudreaux',  modernizeTo:'Cognos Analytics SaaS',     type:'renewal', contractValue:185000, modernPath:'v12.0 → SaaS (Cloud-native, auto-upgrades, AI-assisted reporting)' },
+  'ins-007': { renewalDate:'2025-06-01', daysOut:-39, poContact:'it@dotd.la.gov',         poName:'Wayne Arceneaux',  modernizeTo:'Cognos Analytics v12',      type:'eos',     contractValue:110000, modernPath:'v11.2 → v12.0 (end-of-support, critical security patches required)' },
+};
+
+// ── Business Partner historical product sales (IFC-style data) ───────────────
+const BP_HISTORY = {
+  'bp-001': [
+    { year:2023, product:'IBM Turbonomic',    account:'First National Bancorp',   value:380000 },
+    { year:2024, product:'IBM CP4Security',   account:'Cascadia Insurance Group', value:290000 },
+    { year:2024, product:'IBM Turbonomic',    account:'First National Bancorp',   value:420000 },
+  ],
+  'bp-002': [
+    { year:2022, product:'IBM Cognos Analytics', account:'State of Louisiana', value:155000 },
+    { year:2023, product:'IBM Cognos Analytics', account:'State of Louisiana', value:175000 },
+    { year:2024, product:'IBM Cognos Analytics', account:'State of Louisiana', value:185000 },
+  ],
+  'bp-003': [
+    { year:2023, product:'IBM Turbonomic', account:'Apex Technology Partners', value:220000 },
+    { year:2024, product:'watsonx.ai',     account:'Apex Technology Partners', value:340000 },
+  ],
+};
+
+// ── Conflict data (Salesforce vs w3 disagreement) ─────────────────────────────
+const CONFLICTS = [
+  {
+    nodeId: 'acc-001',
+    field: 'Primary CE',
+    sourceA: { name:'Salesforce CRM',   value:'Marcus Webb',              confidence:0.91, lastVerified:'2025-06-15' },
+    sourceB: { name:'w3 Bluepages',     value:'James Kowalski',           confidence:0.74, lastVerified:'2025-04-02' },
+    resolved: 'Marcus Webb',
+    resolvedBy: 'confidence + recency',
+  },
+  {
+    nodeId: 'ins-003',
+    field: 'Contract Status',
+    sourceA: { name:'Passport Advantage', value:'Active — Renewal pending', confidence:0.88, lastVerified:'2025-07-01' },
+    sourceB: { name:'Salesforce CRM',     value:'At-risk — Churn flagged',  confidence:0.72, lastVerified:'2025-05-20' },
+    resolved: 'Active — Renewal pending',
+    resolvedBy: 'confidence-weighted merge',
+  },
+];
+
+// ── Write-back store (in-memory, session-scoped) ──────────────────────────────
+const WRITEBACK_LOG = [];
+
 const SEED_EDGES = [
+  // Partner relationships
+  {s:'bp-001',t:'acc-001',type:'PARTNER_SELLS'},{s:'bp-001',t:'acc-005',type:'PARTNER_SELLS'},
+  {s:'bp-002',t:'acc-007',type:'PARTNER_SELLS'},
+  {s:'bp-003',t:'acc-004',type:'PARTNER_SELLS'},
+  {s:'bp-001',t:'sel-008',type:'LIAISED_BY'},{s:'bp-002',t:'sel-008',type:'LIAISED_BY'},
+  {s:'bp-003',t:'sel-009',type:'LIAISED_BY'},
   // Seller → Manager reporting chain
   {s:'sel-001',t:'mgr-001',type:'REPORTS_TO'},{s:'sel-002',t:'mgr-001',type:'REPORTS_TO'},
   {s:'sel-003',t:'mgr-002',type:'REPORTS_TO'},{s:'sel-004',t:'mgr-002',type:'REPORTS_TO'},
@@ -545,6 +833,32 @@ let activeLabels = new Set(Object.keys(COLORS));
 let tick = 0;
 // particle system for ambient nebula
 let particles = [];
+
+// ── Role / Entitlement model (simple row-level scoping) ──────────────────────
+let CURRENT_USER = {
+  id: 'sel-001',
+  name: 'Marcus Webb',
+  role: 'seller', // 'seller', 'manager', 'admin'
+  sellerType: 'CE',
+};
+
+function getScopedNodes() {
+  if (CURRENT_USER.role === 'admin') return SEED_NODES; // see everything
+  if (CURRENT_USER.role === 'manager') {
+    // Manager sees their org + accounts owned by their reports
+    const reports = SEED_EDGES.filter(e=>e.type==='REPORTS_TO' && (e.t===CURRENT_USER.id || SEED_EDGES.some(x=>x.s===e.t&&x.t===CURRENT_USER.id&&x.type==='REPORTS_TO')))
+      .map(e=>e.s);
+    const ownedAccounts = SEED_EDGES.filter(e=>e.type==='OWNS_ACCOUNT' && reports.includes(e.s)).map(e=>e.t);
+    const allowedIds = new Set([...reports, ...ownedAccounts, CURRENT_USER.id]);
+    SEED_EDGES.forEach(e=>{ if (allowedIds.has(e.s)) allowedIds.add(e.t); if (allowedIds.has(e.t)) allowedIds.add(e.s); });
+    return SEED_NODES.filter(n=>allowedIds.has(n.id));
+  }
+  // Seller sees their book
+  const ownedAccounts = SEED_EDGES.filter(e=>e.s===CURRENT_USER.id&&e.type==='OWNS_ACCOUNT').map(e=>e.t);
+  const allowedIds = new Set([CURRENT_USER.id, ...ownedAccounts]);
+  SEED_EDGES.forEach(e=>{ if (allowedIds.has(e.s)) allowedIds.add(e.t); if (allowedIds.has(e.t)) allowedIds.add(e.s); });
+  return SEED_NODES.filter(n=>allowedIds.has(n.id));
+}
 
 // ── Init ──────────────────────────────────────────────────────────────────
 function init() {
@@ -1042,6 +1356,9 @@ function selectNode(n) {
       propRows.push(['Whitespace Opp.', mpNames.join(', ')]);
     }
   }
+  if (n.label === 'BusinessPartner') {
+    propRows.push(['Tier', n.partnerTier||'–'], ['PO Contact', n.poContact||'–']);
+  }
 
   const connHtml = conns.slice(0, 8).map(e => {
     const other = e.sn === n ? e.tn : e.sn;
@@ -1049,14 +1366,25 @@ function selectNode(n) {
     return `<span class="conn-badge" style="border-color:${oc}22;color:${oc}">${other.name}</span>`;
   }).join('');
 
+  // Conflict badge (if any)
+  const conflict = CONFLICTS.find(c=>c.nodeId===n.id);
+  const conflictBadge = conflict
+    ? `<span class="conflict-badge" onclick="showConflictDetail('${n.id}')">⚠ CONFLICT</span>`
+    : '';
+
   dc.innerHTML = `
-    <div class="dpt" style="color:${col}">${n.label}</div>
+    <div class="dpt" style="color:${col}">${n.label}${conflictBadge}</div>
     <div class="dpn">${n.name}</div>
     <span class="dps ${n.status}">${n.status}</span>
     <div style="color:var(--ts);font-size:10px;line-height:1.5;margin-bottom:10px">${n.desc||''}</div>
     ${propRows.map(([k,v])=>`<div class="dprow"><span class="dpk">${k}</span><span class="dpv">${v}</span></div>`).join('')}
+    ${renderExplainTrail(n)}
+    ${renderConflictDetail(conflict)}
     ${conns.length ? `<div style="margin-top:10px;padding-top:8px;border-top:1px solid var(--border)"><div style="font-size:8px;color:var(--tm);text-transform:uppercase;letter-spacing:.8px;margin-bottom:6px">${conns.length} Connection${conns.length>1?'s':''}</div>${connHtml}</div>` : ''}
   `;
+
+  // Show write-back panel
+  renderWritebackPanel(n);
 
   // Show org hierarchy panel for Manager or Seller nodes
   if (n.label === 'Manager' || n.label === 'Seller') {
@@ -2205,15 +2533,19 @@ async function runExportCopy() {
 // ══════════════════════════════════════════════════════════════════════════════
 
 function switchTab(tab) {
-  ['graph', 'insights', 'trust'].forEach(t => {
+  ['graph', 'insights', 'mod', 'partners', 'trust'].forEach(t => {
     document.getElementById('tab-' + t).classList.toggle('active', t === tab);
   });
-  document.getElementById('graph-panel').style.display  = tab === 'graph'    ? '' : 'none';
-  document.getElementById('ins-panel').style.display    = tab === 'insights' ? '' : 'none';
-  document.getElementById('trust-panel').style.display  = tab === 'trust'    ? 'block' : 'none';
+  document.getElementById('graph-panel').style.display    = tab === 'graph'    ? '' : 'none';
+  document.getElementById('ins-panel').style.display      = tab === 'insights' ? '' : 'none';
+  document.getElementById('mod-panel').style.display      = tab === 'mod'      ? '' : 'none';
+  document.getElementById('partner-panel').style.display  = tab === 'partners' ? '' : 'none';
+  document.getElementById('trust-panel').style.display    = tab === 'trust'    ? 'block' : 'none';
 
   if (tab === 'insights' && !window._insightsLoaded) loadInsights();
   if (tab === 'trust'    && !window._trustLoaded)    loadTrustDashboard();
+  if (tab === 'mod'      && !window._modLoaded)      loadModernization();
+  if (tab === 'partners' && !window._partnersLoaded) loadBusinessPartners();
 }
 
 // ══════════════════════════════════════════════════════════════════════════════
@@ -2459,8 +2791,452 @@ function renderTrace(trace) {
   `;
 }
 
+// ══════════════════════════════════════════════════════════════════════════════
+// ── ROLE / ENTITLEMENT SYSTEM ───────────────────────────────────────────────
+// ══════════════════════════════════════════════════════════════════════════════
+
+const ROLE_PERSONAS = [
+  { id:'sel-001', name:'Marcus Webb',    role:'seller',  sellerType:'CE',  color:'#0f62fe', sub:'CE · FNB, Cascadia' },
+  { id:'sel-003', name:'James Kowalski', role:'seller',  sellerType:'CE',  color:'#0f62fe', sub:'CE · Meridian, Nova Retail' },
+  { id:'sel-007', name:'Monique Tureaud',role:'seller',  sellerType:'TSL', color:'#33b1ff', sub:'TSL · Louisiana Public Sector' },
+  { id:'mgr-002', name:'David Reyes',    role:'manager', sellerType:'FLM', color:'#1192e8', sub:'FLM · Southeast' },
+  { id:'mgr-003', name:'Priya Nambiar',  role:'manager', sellerType:'SLM', color:'#a56eff', sub:'SLM · West Coast' },
+  { id:'mgr-004', name:'Derek Callahan', role:'manager', sellerType:'ALT', color:'#009d9a', sub:'ALT · Public Sector South' },
+  { id:'admin',   name:'Admin View',     role:'admin',   sellerType:'ADM', color:'#ee5396', sub:'All accounts · Full access' },
+];
+
+function buildRoleDropdown() {
+  const dd = document.getElementById('role-dropdown');
+  const items = ROLE_PERSONAS.map(p => {
+    const isActive = p.id === CURRENT_USER.id;
+    return `<div class="rd-item${isActive?' active-role':''}" onclick="switchUser('${p.id}')">
+      <span class="rd-dot" style="background:${p.color};box-shadow:0 0 4px ${p.color}88"></span>
+      <div><div class="rd-name" style="color:${p.color}">${p.name}</div><div class="rd-sub">${p.sub}</div></div>
+    </div>`;
+  }).join('');
+  dd.innerHTML = `<div style="font-size:8px;font-weight:800;text-transform:uppercase;letter-spacing:.8px;color:var(--ts);padding:2px 6px 6px">Switch View As</div>${items}`;
+}
+
+function toggleRoleDropdown() {
+  document.getElementById('role-dropdown').classList.toggle('open');
+}
+
+document.addEventListener('click', e => {
+  if (!e.target.closest('#role-pill')) {
+    document.getElementById('role-dropdown').classList.remove('open');
+  }
+});
+
+function switchUser(id) {
+  const persona = ROLE_PERSONAS.find(p=>p.id===id);
+  if (!persona) return;
+  CURRENT_USER = { id: persona.id, name: persona.name, role: persona.role, sellerType: persona.sellerType };
+  document.getElementById('rp-name').textContent = persona.name;
+  document.getElementById('rp-role').textContent = `${persona.sellerType} · ${persona.role.charAt(0).toUpperCase()+persona.role.slice(1)}`;
+  document.getElementById('role-dropdown').classList.remove('open');
+  buildRoleDropdown();
+  // Reload scoped data
+  window._modLoaded = false;
+  window._partnersLoaded = false;
+  window._insightsLoaded = false;
+  loadGraph();
+  updateStats();
+}
+
+// ══════════════════════════════════════════════════════════════════════════════
+// ── MODERNIZATION ENGINE ────────────────────────────────────────────────────
+// ══════════════════════════════════════════════════════════════════════════════
+
+function computeModernization() {
+  const nodeMap = Object.fromEntries(SEED_NODES.map(n=>[n.id,n]));
+  const results = [];
+  const scopedAccounts = new Set(
+    SEED_EDGES.filter(e=>e.s===CURRENT_USER.id&&e.type==='OWNS_ACCOUNT').map(e=>e.t)
+  );
+  if (CURRENT_USER.role !== 'seller') {
+    SEED_NODES.filter(n=>n.label==='Account').forEach(a=>scopedAccounts.add(a.id));
+  }
+
+  SEED_NODES.filter(n=>n.label==='Install').forEach(inst => {
+    const accEdge = SEED_EDGES.find(e=>e.t===inst.id&&e.type==='HAS_INSTALL');
+    if (!accEdge) return;
+    const acc = nodeMap[accEdge.s];
+    if (!acc || !scopedAccounts.has(acc.id)) return;
+    const meta = RENEWAL_META[inst.id];
+    if (!meta) return;
+
+    const prodEdge = SEED_EDGES.find(e=>e.s===inst.id&&e.type==='RUNS_PRODUCT');
+    const prod = prodEdge ? nodeMap[prodEdge.t] : null;
+    const selEdge = SEED_EDGES.find(e=>e.s===CURRENT_USER.id&&e.t===acc.id&&e.type==='OWNS_ACCOUNT')
+      || SEED_EDGES.find(e=>e.t===acc.id&&e.type==='OWNS_ACCOUNT');
+    const seller = selEdge ? nodeMap[selEdge.s] : null;
+
+    const urgency = meta.daysOut < 0 ? 'eos' : meta.daysOut < 90 ? 'renewal' : 'upgrade';
+
+    results.push({
+      instId: inst.id,
+      accountId: acc.id,
+      account: acc.name,
+      product: prod ? prod.name : '?',
+      install: inst.name,
+      type: meta.type,
+      urgency,
+      renewalDate: meta.renewalDate,
+      daysOut: meta.daysOut,
+      poContact: meta.poContact,
+      poName: meta.poName,
+      modernizeTo: meta.modernizeTo,
+      modernPath: meta.modernPath,
+      contractValue: meta.contractValue,
+      seller: seller ? seller.name : CURRENT_USER.name,
+    });
+  });
+
+  results.sort((a,b) => a.daysOut - b.daysOut);
+  return results;
+}
+
+let _modData = [];
+
+function loadModernization() {
+  window._modLoaded = true;
+  _modData = computeModernization();
+
+  document.getElementById('mc-renewal').textContent = _modData.filter(d=>d.type==='renewal').length;
+  document.getElementById('mc-eos').textContent     = _modData.filter(d=>d.type==='eos').length;
+  document.getElementById('mc-total').textContent   = _modData.length;
+
+  renderModCards(_modData);
+}
+
+function filterModCards(type) {
+  if (!_modData.length) return;
+  const filtered = type === 'all' ? _modData : _modData.filter(d=>d.type===type||d.urgency===type);
+  renderModCards(filtered);
+}
+
+function renderModCards(items) {
+  const container = document.getElementById('mod-cards');
+  if (!items.length) {
+    container.innerHTML = '<div style="color:var(--tm);font-size:11px;padding:12px 0;text-align:center">No modernization actions for your book.</div>';
+    return;
+  }
+  container.innerHTML = items.map(d => {
+    const daysLabel = d.daysOut < 0
+      ? `<span style="color:var(--ibm-red);font-weight:800">EXPIRED ${Math.abs(d.daysOut)}d ago</span>`
+      : d.daysOut < 90
+        ? `<span style="color:var(--ibm-yellow);font-weight:700">Renews in ${d.daysOut}d</span>`
+        : `<span style="color:var(--ibm-cyan)">Renews ${d.renewalDate}</span>`;
+    const valFmt = d.contractValue ? `$${(d.contractValue/1000).toFixed(0)}K` : '';
+    // Escape for attribute (no JSON in onclick — use data-idx pattern instead)
+    const idx = _modData.indexOf(d);
+    return `<div class="mod-card">
+      <div class="mod-card-hdr">
+        <span class="mod-badge ${d.urgency}">${d.urgency.toUpperCase()}</span>
+        <div class="mod-title">${d.product} @ ${d.account}</div>
+      </div>
+      <div class="mod-body">${daysLabel} &nbsp;·&nbsp; ${d.install}</div>
+      <div class="mod-path">→ Modernize to: ${d.modernizeTo}<br>${d.modernPath}</div>
+      <div style="font-size:8px;color:var(--tm);margin-bottom:6px">
+        PO Contact: <strong style="color:var(--tp)">${d.poName}</strong> &nbsp;·&nbsp; ${d.poContact}
+        ${valFmt ? ` &nbsp;·&nbsp; Contract: <strong style="color:var(--ibm-cyan)">${valFmt}</strong>` : ''}
+      </div>
+      <div class="mod-actions">
+        <button class="mod-btn primary" onclick="openWhyModernizeEmail(${idx})">✉ Draft Email</button>
+        <button class="mod-btn secondary" onclick="focusNode('${d.accountId}')">⊙ Account</button>
+        <button class="mod-btn green" onclick="focusNode('${d.instId}')">→ Install</button>
+      </div>
+    </div>`;
+  }).join('');
+}
+
+function openWhyModernizeEmail(idx) {
+  const d = _modData[idx];
+  if (!d) return;
+  const subj = `IBM ${d.product} Modernization Opportunity — ${d.account}`;
+  const body = [
+    `Dear ${d.poName},`,
+    ``,
+    `I hope this message finds you well. My name is ${CURRENT_USER.name} and I am your IBM Account Representative.`,
+    ``,
+    `I am reaching out regarding your existing IBM ${d.product} installation at ${d.account}. Based on the current support lifecycle, your renewal date is ${d.renewalDate}${d.daysOut < 0 ? ' (now past due — immediate action required)' : ` — approximately ${d.daysOut} days away`}.`,
+    ``,
+    `WHY MODERNIZE NOW:`,
+    `• ${d.modernPath}`,
+    `• Continued support on the current version will require a paid extension or migration`,
+    `• The modernized version includes enhanced AI capabilities aligned with your strategic roadmap`,
+    ``,
+    `WHAT WE'RE PROPOSING:`,
+    `Upgrade path: ${d.modernizeTo}`,
+    `Estimated contract value: ${d.contractValue ? '$' + (d.contractValue/1000).toFixed(0) + 'K' : 'TBD based on entitlements'}`,
+    ``,
+    `I would welcome 30 minutes on your calendar to walk through the modernization benefits and our recommended upgrade path. Can we connect this week?`,
+    ``,
+    `Best regards,`,
+    `${CURRENT_USER.name}`,
+    `IBM Account Representative — ${CURRENT_USER.sellerType}`,
+  ].join('\n');
+
+  document.getElementById('em-to').value   = d.poContact;
+  document.getElementById('em-from').value = `${CURRENT_USER.name.toLowerCase().replace(/ /g,'.')}@ibm.com`;
+  document.getElementById('em-subj').value = subj;
+  document.getElementById('em-body').value = body;
+  document.getElementById('em-feedback').textContent = '';
+  document.getElementById('email-modal').classList.add('open');
+}
+
+function sendEmail() {
+  const to   = document.getElementById('em-to').value;
+  const subj = encodeURIComponent(document.getElementById('em-subj').value);
+  const body = encodeURIComponent(document.getElementById('em-body').value);
+  window.location.href = `mailto:${to}?subject=${subj}&body=${body}`;
+  document.getElementById('em-feedback').textContent = '↗ Opening email client…';
+}
+
+function copyEmailToClipboard() {
+  const text = `To: ${document.getElementById('em-to').value}\nSubject: ${document.getElementById('em-subj').value}\n\n${document.getElementById('em-body').value}`;
+  navigator.clipboard.writeText(text).then(() => {
+    document.getElementById('em-feedback').textContent = 'Copied to clipboard ✓';
+  }).catch(() => {
+    document.getElementById('em-feedback').textContent = 'Copy failed — select text manually';
+  });
+}
+
+function showDigestModal() {
+  if (!_modData.length) _modData = computeModernization();
+  const today = new Date().toLocaleDateString('en-US', { weekday:'long', year:'numeric', month:'long', day:'numeric' });
+  const eos  = _modData.filter(d=>d.type==='eos');
+  const ren  = _modData.filter(d=>d.type==='renewal'&&d.daysOut<180);
+  const ws   = window._insightsData ? window._insightsData.whitespace : [];
+  const totalPipeline = _modData.reduce((a,d)=>a+(d.contractValue||0),0);
+
+  document.getElementById('digest-content').innerHTML = `
+    <div style="color:var(--ibm-blue);font-weight:800;font-size:13px;margin-bottom:12px">IBM DKG Weekly Book-of-Business Digest</div>
+    <div style="color:var(--tm);font-size:9px;margin-bottom:14px">${today} · Viewing as: ${CURRENT_USER.name} (${CURRENT_USER.sellerType})</div>
+
+    <div style="font-size:10px;color:var(--tp);font-weight:700;margin-bottom:6px;padding-bottom:4px;border-bottom:1px solid var(--border)">🔴 Expired / EOS (${eos.length})</div>
+    ${eos.map(d=>`<div style="padding:4px 0;color:var(--ts)">• <strong style="color:var(--ibm-red)">${d.account}</strong> — ${d.product} EXPIRED ${Math.abs(d.daysOut)}d ago. → ${d.modernizeTo}</div>`).join('')||'<div style="color:var(--tm);font-size:9px;padding:4px 0">None</div>'}
+
+    <div style="font-size:10px;color:var(--tp);font-weight:700;margin:12px 0 6px;padding-bottom:4px;border-bottom:1px solid var(--border)">🟡 Upcoming Renewals (${ren.length})</div>
+    ${ren.map(d=>`<div style="padding:4px 0;color:var(--ts)">• <strong>${d.account}</strong> — ${d.product} renews ${d.renewalDate} (${d.daysOut}d). → ${d.modernizeTo}</div>`).join('')||'<div style="color:var(--tm);font-size:9px;padding:4px 0">None</div>'}
+
+    <div style="font-size:10px;color:var(--tp);font-weight:700;margin:12px 0 6px;padding-bottom:4px;border-bottom:1px solid var(--border)">⭕ Whitespace Gaps (${ws.length})</div>
+    ${ws.slice(0,3).map(w=>`<div style="padding:4px 0;color:var(--ts)">• <strong>${w.account}</strong> — ${w.body||w.headline}</div>`).join('')||'<div style="color:var(--tm);font-size:9px;padding:4px 0">None — run Insights tab first</div>'}
+
+    <div style="margin-top:14px;padding:10px;background:rgba(15,98,254,0.06);border:1px solid rgba(15,98,254,0.2);border-radius:6px;text-align:center">
+      <div style="font-size:11px;font-weight:700;color:var(--ibm-blue)">Total Addressable Pipeline</div>
+      <div style="font-size:22px;font-weight:800;color:var(--ibm-cyan);font-variant-numeric:tabular-nums">$${(totalPipeline/1e6).toFixed(2)}M</div>
+      <div style="font-size:8px;color:var(--tm)">${_modData.length} modernization opportunities</div>
+    </div>
+    <div style="margin-top:10px;font-size:9px;color:var(--tm);line-height:1.6;border-top:1px solid var(--border);padding-top:8px">
+      <strong>Next Best Actions:</strong> ${_modData.slice(0,2).map(d=>`Draft renewal email for ${d.account} (${d.product})`).join(' · ')}
+    </div>`;
+  document.getElementById('digest-modal').classList.add('open');
+}
+
+function copyDigest() {
+  const el = document.getElementById('digest-content');
+  navigator.clipboard.writeText(el.innerText).then(() => {
+    const btn = document.querySelector('#digest-modal .em-btn');
+    if (btn) { const old=btn.textContent; btn.textContent='Copied ✓'; setTimeout(()=>btn.textContent=old,2000); }
+  });
+}
+
+// ══════════════════════════════════════════════════════════════════════════════
+// ── BUSINESS PARTNERS ENGINE ────────────────────────────────────────────────
+// ══════════════════════════════════════════════════════════════════════════════
+
+function loadBusinessPartners() {
+  window._partnersLoaded = true;
+  const nodeMap = Object.fromEntries(SEED_NODES.map(n=>[n.id,n]));
+  const bps = SEED_NODES.filter(n=>n.label==='BusinessPartner');
+
+  const scopedAccounts = new Set(SEED_EDGES.filter(e=>e.s===CURRENT_USER.id&&e.type==='OWNS_ACCOUNT').map(e=>e.t));
+  if (CURRENT_USER.role !== 'seller') SEED_NODES.filter(n=>n.label==='Account').forEach(a=>scopedAccounts.add(a.id));
+
+  const visible = bps.filter(bp =>
+    CURRENT_USER.role !== 'seller' ||
+    SEED_EDGES.some(e=>e.s===bp.id&&e.type==='PARTNER_SELLS'&&scopedAccounts.has(e.t))
+  );
+
+  const container = document.getElementById('bp-cards');
+  if (!visible.length) {
+    container.innerHTML = '<div style="color:var(--tm);font-size:11px;padding:12px 0">No partner-aligned accounts in your book.</div>';
+    return;
+  }
+
+  container.innerHTML = visible.map(bp => {
+    const liaisEdge = SEED_EDGES.find(e=>e.s===bp.id&&e.type==='LIAISED_BY');
+    const liaisonNode = liaisEdge ? nodeMap[liaisEdge.t] : null;
+    const accs = SEED_EDGES.filter(e=>e.s===bp.id&&e.type==='PARTNER_SELLS').map(e=>nodeMap[e.t]).filter(Boolean);
+    const hist = BP_HISTORY[bp.id] || [];
+    const totalHistValue = hist.reduce((a,h)=>a+h.value,0);
+    const tierBadge = bp.partnerTier === 'Gold'
+      ? '<span style="color:#f1c21b;font-size:8px;font-weight:800">★ GOLD</span>'
+      : '<span style="color:#7878a0;font-size:8px;font-weight:800">◆ SILVER</span>';
+
+    const bpOpps = accs.filter(a=>scopedAccounts.has(a.id)).flatMap(a=>
+      SEED_EDGES.filter(e=>e.s===a.id&&e.type==='HAS_OPPORTUNITY').map(e=>({opp:nodeMap[e.t],acc:a})).filter(x=>x.opp)
+    );
+    const prodsSold = [...new Set(hist.map(h=>h.product))];
+
+    return `<div class="bp-card" onclick="focusNode('${bp.id}')">
+      <div class="bp-hdr">
+        <span class="bp-dot"></span>
+        <span class="bp-name">${bp.name}</span>
+        ${tierBadge}
+      </div>
+      ${liaisonNode ? `<div class="bp-liaison">IBM Liaison: <strong style="color:var(--ibm-teal)">${liaisonNode.name}</strong> <span style="font-size:8px;color:var(--tm)">${liaisonNode.sellerType||'PL'}</span></div>` : ''}
+      <div style="font-size:9px;color:var(--ts);margin-top:3px">Accounts: ${accs.map(a=>`<span onclick="event.stopPropagation();focusNode('${a.id}')" style="cursor:pointer;color:var(--ibm-cyan);text-decoration:underline">${a.name}</span>`).join(', ')}</div>
+      <div class="bp-products">${prodsSold.map(p=>`<span class="bp-prod-tag">${p.replace('IBM ','')}</span>`).join('')}</div>
+      ${hist.length ? `<div style="margin-top:6px">
+        <div style="font-size:7px;font-weight:800;text-transform:uppercase;letter-spacing:.5px;color:var(--ts);margin-bottom:3px">Historical Sales (IFC Data)</div>
+        ${hist.map(h=>`<div style="display:flex;justify-content:space-between;font-size:8px;padding:2px 0;border-bottom:1px solid rgba(60,60,120,0.1);color:var(--ts)"><span>${h.year} · ${h.product.replace('IBM ','')} @ ${h.account.split(' ')[0]}</span><span style="color:var(--ibm-cyan)">$${(h.value/1000).toFixed(0)}K</span></div>`).join('')}
+        <div style="text-align:right;margin-top:3px;font-size:8px;font-weight:800;color:var(--ibm-blue)">Total: $${(totalHistValue/1000).toFixed(0)}K</div>
+      </div>` : ''}
+      ${bpOpps.length ? `<div class="bp-opp">⚡ ${bpOpps.length} partner-linked opp${bpOpps.length>1?'s':''}: ${bpOpps.map(o=>o.opp.name).join(', ')}</div>` : ''}
+      <div style="font-size:8px;color:var(--tm);margin-top:5px">PO Contact: ${bp.poContact}</div>
+    </div>`;
+  }).join('');
+}
+
+// ══════════════════════════════════════════════════════════════════════════════
+// ── HUMAN WRITE-BACK (Decentralized Validation) ──────────────────────────────
+// ══════════════════════════════════════════════════════════════════════════════
+
+function renderWritebackPanel(n) {
+  const wb = document.getElementById('wb-panel');
+  wb.style.display = 'block';
+  document.getElementById('wb-node-label').innerHTML =
+    `Validating: <strong style="color:var(--tp)">${n.name}</strong> <span style="font-size:8px;color:var(--ts)">(${n.label})</span>`;
+  const hist = WRITEBACK_LOG.filter(w=>w.nodeId===n.id);
+  const histHtml = hist.length
+    ? hist.map(w=>`<div class="wb-hist-row">
+        <span class="wb-hist-badge ${w.action}">${w.action.toUpperCase()}</span>
+        <div><div style="color:var(--ts)">${w.text}</div>
+        <div style="color:var(--tm);font-size:7px">${w.by} · ${w.ts} · ${w.confDelta}</div></div>
+      </div>`).join('')
+    : `<div style="color:var(--tm);font-size:8px">No validations yet. Confirm or correct to update confidence.</div>`;
+  document.getElementById('wb-history').innerHTML = histHtml;
+}
+
+function submitWriteback(action) {
+  if (!selNode) return;
+  WRITEBACK_LOG.push({
+    nodeId: selNode.id,
+    nodeName: selNode.name,
+    action,
+    text: action === 'confirm' ? 'Data confirmed as correct' : 'Correction submitted',
+    by: CURRENT_USER.name,
+    ts: new Date().toLocaleString(),
+    confDelta: action === 'confirm' ? 'Confidence +0.05 · TTL reset' : 'Confidence +0.02',
+  });
+  if (action === 'confirm') {
+    const live = nodes.find(n=>n.id===selNode.id);
+    if (live) live._confirmations = (live._confirmations||0) + 1;
+  }
+  renderWritebackPanel(selNode);
+  const btn = document.querySelector('.wb-btn.confirm');
+  if (btn && action==='confirm') { const old=btn.textContent; btn.textContent='✓ Confirmed!'; setTimeout(()=>btn.textContent=old,1800); }
+}
+
+function openCorrectModal() {
+  if (!selNode) return;
+  document.getElementById('correct-node-info').textContent = `Node: ${selNode.name} (${selNode.label} · ${selNode.id})`;
+  document.getElementById('correct-field').value = '';
+  document.getElementById('correct-old').value = selNode.desc || '';
+  document.getElementById('correct-new').value = '';
+  document.getElementById('correct-src').value = '';
+  document.getElementById('correct-feedback').textContent = '';
+  document.getElementById('correct-modal').style.display = 'flex';
+}
+
+function submitCorrection() {
+  const field  = document.getElementById('correct-field').value.trim();
+  const newVal = document.getElementById('correct-new').value.trim();
+  const src    = document.getElementById('correct-src').value.trim();
+  if (!field || !newVal) {
+    document.getElementById('correct-feedback').textContent = 'Fill in field and corrected value.';
+    document.getElementById('correct-feedback').style.color = 'var(--ibm-red)';
+    return;
+  }
+  WRITEBACK_LOG.push({
+    nodeId: selNode.id, nodeName: selNode.name, action:'corrected',
+    text: `${field}: "${newVal}" (src: ${src||'unspecified'})`,
+    by: CURRENT_USER.name, ts: new Date().toLocaleString(), confDelta:'Confidence +0.02',
+  });
+  // Create a KnowledgeAsset node (provenance-stamped write-back)
+  const kaId = `ka-wb-${Date.now()}`;
+  SEED_NODES.push({
+    id:kaId, label:'KnowledgeAsset', name:`Correction: ${selNode.name}.${field}`,
+    source:'human_writeback', confidence:0.88, status:'ACTIVE',
+    desc:`"${field}" corrected to "${newVal}" by ${CURRENT_USER.name} on ${new Date().toLocaleDateString()}. Evidence: ${src||'none'}`,
+  });
+  document.getElementById('correct-feedback').textContent = '✓ Correction recorded as KnowledgeAsset';
+  document.getElementById('correct-feedback').style.color = 'var(--ibm-green)';
+  setTimeout(()=>{
+    document.getElementById('correct-modal').style.display='none';
+    renderWritebackPanel(selNode);
+    loadGraph(); updateStats();
+  }, 1400);
+}
+
+// ══════════════════════════════════════════════════════════════════════════════
+// ── CONFLICT DETECTION ───────────────────────────────────────────────────────
+// ══════════════════════════════════════════════════════════════════════════════
+
+function renderConflictDetail(conflict) {
+  if (!conflict) return '';
+  const confA = conflict.sourceA.confidence;
+  const confB = conflict.sourceB.confidence;
+  return `<div class="conflict-row">
+    <div style="font-size:8px;font-weight:800;text-transform:uppercase;letter-spacing:.5px;color:var(--ibm-red);margin-bottom:5px">
+      ⚠ Data Conflict: <em style="font-weight:400;text-transform:none;color:var(--ts)">${conflict.field}</em>
+    </div>
+    <div class="conflict-src">
+      <span class="conflict-source-a">${conflict.sourceA.name}</span>
+      <strong style="color:var(--tp)">"${conflict.sourceA.value}"</strong>
+      <span style="font-size:8px;color:var(--tm)">${(confA*100).toFixed(0)}% · ${conflict.sourceA.lastVerified}</span>
+    </div>
+    <div class="conflict-src">
+      <span class="conflict-source-b">${conflict.sourceB.name}</span>
+      <strong style="color:var(--tp)">"${conflict.sourceB.value}"</strong>
+      <span style="font-size:8px;color:var(--tm)">${(confB*100).toFixed(0)}% · ${conflict.sourceB.lastVerified}</span>
+    </div>
+    <div class="conflict-resolved">✓ Resolved by ${conflict.resolvedBy}: "<strong>${conflict.resolved}</strong>"</div>
+  </div>`;
+}
+
+// ══════════════════════════════════════════════════════════════════════════════
+// ── EXPLAINABILITY TRAIL ─────────────────────────────────────────────────────
+// ══════════════════════════════════════════════════════════════════════════════
+
+function renderExplainTrail(n) {
+  const source = n.source ||(n.label==='Install'?'Passport Advantage':n.label==='Opportunity'?'Salesforce CRM':n.label==='Seller'||n.label==='Manager'?'w3 Bluepages':n.label==='Account'?'Salesforce CRM':'IBM DKG');
+  const confidence = n.confidence || (n.status==='STALE' ? 0.52 : 0.85 + Math.random()*0.1);
+  const verified   = n.lastVerified || '2025-07-01';
+  const ttl        = n.status==='STALE' ? 'EXPIRED' : '90 days';
+  const confColor  = confidence >= 0.8 ? '#24a148' : confidence >= 0.6 ? '#ff832b' : '#da1e28';
+  const wbCount    = WRITEBACK_LOG.filter(w=>w.nodeId===n.id&&w.action==='confirm').length;
+  const usedEdges  = SEED_EDGES.filter(e=>(e.s===n.id||e.t===n.id)).slice(0,3);
+  const edgeTrail  = usedEdges.map(e=>{ const other=SEED_NODES.find(x=>x.id===(e.s===n.id?e.t:e.s)); return `${e.type}→${other?other.name:e.t}`; }).join(', ');
+
+  return `<div style="margin-top:8px">
+    <div style="font-size:7px;font-weight:800;text-transform:uppercase;letter-spacing:.8px;color:var(--ts);margin-bottom:3px;cursor:pointer;user-select:none" onclick="this.nextElementSibling.style.display=this.nextElementSibling.style.display==='none'?'block':'none'">▸ Explainability Trail</div>
+    <div class="xplain-trail" style="display:none">
+      <div class="xplain-row"><span class="xplain-k">Source system</span><span class="xplain-v">${source}</span></div>
+      <div class="xplain-row"><span class="xplain-k">Confidence</span><span class="xplain-v"><strong style="color:${confColor}">${(confidence*100).toFixed(0)}%</strong><span class="xplain-conf" style="background:${confColor};width:${Math.round(confidence*40)}px"></span></span></div>
+      <div class="xplain-row"><span class="xplain-k">Last verified</span><span class="xplain-v">${verified}</span></div>
+      <div class="xplain-row"><span class="xplain-k">TTL</span><span class="xplain-v" style="color:${ttl.includes('EXP')?'var(--ibm-red)':'var(--ibm-green)'}">${ttl}</span></div>
+      <div class="xplain-row"><span class="xplain-k">Human confirms</span><span class="xplain-v" style="color:${wbCount?'#24a148':'var(--tm)'}">${wbCount > 0 ? wbCount+' confirm'+( wbCount>1?'s':'')+' ✓' : 'None yet'}</span></div>
+      <div class="xplain-row"><span class="xplain-k">Edges used</span><span class="xplain-v">${edgeTrail||'None'}</span></div>
+      <div class="xplain-row"><span class="xplain-k">Provenance</span><span class="xplain-v">W3C PROV-DM · IBM DKG v0.3</span></div>
+    </div>
+  </div>`;
+}
+
 // ── Boot ───────────────────────────────────────────────────────────────────
-window.addEventListener('load', init);
+window.addEventListener('load', () => { init(); buildRoleDropdown(); });
 window.addEventListener('resize', () => { resize(); buildParticles(); });
 </script>
 </body>
