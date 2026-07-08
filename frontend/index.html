@@ -149,6 +149,7 @@ hr{border:none;border-top:1px solid var(--border);margin:10px 0}
 
 /* ── SVG Graph area ───────────────────────────────────────────────────── */
 #cw{position:relative;overflow:hidden;background:var(--bg);background-image:radial-gradient(circle,#c8d4f8 1px,transparent 1px);background-size:28px 28px}
+#dkg-svg{user-select:none;-webkit-user-select:none}
 
 /* ── Hub nodes ────────────────────────────────────────────────────────── */
 .hub-enterprise{fill:#e8eeff;stroke:#0f62fe;stroke-width:2}
@@ -428,6 +429,10 @@ hr{border:none;border-top:1px solid var(--border);margin:10px 0}
   <div id="gctrls">
     <button class="gcb" id="bfit" title="Fit / Reset view">⊡</button>
     <button class="gcb" id="brst" title="Rebuild graph">↺</button>
+    <button class="gcb" id="brstlayout" title="Reset node positions (undo all dragging)" style="font-size:10px;width:auto;padding:0 8px;gap:3px;display:flex;align-items:center;color:var(--ts)">
+      <svg width="11" height="11" viewBox="0 0 16 16" fill="none"><path d="M2 8a6 6 0 1 1 1.5 4" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"/><polyline points="2,13 2,8 7,8" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linejoin="round" stroke-linecap="round"/></svg>
+      Layout
+    </button>
     <div style="width:1px;height:20px;background:var(--border);margin:0 2px"></div>
     <button class="gcb" id="bhier" title="Show Org Hierarchy" style="font-size:11px;width:auto;padding:0 10px;gap:4px;display:flex;align-items:center">
       <svg width="12" height="12" viewBox="0 0 16 16" fill="none"><circle cx="8" cy="2.5" r="2" fill="currentColor"/><circle cx="3" cy="11.5" r="2" fill="currentColor"/><circle cx="13" cy="11.5" r="2" fill="currentColor"/><line x1="8" y1="4.5" x2="8" y2="7" stroke="currentColor" stroke-width="1.2"/><line x1="8" y1="7" x2="3" y2="9.5" stroke="currentColor" stroke-width="1.2"/><line x1="8" y1="7" x2="13" y2="9.5" stroke="currentColor" stroke-width="1.2"/></svg>
@@ -906,11 +911,22 @@ const PER_HUBS = [
 ];
 
 let svgNodeMap = {}; // id -> {el, n, cx, cy}
+let nodePositions = {}; // id -> {x, y} — mutable drag positions, persists across rebuilds
+
+// ── Drag state ──────────────────────────────────────────────────────────
+const _drag = {
+  active: false,
+  id: null,
+  startX: 0, startY: 0,
+  origX: 0, origY: 0,
+  moved: false,
+};
 
 function buildGraph() {
   const svg = document.getElementById('dkg-svg');
   svg.innerHTML = '';
   svgNodeMap = {};
+  // Note: nodePositions is intentionally NOT cleared here — drag positions survive filter toggles
 
   const W = svg.clientWidth  || svg.getBoundingClientRect().width  || 900;
   const H = svg.clientHeight || svg.getBoundingClientRect().height || 580;
@@ -1088,8 +1104,15 @@ function drawChildNode(nodeLayer, edgeLayer, n, nx, ny, hubX, hubY, hubColor) {
   const r   = (NODE_RADII[n.label] || 9) * 0.75;
   const isStale = n.status === 'STALE';
 
-  // Light connector to hub
-  const conn = svgEl('line',{x1:nx,y1:ny,x2:hubX,y2:hubY,stroke:hubColor,'stroke-width':'0.7',opacity:'0.15','data-child-edge':'1'});
+  // Use persisted position if this node was dragged before
+  if (nodePositions[n.id]) { nx = nodePositions[n.id].x; ny = nodePositions[n.id].y; }
+
+  // Light connector to hub (keyed so drag can update it)
+  const conn = svgEl('line',{
+    x1:nx, y1:ny, x2:hubX, y2:hubY,
+    stroke:hubColor, 'stroke-width':'0.7', opacity:'0.15',
+    'data-child-edge':'1', 'data-hub-conn':n.id
+  });
   edgeLayer.appendChild(conn);
 
   const g = svgEl('g',{class:'svg-node','data-child':'1','data-id':n.id});
@@ -1120,8 +1143,16 @@ function drawChildNode(nodeLayer, edgeLayer, n, nx, ny, hubX, hubY, hubColor) {
   const shortName = n.name.length > 14 ? n.name.slice(0, 13) + '…' : n.name;
   g.appendChild(svgText(shortName, nx, ny + r + 11, {fill:'#333','font-size':'8.5','text-anchor':'middle','pointer-events':'none'}));
 
-  g.addEventListener('click',  () => selectNodeById(n.id));
+  // ── Drag behaviour ────────────────────────────────────────────────────
+  g.style.cursor = 'grab';
+  g.addEventListener('mousedown', e => startDrag(e, n.id, nx, ny));
+
+  g.addEventListener('click', e => {
+    if (_drag.moved) { e.stopPropagation(); return; }
+    selectNodeById(n.id);
+  });
   g.addEventListener('mouseenter', e => {
+    if (_drag.active) return;
     const spendLine = n.label === 'SiteNumber' && n.annualSpend
       ? `<div class="td">💰 Spend: <strong style="color:#33b1ff">$${(n.annualSpend/1e6).toFixed(2)}M</strong></div>` : '';
     const roleLine = (n.role || n.sellerType) ? `<div class="td">Role: <strong>${n.role||n.sellerType}</strong></div>` : '';
@@ -1130,6 +1161,97 @@ function drawChildNode(nodeLayer, edgeLayer, n, nx, ny, hubX, hubY, hubColor) {
   g.addEventListener('mouseleave', hideTip);
   nodeLayer.appendChild(g);
   svgNodeMap[n.id] = {el: g, n, cx: nx, cy: ny};
+}
+
+// ══════════════════════════════════════════════════════════════════════════
+// ── DRAG ENGINE ──────────────────────────────────────────────────────────
+// ══════════════════════════════════════════════════════════════════════════
+
+function getSVGPoint(e) {
+  const svg = document.getElementById('dkg-svg');
+  const pt  = svg.createSVGPoint();
+  pt.x = e.clientX;
+  pt.y = e.clientY;
+  return pt.matrixTransform(svg.getScreenCTM().inverse());
+}
+
+function startDrag(e, nodeId, origX, origY) {
+  e.stopPropagation();
+  e.preventDefault();
+  hideTip();
+  const pt = getSVGPoint(e);
+  _drag.active = true;
+  _drag.id     = nodeId;
+  _drag.startX = pt.x;
+  _drag.startY = pt.y;
+  _drag.origX  = nodePositions[nodeId] ? nodePositions[nodeId].x : origX;
+  _drag.origY  = nodePositions[nodeId] ? nodePositions[nodeId].y : origY;
+  _drag.moved  = false;
+
+  const entry = svgNodeMap[nodeId];
+  if (entry) entry.el.style.cursor = 'grabbing';
+
+  // Attach move/up to window so drag works outside the SVG bounds
+  window.addEventListener('mousemove', onDragMove, {passive:false});
+  window.addEventListener('mouseup',   onDragEnd,  {once:true});
+}
+
+function onDragMove(e) {
+  if (!_drag.active) return;
+  e.preventDefault();
+  const pt  = getSVGPoint(e);
+  const dx  = pt.x - _drag.startX;
+  const dy  = pt.y - _drag.startY;
+
+  if (Math.abs(dx) + Math.abs(dy) > 3) _drag.moved = true;
+  if (!_drag.moved) return;
+
+  const nx = _drag.origX + dx;
+  const ny = _drag.origY + dy;
+
+  // Move the node group
+  const entry = svgNodeMap[_drag.id];
+  if (!entry) return;
+  // Translate entire group: shift all child elements that store absolute positions
+  // We use a CSS transform on the <g> — easiest approach
+  const baseX = entry.cx;  // original render position
+  const baseY = entry.cy;
+  entry.el.setAttribute('transform', `translate(${nx - baseX},${ny - baseY})`);
+
+  // Update the hub connector line
+  const svg = document.getElementById('dkg-svg');
+  const hubConn = svg.querySelector(`[data-hub-conn="${_drag.id}"]`);
+  if (hubConn) { hubConn.setAttribute('x1', nx); hubConn.setAttribute('y1', ny); }
+
+  // Update cross-node edges
+  svg.querySelectorAll(`[data-from="${_drag.id}"]`).forEach(l => { l.setAttribute('x1', nx); l.setAttribute('y1', ny); });
+  svg.querySelectorAll(`[data-to="${_drag.id}"]`).forEach(l =>   { l.setAttribute('x2', nx); l.setAttribute('y2', ny); });
+}
+
+function onDragEnd(e) {
+  if (!_drag.active) return;
+  window.removeEventListener('mousemove', onDragMove);
+
+  if (_drag.moved) {
+    // Commit the final position
+    const pt = getSVGPoint(e);
+    const nx = _drag.origX + (pt.x - _drag.startX);
+    const ny = _drag.origY + (pt.y - _drag.startY);
+    nodePositions[_drag.id] = {x: nx, y: ny};
+
+    // Update svgNodeMap so future edge lookups use the new position
+    if (svgNodeMap[_drag.id]) {
+      svgNodeMap[_drag.id].cx = nx;
+      svgNodeMap[_drag.id].cy = ny;
+    }
+  }
+
+  const entry = svgNodeMap[_drag.id];
+  if (entry) entry.el.style.cursor = 'grab';
+
+  _drag.active = false;
+  _drag.id     = null;
+  _drag.moved  = false;
 }
 
 // ── Hub click: filter activeLabels + switch sidebar tab ───────────────────
@@ -2480,6 +2602,7 @@ function init(){
   // Toolbar buttons
   document.getElementById('bfit').onclick = () => buildGraph();
   document.getElementById('brst').onclick = () => { activeLabels=new Set(Object.keys(COLORS)); buildFilters(); buildGraph(); };
+  document.getElementById('brstlayout').onclick = () => { nodePositions={}; buildGraph(); };
   document.getElementById('bhier').onclick = showFullHierarchyMode;
   document.getElementById('bexp').onclick  = openExportModal;
   document.getElementById('exmclose').onclick = closeExportModal;
