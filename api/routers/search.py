@@ -10,7 +10,7 @@ from api.graph.schemas import SearchQuery
 router = APIRouter(prefix="/search", tags=["Search"])
 
 
-@router.post("", summary="Natural language enterprise search across the IBM DKG")
+@router.post("", summary="Natural language enterprise search across the IBM KG")
 async def enterprise_search(query: SearchQuery):
     """
     Submit a natural language query. The search agent will:

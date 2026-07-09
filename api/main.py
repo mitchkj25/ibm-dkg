@@ -1,5 +1,5 @@
 """
-IBM DKG — FastAPI application entry point.
+IBM KG — FastAPI application entry point.
 
 Startup sequence:
   1. Load configuration (from .env or environment)
@@ -33,7 +33,7 @@ logger = logging.getLogger(__name__)
 async def lifespan(app: FastAPI):
     """Startup and shutdown logic."""
     # ── Startup ──────────────────────────────────────────────────────────────
-    logger.info("IBM DKG API starting up…")
+    logger.info("IBM KG API starting up…")
 
     # 1. Always seed mock store (works with zero credentials)
     from api.data.mock_store import MOCK_GRAPH
@@ -58,11 +58,11 @@ async def lifespan(app: FastAPI):
     except Exception as exc:
         logger.warning("Pruning scheduler failed to start: %s", exc)
 
-    logger.info("IBM DKG API ready")
+    logger.info("IBM KG API ready")
     yield
 
     # ── Shutdown ─────────────────────────────────────────────────────────────
-    logger.info("IBM DKG API shutting down…")
+    logger.info("IBM KG API shutting down…")
     try:
         from api.agents.pruning_agent import stop_scheduler
         stop_scheduler()
@@ -73,17 +73,17 @@ async def lifespan(app: FastAPI):
         await close_driver()
     except Exception:
         pass
-    logger.info("IBM DKG API stopped")
+    logger.info("IBM KG API stopped")
 
 
 def create_app() -> FastAPI:
     app = FastAPI(
-        title="IBM DKG — Federated Provenance Knowledge Graph",
+        title="IBM KG — Federated Provenance Knowledge Graph",
         description=(
             "Enterprise knowledge graph for IBM sellers and leadership. "
             "Each node carries W3C PROV-DM provenance metadata (source, confidence, TTL, last_verified), "
-            "enabling trust scoring at the edge — the architectural foundation for decentralized, "
-            "federated knowledge contribution. Source systems (Salesforce, W3 directory, manual) "
+            "enabling trust scoring at the edge — the architectural foundation for federated, "
+            "distributed knowledge contribution. Source systems (Salesforce, W3 directory, manual) "
             "each contribute signed, provenance-stamped Knowledge Assets that can be independently "
             "verified and pruned. "
             "\n\nCapabilities: proactive NBA alerts, whitespace/coverage gap analysis, "

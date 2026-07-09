@@ -1,5 +1,5 @@
 """
-Pydantic schemas for every IBM DKG entity and relationship.
+Pydantic schemas for every IBM KG entity and relationship.
 W3C PROV-DM provenance fields are embedded in every node.
 """
 from __future__ import annotations

@@ -1,1 +1,1 @@
-"""IBM DKG API package."""
+"""IBM KG API package."""

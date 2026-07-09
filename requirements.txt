@@ -1,4 +1,4 @@
-# IBM DKG — Python dependencies
+# IBM KG — Python dependencies
 # Install: pip install -r requirements.txt
 #
 # Mock/demo mode: only the top block is required (no external services)

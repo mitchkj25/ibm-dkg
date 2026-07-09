@@ -1,23 +1,23 @@
 ##############################################################################
-# IBM DKG — watsonx Orchestrate Agent Skill Definition
+# IBM KG — watsonx Orchestrate Agent Skill Definition
 #
-# This skill exposes the IBM Decentralized Knowledge Graph as a callable
+# This skill exposes the IBM Knowledge Graph as a callable
 # tool inside any watsonx Orchestrate agent flow. A seller can ask their
 # Orchestrate assistant natural-language questions about accounts, sellers,
 # installs, or opportunities and receive Granite-synthesised answers without
 # leaving their existing workflow.
 #
-# Deploy: orchestrate skills import -f dkg_seller_skill.yaml
+# Deploy: orchestrate skills import -f ibm_kg_seller_skill.yaml
 ##############################################################################
 
 apiVersion: "orchestrate/v1"
 kind: Skill
 
 metadata:
-  name: ibm-dkg-seller-intelligence
-  displayName: "IBM DKG — Seller Intelligence"
+  name: ibm-kg-seller-intelligence
+  displayName: "IBM KG — Seller Intelligence"
   description: >
-    Query the IBM Decentralized Knowledge Graph for real-time seller intelligence.
+    Query the IBM Knowledge Graph for real-time seller intelligence.
     Ask natural-language questions about accounts, expiring support contracts,
     co-sell opportunities, whitespace gaps, and territory health.
     Powered by graph traversal + IBM Granite synthesis.
@@ -42,7 +42,7 @@ tools:
     endpoint:
       method: POST
       path: /search
-      baseUrl: "${DKG_API_URL}"
+      baseUrl: "${KG_API_URL}"
     inputSchema:
       type: object
       required: [query]
@@ -89,7 +89,7 @@ tools:
     endpoint:
       method: GET
       path: /insights/nba/{seller_id}
-      baseUrl: "${DKG_API_URL}"
+      baseUrl: "${KG_API_URL}"
     inputSchema:
       type: object
       required: [seller_id]
@@ -120,7 +120,7 @@ tools:
     endpoint:
       method: GET
       path: /insights/account360/{account_id}
-      baseUrl: "${DKG_API_URL}"
+      baseUrl: "${KG_API_URL}"
     inputSchema:
       type: object
       required: [account_id]
@@ -157,7 +157,7 @@ tools:
     endpoint:
       method: GET
       path: /insights/whitespace
-      baseUrl: "${DKG_API_URL}"
+      baseUrl: "${KG_API_URL}"
     inputSchema:
       type: object
       properties:
@@ -185,7 +185,7 @@ tools:
     endpoint:
       method: GET
       path: /insights/expiring
-      baseUrl: "${DKG_API_URL}"
+      baseUrl: "${KG_API_URL}"
     inputSchema:
       type: object
       properties:
@@ -213,7 +213,7 @@ tools:
     endpoint:
       method: GET
       path: /insights/cosell-match
-      baseUrl: "${DKG_API_URL}"
+      baseUrl: "${KG_API_URL}"
     inputSchema:
       type: object
       required: [product_id]
@@ -247,7 +247,7 @@ tools:
     endpoint:
       method: GET
       path: /insights/territory-health
-      baseUrl: "${DKG_API_URL}"
+      baseUrl: "${KG_API_URL}"
     outputSchema:
       type: object
       properties:
@@ -269,7 +269,7 @@ tools:
     endpoint:
       method: GET
       path: /insights/trust
-      baseUrl: "${DKG_API_URL}"
+      baseUrl: "${KG_API_URL}"
     outputSchema:
       type: object
       properties:
@@ -296,6 +296,6 @@ agent:
 
 # ── Environment variables required ───────────────────────────────────────────
 environment:
-  - name: DKG_API_URL
-    description: "Base URL of the IBM DKG FastAPI service (e.g. http://localhost:8000)"
+  - name: KG_API_URL
+    description: "Base URL of the IBM KG FastAPI service (e.g. http://localhost:8000)"
     required: true

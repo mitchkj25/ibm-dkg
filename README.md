@@ -37,7 +37,7 @@ Every relationship is a **Knowledge Asset** with W3C PROV-DM provenance metadata
 
 | Area | Change |
 |---|---|
-| **Rebrand** | Project renamed from IBM DKG → **IBM KG (IBM Knowledge Graph)** — accurate terminology |
+| **Rebrand** | Project renamed from IBM DKG → **IBM KG (IBM Knowledge Graph)** |
 | **Drag-to-reposition** | Every node and hub is draggable — grab any node, edges follow live; hub drag co-moves the entire cluster |
 | **Layout reset** | "Layout" toolbar button clears all drag positions and restores the default arrangement |
 | **Expanded site data** | 12 site numbers total: Louisiana (6 sites), First National Bancorp (4 sites), Meridian Health (2 sites) |
@@ -149,7 +149,7 @@ Source systems — Salesforce CRM, IBM w3 directory, Passport Advantage, IFC par
 ### Option A — Demo Mode (zero dependencies)
 
 ```bash
-cd "IBM DKG"
+cd "IBM DKG"       # repo folder name (unchanged on disk)
 
 # Install Python deps
 pip install -r requirements.txt
@@ -570,7 +570,7 @@ orchestrate skills import -f orchestrate/kg_seller_skill.yaml
 ## Project Structure
 
 ```
-IBM DKG/
+IBM KG/            (repo folder: IBM DKG)
 ├── api/
 │   ├── main.py                  # FastAPI app, lifespan, routing (v0.2.0)
 │   ├── config.py                # Environment-based settings (pydantic-settings)
