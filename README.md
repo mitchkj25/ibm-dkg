@@ -1,20 +1,21 @@
-# IBM DKG — Federated Provenance Knowledge Graph for IBM Sellers
+# IBM KG — IBM Knowledge Graph for IBM Sellers
 
-> **v0.4.0** — Enterprise knowledge graph mapping every IBM seller relationship, account install base, product coverage, territory assignment, site-number hierarchy, business partner network, and modernization pipeline. Powered by IBM Granite + Neo4j. Fully operational in demo mode with zero backend dependencies.
+> **v0.5.0** — Enterprise knowledge graph mapping every IBM seller relationship, account install base, product coverage, territory assignment, site-number hierarchy, business partner network, and modernization pipeline. Powered by IBM Granite + Neo4j. Fully operational in demo mode with zero backend dependencies.
 
 ---
 
 ## What It Does
 
-The IBM DKG is a **living, agent-maintained knowledge graph** that turns raw CRM, Passport Advantage, w3, and IFC data into proactive seller intelligence. It answers questions sellers and leaders ask every day:
+The IBM Knowledge Graph is a **living, agent-maintained knowledge graph** that turns raw CRM, Passport Advantage, w3, and IFC data into proactive seller intelligence. It answers questions sellers and leaders ask every day:
 
 **Sellers**
 - *"What site numbers have the most spend?"* → ranked spend table with visual arc rings and bar fill
-- *"What site number is the State of Louisiana on?"* → account-to-site-number mapping
+- *"What site number is the State of Louisiana on?"* → account-to-site-number mapping (6 Louisiana sites)
 - *"What products does site LA-GOV-0041 have?"* → site-product matrix with ✓ deployed / ○ whitespace
 - *"Does Louisiana have Cognos on all its sites?"* → per-site coverage report with clickable gap badges
 - *"What products does LA-GOV-0117 not have?"* → whitespace opportunity by site
-- *"Which accounts in my book have a renewal coming up — and what should I modernize them to?"*
+- *"What site numbers does FNB have?"* → lists all 4 First National Bancorp site numbers
+- *"Which accounts in my accounts have a renewal coming up — and what should I modernize them to?"*
 - *"Draft me a Why-Modernize email to the PO contact for the Cascadia OpenPages renewal."*
 - *"What business partners are selling into my accounts, and who is the IBM partner liaison?"*
 
@@ -28,24 +29,22 @@ The IBM DKG is a **living, agent-maintained knowledge graph** that turns raw CRM
 - *"Who manages Marcus Webb?"* → full org chart from SLM → FLM → ALT → TSL → Brand Seller
 - *"Is this account record still accurate?"* → confirm or correct any node with human write-back, automatically logged as a provenance-stamped KnowledgeAsset
 
-Every relationship is a **Knowledge Asset** with W3C PROV-DM provenance metadata (source system, confidence score, TTL, `last_verified`). A background **Pruning Agent** validates data freshness — stale records are flagged before they mislead anyone. Human confirmations and corrections close the loop, turning the DKG into a truly decentralized graph where data quality is a shared responsibility.
+Every relationship is a **Knowledge Asset** with W3C PROV-DM provenance metadata (source system, confidence score, TTL, `last_verified`). A background **Pruning Agent** validates data freshness — stale records are flagged before they mislead anyone. Human confirmations and corrections close the loop.
 
 ---
 
-## What's New in v0.4.0
+## What's New in v0.5.0
 
 | Area | Change |
 |---|---|
-| **Visual redesign** | Replaced dark force-directed canvas with a **light Glean-style SVG dual-graph** (IBM blue light theme, dotted grid background, white panels) |
-| **Enterprise Graph** | 6 clickable hub nodes (People, Accounts, Products, Pipeline, Partners, Knowledge) orbit a center IBM DKG node; child nodes cluster around each hub |
-| **Personal Graph** | 6 personal hubs (My Book, Next Best Actions, Renewals & EOS, Co-sell Network, Goals/Quota, Site Numbers) on the right half |
-| **Hub click filtering** | Clicking a hub filters the graph to that entity type and switches the matching sidebar tab |
-| **Hierarchy flow overlay** | Full-screen SVG org chart triggered by the Hierarchy toolbar button — card-per-person layout showing SLM → FLM → **ALT** → **TSL** chain with role badges and site IDs per seller |
-| **Site spend queries** | `"What site numbers have the most spend?"` → ranked table with medal icons, spend bars, product tags |
-| **Site-product matrix** | `"What site number is Louisiana on?"` / `"What products does a site have?"` → interactive cross-tab with ✓/○ per cell |
-| **Product coverage report** | `"Does Louisiana have Cognos on all sites?"` → per-account, per-product coverage with clickable site badges |
-| **Source rail** | Bottom bar shows data source logos (Salesforce, Passport Advantage, w3 Bluepages, Seismic, IFC) + DKG Protect governance badge |
-| **Spend arc rings** | SiteNumber nodes render a blue arc proportional to their annual spend vs. max site spend |
+| **Rebrand** | Project renamed from IBM DKG → **IBM KG (IBM Knowledge Graph)** — accurate terminology |
+| **Drag-to-reposition** | Every node and hub is draggable — grab any node, edges follow live; hub drag co-moves the entire cluster |
+| **Layout reset** | "Layout" toolbar button clears all drag positions and restores the default arrangement |
+| **Expanded site data** | 12 site numbers total: Louisiana (6 sites), First National Bancorp (4 sites), Meridian Health (2 sites) |
+| **Hierarchy swimlanes** | Hierarchy flow overlay now renders color-coded role swimlanes: SLM / FLM / ALT+TSL / Sellers |
+| **Richer site queries** | Direct site-ID lookup (`"What does LA-GOV-0041 have?"`), account-sites list view, broader account recognition |
+| **Personal hub rename** | "My Book" → **"My Accounts"** |
+| **Broader intent routing** | extractAccountFromQuery covers 7 accounts; extractProductFromQuery covers 8 products |
 
 ---
 
@@ -53,14 +52,14 @@ Every relationship is a **Knowledge Asset** with W3C PROV-DM provenance metadata
 
 ```
 ┌──────────────────────────────────────────────────────────────────────────────┐
-│                    IBM DKG — Federated Provenance Knowledge Graph             │
+│                    IBM KG — IBM Knowledge Graph                               │
 │                                                                               │
 │  ┌──────────────────────────────────────────────────────────────────────┐   │
-│  │       Zero-dependency Frontend (HTML/SVG) — v0.4.0                    │   │
+│  │       Zero-dependency Frontend (HTML/SVG) — v0.5.0                    │   │
 │  │                                                                        │   │
 │  │   ┌─────────────────────┐   ┌─────────────────────────────────────┐  │   │
 │  │   │  Enterprise Graph   │   │        Personal Graph               │  │   │
-│  │   │  6 hub clusters     │───│  6 personal hubs (My Book, NBA,     │  │   │
+│  │   │  6 hub clusters     │───│  6 personal hubs (My Accounts, NBA, │  │   │
 │  │   │  (People, Accounts, │   │   Renewals, Co-sell, Quota, Sites)  │  │   │
 │  │   │  Products, Pipeline,│   └─────────────────────────────────────┘  │   │
 │  │   │  Partners, Knowledge│                                             │   │
@@ -69,12 +68,13 @@ Every relationship is a **Knowledge Asset** with W3C PROV-DM provenance metadata
 │  │  Tabs: Graph │ Insights │ Modernize │ Partners │ Trust                 │   │
 │  │  Hierarchy flow overlay │ Role/Entitlement pill │ Write-back           │   │
 │  │  Conflict detection │ Explainability trail │ Export │ Granite trace    │   │
+│  │  Drag engine: child nodes + hub clusters (co-move with dependents)    │   │
 │  └─────────────────────────────┬────────────────────────────────────────┘   │
 │                                 │ REST / Fetch (graceful fallback to mock)   │
 │  ┌──────────────────────────────▼────────────────────────────────────────┐  │
 │  │                      FastAPI Backend (v0.2.0)                          │  │
 │  │  /graph  /search  /ingest  /pruning  /insights                         │  │
-│  │  + watsonx Orchestrate skill (orchestrate/dkg_seller_skill.yaml)       │  │
+│  │  + watsonx Orchestrate skill (orchestrate/kg_seller_skill.yaml)        │  │
 │  └───────────────────┬──────────────────────────┬─────────────────────────┘  │
 │                      │                          │                             │
 │            ┌─────────▼────────┐    ┌────────────▼────────┐                  │
@@ -92,7 +92,7 @@ Every relationship is a **Knowledge Asset** with W3C PROV-DM provenance metadata
 └──────────────────────────────────────────────────────────────────────────────┘
 ```
 
-### Why "Federated Provenance"?
+### Why "Knowledge Graph"?
 
 Every node carries provenance metadata from its source system:
 
@@ -161,7 +161,7 @@ python -m uvicorn api.main:app --reload --port 8000
 open frontend/index.html
 ```
 
-The app starts in **DEMO MODE** with realistic seed data: 9 sellers (including 2 Partner Liaisons), 4 managers (SLM/FLM/ALT + TSL chain), 7 accounts, 8 products, 7 installs, 5 site numbers, 3 business partners, and 4 opportunities across 5 territories.
+The app starts in **DEMO MODE** with realistic seed data: 9 sellers (including 2 Partner Liaisons), 4 managers (SLM/FLM/ALT + TSL chain), 8 accounts, 8 products, 10 installs, **12 site numbers** (Louisiana ×6, FNB ×4, Meridian ×2), 3 business partners, and 6 opportunities across 6 territories.
 
 ### Option B — Live Mode (Neo4j + watsonx.ai)
 
@@ -178,11 +178,11 @@ In live mode the search agent runs actual Cypher queries against Neo4j and uses 
 
 ### Option C — watsonx Orchestrate Integration
 
-Import the DKG as a callable skill inside any Orchestrate agent flow:
+Import the KG as a callable skill inside any Orchestrate agent flow:
 
 ```bash
-export DKG_API_URL=http://your-dkg-host:8000
-orchestrate skills import -f orchestrate/dkg_seller_skill.yaml
+export KG_API_URL=http://your-kg-host:8000
+orchestrate skills import -f orchestrate/kg_seller_skill.yaml
 ```
 
 Sellers can then ask questions like *"What are my next best actions?"* from inside their existing Orchestrate assistant — no separate dashboard needed.
@@ -240,16 +240,16 @@ Interactive docs at: **http://localhost:8000/docs**
 
 ---
 
-## Frontend Features (v0.4.0)
+## Frontend Features (v0.5.0)
 
 The frontend is a single self-contained HTML file — no npm, no build step, no external assets.
 
-### SVG Dual-Graph (new in v0.4.0)
+### SVG Dual-Graph
 
-The graph canvas is now a **light-themed SVG dual-graph** replacing the previous dark canvas physics simulation:
+The graph canvas is a **light-themed SVG dual-graph**:
 
 - **Light theme** — `#f0f4ff` background, white panels, IBM blue accent palette, subtle dotted grid
-- **Enterprise Graph (left half)** — 6 hub nodes orbit a central IBM DKG node:
+- **Enterprise Graph (left half)** — 6 hub nodes orbit a central IBM KG node:
   - **People** → Sellers + Managers (blue/purple child nodes)
   - **Accounts** → Account nodes (cyan)
   - **Products** → Product nodes (orange)
@@ -257,40 +257,50 @@ The graph canvas is now a **light-themed SVG dual-graph** replacing the previous
   - **Partners** → BusinessPartner nodes (purple) — hub click switches to Partners tab
   - **Knowledge** → SiteNumber, Territory, Install, KnowledgeAsset nodes
 - **Personal Graph (right half)** — 6 personal hubs scoped to the current "View As" persona:
-  - My Book, Next Best Actions, Renewals & EOS, Co-sell Network, Goals/Quota, Site Numbers
+  - My Accounts, Next Best Actions, Renewals & EOS, Co-sell Network, Goals/Quota, Site Numbers
 - **Hub click filtering** — clicking any enterprise hub filters child nodes to that type and switches the matching sidebar tab; clicking again resets to all types
 - **SiteNumber spend rings** — blue arc drawn proportional to site's annual spend vs. max spend across all sites
 - **Edge highlighting** — clicking a node dims unrelated edges, highlights connected ones
-- **Source rail** — bottom bar shows Salesforce · Passport Advantage · w3 Bluepages · Seismic · IFC logos + DKG Protect governance badge
-- **Hierarchy overlay** — full-screen SVG org flow opened by the Hierarchy toolbar button (see below)
+- **Source rail** — bottom bar shows Salesforce · Passport Advantage · w3 Bluepages · Seismic · IFC logos + KG Protect governance badge
 
-### Hierarchy Flow Overlay (new in v0.4.0)
+### Drag-to-Reposition (new in v0.5.0)
+
+Every node and hub is draggable:
+
+- **Child nodes** — grab any Seller, Account, Product, Site, etc. and drag freely; hub connector + cross-node edges follow live
+- **Hub nodes** — drag People, Accounts, Products (etc.) and the **entire cluster moves with it** — all child nodes co-move, preserving their relative offsets
+- Drag positions **persist** through filter toggles and graph rebuilds
+- A move of ≤3px still fires as a normal click; >3px commits the drag and suppresses click
+- **Layout button** in the toolbar resets all hub and node positions back to the default arrangement
+
+### Hierarchy Flow Overlay
 
 Click **Hierarchy** in the toolbar to open a full-screen, scrollable SVG org chart:
 
-- Card-per-person layout with role-coloured border and badge
+- **4 color-coded swimlane rows**: SLM (purple) / FLM (blue) / ALT+TSL (teal) / Sellers (blue)
+- Card-per-person with colored left accent bar, role badge, name, and direct-report count / site IDs
 - **SLM → FLMs → ALT → TSL → Brand Sellers** full chain rendered
 - **ALT** (Area Leader/Territory) and **TSL** (Territory Sales Leader) roles rendered with distinct teal/blue badges
-- Each seller card shows their associated site IDs inline
+- Each seller card shows their associated site IDs or account names inline
 - Click any card to close the overlay and focus that node in the main graph + right sidebar
 
-### Site Number Intelligence (new in v0.4.0)
+### Site Number Intelligence
 
 Three dedicated query modes triggered by natural language search:
 
 **Site Spend Table** (`"What site numbers have the most spend?"`)
-- Ranked table with medal icons (①②③), spend bar fill, % of total, active products
-- Click any row to focus that site node
+- Ranked table with medal icons (①②③), per-account spend summary header, spend bar fill, % of total, active product tags
+- 12 site numbers across 3 accounts
 
-**Site-Product Matrix** (`"What site number is Louisiana on?"`, `"Louisiana site products"`)
-- Cross-tab: sites as rows, products as columns
-- ✓ (green) = deployed, ○ (grey) = whitespace opportunity
-- Spend column for each site; click any row to focus
+**Account-Sites List** (`"What site number is Louisiana on?"`, `"What site numbers does FNB have?"`)
+- Lists all sites per account with products and spend; click any row to focus that site node
+- Direct site-ID lookup (`"What does LA-GOV-0041 have?"`) shows single-site detail card with sibling sites
 
-**Product Coverage Report** (`"Does Louisiana have Cognos on all sites?"`, `"Does DHH have Cognos?"`)
-- Per-account, per-product coverage with progress bar and % badge
-- Colour-coded: green = full coverage, orange = partial, red = none
-- Clickable site badges (deployed and not-deployed) to focus nodes directly
+**Site-Product Matrix** (`"Show site-product matrix for Louisiana"`)
+- Cross-tab: sites as rows, products as columns — ✓ (green) = deployed, ○ (grey) = whitespace
+
+**Product Coverage Report** (`"Does Louisiana have Cognos on all sites?"`)
+- Per-account, per-product coverage with progress bar and % badge; clickable deployed/not-deployed site badges
 
 ### Toolbar
 
@@ -298,7 +308,8 @@ Three dedicated query modes triggered by natural language search:
 |---|---|
 | ⊡ Fit / Reset | Rebuilds the SVG graph at current canvas size |
 | ↺ Rebuild | Resets all filters and rebuilds the full graph |
-| Hierarchy | Opens the full-screen SVG org hierarchy flow |
+| ↺ Layout | Clears all drag positions, restores default layout |
+| Hierarchy | Opens the full-screen SVG org hierarchy flow with swimlanes |
 | Export | Opens the export modal (PNG / CSV / JSON) |
 
 ### Insights Tab
@@ -367,13 +378,16 @@ Every search shows a **Show Trace** toggle revealing:
 "What products does site LA-GOV-0041 have?"
 "Does Louisiana have Cognos on all its sites?"
 "What products does LA-GOV-0117 not have?"
+"Show site-product matrix for Louisiana"
+"What site numbers does FNB have?"
 "Show me the seller hierarchy"
 "Show ALT and TSL hierarchy"
 "Who manages Marcus Webb?"
+"Who is Monique Tureaud's manager chain?"
 "What does First National Bancorp have installed?"
 "Which sellers cover watsonx.ai?"
 "Find expiring support contracts"
-"What opportunities does Cascadia have?"
+"What opportunities does Louisiana have?"
 "Co-sell relationships"
 ```
 
@@ -384,14 +398,15 @@ Every search shows a **Show Trace** toggle revealing:
 ```
 Priya Nambiar (SLM — Band 11)
 ├── Sandra Okafor (FLM — Band 10, Northeast)
-│   ├── Marcus Webb (CE — NYC Metro)         sites: FNB-CORP-0012, FNB-RET-0031
+│   ├── Marcus Webb (CE — NYC Metro)         sites: FNB-CORP-0012, FNB-RET-0031, FNB-TRS-0047, FNB-RIS-0063
 │   └── Aisha Thornton (SSR — New England, watsonx)
 └── David Reyes (FLM — Band 10, Southeast)
     ├── James Kowalski (CE — Atlanta)
     ├── Lin Mei Zhang (SSR — Miami)
     └── Derek Callahan (ALT — Band 9, Public Sector South)
         └── Monique Tureaud (TSL — Baton Rouge, Cognos/LA Public Sector)
-                                               sites: LA-GOV-0041, LA-GOV-0089, LA-GOV-0117
+                                               sites: LA-GOV-0041, LA-GOV-0089, LA-GOV-0117,
+                                                      LA-GOV-0156, LA-GOV-0203, LA-GOV-0228
 
 Partner Liaisons (independent of FLM chain)
 ├── Carlos Muniz (PL — Southeast & Mid-Atlantic)
@@ -404,7 +419,7 @@ Partner Liaisons (independent of FLM chain)
 - **ALT** = Area Leader/Territory — owns a geographic public sector segment, reports through FLM chain
 - **TSL** = Territory Sales Leader — product/segment specialist reporting to ALT
 
-Click any node to see their full org position in the **Org Hierarchy panel** in the right sidebar. Click the **Hierarchy** toolbar button to open the full-screen SVG hierarchy flow without selecting a node first.
+Click any node to see their full org position in the **Org Hierarchy panel** in the right sidebar. Click the **Hierarchy** toolbar button to open the full-screen SVG hierarchy flow with color-coded swimlanes.
 
 ---
 
@@ -413,14 +428,23 @@ Click any node to see their full org position in the **Org Hierarchy panel** in 
 Large accounts like the State of Louisiana have multiple site numbers — one per agency. Each site tracks its own product coverage and spend independently:
 
 ```
-State of Louisiana (Account)
-├── LA-GOV-0041 — DCFS ($1.84M/yr)  → Cognos Analytics ✓  + watsonx.ai ✓
-├── LA-GOV-0089 — DOTD ($1.12M/yr)  → Cognos Analytics ✓  (no watsonx)
-└── LA-GOV-0117 — DHH  ($670K/yr)   → Turbonomic ✓         ⚠ Cognos whitespace
+State of Louisiana (Account) — 6 sites
+├── LA-GOV-0041 — DCFS ($1.84M/yr)  → Cognos Analytics ✓ + watsonx.ai ✓
+├── LA-GOV-0089 — DOTD ($1.12M/yr)  → Cognos Analytics ✓ (no watsonx)
+├── LA-GOV-0117 — DHH  ($670K/yr)   → Turbonomic ✓        ⚠ Cognos whitespace
+├── LA-GOV-0156 — OIT  ($980K/yr)   → Turbonomic ✓        ⚠ analytics whitespace
+├── LA-GOV-0203 — LDH  ($420K/yr)   → ○ No products yet   ← watsonx.ai pilot opp
+└── LA-GOV-0228 — LDWF ($290K/yr)   → ○ No products yet   ← Cognos opportunity
 
-First National Bancorp (Account)
-├── FNB-CORP-0012 — HQ ($3.2M/yr)     → Turbonomic ✓ + CP4Security ✓
-└── FNB-RET-0031  — Retail ($2.6M/yr) → watsonx.ai expansion in progress
+First National Bancorp (Account) — 4 sites
+├── FNB-CORP-0012 — HQ       ($3.2M/yr)  → Turbonomic ✓ + CP4Security ✓
+├── FNB-RET-0031  — Retail   ($2.6M/yr)  → watsonx.ai expansion in progress
+├── FNB-TRS-0047  — Treasury ($1.95M/yr) → Cognos Analytics ✓
+└── FNB-RIS-0063  — Risk     ($1.38M/yr) → ○ No products yet ← OpenPages whitespace
+
+Meridian Health Systems (Account) — 2 sites
+├── MHS-MAIN-0001 — Main     ($1.1M/yr)  → Turbonomic ✓
+└── MHS-EAST-0022 — East Div ($740K/yr)  → watsonx.ai clinical pilot
 ```
 
 Clicking a SiteNumber node shows: Site ID, agency, annual spend, active products, and **Whitespace Opportunity** (products on sibling sites not yet deployed here).
@@ -457,45 +481,53 @@ Partners are visible in the **Partners tab**, scoped to your book:
 
 ## Demo Scenarios
 
-### 1. Site number product gap (new in v0.4.0)
+### 1. Site number product gap
 Search *"Does Louisiana have Cognos on all its sites?"*
 ```
 LA-GOV-0041 (DCFS): Cognos Analytics ✓  $1.84M/yr
 LA-GOV-0089 (DOTD): Cognos Analytics ✓  $1.12M/yr
 LA-GOV-0117 (DHH):  Cognos Analytics ○  $670K/yr  ← Whitespace opportunity
+LA-GOV-0156 (OIT):  Cognos Analytics ○  $980K/yr  ← Whitespace opportunity
+LA-GOV-0203 (LDH):  Cognos Analytics ○  $420K/yr  ← No footprint yet
+LA-GOV-0228 (LDWF): Cognos Analytics ○  $290K/yr  ← No footprint yet
 ```
-Coverage: 2/3 sites (67%). Orange progress bar. Clickable site badges to focus on graph.
+Coverage: 2/6 sites (33%). Red progress bar. Clickable site badges to focus on graph.
 
-### 2. Top spend sites (new in v0.4.0)
-Search *"What site numbers have the most spend?"* → ranked table:
+### 2. Top spend sites
+Search *"What site numbers have the most spend?"* → ranked table with account summary:
 ```
 ① FNB-CORP-0012 (HQ)      $3.20M  Turbonomic · CP4Security
 ② FNB-RET-0031  (Retail)  $2.60M  watsonx.ai
 ③ LA-GOV-0041   (DCFS)    $1.84M  Cognos Analytics · watsonx.ai
+...  12 sites total · $18.42M combined
 ```
 
-### 3. Hierarchy flow (new in v0.4.0)
-Click **Hierarchy** toolbar button → full-screen SVG card layout:
-- Priya Nambiar (SLM) at top, FLMs below, Derek Callahan (ALT) → Monique Tureaud (TSL) at bottom
-- Each card shows role badge colour-coded by level, site IDs for sellers
-- Click any card to navigate to that person's node detail
+### 3. Hierarchy flow with swimlanes
+Click **Hierarchy** toolbar button → full-screen SVG with 4 swimlane rows:
+- **SLM row** (purple): Priya Nambiar
+- **FLM row** (blue): Sandra Okafor, David Reyes
+- **ALT/TSL row** (teal): Derek Callahan (ALT) → Monique Tureaud (TSL)
+- **Sellers row** (blue): all CEs, SSRs, PLs with site IDs and account names
 
-### 4. Modernization renewal action
+### 4. Drag and reposition
+Grab the **People** hub node and drag it — all Seller/Manager child nodes co-move as a cluster. Then grab individual sellers to spread them out. Hit **Layout** in the toolbar to reset.
+
+### 5. Account site lookup
+Search *"What site numbers does FNB have?"* → shows all 4 FNB sites with products and spend per site, clickable to focus each node.
+
+### 6. Modernization renewal action
 Open the **Modernize** tab. Cards appear sorted by urgency. Click **✉ Draft Email** on the OpenPages @ Cascadia renewal (53 days out, $890K) → pre-filled email to Monica Estrada (grc@cascadia.com) with the `v8.3 → v9 SaaS` upgrade path.
 
-### 5. Human write-back loop
+### 7. Human write-back loop
 Click any Account node → right sidebar shows the **Human Validation** panel. Click **✓ Confirm** → confirmation logged, confidence updated. Click **✎ Correct**, fill in `field: Primary CE`, `new value: James Kowalski`, `evidence: Customer call 2025-07-10` → a new `KnowledgeAsset` node appears in the graph.
 
-### 6. Conflict resolution
-Click **First National Bancorp** → the detail panel shows a **⚠ CONFLICT** badge. Expanding it reveals: Salesforce says `Marcus Webb` (91% confidence), w3 says `James Kowalski` (74% confidence) → resolved to `Marcus Webb` by confidence + recency.
-
-### 7. Business partner discovery
+### 8. Business partner discovery
 Switch **View As → Monique Tureaud (TSL)** → Partners tab shows Perficient Digital with 3 years of Cognos Analytics IFC data at State of Louisiana, IBM liaison Carlos Muniz, and partner-linked opportunity tags.
 
-### 8. Manager view scoping
+### 9. Manager view scoping
 Switch **View As → David Reyes (FLM)** → graph filters to his org, Modernize tab shows all installs across James Kowalski, Lin Mei Zhang, and Monique Tureaud's accounts, Weekly Digest totals their combined pipeline.
 
-### 9. Explainability trail
+### 10. Explainability trail
 Click any Install node → expand **▸ Explainability Trail** → source: `Passport Advantage`, confidence: `87%`, last verified: `2025-07-01`, TTL: `90 days`, edges used: `HAS_INSTALL→First National Bancorp, RUNS_PRODUCT→IBM Turbonomic`.
 
 ---
@@ -517,7 +549,7 @@ Trigger manually: `POST /pruning/run` or **▶ Run Cycle** button in the dashboa
 ## watsonx Orchestrate Integration
 
 ```bash
-orchestrate skills import -f orchestrate/dkg_seller_skill.yaml
+orchestrate skills import -f orchestrate/kg_seller_skill.yaml
 ```
 
 **8 tool functions available to any Orchestrate agent:**
@@ -559,15 +591,16 @@ IBM DKG/
 │       ├── mock_store.py        # In-memory BFS graph (zero-dep demo mode)
 │       └── seed_data.json       # Full seed data
 ├── orchestrate/
-│   └── dkg_seller_skill.yaml    # watsonx Orchestrate skill definition (8 tools)
+│   └── kg_seller_skill.yaml     # watsonx Orchestrate skill definition (8 tools)
 ├── frontend/
-│   └── index.html               # Self-contained SVG graph dashboard (~2,200 lines)
+│   └── index.html               # Self-contained SVG graph dashboard (~2,400 lines)
 │                                # Tabs: Graph / Insights / Modernize / Partners / Trust
 │                                # Features: dual-graph SVG, hub clusters, hierarchy flow,
-│                                #           site spend/matrix/coverage, modernization engine,
-│                                #           write-back, conflict detection, explainability
-│                                #           trail, role scoping, partner panel, email draft,
-│                                #           weekly digest, org hierarchy, export, query trace
+│                                #           drag engine (hubs + children), swimlane hierarchy,
+│                                #           site spend/matrix/coverage (12 sites),
+│                                #           modernization engine, write-back, conflict detection,
+│                                #           explainability trail, role scoping, partner panel,
+│                                #           email draft, weekly digest, org hierarchy, export
 ├── data/
 ├── docker-compose.yml
 ├── Dockerfile
