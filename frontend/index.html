@@ -910,15 +910,20 @@ const PER_HUBS = [
   {id:'per-sites',    label:'Site Numbers',      color:'#33b1ff'},
 ];
 
-let svgNodeMap = {}; // id -> {el, n, cx, cy}
-let nodePositions = {}; // id -> {x, y} — mutable drag positions, persists across rebuilds
+let svgNodeMap = {}; // nodeId  -> {el, n, cx, cy}
+let hubNodeMap = {};  // hubId   -> {el, hub, cx, cy, childIds:[]}
+let nodePositions = {}; // id -> {x, y} — persists across filter rebuilds (child nodes)
+let hubPositions2 = {}; // hubId -> {x, y} — persists hub drag positions
 
 // ── Drag state ──────────────────────────────────────────────────────────
 const _drag = {
   active: false,
   id: null,
+  isHub: false,          // true when dragging an enterprise/personal hub
   startX: 0, startY: 0,
   origX: 0, origY: 0,
+  // snapshot of child positions at drag-start (hub drag only)
+  childSnap: {},         // nodeId -> {origX, origY}
   moved: false,
 };
 
@@ -926,7 +931,8 @@ function buildGraph() {
   const svg = document.getElementById('dkg-svg');
   svg.innerHTML = '';
   svgNodeMap = {};
-  // Note: nodePositions is intentionally NOT cleared here — drag positions survive filter toggles
+  hubNodeMap = {};
+  // Note: nodePositions / hubPositions2 are intentionally NOT cleared here — drag positions survive filter toggles
 
   const W = svg.clientWidth  || svg.getBoundingClientRect().width  || 900;
   const H = svg.clientHeight || svg.getBoundingClientRect().height || 580;
@@ -1000,8 +1006,11 @@ function drawHubNode(nodeLayer, edgeLayer, hub, hx, hy, cx, cy, side, svg) {
   const R   = 22;
   const col = hub.color;
 
-  // Connect to center
-  const line = svgEl('line',{x1:hx,y1:hy,x2:cx,y2:cy,stroke:col,'stroke-width':'1.5',opacity:'0.25'});
+  // Apply persisted drag position if any
+  if (hubPositions2[hub.id]) { hx = hubPositions2[hub.id].x; hy = hubPositions2[hub.id].y; }
+
+  // Center line — tagged so hub drag can update it
+  const line = svgEl('line',{x1:hx,y1:hy,x2:cx,y2:cy,stroke:col,'stroke-width':'1.5',opacity:'0.25','data-center-line':hub.id});
   edgeLayer.appendChild(line);
 
   const g = svgEl('g',{class:'svg-node',id:hub.id,'data-hub':'1','data-types':hub.types?hub.types.join(','):''});
@@ -1010,17 +1019,24 @@ function drawHubNode(nodeLayer, edgeLayer, hub, hx, hy, cx, cy, side, svg) {
   g.appendChild(svgEl('circle',{cx:hx,cy:hy,r:R,fill:'#fff',stroke:col,'stroke-width':'2',filter:`drop-shadow(0 1px 4px ${col}44)`}));
   g.appendChild(svgText(hub.label,hx,hy+4,{fill:col,'font-size':'9','font-weight':'800','text-anchor':'middle','letter-spacing':'0.3'}));
 
-  g.addEventListener('click', () => onHubClick(hub));
-  g.addEventListener('mouseenter', e => showTip(e, hub.label, hub.label + ' Hub', `Click to filter graph to ${hub.label} entities`));
+  g.style.cursor = 'grab';
+  g.addEventListener('mousedown', e => { if (!e.defaultPrevented) startHubDrag(e, hub.id, hx, hy); });
+  g.addEventListener('click', e => { if (_drag.moved) { e.stopPropagation(); return; } onHubClick(hub); });
+  g.addEventListener('mouseenter', e => { if (!_drag.active) showTip(e, hub.label, hub.label + ' Hub', `Drag to move · Click to filter ${hub.label} nodes`); });
   g.addEventListener('mouseleave', hideTip);
   nodeLayer.appendChild(g);
+
+  hubNodeMap[hub.id] = { el: g, hub, cx: hx, cy: hy, childIds: [] };
 }
 
 function drawPersonalHub(nodeLayer, edgeLayer, hub, hx, hy, cx, cy, svg) {
   const R   = 20;
   const col = hub.color;
 
-  const line = svgEl('line',{x1:hx,y1:hy,x2:cx,y2:cy,stroke:col,'stroke-width':'1.2',opacity:'0.2'});
+  // Apply persisted drag position if any
+  if (hubPositions2[hub.id]) { hx = hubPositions2[hub.id].x; hy = hubPositions2[hub.id].y; }
+
+  const line = svgEl('line',{x1:hx,y1:hy,x2:cx,y2:cy,stroke:col,'stroke-width':'1.2',opacity:'0.2','data-center-line':hub.id});
   edgeLayer.appendChild(line);
 
   const g = svgEl('g',{class:'svg-node',id:hub.id});
@@ -1028,10 +1044,14 @@ function drawPersonalHub(nodeLayer, edgeLayer, hub, hx, hy, cx, cy, svg) {
   g.appendChild(svgEl('circle',{cx:hx,cy:hy,r:R,fill:'#f0f8ff',stroke:col,'stroke-width':'1.8',filter:`drop-shadow(0 1px 3px ${col}33)`}));
   g.appendChild(svgText(hub.label,hx,hy+4,{fill:col,'font-size':'8.5','font-weight':'700','text-anchor':'middle'}));
 
-  g.addEventListener('click', () => onPersonalHubClick(hub));
-  g.addEventListener('mouseenter', e => showTip(e, 'Personal', hub.label, 'Your scoped view'));
+  g.style.cursor = 'grab';
+  g.addEventListener('mousedown', e => { if (!e.defaultPrevented) startHubDrag(e, hub.id, hx, hy); });
+  g.addEventListener('click', e => { if (_drag.moved) { e.stopPropagation(); return; } onPersonalHubClick(hub); });
+  g.addEventListener('mouseenter', e => { if (!_drag.active) showTip(e, 'Personal', hub.label, 'Drag to move · Your scoped view'); });
   g.addEventListener('mouseleave', hideTip);
   nodeLayer.appendChild(g);
+
+  hubNodeMap[hub.id] = { el: g, hub, cx: hx, cy: hy, childIds: [] };
 }
 
 function renderChildNodes(nodeLayer, edgeLayer, W, H, entCX, cy, perCX) {
@@ -1061,9 +1081,11 @@ function renderChildNodes(nodeLayer, edgeLayer, W, H, entCX, cy, perCX) {
   // Place nodes in clusters around each hub
   ENT_HUBS.forEach(hub => {
     const group = groups[hub.id] || [];
-    const hp    = hubPositions[hub.id];
+    // Use live hub position (dragged or default)
+    const hp = hubNodeMap[hub.id] ? { x: hubNodeMap[hub.id].cx, y: hubNodeMap[hub.id].cy }
+                                  : hubPositions[hub.id];
     if (!hp) return;
-    const cnt   = group.length;
+    const cnt = group.length;
     group.forEach((n, i) => {
       const angle  = (2 * Math.PI / Math.max(cnt, 1)) * i - Math.PI / 2;
       const radius = 52 + Math.min(cnt * 5, 30);
@@ -1071,6 +1093,8 @@ function renderChildNodes(nodeLayer, edgeLayer, W, H, entCX, cy, perCX) {
       const ny = hp.y + radius * Math.sin(angle);
       placed[n.id] = {x: nx, y: ny};
       drawChildNode(nodeLayer, edgeLayer, n, nx, ny, hp.x, hp.y, hub.color);
+      // Register child with hub
+      if (hubNodeMap[hub.id]) hubNodeMap[hub.id].childIds.push(n.id);
     });
   });
 
@@ -1175,12 +1199,42 @@ function getSVGPoint(e) {
   return pt.matrixTransform(svg.getScreenCTM().inverse());
 }
 
+// ── Shared helper: translate a node <g> and update all its lines ──────────
+function applyNodeTranslate(nodeId, nx, ny) {
+  const entry = svgNodeMap[nodeId];
+  if (!entry) return;
+  const baseX = entry.cx;
+  const baseY = entry.cy;
+  entry.el.setAttribute('transform', `translate(${nx - baseX},${ny - baseY})`);
+
+  const svg = document.getElementById('dkg-svg');
+  const hubConn = svg.querySelector(`[data-hub-conn="${nodeId}"]`);
+  if (hubConn) { hubConn.setAttribute('x1', nx); hubConn.setAttribute('y1', ny); }
+  svg.querySelectorAll(`[data-from="${nodeId}"]`).forEach(l => { l.setAttribute('x1', nx); l.setAttribute('y1', ny); });
+  svg.querySelectorAll(`[data-to="${nodeId}"]`).forEach(l =>   { l.setAttribute('x2', nx); l.setAttribute('y2', ny); });
+}
+
+// ── Shared helper: translate a hub <g> and update its center-line ─────────
+function applyHubTranslate(hubId, nx, ny) {
+  const hEntry = hubNodeMap[hubId];
+  if (!hEntry) return;
+  const baseX = hEntry.cx;
+  const baseY = hEntry.cy;
+  hEntry.el.setAttribute('transform', `translate(${nx - baseX},${ny - baseY})`);
+
+  const svg = document.getElementById('dkg-svg');
+  const cl = svg.querySelector(`[data-center-line="${hubId}"]`);
+  if (cl) { cl.setAttribute('x1', nx); cl.setAttribute('y1', ny); }
+}
+
+// ── Child-node drag ──────────────────────────────────────────────────────
 function startDrag(e, nodeId, origX, origY) {
   e.stopPropagation();
   e.preventDefault();
   hideTip();
   const pt = getSVGPoint(e);
   _drag.active = true;
+  _drag.isHub  = false;
   _drag.id     = nodeId;
   _drag.startX = pt.x;
   _drag.startY = pt.y;
@@ -1191,7 +1245,38 @@ function startDrag(e, nodeId, origX, origY) {
   const entry = svgNodeMap[nodeId];
   if (entry) entry.el.style.cursor = 'grabbing';
 
-  // Attach move/up to window so drag works outside the SVG bounds
+  window.addEventListener('mousemove', onDragMove, {passive:false});
+  window.addEventListener('mouseup',   onDragEnd,  {once:true});
+}
+
+// ── Hub drag — moves hub + all its children as a cluster ─────────────────
+function startHubDrag(e, hubId, origX, origY) {
+  e.stopPropagation();
+  e.preventDefault();
+  hideTip();
+  const pt = getSVGPoint(e);
+  _drag.active = true;
+  _drag.isHub  = true;
+  _drag.id     = hubId;
+  _drag.startX = pt.x;
+  _drag.startY = pt.y;
+  _drag.origX  = hubPositions2[hubId] ? hubPositions2[hubId].x : origX;
+  _drag.origY  = hubPositions2[hubId] ? hubPositions2[hubId].y : origY;
+  _drag.moved  = false;
+
+  // Snapshot every child's current committed position
+  _drag.childSnap = {};
+  const hEntry = hubNodeMap[hubId];
+  if (hEntry) {
+    hEntry.childIds.forEach(cid => {
+      const ce = svgNodeMap[cid];
+      if (ce) _drag.childSnap[cid] = { origX: nodePositions[cid]?.x ?? ce.cx, origY: nodePositions[cid]?.y ?? ce.cy };
+    });
+  }
+
+  const hEl = hubNodeMap[hubId];
+  if (hEl) hEl.el.style.cursor = 'grabbing';
+
   window.addEventListener('mousemove', onDragMove, {passive:false});
   window.addEventListener('mouseup',   onDragEnd,  {once:true});
 }
@@ -1199,9 +1284,9 @@ function startDrag(e, nodeId, origX, origY) {
 function onDragMove(e) {
   if (!_drag.active) return;
   e.preventDefault();
-  const pt  = getSVGPoint(e);
-  const dx  = pt.x - _drag.startX;
-  const dy  = pt.y - _drag.startY;
+  const pt = getSVGPoint(e);
+  const dx = pt.x - _drag.startX;
+  const dy = pt.y - _drag.startY;
 
   if (Math.abs(dx) + Math.abs(dy) > 3) _drag.moved = true;
   if (!_drag.moved) return;
@@ -1209,23 +1294,22 @@ function onDragMove(e) {
   const nx = _drag.origX + dx;
   const ny = _drag.origY + dy;
 
-  // Move the node group
-  const entry = svgNodeMap[_drag.id];
-  if (!entry) return;
-  // Translate entire group: shift all child elements that store absolute positions
-  // We use a CSS transform on the <g> — easiest approach
-  const baseX = entry.cx;  // original render position
-  const baseY = entry.cy;
-  entry.el.setAttribute('transform', `translate(${nx - baseX},${ny - baseY})`);
-
-  // Update the hub connector line
-  const svg = document.getElementById('dkg-svg');
-  const hubConn = svg.querySelector(`[data-hub-conn="${_drag.id}"]`);
-  if (hubConn) { hubConn.setAttribute('x1', nx); hubConn.setAttribute('y1', ny); }
-
-  // Update cross-node edges
-  svg.querySelectorAll(`[data-from="${_drag.id}"]`).forEach(l => { l.setAttribute('x1', nx); l.setAttribute('y1', ny); });
-  svg.querySelectorAll(`[data-to="${_drag.id}"]`).forEach(l =>   { l.setAttribute('x2', nx); l.setAttribute('y2', ny); });
+  if (_drag.isHub) {
+    // Move the hub itself
+    applyHubTranslate(_drag.id, nx, ny);
+    // Move every child by the same delta, respecting their own individual drag offsets
+    Object.entries(_drag.childSnap).forEach(([cid, snap]) => {
+      applyNodeTranslate(cid, snap.origX + dx, snap.origY + dy);
+    });
+    // Also update each child's hub-connector x2/y2 to follow the hub
+    const svg = document.getElementById('dkg-svg');
+    Object.keys(_drag.childSnap).forEach(cid => {
+      const hubConn = svg.querySelector(`[data-hub-conn="${cid}"]`);
+      if (hubConn) { hubConn.setAttribute('x2', nx); hubConn.setAttribute('y2', ny); }
+    });
+  } else {
+    applyNodeTranslate(_drag.id, nx, ny);
+  }
 }
 
 function onDragEnd(e) {
@@ -1233,25 +1317,42 @@ function onDragEnd(e) {
   window.removeEventListener('mousemove', onDragMove);
 
   if (_drag.moved) {
-    // Commit the final position
     const pt = getSVGPoint(e);
-    const nx = _drag.origX + (pt.x - _drag.startX);
-    const ny = _drag.origY + (pt.y - _drag.startY);
-    nodePositions[_drag.id] = {x: nx, y: ny};
+    const dx = pt.x - _drag.startX;
+    const dy = pt.y - _drag.startY;
+    const nx = _drag.origX + dx;
+    const ny = _drag.origY + dy;
 
-    // Update svgNodeMap so future edge lookups use the new position
-    if (svgNodeMap[_drag.id]) {
-      svgNodeMap[_drag.id].cx = nx;
-      svgNodeMap[_drag.id].cy = ny;
+    if (_drag.isHub) {
+      // Persist hub position
+      hubPositions2[_drag.id] = { x: nx, y: ny };
+      if (hubNodeMap[_drag.id]) { hubNodeMap[_drag.id].cx = nx; hubNodeMap[_drag.id].cy = ny; }
+
+      // Persist each child's new position
+      Object.entries(_drag.childSnap).forEach(([cid, snap]) => {
+        const cnx = snap.origX + dx;
+        const cny = snap.origY + dy;
+        nodePositions[cid] = { x: cnx, y: cny };
+        if (svgNodeMap[cid]) { svgNodeMap[cid].cx = cnx; svgNodeMap[cid].cy = cny; }
+      });
+    } else {
+      nodePositions[_drag.id] = { x: nx, y: ny };
+      if (svgNodeMap[_drag.id]) { svgNodeMap[_drag.id].cx = nx; svgNodeMap[_drag.id].cy = ny; }
     }
   }
 
-  const entry = svgNodeMap[_drag.id];
-  if (entry) entry.el.style.cursor = 'grab';
+  // Restore cursors
+  if (_drag.isHub) {
+    if (hubNodeMap[_drag.id]) hubNodeMap[_drag.id].el.style.cursor = 'grab';
+  } else {
+    if (svgNodeMap[_drag.id]) svgNodeMap[_drag.id].el.style.cursor = 'grab';
+  }
 
-  _drag.active = false;
-  _drag.id     = null;
-  _drag.moved  = false;
+  _drag.active     = false;
+  _drag.id         = null;
+  _drag.isHub      = false;
+  _drag.moved      = false;
+  _drag.childSnap  = {};
 }
 
 // ── Hub click: filter activeLabels + switch sidebar tab ───────────────────
@@ -2602,7 +2703,7 @@ function init(){
   // Toolbar buttons
   document.getElementById('bfit').onclick = () => buildGraph();
   document.getElementById('brst').onclick = () => { activeLabels=new Set(Object.keys(COLORS)); buildFilters(); buildGraph(); };
-  document.getElementById('brstlayout').onclick = () => { nodePositions={}; buildGraph(); };
+  document.getElementById('brstlayout').onclick = () => { nodePositions={}; hubPositions2={}; buildGraph(); };
   document.getElementById('bhier').onclick = showFullHierarchyMode;
   document.getElementById('bexp').onclick  = openExportModal;
   document.getElementById('exmclose').onclick = closeExportModal;
