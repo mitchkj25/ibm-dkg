@@ -1,4 +1,4 @@
-# IBM KG — Python dependencies
+# IBM Scout — Python dependencies
 # Install: pip install -r requirements.txt
 #
 # Mock/demo mode: only the top block is required (no external services)

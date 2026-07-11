@@ -3,7 +3,8 @@
 <head>
 <meta charset="UTF-8"/>
 <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-<title>IBM KG — IBM Knowledge Graph</title>
+<title>IBM Scout — Sales Content Optimization & Utility Tool</title>
+<link rel="icon" href="assets/scout-logo.png"/>
 <style>
 *,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
 :root{
@@ -316,17 +317,8 @@ hr{border:none;border-top:1px solid var(--border);margin:10px 0}
 <!-- ── Header ─────────────────────────────────────────────────────────── -->
 <header id="hdr">
   <div class="logo">
-    <svg width="26" height="26" viewBox="0 0 32 32" fill="none">
-      <circle cx="16" cy="16" r="14.5" stroke="rgba(15,98,254,0.4)" stroke-width="1"/>
-      <circle cx="16" cy="7"  r="2.5" fill="#0f62fe"/>
-      <circle cx="7"  cy="21" r="2.5" fill="#1192e8"/>
-      <circle cx="25" cy="21" r="2.5" fill="#009d9a"/>
-      <circle cx="16" cy="16" r="3"   fill="#a56eff"/>
-      <line x1="16" y1="9.5"  x2="16" y2="13"  stroke="rgba(15,98,254,.6)"  stroke-width="1.2"/>
-      <line x1="9"  y1="19.5" x2="13.5" y2="17" stroke="rgba(17,146,232,.6)" stroke-width="1.2"/>
-      <line x1="23" y1="19.5" x2="18.5" y2="17" stroke="rgba(0,157,154,.6)"  stroke-width="1.2"/>
-    </svg>
-    IBM <span class="pill">KG</span>
+    <img src="assets/scout-logo.png" width="32" height="32" alt="IBM Scout" style="object-fit:contain;flex-shrink:0;border-radius:4px" onerror="this.style.display='none'"/>
+    IBM Scout
   </div>
   <div class="hdiv"></div>
   <div id="sbar">
@@ -652,13 +644,13 @@ hr{border:none;border-top:1px solid var(--border);margin:10px 0}
       <button onclick="copyDigest()" style="flex:1;background:rgba(36,161,72,0.1);border:1px solid rgba(36,161,72,0.3);color:var(--ibm-green);border-radius:6px;padding:9px;font-size:11px;font-weight:700;cursor:pointer">⧉ Copy Digest</button>
       <button onclick="document.getElementById('digest-modal').classList.remove('open')" style="background:#f4f4f4;border:1px solid var(--border);color:var(--ts);border-radius:6px;padding:9px 14px;font-size:11px;cursor:pointer">Close</button>
     </div>
-    <div style="font-size:8px;color:var(--tm);margin-top:8px;text-align:center">IBM Knowledge Graph · Powered by IBM Granite · Weekly cadence</div>
+    <div style="font-size:8px;color:var(--tm);margin-top:8px;text-align:center">IBM Scout · Powered by IBM Granite · Weekly cadence</div>
   </div>
 </div>
 
 <script>
 // ╔══════════════════════════════════════════════════════════════════════════╗
-// ║  IBM KG v0.6 — Site Intelligence + ALT/TSL Hierarchy Explorer           ║
+// ║  IBM Scout v0.6 — Site Intelligence + ALT/TSL Hierarchy Explorer        ║
 // ╚══════════════════════════════════════════════════════════════════════════╝
 
 const API = 'http://localhost:8000';
@@ -997,8 +989,8 @@ function buildGraph() {
   const centerG = svgEl('g',{class:'svg-node',id:'center-node'});
   centerG.appendChild(svgEl('circle',{cx,cy,r:centerR+8,fill:'rgba(15,98,254,0.06)',stroke:'none'}));
   centerG.appendChild(svgEl('circle',{cx,cy,r:centerR,fill:'#fff',stroke:'#0f62fe','stroke-width':'2.5',filter:'drop-shadow(0 2px 8px rgba(15,98,254,.2))'}));
-  centerG.appendChild(svgText('IBM KG', cx, cy-4,  {fill:'#0f62fe','font-size':'10','font-weight':'800','text-anchor':'middle'}));
-  centerG.appendChild(svgText('Knowledge Graph', cx, cy+8, {fill:'#7986cb','font-size':'7.5','text-anchor':'middle'}));
+  centerG.appendChild(svgText('IBM Scout', cx, cy-4,  {fill:'#0f62fe','font-size':'10','font-weight':'800','text-anchor':'middle'}));
+  centerG.appendChild(svgText('Seller Intelligence', cx, cy+8, {fill:'#7986cb','font-size':'7.5','text-anchor':'middle'}));
   nodeLayer.appendChild(centerG);
 
   // ── Enterprise hub nodes (left half circle) ──
@@ -2497,7 +2489,7 @@ function clearSelection() {
 
 // ── Explainability trail ──────────────────────────────────────────────────
 function renderExplainTrail(n) {
-  const source=n.source||(n.label==='Install'?'Passport Advantage':n.label==='Opportunity'?'Salesforce CRM':n.label==='Seller'||n.label==='Manager'?'w3 Bluepages':n.label==='Account'?'Salesforce CRM':'IBM Knowledge Graph');
+  const source=n.source||(n.label==='Install'?'Passport Advantage':n.label==='Opportunity'?'Salesforce CRM':n.label==='Seller'||n.label==='Manager'?'w3 Bluepages':n.label==='Account'?'Salesforce CRM':'IBM Scout');
   const confidence=n.confidence||(n.status==='STALE'?0.52:0.85+Math.random()*0.1);
   const verified=n.lastVerified||'2025-07-01';
   const ttl=n.status==='STALE'?'EXPIRED':'90 days';
@@ -2514,7 +2506,7 @@ function renderExplainTrail(n) {
       <div class="xplain-row"><span class="xplain-k">TTL</span><span class="xplain-v" style="color:${ttl.includes('EXP')?'var(--ibm-red)':'var(--ibm-green)'}">${ttl}</span></div>
       <div class="xplain-row"><span class="xplain-k">Human confirms</span><span class="xplain-v" style="color:${wbCount?'#24a148':'var(--tm)'}">${wbCount>0?wbCount+' confirm'+(wbCount>1?'s':'')+'  ✓':'None yet'}</span></div>
       <div class="xplain-row"><span class="xplain-k">Edges used</span><span class="xplain-v">${edgeTrail||'None'}</span></div>
-      <div class="xplain-row"><span class="xplain-k">Provenance</span><span class="xplain-v">W3C PROV-DM · IBM KG v0.5</span></div>
+      <div class="xplain-row"><span class="xplain-k">Provenance</span><span class="xplain-v">W3C PROV-DM · IBM Scout v0.6</span></div>
     </div>
   </div>`;
 }
@@ -2790,7 +2782,7 @@ function showDigestModal(){
   const ren=_modData.filter(d=>d.type==='renewal'&&d.daysOut<180);
   const ws=window._insightsData?window._insightsData.whitespace:[];
   const totalPipeline=_modData.reduce((a,d)=>a+(d.contractValue||0),0);
-  document.getElementById('digest-content').innerHTML=`<div style="color:var(--ibm-blue);font-weight:800;font-size:13px;margin-bottom:12px">IBM Knowledge Graph — Weekly Book-of-Business Digest</div><div style="color:var(--tm);font-size:9px;margin-bottom:14px">${today} · Viewing as: ${CURRENT_USER.name} (${CURRENT_USER.sellerType})</div><div style="font-size:10px;color:var(--tp);font-weight:700;margin-bottom:6px;padding-bottom:4px;border-bottom:1px solid var(--border)">🔴 Expired / EOS (${eos.length})</div>${eos.map(d=>`<div style="padding:4px 0;color:var(--ts)">• <strong style="color:var(--ibm-red)">${d.account}</strong> — ${d.product} EXPIRED ${Math.abs(d.daysOut)}d ago. → ${d.modernizeTo}</div>`).join('')||'<div style="color:var(--tm);font-size:9px;padding:4px 0">None</div>'}<div style="font-size:10px;color:var(--tp);font-weight:700;margin:12px 0 6px;padding-bottom:4px;border-bottom:1px solid var(--border)">🟡 Upcoming Renewals (${ren.length})</div>${ren.map(d=>`<div style="padding:4px 0;color:var(--ts)">• <strong>${d.account}</strong> — ${d.product} renews ${d.renewalDate} (${d.daysOut}d). → ${d.modernizeTo}</div>`).join('')||'<div style="color:var(--tm);font-size:9px;padding:4px 0">None</div>'}<div style="font-size:10px;color:var(--tp);font-weight:700;margin:12px 0 6px;padding-bottom:4px;border-bottom:1px solid var(--border)">⭕ Whitespace Gaps (${ws.length})</div>${ws.slice(0,3).map(w=>`<div style="padding:4px 0;color:var(--ts)">• <strong>${w.account}</strong> — ${w.body||w.headline}</div>`).join('')||'<div style="color:var(--tm);font-size:9px;padding:4px 0">None — run Insights tab first</div>'}<div style="margin-top:14px;padding:10px;background:rgba(15,98,254,0.05);border:1px solid rgba(15,98,254,0.15);border-radius:6px;text-align:center"><div style="font-size:11px;font-weight:700;color:var(--ibm-blue)">Total Addressable Pipeline</div><div style="font-size:22px;font-weight:800;color:var(--ibm-cyan);font-variant-numeric:tabular-nums">$${(totalPipeline/1e6).toFixed(2)}M</div><div style="font-size:8px;color:var(--tm)">${_modData.length} modernization opportunities</div></div><div style="margin-top:10px;font-size:9px;color:var(--tm);line-height:1.6;border-top:1px solid var(--border);padding-top:8px"><strong>Next Best Actions:</strong> ${_modData.slice(0,2).map(d=>`Draft renewal email for ${d.account} (${d.product})`).join(' · ')}</div>`;
+  document.getElementById('digest-content').innerHTML=`<div style="color:var(--ibm-blue);font-weight:800;font-size:13px;margin-bottom:12px">IBM Scout — Weekly Book-of-Business Digest</div><div style="color:var(--tm);font-size:9px;margin-bottom:14px">${today} · Viewing as: ${CURRENT_USER.name} (${CURRENT_USER.sellerType})</div><div style="font-size:10px;color:var(--tp);font-weight:700;margin-bottom:6px;padding-bottom:4px;border-bottom:1px solid var(--border)">🔴 Expired / EOS (${eos.length})</div>${eos.map(d=>`<div style="padding:4px 0;color:var(--ts)">• <strong style="color:var(--ibm-red)">${d.account}</strong> — ${d.product} EXPIRED ${Math.abs(d.daysOut)}d ago. → ${d.modernizeTo}</div>`).join('')||'<div style="color:var(--tm);font-size:9px;padding:4px 0">None</div>'}<div style="font-size:10px;color:var(--tp);font-weight:700;margin:12px 0 6px;padding-bottom:4px;border-bottom:1px solid var(--border)">🟡 Upcoming Renewals (${ren.length})</div>${ren.map(d=>`<div style="padding:4px 0;color:var(--ts)">• <strong>${d.account}</strong> — ${d.product} renews ${d.renewalDate} (${d.daysOut}d). → ${d.modernizeTo}</div>`).join('')||'<div style="color:var(--tm);font-size:9px;padding:4px 0">None</div>'}<div style="font-size:10px;color:var(--tp);font-weight:700;margin:12px 0 6px;padding-bottom:4px;border-bottom:1px solid var(--border)">⭕ Whitespace Gaps (${ws.length})</div>${ws.slice(0,3).map(w=>`<div style="padding:4px 0;color:var(--ts)">• <strong>${w.account}</strong> — ${w.body||w.headline}</div>`).join('')||'<div style="color:var(--tm);font-size:9px;padding:4px 0">None — run Insights tab first</div>'}<div style="margin-top:14px;padding:10px;background:rgba(15,98,254,0.05);border:1px solid rgba(15,98,254,0.15);border-radius:6px;text-align:center"><div style="font-size:11px;font-weight:700;color:var(--ibm-blue)">Total Addressable Pipeline</div><div style="font-size:22px;font-weight:800;color:var(--ibm-cyan);font-variant-numeric:tabular-nums">$${(totalPipeline/1e6).toFixed(2)}M</div><div style="font-size:8px;color:var(--tm)">${_modData.length} modernization opportunities</div></div><div style="margin-top:10px;font-size:9px;color:var(--tm);line-height:1.6;border-top:1px solid var(--border);padding-top:8px"><strong>Next Best Actions:</strong> ${_modData.slice(0,2).map(d=>`Draft renewal email for ${d.account} (${d.product})`).join(' · ')}</div>`;
   document.getElementById('digest-modal').classList.add('open');
 }
 
@@ -2867,7 +2859,7 @@ function renderFullGraphToCanvas(targetCanvas,expNodes,expEdges,W2,H2,scaleFacto
   targetCanvas.width=W2;targetCanvas.height=TOTAL_H;
   const c=targetCanvas.getContext('2d');
   c.fillStyle='#f0f4ff';c.fillRect(0,0,W2,TOTAL_H);
-  if(!isPreview){c.fillStyle='rgba(255,255,255,0.95)';c.fillRect(0,0,W2,HEADER_H);c.font='bold 13px "IBM Plex Sans",system-ui,sans-serif';c.fillStyle='#161616';c.fillText('IBM Knowledge Graph',18,33);c.font='10px "IBM Plex Sans",system-ui,sans-serif';c.fillStyle='#525252';c.fillText(`${expNodes.length} nodes, ${expEdges.length} edges`,70,33);c.textAlign='right';c.fillStyle='#8d8d8d';c.fillText(new Date().toLocaleString(),W2-18,33);c.textAlign='left';}
+  if(!isPreview){c.fillStyle='rgba(255,255,255,0.95)';c.fillRect(0,0,W2,HEADER_H);c.font='bold 13px "IBM Plex Sans",system-ui,sans-serif';c.fillStyle='#161616';c.fillText('IBM Scout',18,33);c.font='10px "IBM Plex Sans",system-ui,sans-serif';c.fillStyle='#525252';c.fillText(`${expNodes.length} nodes, ${expEdges.length} edges`,70,33);c.textAlign='right';c.fillStyle='#8d8d8d';c.fillText(new Date().toLocaleString(),W2-18,33);c.textAlign='left';}
   if(!expNodes.length)return;
   const drawY0=HEADER_H+10,drawH=H2-20;
   const angle=(2*Math.PI)/expNodes.length;
@@ -2894,11 +2886,11 @@ function buildCSV(){
 
 function buildJSON(){
   const{nodes:expNodes,edges:expEdges}=getScopeData();
-  return JSON.stringify({meta:{generator:'IBM Knowledge Graph',exportedAt:new Date().toISOString(),nodeCount:expNodes.length,edgeCount:expEdges.length},nodes:expNodes,edges:expEdges.map(e=>({from:e.s,to:e.t,type:e.type}))},null,2);
+  return JSON.stringify({meta:{generator:'IBM Scout',exportedAt:new Date().toISOString(),nodeCount:expNodes.length,edgeCount:expEdges.length},nodes:expNodes,edges:expEdges.map(e=>({from:e.s,to:e.t,type:e.type}))},null,2);
 }
 
 function downloadBlob(blob,filename){const url=URL.createObjectURL(blob);const a=document.createElement('a');a.href=url;a.download=filename;a.click();setTimeout(()=>URL.revokeObjectURL(url),3000);}
-function getFilename(ext){const label=getExportScope()==='subgraph'&&selNode?selNode.name.replace(/[^a-z0-9]/gi,'_'):'IBM_KG_Full';return`${label}_${new Date().toISOString().slice(0,10)}.${ext}`;}
+function getFilename(ext){const label=getExportScope()==='subgraph'&&selNode?selNode.name.replace(/[^a-z0-9]/gi,'_'):'IBM_Scout_Full';return`${label}_${new Date().toISOString().slice(0,10)}.${ext}`;}
 function setFeedback(msg,ok=true){const el=document.getElementById('exmfeedback');el.textContent=msg;el.style.color=ok?'#24a148':'#da1e28';setTimeout(()=>{if(el.textContent===msg)el.textContent='';},3000);}
 
 async function runExportDownload(){

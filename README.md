@@ -1,4 +1,4 @@
-# IBM KG — IBM Knowledge Graph for IBM Sellers
+# IBM Scout — Sales Content Optimization & Utility Tool
 
 > **v0.5.0** — Enterprise knowledge graph mapping every IBM seller relationship, account install base, product coverage, territory assignment, site-number hierarchy, business partner network, and modernization pipeline. Powered by IBM Granite + Neo4j. Fully operational in demo mode with zero backend dependencies.
 
@@ -6,7 +6,7 @@
 
 ## What It Does
 
-The IBM Knowledge Graph is a **living, agent-maintained knowledge graph** that turns raw CRM, Passport Advantage, w3, and IFC data into proactive seller intelligence. It answers questions sellers and leaders ask every day:
+IBM Scout is a **living, graph-powered seller intelligence tool** that turns raw CRM, Passport Advantage, w3, and IFC data into proactive seller intelligence. It answers questions sellers and leaders ask every day:
 
 **Sellers**
 - *"What site numbers have the most spend?"* → ranked spend table with visual arc rings and bar fill
@@ -37,7 +37,7 @@ Every relationship is a **Knowledge Asset** with W3C PROV-DM provenance metadata
 
 | Area | Change |
 |---|---|
-| **Rebrand** | Project renamed from IBM DKG → **IBM KG (IBM Knowledge Graph)** |
+| **Rebrand** | Project renamed from IBM DKG → **IBM Scout (Sales Content Optimization & Utility Tool)** |
 | **Drag-to-reposition** | Every node and hub is draggable — grab any node, edges follow live; hub drag co-moves the entire cluster |
 | **Layout reset** | "Layout" toolbar button clears all drag positions and restores the default arrangement |
 | **Expanded site data** | 12 site numbers total: Louisiana (6 sites), First National Bancorp (4 sites), Meridian Health (2 sites) |
@@ -52,7 +52,7 @@ Every relationship is a **Knowledge Asset** with W3C PROV-DM provenance metadata
 
 ```
 ┌──────────────────────────────────────────────────────────────────────────────┐
-│                    IBM KG — IBM Knowledge Graph                              │
+│                    IBM Scout — Sales Content Optimization & Utility Tool     │
 │                                                                              │
 │  ┌──────────────────────────────────────────────────────────────────────┐    │
 │  │       Zero-dependency Frontend (HTML/SVG) — v0.5.0                   │    │
@@ -249,7 +249,7 @@ The frontend is a single self-contained HTML file — no npm, no build step, no 
 The graph canvas is a **light-themed SVG dual-graph**:
 
 - **Light theme** — `#f0f4ff` background, white panels, IBM blue accent palette, subtle dotted grid
-- **Enterprise Graph (left half)** — 6 hub nodes orbit a central IBM KG node:
+- **Enterprise Graph (left half)** - 6 hub nodes orbit a central IBM Scout node:
   - **People** → Sellers + Managers (blue/purple child nodes)
   - **Accounts** → Account nodes (cyan)
   - **Products** → Product nodes (orange)
@@ -570,7 +570,7 @@ orchestrate skills import -f orchestrate/kg_seller_skill.yaml
 ## Project Structure
 
 ```
-IBM KG/            (repo folder: IBM DKG)
+IBM Scout/         (repo folder: IBM DKG)
 ├── api/
 │   ├── main.py                  # FastAPI app, lifespan, routing (v0.2.0)
 │   ├── config.py                # Environment-based settings (pydantic-settings)

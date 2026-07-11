@@ -1,5 +1,5 @@
 """
-Search Agent — hybrid enterprise search over the IBM KG.
+Search Agent — hybrid enterprise search over IBM Scout.
 
 Strategy:
   1. Parse natural language query → extract intent, entity types, keywords

@@ -1,5 +1,5 @@
 """
-Ingestion Agent — normalises raw data payloads into the IBM KG graph schema,
+Ingestion Agent — normalises raw data payloads into the IBM Scout graph schema,
 writes nodes + relationships with provenance metadata, and triggers pruning
 verification on re-ingested entities.
 

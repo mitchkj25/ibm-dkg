@@ -1,5 +1,5 @@
 """
-IBM KG — Central configuration loaded from environment variables.
+IBM Scout — Central configuration loaded from environment variables.
 All secrets come from .env (never hardcoded). Missing required vars raise at startup.
 """
 import os

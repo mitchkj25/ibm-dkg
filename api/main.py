@@ -1,5 +1,5 @@
 """
-IBM KG — FastAPI application entry point.
+IBM Scout — FastAPI application entry point.
 
 Startup sequence:
   1. Load configuration (from .env or environment)
@@ -33,7 +33,7 @@ logger = logging.getLogger(__name__)
 async def lifespan(app: FastAPI):
     """Startup and shutdown logic."""
     # ── Startup ──────────────────────────────────────────────────────────────
-    logger.info("IBM KG API starting up…")
+    logger.info("IBM Scout API starting up…")
 
     # 1. Always seed mock store (works with zero credentials)
     from api.data.mock_store import MOCK_GRAPH
@@ -58,11 +58,11 @@ async def lifespan(app: FastAPI):
     except Exception as exc:
         logger.warning("Pruning scheduler failed to start: %s", exc)
 
-    logger.info("IBM KG API ready")
+    logger.info("IBM Scout API ready")
     yield
 
     # ── Shutdown ─────────────────────────────────────────────────────────────
-    logger.info("IBM KG API shutting down…")
+    logger.info("IBM Scout API shutting down…")
     try:
         from api.agents.pruning_agent import stop_scheduler
         stop_scheduler()
@@ -73,14 +73,14 @@ async def lifespan(app: FastAPI):
         await close_driver()
     except Exception:
         pass
-    logger.info("IBM KG API stopped")
+    logger.info("IBM Scout API stopped")
 
 
 def create_app() -> FastAPI:
     app = FastAPI(
-        title="IBM KG — Federated Provenance Knowledge Graph",
+        title="IBM Scout: Federated Seller Intelligence",
         description=(
-            "Enterprise knowledge graph for IBM sellers and leadership. "
+            "IBM Scout (Sales Content Optimization & Utility Tool) — graph-powered seller intelligence for IBM sellers and leadership. "
             "Each node carries W3C PROV-DM provenance metadata (source, confidence, TTL, last_verified), "
             "enabling trust scoring at the edge — the architectural foundation for federated, "
             "distributed knowledge contribution. Source systems (Salesforce, W3 directory, manual) "

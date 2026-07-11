@@ -1,23 +1,23 @@
-##############################################################################
-# IBM KG — watsonx Orchestrate Agent Skill Definition
+﻿##############################################################################
+# IBM Scout — watsonx Orchestrate Agent Skill Definition
 #
-# This skill exposes the IBM Knowledge Graph as a callable
-# tool inside any watsonx Orchestrate agent flow. A seller can ask their
+# This skill exposes IBM Scout as a callable tool inside any watsonx Orchestrate
+# agent flow. A seller can ask their
 # Orchestrate assistant natural-language questions about accounts, sellers,
 # installs, or opportunities and receive Granite-synthesised answers without
 # leaving their existing workflow.
 #
-# Deploy: orchestrate skills import -f ibm_kg_seller_skill.yaml
+# Deploy: orchestrate skills import -f scout_seller_skill.yaml
 ##############################################################################
 
 apiVersion: "orchestrate/v1"
 kind: Skill
 
 metadata:
-  name: ibm-kg-seller-intelligence
-  displayName: "IBM KG — Seller Intelligence"
+  name: ibm-scout-seller-intelligence
+  displayName: "IBM Scout — Seller Intelligence"
   description: >
-    Query the IBM Knowledge Graph for real-time seller intelligence.
+    Query IBM Scout's graph-powered knowledge base for real-time seller intelligence.
     Ask natural-language questions about accounts, expiring support contracts,
     co-sell opportunities, whitespace gaps, and territory health.
     Powered by graph traversal + IBM Granite synthesis.
@@ -28,7 +28,7 @@ metadata:
     - ibm-granite
     - watsonx
 
-# ── Tool functions exposed to the Orchestrate agent ──────────────────────────
+# â”€â”€ Tool functions exposed to the Orchestrate agent â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
 tools:
 
   # 1. Natural-language graph search with Cypher trace
@@ -153,7 +153,7 @@ tools:
     description: >
       Find accounts that have IBM installs but no open opportunities,
       or accounts with thin product coverage. The most compelling view
-      for IBM leadership — shows expansion revenue at risk.
+      for IBM leadership â€” shows expansion revenue at risk.
     endpoint:
       method: GET
       path: /insights/whitespace
@@ -280,22 +280,23 @@ tools:
         by_source:
           type: array
 
-# ── Orchestrate flow configuration ───────────────────────────────────────────
+# â”€â”€ Orchestrate flow configuration â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
 agent:
   model: "ibm/granite-13b-instruct-v2"
   systemPrompt: >
-    You are an IBM Seller Intelligence assistant powered by the IBM Knowledge Graph.
+    You are an IBM Seller Intelligence assistant powered by IBM Scout.
     You have access to real-time data about sellers, accounts, install bases, 
     opportunities, and territories. Always ground your answers in the data returned 
-    by the tools — do not invent information. When you surface a next best action,
+    by the tools â€” do not invent information. When you surface a next best action,
     include the urgency level and estimated revenue impact. When answering questions
     about site numbers or accounts, mention the specific site IDs and product coverage.
     Show the Cypher query trace when the user asks "how did you get that" or "explain".
   maxIterations: 5
   temperature: 0.1
 
-# ── Environment variables required ───────────────────────────────────────────
+# â”€â”€ Environment variables required â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
 environment:
   - name: KG_API_URL
-    description: "Base URL of the IBM KG FastAPI service (e.g. http://localhost:8000)"
+    description: "Base URL of the IBM Scout FastAPI service (e.g. http://localhost:8000)"
     required: true
+

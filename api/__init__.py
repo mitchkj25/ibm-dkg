@@ -1,1 +1,1 @@
-"""IBM KG API package."""
+"""IBM Scout API package."""
