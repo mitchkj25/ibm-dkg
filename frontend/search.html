@@ -329,10 +329,10 @@ html,body{min-height:100vh;background:var(--bg);color:var(--tp);
     <div class="role-row">
       <span class="role-lbl">I'm a</span>
       <button class="role-pill active" data-role="all">All</button>
-      <button class="role-pill" data-role="seller">Seller</button>
+      <button class="role-pill" data-role="seller">CE / Seller</button>
+      <button class="role-pill" data-role="bss">BSS / Brand Specialist</button>
       <button class="role-pill" data-role="manager">Manager / FLM</button>
       <button class="role-pill" data-role="executive">Executive / SLM</button>
-      <button class="role-pill" data-role="specialist">Brand Specialist</button>
     </div>
   </section>
 
@@ -429,15 +429,17 @@ let API_LIVE = false;
 
 // ── Seed data (same as graph view) ──────────────────────────────────
 const NODES = [
-  {id:'mgr-001',label:'Manager',  name:'Sandra Okafor',    role:'First-line Manager',  geo:'Northeast', status:'ACTIVE', desc:'First-line manager, Northeast. Oversees Marcus Webb & Aisha Thornton. 2 direct reports, $12.7M combined quota.'},
-  {id:'mgr-002',label:'Manager',  name:'David Reyes',      role:'First-line Manager',  geo:'Southeast', status:'ACTIVE', desc:'First-line manager, Southeast. Manages James Kowalski & Lin Mei Zhang. $8.9M combined quota.'},
-  {id:'mgr-003',label:'Manager',  name:'Priya Nambiar',    role:'Second-line Manager', geo:'West Coast', status:'ACTIVE', desc:'Second-line manager, West Coast. Tyler Oduya & Rachel Patel report through her. $15M combined quota.'},
-  {id:'sel-001',label:'Seller',   name:'Marcus Webb',      role:'Client Executive',    geo:'NYC Metro',  status:'ACTIVE', desc:'Client Executive — NYC Metro. Primary CE for First National Bancorp & Cascadia Insurance. Co-sells watsonx with Aisha.'},
-  {id:'sel-002',label:'Seller',   name:'Aisha Thornton',   role:'Software Sales Specialist', geo:'New England', status:'ACTIVE', desc:'watsonx AI & Automation specialist — New England. Certified watsonx.ai & watsonx.data. Key co-seller for FNB expansion.'},
-  {id:'sel-003',label:'Seller',   name:'James Kowalski',   role:'Client Executive',    geo:'Atlanta',   status:'ACTIVE', desc:'Client Executive — Atlanta. Owns Meridian Health Systems & Nova Retail Group. Healthcare and retail vertical focus.'},
-  {id:'sel-004',label:'Seller',   name:'Lin Mei Zhang',    role:'Technology Sales Specialist', geo:'Miami', status:'ACTIVE', desc:'Technology Sales Specialist — Miami. Owns SunCoast Logistics. Hybrid Cloud & AI focus.'},
-  {id:'sel-005',label:'Seller',   name:'Tyler Oduya',      role:'Client Executive',    geo:'San Francisco', status:'ACTIVE', desc:'Client Executive — San Francisco Bay Area. Primary CE for Apex Technology Partners. AI and governance expansion.'},
-  {id:'sel-006',label:'Seller',   name:'Rachel Patel',     role:'Software Sales Specialist', geo:'Los Angeles', status:'ACTIVE', desc:'Security & Compliance specialist — LA. Certified CP4Security & OpenPages. Federal and regulated industries focus.'},
+  {id:'mgr-001',label:'Manager',  name:'Sandra Okafor',    role:'First-line Manager (FLM)',  geo:'Northeast', status:'ACTIVE', desc:'First-line manager, Northeast. Oversees Marcus Webb (CE) & Aisha Thornton (BSS). 2 direct reports, $12.7M combined quota.'},
+  {id:'mgr-002',label:'Manager',  name:'David Reyes',      role:'First-line Manager (FLM)',  geo:'Southeast', status:'ACTIVE', desc:'FLM, Southeast. Manages James Kowalski (CE), Lin Mei Zhang (BSS), Monique Tureaud (TSL/BSS), and Derek Callahan (ATL). TSL and ATL are peers, both report to this FLM.'},
+  {id:'mgr-003',label:'Manager',  name:'Priya Nambiar',    role:'Second-line Manager (SLM)', geo:'West Coast', status:'ACTIVE', desc:'Second-line manager, West Coast. Tyler Oduya (CE) & Rachel Patel (BSS) report through her. $15M combined quota.'},
+  {id:'mgr-004',label:'Manager',  name:'Derek Callahan',   role:'Area Tech Leader (ATL)',    geo:'Public Sector South', status:'ACTIVE', desc:'ATL — Area Tech Leader, Public Sector South. Peer to TSL Monique Tureaud; both report to FLM David Reyes. ATL owns brand activation and technical advocacy for Louisiana, Mississippi, Arkansas.'},
+  {id:'sel-001',label:'Seller',   name:'Marcus Webb',      role:'Client Executive (CE)',     geo:'NYC Metro',  status:'ACTIVE', sellerType:'CE',  desc:'Client Executive — NYC Metro. Primary CE for First National Bancorp & Cascadia Insurance. Co-sells watsonx with Aisha.'},
+  {id:'sel-002',label:'Seller',   name:'Aisha Thornton',   role:'Brand Sales Specialist',    geo:'New England', status:'ACTIVE', sellerType:'BSS', desc:'BSS / watsonx AI & Automation — New England. Certified watsonx.ai & watsonx.data. Key BSS co-seller for FNB expansion.'},
+  {id:'sel-003',label:'Seller',   name:'James Kowalski',   role:'Client Executive (CE)',     geo:'Atlanta',   status:'ACTIVE', sellerType:'CE',  desc:'Client Executive — Atlanta. Owns Meridian Health Systems & Nova Retail Group. Healthcare and retail vertical focus.'},
+  {id:'sel-004',label:'Seller',   name:'Lin Mei Zhang',    role:'Brand Sales Specialist',    geo:'Miami', status:'ACTIVE', sellerType:'BSS', desc:'BSS / Hybrid Cloud & Infrastructure — Miami. Covers SunCoast Logistics. Hybrid Cloud & AI focus.'},
+  {id:'sel-005',label:'Seller',   name:'Tyler Oduya',      role:'Client Executive (CE)',     geo:'San Francisco', status:'ACTIVE', sellerType:'CE',  desc:'Client Executive — San Francisco Bay Area. Primary CE for Apex Technology Partners. AI and governance expansion.'},
+  {id:'sel-006',label:'Seller',   name:'Rachel Patel',     role:'Brand Sales Specialist',    geo:'Los Angeles', status:'ACTIVE', sellerType:'BSS', desc:'BSS / Security & Compliance — LA. Certified CP4Security & OpenPages. Federal and regulated industries focus.'},
+  {id:'sel-007',label:'Seller',   name:'Monique Tureaud',  role:'Brand Sales Specialist',    geo:'Baton Rouge, LA', status:'ACTIVE', sellerType:'TSL', desc:'TSL / Brand Sales Specialist (BSS) — IBM Cognos Analytics & Planning Analytics. Louisiana Public Sector. TSL and ATL (Derek Callahan) are peers; both report to FLM David Reyes.'},
   {id:'ter-001',label:'Territory',name:'NYC Metro Enterprise',   region:'Northeast', quota:8500000, status:'ACTIVE', desc:'Large enterprise accounts in NY/NJ metro. Quota: $8.5M. Key accounts: First National Bancorp, Cascadia Insurance.'},
   {id:'ter-002',label:'Territory',name:'New England Mid-Market', region:'Northeast', quota:4200000, status:'ACTIVE', desc:'Tech-focused mid-market across MA, CT, RI. Quota: $4.2M. Strong watsonx pipeline.'},
   {id:'ter-003',label:'Territory',name:'Southeast Enterprise',   region:'Southeast', quota:6100000, status:'ACTIVE', desc:'Enterprise accounts GA, FL, SC, NC. Quota: $6.1M. Healthcare and retail concentration.'},
@@ -555,7 +557,7 @@ function updateBrowseLabel() {
   if (currentQuery) {
     lbl.textContent = `Search results for "${currentQuery}"`;
   } else if (activeRole !== 'all') {
-    const roleNames = {seller:'Sellers',manager:'Managers',executive:'SLM / Executive View',specialist:'Brand Specialists'};
+    const roleNames = {seller:'CE / Sellers',bss:'BSS / Brand Specialists',manager:'Managers / FLM',executive:'SLM / Executive View'};
     lbl.textContent = `Browsing as: ${roleNames[activeRole] || activeRole}`;
   } else {
     lbl.textContent = 'Browse All Entities';
@@ -568,13 +570,22 @@ function getFilteredNodes(query = currentQuery) {
 
   // Role filter
   if (activeRole === 'seller') {
-    pool = pool.filter(n => ['Seller','Account','Install','Opportunity','Product','Territory'].includes(n.label));
+    // CEs see their accounts, installs, opps, territories, deployments
+    pool = pool.filter(n => {
+      if (n.label === 'Seller') return !n.sellerType || n.sellerType === 'CE' || n.role?.includes('Executive');
+      return ['Account','Install','Opportunity','Product','Territory','Deployment'].includes(n.label);
+    });
+  } else if (activeRole === 'bss') {
+    // BSS / Brand Specialists see products, deployments, installs, accounts — but NOT CE-only seller cards
+    pool = pool.filter(n => {
+      if (n.label === 'Seller') return n.sellerType === 'BSS' || n.sellerType === 'TSL' || n.role?.includes('Brand') || n.role?.includes('Specialist');
+      if (n.label === 'Manager') return n.role?.includes('ATL') || n.role?.includes('FLM');
+      return ['Product','Deployment','Install','Account','Opportunity'].includes(n.label);
+    });
   } else if (activeRole === 'manager') {
-    pool = pool.filter(n => ['Manager','Seller','Account','Territory','Opportunity'].includes(n.label));
+    pool = pool.filter(n => ['Manager','Seller','Account','Territory','Opportunity','Deployment'].includes(n.label));
   } else if (activeRole === 'executive') {
-    pool = pool.filter(n => ['Manager','Account','Territory','Opportunity','Install'].includes(n.label));
-  } else if (activeRole === 'specialist') {
-    pool = pool.filter(n => ['Seller','Product','Account','Opportunity'].includes(n.label));
+    pool = pool.filter(n => ['Manager','Account','Territory','Opportunity','Install','Deployment'].includes(n.label));
   }
 
   // Entity type filter
@@ -681,7 +692,12 @@ function renderCards(nodes) {
 }
 
 function openNode(id) {
-  // Open in graph view with the node pre-selected
+  // Deployment cards → dedicated Gainsight-style detail page
+  if (id.startsWith('dep-')) {
+    window.location.href = `deployment.html?id=${id}`;
+    return;
+  }
+  // Everything else → graph view with node pre-selected
   window.location.href = `index.html#node=${id}`;
 }
 

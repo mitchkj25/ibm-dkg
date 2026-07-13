@@ -514,8 +514,8 @@
         "email": "dcallahan@ibm.com",
         "bandLevel": "Band 9",
         "territory": "Public Sector South",
-        "role": "ALT",
-        "description": "Area Line Trigger Manager — Public Sector South. Oversees brand sellers covering Louisiana, Mississippi, Arkansas.",
+        "role": "ATL",
+        "description": "Area Tech Leader — Public Sector South. ATL peer to TSL; both report to FLM. Owns brand activation and technical advocacy for Louisiana, Mississippi, Arkansas.",
         "source": "seed",
         "status": "ACTIVE"
       }
@@ -528,11 +528,11 @@
         "email": "mtureaud@ibm.com",
         "bandLevel": "Band 7",
         "geo": "Baton Rouge, LA",
-        "role": "Technology Sales Leader",
+        "role": "Brand Sales Specialist",
         "sellerType": "TSL",
         "hireDate": "2020-08-01",
         "lastActive": "2025-07-03",
-        "description": "TSL covering IBM Cognos Analytics and Planning Analytics for Louisiana Public Sector accounts",
+        "description": "TSL / Brand Sales Specialist (BSS) covering IBM Cognos Analytics and Planning Analytics for Louisiana Public Sector accounts. TSL and ATL are peers; both report to FLM David Reyes.",
         "source": "seed",
         "status": "ACTIVE"
       }
@@ -916,8 +916,8 @@
     { "type": "relationship", "from_label": "Account", "from_id": "acc-004", "rel_type": "HAS_OPPORTUNITY", "to_label": "Opportunity", "to_id": "opp-004", "props": {} },
     { "type": "relationship", "from_label": "Seller", "from_id": "sel-001", "rel_type": "CO_SELLS", "to_label": "Seller", "to_id": "sel-002", "props": { "product": "watsonx.ai", "account": "First National Bancorp" } },
     { "type": "relationship", "from_label": "Seller", "from_id": "sel-003", "rel_type": "CO_SELLS", "to_label": "Seller", "to_id": "sel-004", "props": { "product": "Sterling OMS", "account": "Nova Retail Group" } },
-    { "type": "relationship", "from_label": "Seller", "from_id": "sel-007", "rel_type": "REPORTS_TO", "to_label": "Manager", "to_id": "mgr-004", "props": { "since": "2020-08-01", "active": true } },
-    { "type": "relationship", "from_label": "Manager", "from_id": "mgr-004", "rel_type": "REPORTS_TO", "to_label": "Manager", "to_id": "mgr-002", "props": { "since": "2019-01-01", "active": true } },
+    { "type": "relationship", "from_label": "Seller", "from_id": "sel-007", "rel_type": "REPORTS_TO", "to_label": "Manager", "to_id": "mgr-002", "props": { "since": "2020-08-01", "active": true, "note": "TSL reports directly to FLM, peer to ATL" } },
+    { "type": "relationship", "from_label": "Manager", "from_id": "mgr-004", "rel_type": "REPORTS_TO", "to_label": "Manager", "to_id": "mgr-002", "props": { "since": "2019-01-01", "active": true, "note": "ATL reports directly to FLM, peer to TSL" } },
     { "type": "relationship", "from_label": "Seller", "from_id": "sel-007", "rel_type": "OWNS_ACCOUNT", "to_label": "Account", "to_id": "acc-007", "props": { "role": "Primary TSL", "assignedDate": "2020-08-01" } },
     { "type": "relationship", "from_label": "Seller", "from_id": "sel-007", "rel_type": "COVERS_PRODUCT", "to_label": "Product", "to_id": "prd-008", "props": { "certified": true, "primary": true } },
     { "type": "relationship", "from_label": "Account", "from_id": "acc-007", "rel_type": "HAS_SITE", "to_label": "SiteNumber", "to_id": "site-001", "props": { "since": "2021-01-01" } },
