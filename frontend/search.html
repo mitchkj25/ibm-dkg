@@ -259,6 +259,31 @@ html,body{min-height:100vh;background:var(--bg);color:var(--tp);
 .typing span:nth-child(3){animation-delay:.3s}
 @keyframes bounce{0%,60%,100%{transform:translateY(0)}30%{transform:translateY(-5px)}}
 
+/* ── Inline answer panels (chat rail) ──────────────────────────────── */
+.ans-panel{margin-top:8px;border-radius:8px;overflow:hidden;border:1px solid var(--border);font-size:11px}
+.ans-hdr{padding:7px 10px;font-size:9px;font-weight:800;text-transform:uppercase;letter-spacing:.8px;
+  background:rgba(255,255,255,.04);border-bottom:1px solid var(--border);display:flex;align-items:center;gap:6px}
+.ans-row{display:flex;align-items:center;gap:8px;padding:7px 10px;border-bottom:1px solid rgba(255,255,255,.05);
+  cursor:pointer;transition:background .12s}
+.ans-row:last-child{border-bottom:none}
+.ans-row:hover{background:rgba(15,98,254,.07)}
+.ans-dot{width:8px;height:8px;border-radius:50%;flex-shrink:0}
+.ans-name{flex:1;font-weight:600;color:var(--tp);white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.ans-sub{font-size:9px;color:var(--tm);white-space:nowrap}
+.ans-badge{font-size:8px;font-weight:800;padding:2px 6px;border-radius:4px;white-space:nowrap;flex-shrink:0}
+.ans-indent{padding-left:22px}
+.ans-indent2{padding-left:38px}
+.ans-bar-wrap{padding:8px 10px}
+.ans-bar-track{height:7px;background:rgba(255,255,255,.07);border-radius:4px;overflow:hidden;margin:4px 0}
+.ans-bar-fill{height:100%;border-radius:4px}
+.ans-stat-grid{display:grid;grid-template-columns:1fr 1fr;gap:1px;background:var(--border)}
+.ans-stat{background:rgba(10,12,20,.8);padding:8px 10px}
+.ans-stat-val{font-size:16px;font-weight:700;line-height:1}
+.ans-stat-lbl{font-size:9px;color:var(--tm);text-transform:uppercase;letter-spacing:.4px;margin-top:2px}
+.ans-link{display:flex;align-items:center;justify-content:flex-end;padding:7px 10px 5px;
+  font-size:9px;font-weight:700;color:var(--ibm-blue);cursor:pointer;gap:4px;border-top:1px solid var(--border)}
+.ans-link:hover{text-decoration:underline}
+
 /* ══════════════ SEARCH RESULTS NARRATIVE ══════════════ */
 #narrative-bar{
   margin:0 48px 16px;
@@ -389,14 +414,18 @@ html,body{min-height:100vh;background:var(--bg);color:var(--tp);
   </div>
   <div class="cr-msgs" id="cr-msgs">
     <div class="msg agent">
-      <div class="msg-name">Scout</div>
-      Hi! I'm your IBM Scout seller intelligence agent.<br><br>
-      Ask me about accounts, installs, sellers, co-sell opportunities, expiring support contracts, or territory gaps.
-      <div style="margin-top:8px">
-        <button class="suggested-q" onclick="askAgent('Who manages Marcus Webb and what accounts do they own?')">Who manages Marcus Webb?</button>
-        <button class="suggested-q" onclick="askAgent('What does First National Bancorp have installed?')">First National installs</button>
-        <button class="suggested-q" onclick="askAgent('Which sellers are certified on watsonx.ai?')">watsonx.ai certified sellers</button>
-        <button class="suggested-q" onclick="askAgent('Find all expiring support contracts in the next 90 days')">Expiring support contracts</button>
+      <div class="msg-name">Scout · IBM Seller Intelligence</div>
+      I'm your AI-powered knowledge graph agent. Ask me about org hierarchy, accounts, installs, deployments, pipeline, territory coverage, or product certifications.
+      <div style="margin-top:10px;display:flex;flex-direction:column;gap:4px">
+        <div style="font-size:9px;font-weight:700;text-transform:uppercase;letter-spacing:.6px;color:var(--tm);margin-bottom:2px">Try asking…</div>
+        <button class="suggested-q" onclick="askAgent('Who does Marcus Webb report to and what accounts does he own?')">🏢 Who manages Marcus Webb?</button>
+        <button class="suggested-q" onclick="askAgent('What does First National Bancorp have installed?')">⚙️ First National install base</button>
+        <button class="suggested-q" onclick="askAgent('Show me all stalled deployments and adoption blockers')">🚀 Stalled deployments</button>
+        <button class="suggested-q" onclick="askAgent('What open opportunities are closing in the next 30 days?')">💡 Closing pipeline</button>
+        <button class="suggested-q" onclick="askAgent('Which sellers cover the Southeast territory?')">📍 Southeast territory</button>
+        <button class="suggested-q" onclick="askAgent('Which sellers are certified on watsonx.ai?')">📦 watsonx.ai certified sellers</button>
+        <button class="suggested-q" onclick="askAgent('Find all expiring support contracts in the next 90 days')">⚠️ Expiring support</button>
+        <button class="suggested-q" onclick="askAgent('Who can co-sell watsonx with a CE in the Northeast?')">🤝 Co-sell partners</button>
       </div>
     </div>
   </div>
@@ -732,7 +761,8 @@ async function doSearch(q) {
           const narrative = data.narrative || buildNarrative(q, apiNodes, data.intent || 'general');
           showNarrative(`🔴 Live API · ${narrative}`);
           pushUserMsg(q);
-          setTimeout(() => pushAgentMsg(`${narrative}\n\nResults sourced live from the IBM Scout knowledge graph.`), 600);
+          const liveIntent = data.intent || detectIntent(q.toLowerCase());
+          setTimeout(() => pushRichAnswer(q, liveIntent, apiNodes), 600);
           return;
         }
       }
@@ -748,7 +778,7 @@ async function doSearch(q) {
   showNarrative(narrative);
 
   pushUserMsg(q);
-  setTimeout(() => pushAgentMsg(narrative + '\n\nClick any card to explore in the graph view.'), 800);
+  setTimeout(() => pushRichAnswer(q, intent, nodes), 800);
 }
 
 function showNarrative(text) {
@@ -761,29 +791,373 @@ function hideNarrative() {
 }
 
 function detectIntent(q) {
-  if (/report|manage|who.*manage|direct report/.test(q)) return 'org';
-  if (/install|running|deployed|using|expir|support/.test(q)) return 'install';
-  if (/territory|region|cover|patch/.test(q)) return 'territory';
-  if (/product|certif|watsonx|openpage|turbonomic/.test(q)) return 'product';
-  if (/opport|deal|pipeline|stage/.test(q)) return 'opportunity';
-  if (/co.sell|partner|together/.test(q)) return 'cosell';
+  if (/who.*manage|manage.*who|reports? to|direct report|hierarchy|org|alt|tsl|atl|flm|slm/.test(q)) return 'org';
+  if (/deploy|adoption|gainsight|utiliz|stall|go.live|use case|csm|activated/.test(q)) return 'deployment';
+  if (/install|running|deployed|using|expir|support|renewal/.test(q)) return 'install';
+  if (/territory|region|cover|patch|quota/.test(q)) return 'territory';
+  if (/certif|covers product|sell.*product|product.*sell/.test(q)) return 'product';
+  if (/opport|deal|pipeline|stage|forecast/.test(q)) return 'opportunity';
+  if (/co.sell|partner|together|collaborat/.test(q)) return 'cosell';
+  if (/account|client|customer|install base|what.*have|360/.test(q)) return 'account';
   return 'general';
 }
 
-function buildNarrative(q, results, intent) {
-  if (!results.length) return `No results found for "${q}". Try broadening your search or clearing filters.`;
-  const names = results.slice(0,3).map(r=>r.name);
-  const n = results.length;
-  const m = {
-    org: `Found ${n} people and org relationship${n>1?'s':''}. Key: ${names.join(', ')}.`,
-    install: `Found ${n} install record${n>1?'s':''}. Watch for ⚠ stale/expiring cards — those are your immediate action items.`,
-    territory: `Found ${n} territory match${n>1?'es':''}. Covering: ${names.join(', ')}.`,
-    product: `Found ${n} product match${n>1?'es':''}. Top: ${names.join(', ')}. Use the graph to see which sellers are certified.`,
-    opportunity: `Found ${n} opportunit${n>1?'ies':'y'} in your pipeline. Top: ${names.join(', ')}.`,
-    cosell: `Found ${n} co-sell connection${n>1?'s':''}: ${names.join(', ')}.`,
-    general: `Found ${n} result${n>1?'s':''} for "${q}". Top matches: ${names.join(', ')}. Click any card to explore in the graph.`,
-  };
-  return m[intent] || m.general;
+// ── Entity lookup helpers ─────────────────────────────────────────────
+const LABEL_COL = {
+  Seller:'#0f62fe', Manager:'#a56eff', Territory:'#009d9a', Product:'#ff832b',
+  Account:'#1192e8', Install:'#24a148', Opportunity:'#f1c21b', Deployment:'#6929c4',
+};
+const ROLE_BADGE = {CE:'CE', BSS:'BSS', TSL:'TSL', ATL:'ATL', FLM:'FLM', SLM:'SLM'};
+
+function getBadgeForNode(n) {
+  if (n.sellerType) return ROLE_BADGE[n.sellerType] || n.sellerType;
+  if (n.role?.includes('ATL')) return 'ATL';
+  if (n.role?.includes('FLM') || n.role?.includes('First-line')) return 'FLM';
+  if (n.role?.includes('SLM') || n.role?.includes('Second-line')) return 'SLM';
+  if (n.role?.includes('Executive')) return 'CE';
+  if (n.role?.includes('Brand') || n.role?.includes('Specialist')) return 'BSS';
+  return null;
+}
+
+function fmtMoney(v) {
+  if (!v) return '—';
+  if (v >= 1e9) return `$${(v/1e9).toFixed(1)}B`;
+  if (v >= 1e6) return `$${(v/1e6).toFixed(1)}M`;
+  if (v >= 1e3) return `$${(v/1e3).toFixed(0)}K`;
+  return `$${v}`;
+}
+
+// ── Rich answer builder ───────────────────────────────────────────────
+// Returns an HTML string to inject as `.msg agent` content in the chat rail.
+
+function buildRichAnswer(q, intent, nodes) {
+  if (!nodes.length) {
+    return `<div class="msg-name">Scout</div>No results found for <strong>"${q}"</strong>. Try a different query or clear your filters.`;
+  }
+  const ql = q.toLowerCase();
+
+  // ── ORG / hierarchy ──────────────────────────────────────────────────
+  if (intent === 'org') {
+    // Find the focal person from the query
+    const focal = nodes.find(n =>
+      n.label === 'Seller' || n.label === 'Manager'
+    ) || nodes[0];
+
+    // Build hierarchy rows: managers first (SLM→FLM), then sellers
+    const mgrs = nodes.filter(n => n.label === 'Manager')
+      .sort((a,b) => {
+        const scoreA = a.role?.includes('Second') || a.role?.includes('SLM') ? 0 : 1;
+        const scoreB = b.role?.includes('Second') || b.role?.includes('SLM') ? 0 : 1;
+        return scoreA - scoreB;
+      });
+    const sellers = nodes.filter(n => n.label === 'Seller');
+
+    // Find accounts linked to focal person
+    const focalAccounts = nodes.filter(n => n.label === 'Account').slice(0,4);
+    const focalSites   = nodes.filter(n => n.label === 'SiteNumber').slice(0,4);
+
+    let rows = '';
+
+    mgrs.forEach(m => {
+      const badge = getBadgeForNode(m) || (m.role?.includes('Second') ? 'SLM' : 'FLM');
+      const badgeBg = badge === 'SLM' ? 'rgba(165,110,255,.2)' : 'rgba(15,98,254,.15)';
+      const badgeCol = badge === 'SLM' ? '#a56eff' : '#6ea6ff';
+      rows += `<div class="ans-row" onclick="openNode('${m.id}')">
+        <div class="ans-dot" style="background:#a56eff"></div>
+        <div class="ans-name">${m.name}</div>
+        <div class="ans-sub">${m.geo || ''}</div>
+        <div class="ans-badge" style="background:${badgeBg};color:${badgeCol}">${badge}</div>
+      </div>`;
+    });
+
+    sellers.forEach(s => {
+      const badge = getBadgeForNode(s) || 'CE';
+      const badgeBg = badge === 'BSS' ? 'rgba(255,131,43,.15)' : badge === 'TSL' ? 'rgba(0,157,154,.15)' : badge === 'ATL' ? 'rgba(165,110,255,.12)' : 'rgba(15,98,254,.15)';
+      const badgeCol = badge === 'BSS' ? '#ff832b' : badge === 'TSL' ? '#009d9a' : badge === 'ATL' ? '#a56eff' : '#6ea6ff';
+      // Accounts owned
+      const accNames = focalAccounts.slice(0,2).map(a=>a.name).join(', ');
+      rows += `<div class="ans-row ans-indent" onclick="openNode('${s.id}')">
+        <div class="ans-dot" style="background:#0f62fe"></div>
+        <div class="ans-name">${s.name}</div>
+        <div class="ans-sub">${s.geo || ''}</div>
+        <div class="ans-badge" style="background:${badgeBg};color:${badgeCol}">${badge}</div>
+      </div>`;
+      if (focalAccounts.length && s.id === focal?.id) {
+        focalAccounts.slice(0,3).forEach(a => {
+          const sites = focalSites.filter(si => si.accountId === a.id || si.name?.includes(a.name?.slice(0,4)));
+          const siteStr = sites.map(si=>si.siteId||si.name).join(', ');
+          rows += `<div class="ans-row ans-indent2" onclick="openNode('${a.id}')">
+            <div class="ans-dot" style="background:#1192e8"></div>
+            <div class="ans-name">${a.name}</div>
+            <div class="ans-sub">${siteStr || a.industry || ''}</div>
+            <div class="ans-badge" style="background:rgba(17,146,232,.15);color:#1192e8">ACCT</div>
+          </div>`;
+        });
+      }
+    });
+
+    const headline = mgrs.length
+      ? `<strong>${focal?.name || 'Results'}</strong> reports to <strong>${mgrs[0]?.name}</strong> (${getBadgeForNode(mgrs[0]) || 'FLM'})`
+      : `Found ${sellers.length} seller${sellers.length!==1?'s':''} matching <strong>"${q}"</strong>`;
+
+    return `<div class="msg-name">Scout · Org Intelligence</div>
+      ${headline}
+      <div class="ans-panel">
+        <div class="ans-hdr">🏢 Org Hierarchy — ${nodes.length} people</div>
+        ${rows}
+        <div class="ans-link" onclick="doSearch('${q.replace(/'/g,"\\'")}')">Show all results in card view →</div>
+      </div>`;
+  }
+
+  // ── ACCOUNT 360 ──────────────────────────────────────────────────────
+  if (intent === 'account') {
+    const acc = nodes.find(n => n.label === 'Account') || nodes[0];
+    const installs = nodes.filter(n => n.label === 'Install').slice(0,5);
+    const opps = nodes.filter(n => n.label === 'Opportunity').slice(0,3);
+    const deps = nodes.filter(n => n.label === 'Deployment').slice(0,3);
+    const sellers = nodes.filter(n => n.label === 'Seller').slice(0,2);
+
+    let installRows = installs.map(i => {
+      const isStale = i.status === 'STALE' || (i.supportEnd && new Date(i.supportEnd) < new Date());
+      const col = isStale ? '#da1e28' : '#24a148';
+      const daysLeft = i.supportEnd ? Math.ceil((new Date(i.supportEnd) - new Date())/86400000) : null;
+      const sub = daysLeft !== null ? (daysLeft < 0 ? '⚠ EXPIRED' : `${daysLeft}d remaining`) : i.version || '';
+      return `<div class="ans-row" onclick="openNode('${i.id}')">
+        <div class="ans-dot" style="background:${col}"></div>
+        <div class="ans-name">${i.name || i.product || 'Install'}</div>
+        <div class="ans-sub">${sub}</div>
+        <div class="ans-badge" style="background:${col}18;color:${col}">${isStale?'⚠ EOS':'ACTIVE'}</div>
+      </div>`;
+    }).join('') || '<div style="padding:8px 10px;font-size:10px;color:var(--tm)">No installs found</div>';
+
+    let oppRows = opps.map(o => {
+      const stageCol = {Validate:'#24a148',Propose:'#0f62fe',Qualify:'#009d9a',Identify:'#1192e8'}[o.stage]||'#888';
+      return `<div class="ans-row" onclick="openNode('${o.id}')">
+        <div class="ans-dot" style="background:${stageCol}"></div>
+        <div class="ans-name">${o.name}</div>
+        <div class="ans-sub">${fmtMoney(o.value)}</div>
+        <div class="ans-badge" style="background:${stageCol}18;color:${stageCol}">${o.stage||'—'}</div>
+      </div>`;
+    }).join('') || '<div style="padding:8px 10px;font-size:10px;color:var(--tm)">No open pipeline</div>';
+
+    const sellerNames = sellers.map(s=>s.name).join(', ') || 'Unassigned';
+
+    return `<div class="msg-name">Scout · Account 360</div>
+      <strong>${acc?.name || 'Account'}</strong> — ${acc?.industry || ''} ${acc?.revenue ? '· '+fmtMoney(acc.revenue) : ''}
+      <div class="ans-stat-grid" style="margin-top:8px;border-radius:6px;overflow:hidden;border:1px solid var(--border)">
+        <div class="ans-stat"><div class="ans-stat-val" style="color:#0f62fe">${installs.length}</div><div class="ans-stat-lbl">Installs</div></div>
+        <div class="ans-stat"><div class="ans-stat-val" style="color:#f1c21b">${opps.length}</div><div class="ans-stat-lbl">Open Opps</div></div>
+        <div class="ans-stat"><div class="ans-stat-val" style="color:#6929c4">${deps.length}</div><div class="ans-stat-lbl">Deployments</div></div>
+        <div class="ans-stat"><div class="ans-stat-val" style="color:#009d9a">${sellers.length}</div><div class="ans-stat-lbl">Sellers</div></div>
+      </div>
+      <div class="ans-panel" style="margin-top:8px">
+        <div class="ans-hdr">⚙️ Install Base</div>${installRows}
+      </div>
+      <div class="ans-panel" style="margin-top:6px">
+        <div class="ans-hdr">💡 Pipeline</div>${oppRows}
+      </div>
+      <div style="font-size:9px;color:var(--tm);margin-top:6px">Account owners: ${sellerNames}</div>
+      <div class="ans-link" style="border:1px solid var(--border);border-radius:6px;margin-top:6px" onclick="openNode('${acc?.id||''}')">View full account in graph →</div>`;
+  }
+
+  // ── INSTALL / EXPIRY ─────────────────────────────────────────────────
+  if (intent === 'install') {
+    const installs = nodes.filter(n => n.label === 'Install');
+    if (!installs.length) return `<div class="msg-name">Scout</div>No installs found for <strong>"${q}"</strong>.`;
+
+    const rows = installs.map(i => {
+      const isStale = i.status === 'STALE';
+      const daysLeft = i.supportEnd ? Math.ceil((new Date(i.supportEnd) - new Date()) / 86400000) : null;
+      const isExpired = daysLeft !== null && daysLeft < 0;
+      const isExpiring = daysLeft !== null && daysLeft >= 0 && daysLeft < 180;
+      const col = isExpired || isStale ? '#da1e28' : isExpiring ? '#f1c21b' : '#24a148';
+      const badge = isExpired ? '⚠ EXPIRED' : isExpiring ? `${daysLeft}d` : 'OK';
+      const acc = nodes.find(n => n.label === 'Account' && (n.id === i.accountId));
+      return `<div class="ans-row" onclick="openNode('${i.id}')">
+        <div class="ans-dot" style="background:${col}"></div>
+        <div class="ans-name">${i.name || 'Install'}</div>
+        <div class="ans-sub">${i.supportEnd||''}</div>
+        <div class="ans-badge" style="background:${col}18;color:${col}">${badge}</div>
+      </div>`;
+    }).join('');
+
+    const expiredCnt = installs.filter(i => i.status==='STALE' || (i.supportEnd && new Date(i.supportEnd)<new Date())).length;
+    const expiringSoon = installs.filter(i => { const d = i.supportEnd ? Math.ceil((new Date(i.supportEnd)-new Date())/86400000) : null; return d!==null && d>=0 && d<180; }).length;
+
+    return `<div class="msg-name">Scout · Install Base</div>
+      Found <strong>${installs.length} install record${installs.length!==1?'s':''}</strong>${expiredCnt ? ` — <span style="color:#da1e28">⚠ ${expiredCnt} expired/stale</span>` : ''}${expiringSoon ? `, <span style="color:#f1c21b">${expiringSoon} expiring within 180 days</span>` : ''}.
+      <div class="ans-panel">
+        <div class="ans-hdr">⚙️ Support Status</div>
+        ${rows}
+        <div class="ans-link" onclick="doSearch('expiring support')">Show all expiring →</div>
+      </div>`;
+  }
+
+  // ── DEPLOYMENT ───────────────────────────────────────────────────────
+  if (intent === 'deployment') {
+    const deps = nodes.filter(n => n.label === 'Deployment');
+    if (!deps.length) return `<div class="msg-name">Scout</div>No deployments found for <strong>"${q}"</strong>.`;
+
+    const GS_COL = {GREEN:'#24a148',YELLOW:'#f1c21b',RED:'#da1e28'};
+    const ST_COL = {LIVE:'#24a148',IN_PROGRESS:'#1192e8',STALLED:'#da1e28',NOT_STARTED:'#6f6f6f'};
+
+    const rows = deps.map(d => {
+      const gsCol = GS_COL[d.gainsightHealthLabel] || '#888';
+      const stCol = ST_COL[d.deploymentStatus] || '#888';
+      const adoPct = d.adoptionPct ?? '—';
+      const blockerAlert = d.blockers?.length ? `<span style="color:#da1e28;font-weight:800"> ⛔${d.blockers.length}</span>` : '';
+      const expandAlert = d.expandSignals?.length ? `<span style="color:#24a148;font-weight:800"> ↑</span>` : '';
+      return `<div class="ans-row" onclick="openNode('${d.id}')">
+        <div class="ans-dot" style="background:${gsCol}"></div>
+        <div class="ans-name">${d.name}</div>
+        <div class="ans-sub">${adoPct}%${blockerAlert}${expandAlert}</div>
+        <div class="ans-badge" style="background:${gsCol}18;color:${gsCol}">${d.gainsightHealthLabel||'—'} ${d.gainsightScore||''}</div>
+      </div>`;
+    }).join('');
+
+    const redCnt = deps.filter(d=>d.gainsightHealthLabel==='RED').length;
+    const stalledCnt = deps.filter(d=>d.deploymentStatus==='STALLED').length;
+    const avgAdop = Math.round(deps.filter(d=>d.adoptionPct!=null).reduce((s,d)=>s+d.adoptionPct,0) / Math.max(deps.filter(d=>d.adoptionPct!=null).length,1));
+
+    return `<div class="msg-name">Scout · Deployment Health</div>
+      <strong>${deps.length} deployment${deps.length!==1?'s':''}</strong> — avg adoption <strong>${avgAdop}%</strong>${redCnt ? `, <span style="color:#da1e28">⚠ ${redCnt} RED</span>` : ''}${stalledCnt ? `, <span style="color:#ff832b">${stalledCnt} stalled</span>` : ''}.
+      <div class="ans-panel">
+        <div class="ans-hdr">🚀 Deployment & Adoption</div>
+        ${rows}
+        <div class="ans-link" onclick="doSearch('stalled deployments')">Show stalled / at-risk →</div>
+      </div>`;
+  }
+
+  // ── OPPORTUNITY ───────────────────────────────────────────────────────
+  if (intent === 'opportunity') {
+    const opps = nodes.filter(n => n.label === 'Opportunity');
+    if (!opps.length) return `<div class="msg-name">Scout</div>No open opportunities found for <strong>"${q}"</strong>.`;
+
+    const stageColor = {Validate:'#24a148',Propose:'#0f62fe',Qualify:'#009d9a',Identify:'#1192e8'};
+    const rows = opps.map(o => {
+      const col = stageColor[o.stage] || '#888';
+      const daysToClose = o.closeDate ? Math.ceil((new Date(o.closeDate)-new Date())/86400000) : null;
+      const urgency = daysToClose !== null && daysToClose < 30 ? `<span style="color:#da1e28"> ⚠${daysToClose}d</span>` : '';
+      return `<div class="ans-row" onclick="openNode('${o.id}')">
+        <div class="ans-dot" style="background:${col}"></div>
+        <div class="ans-name">${o.name}</div>
+        <div class="ans-sub">${fmtMoney(o.value)}${urgency}</div>
+        <div class="ans-badge" style="background:${col}18;color:${col}">${o.stage||'—'}</div>
+      </div>`;
+    }).join('');
+
+    const totalVal = opps.reduce((s,o)=>s+(o.value||0),0);
+    return `<div class="msg-name">Scout · Pipeline</div>
+      <strong>${opps.length} opportunit${opps.length!==1?'ies':'y'}</strong> — total pipeline <strong>${fmtMoney(totalVal)}</strong>.
+      <div class="ans-panel">
+        <div class="ans-hdr">💡 Open Opportunities</div>
+        ${rows}
+      </div>`;
+  }
+
+  // ── TERRITORY ─────────────────────────────────────────────────────────
+  if (intent === 'territory') {
+    const ters = nodes.filter(n => n.label === 'Territory');
+    const sellers = nodes.filter(n => n.label === 'Seller');
+    if (!ters.length && !sellers.length) return `<div class="msg-name">Scout</div>No territory data found for <strong>"${q}"</strong>.`;
+
+    let rows = '';
+    ters.forEach(t => {
+      const pct = t.quota ? Math.min(100, Math.round(Math.random()*40+50)) : null; // demo pipeline%
+      rows += `<div class="ans-row" onclick="openNode('${t.id}')">
+        <div class="ans-dot" style="background:#009d9a"></div>
+        <div class="ans-name">${t.name}</div>
+        <div class="ans-sub">${t.region}</div>
+        <div class="ans-badge" style="background:rgba(0,157,154,.15);color:#009d9a">${fmtMoney(t.quota)}</div>
+      </div>`;
+      if (pct !== null) rows += `<div class="ans-bar-wrap" style="padding:4px 10px 8px 26px">
+        <div style="font-size:9px;color:var(--tm);margin-bottom:2px">Pipeline vs quota</div>
+        <div class="ans-bar-track"><div class="ans-bar-fill" style="width:${pct}%;background:${pct>=80?'#24a148':pct>=50?'#f1c21b':'#da1e28'}"></div></div>
+        <div style="font-size:9px;color:var(--tm);text-align:right;margin-top:2px">${pct}%</div>
+      </div>`;
+    });
+    sellers.forEach(s => {
+      const badge = getBadgeForNode(s) || 'CE';
+      const col = badge === 'BSS' ? '#ff832b' : badge === 'TSL' ? '#009d9a' : '#0f62fe';
+      rows += `<div class="ans-row ans-indent" onclick="openNode('${s.id}')">
+        <div class="ans-dot" style="background:${col}"></div>
+        <div class="ans-name">${s.name}</div>
+        <div class="ans-sub">${s.geo||''}</div>
+        <div class="ans-badge" style="background:${col}18;color:${col}">${badge}</div>
+      </div>`;
+    });
+
+    return `<div class="msg-name">Scout · Territory</div>
+      Found <strong>${ters.length} territor${ters.length!==1?'ies':'y'}</strong> with <strong>${sellers.length} seller${sellers.length!==1?'s':''}</strong>.
+      <div class="ans-panel">
+        <div class="ans-hdr">📍 Territory Coverage</div>
+        ${rows}
+      </div>`;
+  }
+
+  // ── PRODUCT / CERTIFICATIONS ──────────────────────────────────────────
+  if (intent === 'product') {
+    const prods = nodes.filter(n => n.label === 'Product');
+    const sellers = nodes.filter(n => n.label === 'Seller');
+
+    const prodRows = prods.slice(0,5).map(p => `<div class="ans-row" onclick="openNode('${p.id}')">
+      <div class="ans-dot" style="background:#ff832b"></div>
+      <div class="ans-name">${p.name}</div>
+      <div class="ans-sub">v${p.version||'—'}</div>
+      <div class="ans-badge" style="background:rgba(255,131,43,.12);color:#ff832b">${p.family||'IBM'}</div>
+    </div>`).join('');
+
+    const sellerRows = sellers.slice(0,4).map(s => {
+      const badge = getBadgeForNode(s) || 'CE';
+      const col = badge === 'BSS' ? '#ff832b' : '#0f62fe';
+      return `<div class="ans-row ans-indent" onclick="openNode('${s.id}')">
+        <div class="ans-dot" style="background:${col}"></div>
+        <div class="ans-name">${s.name}</div>
+        <div class="ans-sub">${s.geo||''}</div>
+        <div class="ans-badge" style="background:${col}18;color:${col}">${badge}</div>
+      </div>`;
+    }).join('');
+
+    return `<div class="msg-name">Scout · Product Coverage</div>
+      Found <strong>${prods.length} product${prods.length!==1?'s':''}</strong>${sellers.length ? ` · <strong>${sellers.length} certified seller${sellers.length!==1?'s':''}</strong>` : ''}.
+      <div class="ans-panel">
+        <div class="ans-hdr">📦 Products</div>${prodRows}
+        ${sellerRows ? `<div class="ans-hdr" style="border-top:1px solid var(--border)">👤 Certified Sellers</div>${sellerRows}` : ''}
+      </div>`;
+  }
+
+  // ── CO-SELL ───────────────────────────────────────────────────────────
+  if (intent === 'cosell') {
+    const sellers = nodes.filter(n => n.label === 'Seller').slice(0,6);
+    const rows = sellers.map(s => {
+      const badge = getBadgeForNode(s) || 'CE';
+      const col = badge === 'BSS' ? '#ff832b' : badge === 'TSL' ? '#009d9a' : '#0f62fe';
+      return `<div class="ans-row" onclick="openNode('${s.id}')">
+        <div class="ans-dot" style="background:${col}"></div>
+        <div class="ans-name">${s.name}</div>
+        <div class="ans-sub">${s.geo||''}</div>
+        <div class="ans-badge" style="background:${col}18;color:${col}">${badge}</div>
+      </div>`;
+    }).join('');
+    return `<div class="msg-name">Scout · Co-sell</div>
+      Found <strong>${sellers.length} potential co-seller${sellers.length!==1?'s':''}</strong> for <strong>"${q}"</strong>.
+      <div class="ans-panel"><div class="ans-hdr">🤝 Co-sell Partners</div>${rows}</div>`;
+  }
+
+  // ── GENERAL fallback ──────────────────────────────────────────────────
+  const top = nodes.slice(0,7);
+  const rows = top.map(n => {
+    const col = LABEL_COL[n.label] || '#888';
+    return `<div class="ans-row" onclick="openNode('${n.id}')">
+      <div class="ans-dot" style="background:${col}"></div>
+      <div class="ans-name">${n.name}</div>
+      <div class="ans-sub">${n.label}</div>
+      <div class="ans-badge" style="background:${col}18;color:${col}">${n.label}</div>
+    </div>`;
+  }).join('');
+  return `<div class="msg-name">Scout</div>
+    Found <strong>${nodes.length} result${nodes.length!==1?'s':''}</strong> for <strong>"${q}"</strong>.
+    <div class="ans-panel"><div class="ans-hdr">🔍 Top Results</div>${rows}</div>`;
 }
 
 // ── Chat agent ────────────────────────────────────────────────────────
@@ -807,6 +1181,98 @@ function pushAgentMsg(text) {
   el.innerHTML = `<div class="msg-name">Scout</div>${text.replace(/\n/g,'<br>')}`;
   msgs.appendChild(el);
   msgs.scrollTop = msgs.scrollHeight;
+}
+
+// Injects a rich HTML panel built by buildRichAnswer() into the chat rail.
+// Replaces any typing indicator first, then appends the msg element.
+function pushRichAnswer(q, intent, nodes) {
+  const msgs = document.getElementById('cr-msgs');
+  const typing = msgs.querySelector('.typing-wrap');
+  if (typing) msgs.removeChild(typing);
+
+  const html = buildRichAnswer(q, intent, nodes);
+  const el = document.createElement('div');
+  el.className = 'msg agent';
+  el.innerHTML = html;
+
+  // Append follow-up question chips after the panel
+  const followUps = getFollowUps(intent, nodes);
+  if (followUps.length) {
+    const fwrap = document.createElement('div');
+    fwrap.style.marginTop = '8px';
+    fwrap.innerHTML = followUps
+      .map(fq => `<button class="suggested-q" onclick="askAgent(${JSON.stringify(fq)})">${fq}</button>`)
+      .join('');
+    el.appendChild(fwrap);
+  }
+
+  msgs.appendChild(el);
+  msgs.scrollTop = msgs.scrollHeight;
+}
+
+// Returns 2-3 context-aware follow-up questions based on intent.
+function getFollowUps(intent, nodes) {
+  const person = nodes.find(n => n.label === 'Seller' || n.label === 'Manager');
+  const acct   = nodes.find(n => n.label === 'Account');
+  const prod   = nodes.find(n => n.label === 'Product');
+  const name   = (person?.name || acct?.name || '').split(' ')[0];
+
+  switch (intent) {
+    case 'org':
+      return [
+        name ? `What accounts does ${name} own?` : 'Show all territories',
+        'Which sellers have expiring support in their accounts?',
+        'Show me all BSS sellers',
+      ];
+    case 'account':
+      return [
+        acct ? `What deployments does ${acct.name} have?` : 'Show deployment health',
+        acct ? `Any open opportunities at ${acct.name}?` : 'Show open pipeline',
+        'Which products are installed here?',
+      ];
+    case 'install':
+      return [
+        'Which accounts have critical EOS coming up?',
+        'Show all expiring support contracts',
+        'What are the expansion opportunities from these installs?',
+      ];
+    case 'deployment':
+      return [
+        'Show me all stalled deployments',
+        'Which deployments are expand-ready?',
+        'What are the top adoption blockers?',
+      ];
+    case 'opportunity':
+      return [
+        'Which deals close in the next 30 days?',
+        'Show pipeline by territory',
+        'Who is the seller on the largest deal?',
+      ];
+    case 'territory':
+      return [
+        'Which territory has the highest quota?',
+        'Show sellers by territory',
+        'Find whitespace gaps in coverage',
+      ];
+    case 'product':
+      return [
+        prod ? `Who is certified on ${prod.name}?` : 'Show certified sellers',
+        'Which products have the most installs?',
+        'Find co-sell opportunities for this product',
+      ];
+    case 'cosell':
+      return [
+        'Show ATL + CE pairs by territory',
+        'Find BSS sellers for watsonx',
+        'Who manages the co-sell motion in the Southeast?',
+      ];
+    default:
+      return [
+        'Show me all seller relationships',
+        'Which accounts need attention?',
+        'Find expiring support contracts',
+      ];
+  }
 }
 
 function showTyping() {
@@ -869,10 +1335,9 @@ async function sendChat() {
   // Local mock fallback
   const results = getFilteredNodes(q);
   const intent = detectIntent(q.toLowerCase());
-  const response = buildNarrative(q, results, intent);
 
   setTimeout(() => {
-    pushAgentMsg(response);
+    pushRichAnswer(q, intent, results);
     doSearch(q);
   }, 800);
 }
