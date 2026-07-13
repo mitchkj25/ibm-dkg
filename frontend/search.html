@@ -1,0 +1,779 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+<title>IBM Scout — Seller Intelligence</title>
+<link rel="icon" href="assets/scout-logo.png"/>
+<style>
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+:root{
+  --ibm-blue:#0f62fe;--ibm-dk:#0043ce;--ibm-cyan:#1192e8;--ibm-teal:#009d9a;
+  --ibm-purple:#a56eff;--ibm-orange:#ff832b;--ibm-red:#da1e28;
+  --ibm-green:#24a148;--ibm-yellow:#f1c21b;
+  --bg:#0a0c14;--surface:rgba(255,255,255,0.04);--card:rgba(255,255,255,0.06);
+  --card-hover:rgba(255,255,255,0.09);--border:rgba(255,255,255,0.1);
+  --border-hi:rgba(15,98,254,0.5);--tp:#f4f4f8;--ts:#a0a8c0;--tm:#5c6480;
+  --r:10px;
+}
+html,body{min-height:100vh;background:var(--bg);color:var(--tp);
+  font-family:'IBM Plex Sans',-apple-system,BlinkMacSystemFont,sans-serif;
+  font-size:14px;line-height:1.5}
+
+/* ── Scrollbar ─────────────────────────────────────────────────────────── */
+::-webkit-scrollbar{width:5px}
+::-webkit-scrollbar-thumb{background:rgba(120,130,180,.3);border-radius:10px}
+
+/* ══════════════ HEADER ══════════════ */
+#hdr{
+  position:sticky;top:0;z-index:200;
+  display:flex;align-items:center;gap:16px;
+  padding:0 28px;height:54px;
+  background:rgba(10,12,20,0.92);
+  border-bottom:1px solid var(--border);
+  backdrop-filter:blur(16px);
+}
+.logo{display:flex;align-items:center;gap:9px;text-decoration:none;color:var(--tp);white-space:nowrap}
+.logo img{width:30px;height:30px;object-fit:contain;border-radius:5px}
+.logo-txt{font-size:15px;font-weight:700;letter-spacing:-.3px}
+.logo-txt span{color:var(--ibm-blue)}
+.logo-sub{font-size:9px;color:var(--ts);letter-spacing:.3px;text-transform:uppercase;margin-top:1px}
+.hdr-div{width:1px;height:22px;background:var(--border)}
+.hdr-nav{display:flex;gap:4px}
+.hdr-btn{padding:5px 12px;border-radius:6px;font-size:12px;font-weight:600;cursor:pointer;border:1px solid transparent;color:var(--ts);transition:all .15s;background:none;text-decoration:none;display:flex;align-items:center;gap:5px}
+.hdr-btn:hover,.hdr-btn.active{color:var(--tp);background:var(--surface);border-color:var(--border)}
+.hdr-btn.active{color:var(--ibm-blue);border-color:rgba(15,98,254,0.3);background:rgba(15,98,254,0.08)}
+.hdr-right{margin-left:auto;display:flex;align-items:center;gap:8px}
+.badge-demo{padding:3px 8px;border-radius:8px;font-size:9px;font-weight:800;letter-spacing:.5px;text-transform:uppercase;background:rgba(255,131,43,.1);color:var(--ibm-orange);border:1px solid rgba(255,131,43,.2)}
+
+/* ══════════════ LAYOUT ══════════════ */
+#layout{display:flex;min-height:calc(100vh - 54px)}
+#main{flex:1;overflow-y:auto;padding:0 0 60px}
+#chat-rail{
+  width:340px;flex-shrink:0;
+  background:rgba(255,255,255,0.025);
+  border-left:1px solid var(--border);
+  display:flex;flex-direction:column;
+  position:sticky;top:54px;height:calc(100vh - 54px);
+}
+
+/* ══════════════ HERO ══════════════ */
+#hero{
+  background:linear-gradient(160deg, rgba(15,98,254,0.12) 0%, rgba(10,12,20,0) 50%);
+  border-bottom:1px solid var(--border);
+  padding:48px 48px 36px;
+}
+.hero-eyebrow{font-size:10px;font-weight:800;letter-spacing:1.5px;text-transform:uppercase;color:var(--ibm-blue);margin-bottom:10px}
+.hero-title{font-size:30px;font-weight:700;line-height:1.15;letter-spacing:-.5px;margin-bottom:6px}
+.hero-title span{color:var(--ibm-blue)}
+.hero-sub{font-size:13px;color:var(--ts);margin-bottom:28px;max-width:560px;line-height:1.6}
+
+/* Search bar */
+#search-wrap{
+  background:rgba(255,255,255,0.06);
+  border:1px solid var(--border);
+  border-radius:12px;
+  display:flex;align-items:center;
+  padding:0 16px;gap:10px;
+  max-width:680px;
+  transition:border-color .2s,box-shadow .2s;
+}
+#search-wrap:focus-within{
+  border-color:var(--border-hi);
+  box-shadow:0 0 0 3px rgba(15,98,254,0.12);
+}
+#search-wrap svg{flex-shrink:0;opacity:.4}
+#search-inp{
+  flex:1;background:none;border:none;outline:none;
+  color:var(--tp);font-size:15px;padding:14px 0;
+  font-family:inherit;
+}
+#search-inp::placeholder{color:var(--tm)}
+#search-go{
+  background:var(--ibm-blue);color:#fff;border:none;
+  cursor:pointer;padding:8px 18px;border-radius:7px;
+  font-size:12px;font-weight:700;transition:background .15s;
+  white-space:nowrap;flex-shrink:0;
+}
+#search-go:hover{background:var(--ibm-dk)}
+
+/* Role pills */
+.role-row{display:flex;align-items:center;gap:8px;margin-top:16px;flex-wrap:wrap}
+.role-lbl{font-size:10px;font-weight:700;color:var(--tm);text-transform:uppercase;letter-spacing:.5px}
+.role-pill{
+  padding:5px 14px;border-radius:20px;font-size:11px;font-weight:700;
+  cursor:pointer;transition:all .15s;
+  border:1px solid var(--border);color:var(--ts);background:none;
+}
+.role-pill:hover{border-color:var(--border-hi);color:var(--tp)}
+.role-pill.active{background:var(--ibm-blue);border-color:var(--ibm-blue);color:#fff}
+
+/* ══════════════ WHAT'S NEW TICKER ══════════════ */
+#whats-new{
+  border-bottom:1px solid var(--border);
+  padding:10px 48px;
+  display:flex;align-items:center;gap:10px;overflow:hidden;
+}
+.wn-label{font-size:9px;font-weight:800;letter-spacing:1px;text-transform:uppercase;color:var(--ibm-orange);white-space:nowrap;display:flex;align-items:center;gap:5px}
+.wn-scroll{display:flex;gap:8px;overflow-x:auto;flex:1;scrollbar-width:none}
+.wn-scroll::-webkit-scrollbar{display:none}
+.wn-chip{
+  display:flex;align-items:center;gap:6px;
+  background:var(--surface);border:1px solid var(--border);
+  border-radius:6px;padding:5px 10px;white-space:nowrap;cursor:pointer;
+  transition:border-color .15s;flex-shrink:0;
+}
+.wn-chip:hover{border-color:var(--border-hi)}
+.wn-tag{font-size:8px;font-weight:800;padding:1px 5px;border-radius:3px;text-transform:uppercase;letter-spacing:.5px}
+.wn-tag.new{background:rgba(36,161,72,.15);color:var(--ibm-green)}
+.wn-tag.critical{background:rgba(218,30,40,.15);color:var(--ibm-red)}
+.wn-tag.alert{background:rgba(241,194,27,.15);color:#946500}
+.wn-text{font-size:11px;color:var(--ts)}
+
+/* ══════════════ BROWSE SECTION ══════════════ */
+#browse{padding:28px 48px}
+.browse-hdr{display:flex;align-items:center;justify-content:space-between;margin-bottom:16px}
+.section-label{font-size:10px;font-weight:800;letter-spacing:1px;text-transform:uppercase;color:var(--ts)}
+.filter-row{display:flex;gap:6px;flex-wrap:wrap}
+.f-pill{padding:5px 14px;border-radius:20px;font-size:11px;font-weight:600;cursor:pointer;border:1px solid var(--border);color:var(--ts);background:none;transition:all .15s}
+.f-pill:hover{border-color:var(--border-hi);color:var(--tp)}
+.f-pill.active{background:var(--ibm-blue);border-color:var(--ibm-blue);color:#fff}
+.clear-btn{font-size:11px;color:var(--ibm-blue);cursor:pointer;background:none;border:none;padding:4px 6px}
+.clear-btn:hover{text-decoration:underline}
+
+/* Card grid */
+#card-grid{
+  display:grid;
+  grid-template-columns:repeat(auto-fill,minmax(260px,1fr));
+  gap:12px;
+}
+.result-card{
+  background:var(--card);border:1px solid var(--border);
+  border-radius:var(--r);padding:16px;cursor:pointer;
+  transition:border-color .2s,background .2s,transform .15s;
+  display:flex;flex-direction:column;gap:8px;
+}
+.result-card:hover{border-color:var(--border-hi);background:var(--card-hover);transform:translateY(-1px)}
+.result-card.stale{border-left:3px solid var(--ibm-orange)}
+.rc-top{display:flex;align-items:flex-start;justify-content:space-between;gap:8px}
+.rc-icon{width:36px;height:36px;border-radius:8px;display:flex;align-items:center;justify-content:center;font-size:16px;flex-shrink:0}
+.rc-tags{display:flex;gap:4px;flex-wrap:wrap;align-items:flex-start}
+.rc-tag{padding:2px 6px;border-radius:4px;font-size:8px;font-weight:800;text-transform:uppercase;letter-spacing:.4px}
+.rc-tag.seller{background:rgba(15,98,254,.15);color:#6ea6ff}
+.rc-tag.manager{background:rgba(165,110,255,.15);color:var(--ibm-purple)}
+.rc-tag.account{background:rgba(17,146,232,.15);color:var(--ibm-cyan)}
+.rc-tag.territory{background:rgba(0,157,154,.15);color:var(--ibm-teal)}
+.rc-tag.product{background:rgba(255,131,43,.15);color:var(--ibm-orange)}
+.rc-tag.install{background:rgba(36,161,72,.15);color:var(--ibm-green)}
+.rc-tag.opportunity{background:rgba(241,194,27,.15);color:#946500}
+.rc-tag.stale{background:rgba(255,131,43,.12);color:var(--ibm-orange);border:1px solid rgba(255,131,43,.3)}
+.rc-tag.live{background:rgba(36,161,72,.12);color:var(--ibm-green)}
+.rc-name{font-size:13px;font-weight:700;color:var(--tp);line-height:1.3}
+.rc-desc{font-size:11px;color:var(--ts);line-height:1.5;flex:1}
+.rc-meta{display:flex;align-items:center;gap:6px;margin-top:4px;border-top:1px solid rgba(255,255,255,0.06);padding-top:8px}
+.rc-meta-dot{width:6px;height:6px;border-radius:50%;flex-shrink:0}
+.rc-meta-txt{font-size:9px;color:var(--tm)}
+.rc-meta-txt strong{color:var(--ts)}
+.rc-action{margin-left:auto;font-size:9px;color:var(--ibm-blue);font-weight:700;white-space:nowrap}
+
+/* Empty state */
+#empty{display:none;text-align:center;padding:60px 20px}
+#empty svg{opacity:.3;margin-bottom:16px}
+#empty h3{font-size:16px;font-weight:600;margin-bottom:8px;color:var(--ts)}
+#empty p{font-size:12px;color:var(--tm)}
+
+/* No results */
+#no-results{display:none;padding:40px;text-align:center;color:var(--tm);font-size:13px}
+
+/* ══════════════ GRAPH TOGGLE BANNER ══════════════ */
+#graph-banner{
+  margin:0 48px 24px;
+  background:linear-gradient(135deg, rgba(15,98,254,0.1), rgba(165,110,255,0.08));
+  border:1px solid rgba(15,98,254,0.25);
+  border-radius:var(--r);
+  padding:16px 20px;
+  display:flex;align-items:center;gap:14px;
+  cursor:pointer;transition:border-color .2s;
+}
+#graph-banner:hover{border-color:rgba(15,98,254,0.5)}
+.gb-icon{
+  width:42px;height:42px;border-radius:8px;
+  background:rgba(15,98,254,0.15);
+  display:flex;align-items:center;justify-content:center;
+  flex-shrink:0;font-size:20px;
+}
+.gb-txt h4{font-size:13px;font-weight:700;margin-bottom:2px}
+.gb-txt p{font-size:11px;color:var(--ts)}
+.gb-arrow{margin-left:auto;font-size:18px;color:var(--ibm-blue);flex-shrink:0}
+
+/* ══════════════ CHAT RAIL ══════════════ */
+.cr-hdr{
+  padding:14px 16px 10px;
+  border-bottom:1px solid var(--border);
+  display:flex;align-items:center;gap:10px;
+}
+.cr-avatar{
+  width:32px;height:32px;border-radius:50%;
+  background:linear-gradient(135deg,#0f62fe,#a56eff);
+  display:flex;align-items:center;justify-content:center;
+  font-size:14px;flex-shrink:0;
+}
+.cr-name{font-size:12px;font-weight:700}
+.cr-status{font-size:9px;color:var(--ibm-green);display:flex;align-items:center;gap:3px}
+.cr-status::before{content:'';display:inline-block;width:5px;height:5px;border-radius:50%;background:var(--ibm-green)}
+.cr-msgs{flex:1;overflow-y:auto;padding:14px 14px 0;display:flex;flex-direction:column;gap:10px}
+.msg{max-width:90%;border-radius:10px;padding:9px 12px;font-size:11px;line-height:1.55}
+.msg.agent{background:rgba(255,255,255,0.06);border:1px solid var(--border);color:var(--tp);align-self:flex-start}
+.msg.user{background:rgba(15,98,254,0.18);border:1px solid rgba(15,98,254,0.3);color:var(--tp);align-self:flex-end}
+.msg-name{font-size:8px;font-weight:800;text-transform:uppercase;letter-spacing:.5px;margin-bottom:3px;color:var(--ts)}
+.suggested-q{
+  background:none;border:1px solid var(--border);
+  border-radius:8px;padding:7px 10px;
+  font-size:10px;color:var(--ts);cursor:pointer;
+  text-align:left;width:100%;transition:all .15s;
+  display:block;margin-top:4px;
+}
+.suggested-q:hover{border-color:var(--border-hi);color:var(--tp);background:var(--surface)}
+.cr-input-wrap{
+  padding:10px 12px;border-top:1px solid var(--border);
+  display:flex;gap:6px;
+}
+.cr-input{
+  flex:1;background:var(--surface);border:1px solid var(--border);
+  border-radius:7px;padding:8px 10px;font-size:11px;
+  color:var(--tp);font-family:inherit;outline:none;
+  transition:border-color .15s;
+}
+.cr-input:focus{border-color:var(--border-hi)}
+.cr-send{
+  background:var(--ibm-blue);color:#fff;border:none;
+  border-radius:7px;padding:8px 12px;cursor:pointer;
+  font-size:12px;transition:background .15s;
+}
+.cr-send:hover{background:var(--ibm-dk)}
+.typing{display:flex;gap:3px;align-items:center;padding:4px 2px}
+.typing span{width:5px;height:5px;border-radius:50%;background:var(--ts);animation:bounce .9s infinite}
+.typing span:nth-child(2){animation-delay:.15s}
+.typing span:nth-child(3){animation-delay:.3s}
+@keyframes bounce{0%,60%,100%{transform:translateY(0)}30%{transform:translateY(-5px)}}
+
+/* ══════════════ SEARCH RESULTS NARRATIVE ══════════════ */
+#narrative-bar{
+  margin:0 48px 16px;
+  background:rgba(15,98,254,0.06);
+  border:1px solid rgba(15,98,254,0.2);
+  border-radius:8px;padding:12px 16px;
+  font-size:12px;color:var(--ts);line-height:1.6;
+  display:none;
+}
+.nb-label{font-size:9px;font-weight:800;text-transform:uppercase;letter-spacing:.8px;color:var(--ibm-cyan);margin-bottom:4px;display:flex;align-items:center;gap:5px}
+
+/* ══════════════ RESPONSIVE ══════════════ */
+@media(max-width:1100px){
+  #chat-rail{display:none}
+  #hero,#browse,#whats-new{padding-left:28px;padding-right:28px}
+  #narrative-bar,#graph-banner{margin-left:28px;margin-right:28px}
+}
+@media(max-width:700px){
+  .hero-title{font-size:22px}
+  #hero{padding:28px 20px 24px}
+  #browse{padding:20px}
+  #narrative-bar,#graph-banner{margin:0 20px 16px}
+}
+</style>
+</head>
+<body>
+
+<!-- ══════════════ HEADER ══════════════ -->
+<header id="hdr">
+  <a class="logo" href="search.html">
+    <img src="assets/scout-logo.png" alt="IBM Scout" onerror="this.style.display='none'"/>
+    <div>
+      <div class="logo-txt">IBM <span>Scout</span></div>
+      <div class="logo-sub">Seller Intelligence</div>
+    </div>
+  </a>
+  <div class="hdr-div"></div>
+  <nav class="hdr-nav">
+    <a href="search.html" class="hdr-btn active" id="btn-search">
+      <svg width="13" height="13" viewBox="0 0 16 16" fill="none"><circle cx="6.5" cy="6.5" r="5" stroke="currentColor" stroke-width="1.5"/><line x1="10.5" y1="10.5" x2="14" y2="14" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/></svg>
+      Search
+    </a>
+    <a href="index.html" class="hdr-btn" id="btn-graph">
+      <svg width="13" height="13" viewBox="0 0 14 14" fill="none"><circle cx="7" cy="3" r="2" stroke="currentColor" stroke-width="1.5"/><circle cx="3" cy="11" r="2" stroke="currentColor" stroke-width="1.5"/><circle cx="11" cy="11" r="2" stroke="currentColor" stroke-width="1.5"/><line x1="7" y1="5" x2="4.5" y2="9.2" stroke="currentColor" stroke-width="1.2"/><line x1="7" y1="5" x2="9.5" y2="9.2" stroke="currentColor" stroke-width="1.2"/></svg>
+      Graph View
+    </a>
+  </nav>
+  <div class="hdr-right">
+    <span class="badge-demo">Demo Mode</span>
+  </div>
+</header>
+
+<div id="layout">
+<div id="main">
+
+  <!-- ══════════════ HERO ══════════════ -->
+  <section id="hero">
+    <div class="hero-eyebrow">🔍 IBM Scout</div>
+    <h1 class="hero-title">Your <span>seller intelligence</span><br>starts here.</h1>
+    <p class="hero-sub">Search sellers, accounts, products, territories, installs, and opportunities — all connected in one graph-powered platform.</p>
+
+    <div id="search-wrap">
+      <svg width="18" height="18" viewBox="0 0 16 16" fill="none"><circle cx="6.5" cy="6.5" r="5" stroke="currentColor" stroke-width="1.5"/><line x1="10.5" y1="10.5" x2="14" y2="14" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/></svg>
+      <input id="search-inp" type="text" placeholder='Search sellers, accounts, "who owns First National", "watsonx installs", "expiring support"…' autocomplete="off"/>
+      <button id="search-go">Search</button>
+    </div>
+
+    <div class="role-row">
+      <span class="role-lbl">I'm a</span>
+      <button class="role-pill active" data-role="all">All</button>
+      <button class="role-pill" data-role="seller">Seller</button>
+      <button class="role-pill" data-role="manager">Manager / FLM</button>
+      <button class="role-pill" data-role="executive">Executive / SLM</button>
+      <button class="role-pill" data-role="specialist">Brand Specialist</button>
+    </div>
+  </section>
+
+  <!-- ══════════════ WHAT'S NEW ══════════════ -->
+  <div id="whats-new">
+    <div class="wn-label">
+      <svg width="10" height="10" viewBox="0 0 10 10" fill="none"><circle cx="5" cy="5" r="4" stroke="currentColor" stroke-width="1.5"/><line x1="5" y1="3" x2="5" y2="5.5" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/><circle cx="5" cy="7" r=".7" fill="currentColor"/></svg>
+      What's New
+    </div>
+    <div class="wn-scroll" id="wn-scroll"></div>
+  </div>
+
+  <!-- ══════════════ RESULTS / BROWSE ══════════════ -->
+  <div id="narrative-bar">
+    <div class="nb-label">
+      <svg width="10" height="10" viewBox="0 0 10 10" fill="none"><circle cx="5" cy="5" r="4" stroke="currentColor" stroke-width="1.5"/><circle cx="5" cy="5" r="1.5" fill="currentColor"/></svg>
+      Scout Insight
+    </div>
+    <div id="narrative-txt"></div>
+  </div>
+
+  <section id="browse">
+    <div class="browse-hdr">
+      <span class="section-label" id="browse-lbl">Browse All Entities</span>
+      <div style="display:flex;align-items:center;gap:8px">
+        <div class="filter-row" id="filter-row"></div>
+        <button class="clear-btn" id="clear-btn" style="display:none" onclick="clearFilters()">Clear filters</button>
+      </div>
+    </div>
+    <div id="card-grid"></div>
+    <div id="no-results"><svg width="40" height="40" viewBox="0 0 24 24" fill="none"><circle cx="11" cy="11" r="8" stroke="currentColor" stroke-width="1.5"/><line x1="16.5" y1="16.5" x2="22" y2="22" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/></svg><h3>No results found</h3><p>Try a different query or clear your filters.</p></div>
+  </section>
+
+  <!-- ══════════════ GRAPH BANNER ══════════════ -->
+  <div id="graph-banner" onclick="window.location.href='index.html'">
+    <div class="gb-icon">🕸️</div>
+    <div class="gb-txt">
+      <h4>Explore the Knowledge Graph</h4>
+      <p>See every connection between sellers, accounts, products, and territories in an interactive force-directed graph with relationship traversal.</p>
+    </div>
+    <div class="gb-arrow">→</div>
+  </div>
+
+</div><!-- #main -->
+
+<!-- ══════════════ CHAT RAIL ══════════════ -->
+<aside id="chat-rail">
+  <div class="cr-hdr">
+    <div class="cr-avatar">🤖</div>
+    <div>
+      <div class="cr-name">Scout Agent</div>
+      <div class="cr-status">Ask me anything</div>
+    </div>
+  </div>
+  <div class="cr-msgs" id="cr-msgs">
+    <div class="msg agent">
+      <div class="msg-name">Scout</div>
+      Hi! I'm your IBM Scout seller intelligence agent.<br><br>
+      Ask me about accounts, installs, sellers, co-sell opportunities, expiring support contracts, or territory gaps.
+      <div style="margin-top:8px">
+        <button class="suggested-q" onclick="askAgent('Who manages Marcus Webb and what accounts do they own?')">Who manages Marcus Webb?</button>
+        <button class="suggested-q" onclick="askAgent('What does First National Bancorp have installed?')">First National installs</button>
+        <button class="suggested-q" onclick="askAgent('Which sellers are certified on watsonx.ai?')">watsonx.ai certified sellers</button>
+        <button class="suggested-q" onclick="askAgent('Find all expiring support contracts in the next 90 days')">Expiring support contracts</button>
+      </div>
+    </div>
+  </div>
+  <div class="cr-input-wrap">
+    <input class="cr-input" id="cr-input" type="text" placeholder="Ask anything about your accounts…"/>
+    <button class="cr-send" id="cr-send">↑</button>
+  </div>
+</aside>
+</div><!-- #layout -->
+
+<script>
+// ════════════════════════════════════════════════════════════════════
+//  IBM Scout — Search & Browse Landing  (search.html)
+// ════════════════════════════════════════════════════════════════════
+
+const API = 'http://localhost:8000';
+
+// ── Seed data (same as graph view) ──────────────────────────────────
+const NODES = [
+  {id:'mgr-001',label:'Manager',  name:'Sandra Okafor',    role:'First-line Manager',  geo:'Northeast', status:'ACTIVE', desc:'First-line manager, Northeast. Oversees Marcus Webb & Aisha Thornton. 2 direct reports, $12.7M combined quota.'},
+  {id:'mgr-002',label:'Manager',  name:'David Reyes',      role:'First-line Manager',  geo:'Southeast', status:'ACTIVE', desc:'First-line manager, Southeast. Manages James Kowalski & Lin Mei Zhang. $8.9M combined quota.'},
+  {id:'mgr-003',label:'Manager',  name:'Priya Nambiar',    role:'Second-line Manager', geo:'West Coast', status:'ACTIVE', desc:'Second-line manager, West Coast. Tyler Oduya & Rachel Patel report through her. $15M combined quota.'},
+  {id:'sel-001',label:'Seller',   name:'Marcus Webb',      role:'Client Executive',    geo:'NYC Metro',  status:'ACTIVE', desc:'Client Executive — NYC Metro. Primary CE for First National Bancorp & Cascadia Insurance. Co-sells watsonx with Aisha.'},
+  {id:'sel-002',label:'Seller',   name:'Aisha Thornton',   role:'Software Sales Specialist', geo:'New England', status:'ACTIVE', desc:'watsonx AI & Automation specialist — New England. Certified watsonx.ai & watsonx.data. Key co-seller for FNB expansion.'},
+  {id:'sel-003',label:'Seller',   name:'James Kowalski',   role:'Client Executive',    geo:'Atlanta',   status:'ACTIVE', desc:'Client Executive — Atlanta. Owns Meridian Health Systems & Nova Retail Group. Healthcare and retail vertical focus.'},
+  {id:'sel-004',label:'Seller',   name:'Lin Mei Zhang',    role:'Technology Sales Specialist', geo:'Miami', status:'ACTIVE', desc:'Technology Sales Specialist — Miami. Owns SunCoast Logistics. Hybrid Cloud & AI focus.'},
+  {id:'sel-005',label:'Seller',   name:'Tyler Oduya',      role:'Client Executive',    geo:'San Francisco', status:'ACTIVE', desc:'Client Executive — San Francisco Bay Area. Primary CE for Apex Technology Partners. AI and governance expansion.'},
+  {id:'sel-006',label:'Seller',   name:'Rachel Patel',     role:'Software Sales Specialist', geo:'Los Angeles', status:'ACTIVE', desc:'Security & Compliance specialist — LA. Certified CP4Security & OpenPages. Federal and regulated industries focus.'},
+  {id:'ter-001',label:'Territory',name:'NYC Metro Enterprise',   region:'Northeast', quota:8500000, status:'ACTIVE', desc:'Large enterprise accounts in NY/NJ metro. Quota: $8.5M. Key accounts: First National Bancorp, Cascadia Insurance.'},
+  {id:'ter-002',label:'Territory',name:'New England Mid-Market', region:'Northeast', quota:4200000, status:'ACTIVE', desc:'Tech-focused mid-market across MA, CT, RI. Quota: $4.2M. Strong watsonx pipeline.'},
+  {id:'ter-003',label:'Territory',name:'Southeast Enterprise',   region:'Southeast', quota:6100000, status:'ACTIVE', desc:'Enterprise accounts GA, FL, SC, NC. Quota: $6.1M. Healthcare and retail concentration.'},
+  {id:'ter-004',label:'Territory',name:'Bay Area Tech',          region:'West',      quota:9200000, status:'ACTIVE', desc:'Technology companies in Silicon Valley. Quota: $9.2M. AI/governance highest-growth territory.'},
+  {id:'ter-005',label:'Territory',name:'Southern California',    region:'West',      quota:5800000, status:'ACTIVE', desc:'Entertainment, media, finance in SoCal. Quota: $5.8M. Security and GRC expansion opportunity.'},
+  {id:'prd-001',label:'Product',  name:'watsonx.ai',          family:'watsonx',     version:'2.1', status:'ACTIVE', desc:'AI studio for training, validating, tuning and deploying AI models. Key differentiator: on-prem + cloud, Granite models, integrated governance.'},
+  {id:'prd-002',label:'Product',  name:'watsonx.data',        family:'watsonx',     version:'2.0', status:'ACTIVE', desc:'Fit-for-purpose data store on open lakehouse architecture. Presto query engine, 100+ connectors, cost reduction vs. legacy data warehouses.'},
+  {id:'prd-003',label:'Product',  name:'watsonx.governance',  family:'watsonx',     version:'1.5', status:'ACTIVE', desc:'AI governance and risk management platform. Automated fact-checking, drift detection, compliance reporting for regulated industries.'},
+  {id:'prd-004',label:'Product',  name:'IBM Cloud Pak for Security', family:'Security', version:'1.10', status:'ACTIVE', desc:'Unified security platform with threat intelligence and SOAR. Integrates 200+ security tools, open standards-based.'},
+  {id:'prd-005',label:'Product',  name:'IBM OpenPages',       family:'Risk & Compliance', version:'9.0', status:'ACTIVE', desc:'Integrated GRC platform for risk, compliance and audit management. Strong in financial services and insurance verticals.'},
+  {id:'prd-006',label:'Product',  name:'IBM Sterling OMS',    family:'Supply Chain', version:'10.0', status:'ACTIVE', desc:'Omnichannel order orchestration and fulfillment. 400+ pre-built integrations, real-time inventory visibility.'},
+  {id:'prd-007',label:'Product',  name:'IBM Turbonomic',      family:'AIOps',       version:'8.12', status:'ACTIVE', desc:'Application resource management and FinOps platform. Average customer: 37% infra cost reduction, 4.2x faster deployment.'},
+  {id:'acc-001',label:'Account',  name:'First National Bancorp',   industry:'Financial Services', revenue:24000000000, status:'ACTIVE', desc:'Top-10 US retail bank — $24B revenue. Heavy IBM footprint. CP4Security + Turbonomic installed. watsonx expansion in proposal stage ($2.4M opp).'},
+  {id:'acc-002',label:'Account',  name:'Meridian Health Systems',  industry:'Healthcare',         revenue:8700000000,  status:'ACTIVE', desc:'Regional hospital network — $8.7B revenue. Southeast US. Epic EHR integration, strong AI governance use case.'},
+  {id:'acc-003',label:'Account',  name:'Nova Retail Group',        industry:'Retail',             revenue:2100000000,  status:'ACTIVE', desc:'Omnichannel retailer — $2.1B, 400+ stores. Sterling OMS v9.5 installed and OUT OF SUPPORT — upgrade opp identified ($640K).'},
+  {id:'acc-004',label:'Account',  name:'Apex Technology Partners', industry:'Technology',         revenue:15000000000, status:'ACTIVE', desc:'SaaS company — $15B revenue. watsonx.ai installed (v2.0). watsonx.governance pilot in Qualify stage ($560K).'},
+  {id:'acc-005',label:'Account',  name:'Cascadia Insurance Group', industry:'Insurance',          revenue:6500000000,  status:'ACTIVE', desc:'Multi-line P&C insurer — $6.5B revenue. OpenPages v8.3 installed — support renewal at risk. Upgrade to v9 ($890K opp).'},
+  {id:'acc-006',label:'Account',  name:'SunCoast Logistics',       industry:'Logistics',          revenue:890000000,   status:'ACTIVE', desc:'Regional 3PL — $890M revenue. Evaluating AI-driven order orchestration. New logo opportunity.'},
+  {id:'ins-001',label:'Install',  name:'Turbonomic @ First National',   product:'IBM Turbonomic',         version:'8.10', supportEnd:'2026-04-12', contractValue:480000, status:'ACTIVE', desc:'Managing 4,200 VMs across hybrid cloud. Renewal due Apr 2026. Upgrade path to 8.12 recommended.'},
+  {id:'ins-002',label:'Install',  name:'watsonx.ai @ Apex Tech',        product:'watsonx.ai',             version:'2.0',  supportEnd:'2027-01-20', contractValue:1200000, status:'ACTIVE', desc:'Internal developer copilot + fraud model training. Expanding to 3 additional LOBs in current proposal.'},
+  {id:'ins-003',label:'Install',  name:'OpenPages @ Cascadia',          product:'IBM OpenPages',          version:'8.3',  supportEnd:'2025-09-01', contractValue:640000, status:'ACTIVE', desc:'⚠ Support ends Sep 2025. Upgrade to v9 = $890K renewal + expansion opp. Risk of churn without action.'},
+  {id:'ins-004',label:'Install',  name:'Sterling OMS @ Nova Retail',    product:'IBM Sterling OMS',       version:'9.5',  supportEnd:'2024-11-15', contractValue:380000, status:'STALE',  desc:'⚠ OUT OF STANDARD SUPPORT since Nov 2024. Upgrade to v10 identified as $640K opportunity.'},
+  {id:'ins-005',label:'Install',  name:'CP4Security @ First National',  product:'IBM Cloud Pak for Security', version:'1.9', supportEnd:'2026-07-01', contractValue:920000, status:'ACTIVE', desc:'SIEM consolidation project. Support ends Jul 2026. Cross-sell QRadar migration opportunity.'},
+  {id:'opp-001',label:'Opportunity',name:'FNB watsonx Expansion',       stage:'Validate', value:2400000, closeDate:'2025-09-30', status:'ACTIVE', desc:'Expand watsonx.ai to 8 LOBs at First National Bancorp. Currently in CP4D environment. Close Q3 2025.'},
+  {id:'opp-002',label:'Opportunity',name:'Cascadia OpenPages Upgrade',  stage:'Propose',  value:890000,  closeDate:'2025-08-15', status:'ACTIVE', desc:'Renewal + upgrade from OpenPages v8.3 to v9. Support expiring Sep 2025 — time pressure creates urgency.'},
+  {id:'opp-003',label:'Opportunity',name:'Nova Retail Sterling v10',    stage:'Identify', value:640000,  closeDate:'2025-12-01', status:'ACTIVE', desc:'Upgrade out-of-support Sterling OMS v9.5 to v10. Risk: customer may evaluate competitive alternatives.'},
+  {id:'opp-004',label:'Opportunity',name:'Apex watsonx.governance',     stage:'Qualify',  value:560000,  closeDate:'2025-10-31', status:'ACTIVE', desc:'AI governance layer on top of existing watsonx.ai install. Compliance-driven — NIST AI RMF alignment.'},
+];
+
+const WHATS_NEW = [
+  {tag:'critical', text:'Sterling OMS @ Nova Retail — OUT OF SUPPORT since Nov 2024'},
+  {tag:'alert',    text:'OpenPages @ Cascadia — support ends Sep 2025'},
+  {tag:'new',      text:'FNB watsonx Expansion — moved to Validate stage'},
+  {tag:'new',      text:'Apex watsonx.governance pilot — Qualify stage'},
+  {tag:'alert',    text:'2 installs expiring within 12 months'},
+];
+
+const LABEL_ICONS = {
+  Seller:'👤', Manager:'👥', Territory:'📍', Product:'📦',
+  Account:'🏢', Install:'⚙️', Opportunity:'💡', KnowledgeAsset:'📄',
+};
+const LABEL_COLORS = {
+  Seller:'#0f62fe', Manager:'#a56eff', Territory:'#009d9a',
+  Product:'#ff832b', Account:'#1192e8', Install:'#24a148',
+  Opportunity:'#f1c21b', KnowledgeAsset:'#ee5396',
+};
+
+// ── State ────────────────────────────────────────────────────────────
+let activeRole = 'all';
+let activeFilter = 'all';
+let currentQuery = '';
+
+// ── Whats New ────────────────────────────────────────────────────────
+function buildWhatsNew() {
+  const el = document.getElementById('wn-scroll');
+  el.innerHTML = WHATS_NEW.map(w => `
+    <div class="wn-chip">
+      <span class="wn-tag ${w.tag}">${w.tag === 'critical' ? '🔴 CRITICAL' : w.tag === 'alert' ? '⚠ ALERT' : '✦ NEW'}</span>
+      <span class="wn-text">${w.text}</span>
+    </div>
+  `).join('');
+}
+
+// ── Filter pills ─────────────────────────────────────────────────────
+const FILTERS = ['all','Seller','Manager','Territory','Account','Product','Install','Opportunity'];
+
+function buildFilters() {
+  document.getElementById('filter-row').innerHTML = FILTERS.map(f => `
+    <button class="f-pill ${f === 'all' ? 'active' : ''}" data-filter="${f}" onclick="setFilter('${f}')">${f === 'all' ? 'All' : f}</button>
+  `).join('');
+}
+
+function setFilter(f) {
+  activeFilter = f;
+  document.querySelectorAll('.f-pill').forEach(p => p.classList.toggle('active', p.dataset.filter === f));
+  document.getElementById('clear-btn').style.display = f === 'all' ? 'none' : 'block';
+  renderCards(getFilteredNodes());
+}
+
+function clearFilters() {
+  setFilter('all');
+  document.getElementById('clear-btn').style.display = 'none';
+}
+
+// ── Role filter ───────────────────────────────────────────────────────
+document.querySelectorAll('.role-pill').forEach(btn => {
+  btn.addEventListener('click', () => {
+    activeRole = btn.dataset.role;
+    document.querySelectorAll('.role-pill').forEach(b => b.classList.toggle('active', b === btn));
+    renderCards(getFilteredNodes());
+    updateBrowseLabel();
+  });
+});
+
+function updateBrowseLabel() {
+  const lbl = document.getElementById('browse-lbl');
+  if (currentQuery) {
+    lbl.textContent = `Search results for "${currentQuery}"`;
+  } else if (activeRole !== 'all') {
+    const roleNames = {seller:'Sellers',manager:'Managers',executive:'SLM / Executive View',specialist:'Brand Specialists'};
+    lbl.textContent = `Browsing as: ${roleNames[activeRole] || activeRole}`;
+  } else {
+    lbl.textContent = 'Browse All Entities';
+  }
+}
+
+// ── Filtering logic ───────────────────────────────────────────────────
+function getFilteredNodes(query = currentQuery) {
+  let pool = NODES;
+
+  // Role filter
+  if (activeRole === 'seller') {
+    pool = pool.filter(n => ['Seller','Account','Install','Opportunity','Product','Territory'].includes(n.label));
+  } else if (activeRole === 'manager') {
+    pool = pool.filter(n => ['Manager','Seller','Account','Territory','Opportunity'].includes(n.label));
+  } else if (activeRole === 'executive') {
+    pool = pool.filter(n => ['Manager','Account','Territory','Opportunity','Install'].includes(n.label));
+  } else if (activeRole === 'specialist') {
+    pool = pool.filter(n => ['Seller','Product','Account','Opportunity'].includes(n.label));
+  }
+
+  // Entity type filter
+  if (activeFilter !== 'all') {
+    pool = pool.filter(n => n.label === activeFilter);
+  }
+
+  // Text search
+  if (query && query.length > 1) {
+    const ql = query.toLowerCase();
+    const words = ql.split(/\s+/).filter(w => w.length > 2);
+    pool = pool.map(n => {
+      const text = (n.name + ' ' + (n.desc||'') + ' ' + n.label + ' ' + (n.role||'') + ' ' + (n.geo||n.region||'') + ' ' + (n.family||'') + ' ' + (n.industry||'')).toLowerCase();
+      let score = 0;
+      for (const w of words) {
+        if (n.name.toLowerCase().includes(w)) score += 1.0;
+        else if (text.includes(w)) score += 0.4;
+      }
+      return { ...n, _score: score };
+    }).filter(n => n._score > 0).sort((a, b) => b._score - a._score);
+  }
+
+  return pool;
+}
+
+// ── Render cards ──────────────────────────────────────────────────────
+function renderCards(nodes) {
+  const grid = document.getElementById('card-grid');
+  const noRes = document.getElementById('no-results');
+
+  if (!nodes.length) {
+    grid.innerHTML = '';
+    noRes.style.display = 'block';
+    return;
+  }
+  noRes.style.display = 'none';
+
+  grid.innerHTML = nodes.map(n => {
+    const col = LABEL_COLORS[n.label] || '#888';
+    const icon = LABEL_ICONS[n.label] || '⬡';
+    const isStale = n.status === 'STALE';
+    const tagClass = n.label.toLowerCase();
+
+    // Secondary tag
+    let tag2 = '';
+    if (isStale) tag2 = `<span class="rc-tag stale">⚠ Stale</span>`;
+    else if (n.label === 'Opportunity') {
+      const stageColor = {Validate:'ibm-green', Propose:'ibm-blue', Identify:'ibm-cyan', Qualify:'ibm-teal'}[n.stage] || 'ibm-blue';
+      tag2 = `<span class="rc-tag" style="background:rgba(15,98,254,.1);color:var(--${stageColor})">${n.stage}</span>`;
+    } else if (n.label === 'Install' && n.supportEnd) {
+      const daysOut = Math.ceil((new Date(n.supportEnd) - new Date()) / 86400000);
+      if (daysOut < 0) tag2 = `<span class="rc-tag stale">EOS</span>`;
+      else if (daysOut < 180) tag2 = `<span class="rc-tag" style="background:rgba(241,194,27,.12);color:#946500">Renew ${daysOut}d</span>`;
+    } else if (n.label === 'Product' && n.family) {
+      tag2 = `<span class="rc-tag" style="background:rgba(255,131,43,.1);color:var(--ibm-orange)">${n.family}</span>`;
+    }
+
+    // Meta line
+    let meta = '';
+    if (n.label === 'Seller') meta = `<span class="rc-meta-dot" style="background:${col}"></span><span class="rc-meta-txt">${n.role || 'AE'} · <strong>${n.geo || '—'}</strong></span>`;
+    if (n.label === 'Manager') meta = `<span class="rc-meta-dot" style="background:${col}"></span><span class="rc-meta-txt">FLM / SLM · <strong>${n.geo || '—'}</strong></span>`;
+    if (n.label === 'Territory') meta = `<span class="rc-meta-dot" style="background:${col}"></span><span class="rc-meta-txt">Quota: <strong>$${(n.quota/1e6).toFixed(1)}M</strong> · ${n.region}</span>`;
+    if (n.label === 'Account') meta = `<span class="rc-meta-dot" style="background:${col}"></span><span class="rc-meta-txt">${n.industry || ''} · <strong>$${n.revenue ? (n.revenue/1e9).toFixed(1)+'B' : '—'}</strong></span>`;
+    if (n.label === 'Product') meta = `<span class="rc-meta-dot" style="background:${col}"></span><span class="rc-meta-txt">v${n.version || '—'} · <strong>${n.family || '—'}</strong></span>`;
+    if (n.label === 'Install') meta = `<span class="rc-meta-dot" style="background:${col}"></span><span class="rc-meta-txt">v${n.version || '—'} · Support: <strong>${n.supportEnd || '—'}</strong></span>`;
+    if (n.label === 'Opportunity') meta = `<span class="rc-meta-dot" style="background:${col}"></span><span class="rc-meta-txt"><strong>$${(n.value/1e6).toFixed(2)}M</strong> · Close: ${n.closeDate || '—'}</span>`;
+
+    const action = n.label === 'Opportunity' ? 'View opp →' : n.label === 'Account' ? 'Account 360 →' : n.label === 'Install' ? 'Check renewal →' : 'Explore →';
+
+    return `
+      <div class="result-card ${isStale ? 'stale' : ''}" onclick="openNode('${n.id}')">
+        <div class="rc-top">
+          <div class="rc-icon" style="background:${col}20">${icon}</div>
+          <div class="rc-tags">
+            <span class="rc-tag ${tagClass}">${n.label}</span>
+            ${tag2}
+          </div>
+        </div>
+        <div class="rc-name">${n.name}</div>
+        <div class="rc-desc">${(n.desc || '').slice(0, 100)}${(n.desc || '').length > 100 ? '…' : ''}</div>
+        <div class="rc-meta">
+          ${meta}
+          <span class="rc-action">${action}</span>
+        </div>
+      </div>
+    `;
+  }).join('');
+}
+
+function openNode(id) {
+  // Open in graph view with the node pre-selected
+  window.location.href = `index.html#node=${id}`;
+}
+
+// ── Search ────────────────────────────────────────────────────────────
+function doSearch(q) {
+  q = q.trim();
+  if (!q) {
+    currentQuery = '';
+    hideNarrative();
+    renderCards(getFilteredNodes(''));
+    updateBrowseLabel();
+    return;
+  }
+  currentQuery = q;
+  document.getElementById('search-inp').value = q;
+  updateBrowseLabel();
+
+  const nodes = getFilteredNodes(q);
+  renderCards(nodes);
+
+  // Try API narrative, fall back to template
+  const intent = detectIntent(q.toLowerCase());
+  const narrative = buildNarrative(q, nodes, intent);
+  showNarrative(narrative);
+
+  // Also pass to chat agent
+  pushUserMsg(q);
+  setTimeout(() => pushAgentMsg(narrative + '\n\nClick any card to explore in the graph view.'), 800);
+}
+
+function showNarrative(text) {
+  const bar = document.getElementById('narrative-bar');
+  document.getElementById('narrative-txt').textContent = text;
+  bar.style.display = 'block';
+}
+function hideNarrative() {
+  document.getElementById('narrative-bar').style.display = 'none';
+}
+
+function detectIntent(q) {
+  if (/report|manage|who.*manage|direct report/.test(q)) return 'org';
+  if (/install|running|deployed|using|expir|support/.test(q)) return 'install';
+  if (/territory|region|cover|patch/.test(q)) return 'territory';
+  if (/product|certif|watsonx|openpage|turbonomic/.test(q)) return 'product';
+  if (/opport|deal|pipeline|stage/.test(q)) return 'opportunity';
+  if (/co.sell|partner|together/.test(q)) return 'cosell';
+  return 'general';
+}
+
+function buildNarrative(q, results, intent) {
+  if (!results.length) return `No results found for "${q}". Try broadening your search or clearing filters.`;
+  const names = results.slice(0,3).map(r=>r.name);
+  const n = results.length;
+  const m = {
+    org: `Found ${n} people and org relationship${n>1?'s':''}. Key: ${names.join(', ')}.`,
+    install: `Found ${n} install record${n>1?'s':''}. Watch for ⚠ stale/expiring cards — those are your immediate action items.`,
+    territory: `Found ${n} territory match${n>1?'es':''}. Covering: ${names.join(', ')}.`,
+    product: `Found ${n} product match${n>1?'es':''}. Top: ${names.join(', ')}. Use the graph to see which sellers are certified.`,
+    opportunity: `Found ${n} opportunit${n>1?'ies':'y'} in your pipeline. Top: ${names.join(', ')}.`,
+    cosell: `Found ${n} co-sell connection${n>1?'s':''}: ${names.join(', ')}.`,
+    general: `Found ${n} result${n>1?'s':''} for "${q}". Top matches: ${names.join(', ')}. Click any card to explore in the graph.`,
+  };
+  return m[intent] || m.general;
+}
+
+// ── Chat agent ────────────────────────────────────────────────────────
+function pushUserMsg(text) {
+  const msgs = document.getElementById('cr-msgs');
+  const el = document.createElement('div');
+  el.className = 'msg user';
+  el.textContent = text;
+  msgs.appendChild(el);
+  msgs.scrollTop = msgs.scrollHeight;
+}
+
+function pushAgentMsg(text) {
+  const msgs = document.getElementById('cr-msgs');
+  // Remove typing indicator if present
+  const typing = msgs.querySelector('.typing-wrap');
+  if (typing) msgs.removeChild(typing);
+
+  const el = document.createElement('div');
+  el.className = 'msg agent';
+  el.innerHTML = `<div class="msg-name">Scout</div>${text.replace(/\n/g,'<br>')}`;
+  msgs.appendChild(el);
+  msgs.scrollTop = msgs.scrollHeight;
+}
+
+function showTyping() {
+  const msgs = document.getElementById('cr-msgs');
+  const wrap = document.createElement('div');
+  wrap.className = 'msg agent typing-wrap';
+  wrap.innerHTML = '<div class="typing"><span></span><span></span><span></span></div>';
+  msgs.appendChild(wrap);
+  msgs.scrollTop = msgs.scrollHeight;
+}
+
+function askAgent(q) {
+  document.getElementById('cr-input').value = q;
+  sendChat();
+}
+
+function sendChat() {
+  const inp = document.getElementById('cr-input');
+  const q = inp.value.trim();
+  if (!q) return;
+  inp.value = '';
+  pushUserMsg(q);
+  showTyping();
+
+  // Run local search and respond
+  const results = getFilteredNodes(q);
+  const intent = detectIntent(q.toLowerCase());
+  const response = buildNarrative(q, results, intent);
+
+  setTimeout(() => {
+    pushAgentMsg(response);
+    // Also update search results
+    doSearch(q);
+  }, 900);
+}
+
+// ── Event bindings ────────────────────────────────────────────────────
+document.getElementById('search-go').onclick = () => doSearch(document.getElementById('search-inp').value);
+document.getElementById('search-inp').addEventListener('keydown', e => { if (e.key === 'Enter') doSearch(e.target.value); });
+document.getElementById('cr-send').onclick = sendChat;
+document.getElementById('cr-input').addEventListener('keydown', e => { if (e.key === 'Enter') sendChat(); });
+
+// Debounced live search
+let debounceTimer;
+document.getElementById('search-inp').addEventListener('input', e => {
+  clearTimeout(debounceTimer);
+  debounceTimer = setTimeout(() => {
+    if (e.target.value.length > 2 || e.target.value.length === 0) doSearch(e.target.value);
+  }, 280);
+});
+
+// ── Boot ──────────────────────────────────────────────────────────────
+buildWhatsNew();
+buildFilters();
+renderCards(NODES);
+</script>
+</body>
+</html>
