@@ -721,12 +721,13 @@ function renderCards(nodes) {
 }
 
 function openNode(id) {
-  // Deployment cards → dedicated Gainsight-style detail page
-  if (id.startsWith('dep-')) {
-    window.location.href = `deployment.html?id=${id}`;
-    return;
-  }
-  // Everything else → graph view with node pre-selected
+  if (id.startsWith('dep-'))  { window.location.href = `deployment.html?id=${id}`;  return; }
+  if (id.startsWith('acc-'))  { window.location.href = `account.html?id=${id}`;     return; }
+  if (id.startsWith('ter-'))  { window.location.href = `territory.html?id=${id}`;   return; }
+  if (id.startsWith('prd-'))  { window.location.href = `product.html?id=${id}`;     return; }
+  if (id.startsWith('ins-'))  { window.location.href = `install.html?id=${id}`;     return; }
+  if (id.startsWith('opp-'))  { window.location.href = `opportunity.html?id=${id}`; return; }
+  // Sellers, Managers, SiteNumbers → graph view with node pre-selected
   window.location.href = `index.html#node=${id}`;
 }
 

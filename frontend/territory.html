@@ -1,0 +1,232 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+<title>IBM Scout — Territory</title>
+<link rel="icon" href="assets/scout-logo.png"/>
+<style>
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+:root{
+  --ibm-blue:#0f62fe;--ibm-dk:#0043ce;--ibm-teal:#009d9a;--ibm-cyan:#1192e8;
+  --ibm-purple:#6929c4;--ibm-orange:#ff832b;--ibm-red:#da1e28;
+  --ibm-green:#24a148;--ibm-yellow:#f1c21b;
+  --bg:#0a0c14;--surface:rgba(255,255,255,0.04);--card:rgba(255,255,255,0.06);
+  --border:rgba(255,255,255,0.1);--tp:#f4f4f8;--ts:#a0a8c0;--tm:#5c6480;--r:10px;
+}
+html,body{min-height:100vh;background:var(--bg);color:var(--tp);
+  font-family:'IBM Plex Sans',-apple-system,BlinkMacSystemFont,sans-serif;font-size:14px;line-height:1.5}
+::-webkit-scrollbar{width:5px}::-webkit-scrollbar-thumb{background:rgba(120,130,180,.3);border-radius:10px}
+#hdr{position:sticky;top:0;z-index:200;display:flex;align-items:center;gap:16px;
+  padding:0 28px;height:54px;background:rgba(10,12,20,0.92);
+  border-bottom:1px solid var(--border);backdrop-filter:blur(16px)}
+.logo{display:flex;align-items:center;gap:9px;text-decoration:none;color:var(--tp)}
+.logo img{width:28px;height:28px;object-fit:contain;border-radius:4px}
+.logo-txt{font-size:14px;font-weight:700}.logo-txt span{color:var(--ibm-blue)}
+.hdr-div{width:1px;height:20px;background:var(--border)}
+.hdr-nav{display:flex;gap:4px}
+.hdr-btn{padding:5px 12px;border-radius:6px;font-size:12px;font-weight:600;cursor:pointer;
+  border:1px solid transparent;color:var(--ts);transition:all .15s;background:none;
+  text-decoration:none;display:flex;align-items:center;gap:5px}
+.hdr-btn:hover{color:var(--tp);background:var(--surface);border-color:var(--border)}
+.hdr-right{margin-left:auto;display:flex;align-items:center;gap:8px}
+#page{max-width:1160px;margin:0 auto;padding:32px 28px 80px}
+.breadcrumb{display:flex;align-items:center;gap:8px;font-size:11px;color:var(--tm);margin-bottom:20px}
+.breadcrumb a{color:var(--ts);text-decoration:none}.breadcrumb a:hover{color:var(--ibm-blue)}
+.breadcrumb-sep{opacity:.4}
+#hero-banner{background:var(--card);border:1px solid var(--border);border-radius:var(--r);
+  padding:24px 28px;margin-bottom:24px;display:flex;align-items:flex-start;gap:20px}
+.hero-icon{width:56px;height:56px;border-radius:12px;background:rgba(0,157,154,.18);
+  display:flex;align-items:center;justify-content:center;font-size:26px;flex-shrink:0}
+.hero-body{flex:1;min-width:0}
+.hero-label{font-size:11px;font-weight:700;text-transform:uppercase;letter-spacing:1px;color:var(--ibm-teal);margin-bottom:4px}
+.hero-title{font-size:22px;font-weight:700;line-height:1.2;margin-bottom:6px}
+.hero-sub{font-size:13px;color:var(--ts);margin-bottom:10px}
+.hero-tags{display:flex;gap:6px;flex-wrap:wrap}
+.h-tag{padding:3px 10px;border-radius:20px;font-size:10px;font-weight:700;text-transform:uppercase;letter-spacing:.5px}
+.hero-right{display:flex;flex-direction:column;align-items:flex-end;gap:8px;flex-shrink:0}
+.stat-box{background:var(--surface);border:1px solid var(--border);border-radius:10px;padding:12px 18px;text-align:center}
+.stat-num{font-size:28px;font-weight:700;line-height:1}
+.stat-lbl{font-size:9px;text-transform:uppercase;letter-spacing:1px;color:var(--ts);margin-top:3px}
+#kpi-strip{display:grid;grid-template-columns:repeat(auto-fit,minmax(150px,1fr));gap:12px;margin-bottom:24px}
+.kpi-card{background:var(--card);border:1px solid var(--border);border-radius:var(--r);padding:14px 16px}
+.kpi-val{font-size:26px;font-weight:700;line-height:1;margin-bottom:3px}
+.kpi-label{font-size:10px;color:var(--ts);text-transform:uppercase;letter-spacing:.5px}
+.kpi-sub{font-size:10px;color:var(--tm);margin-top:3px}
+.quota-bar-wrap{margin:12px 0 4px}
+.quota-bar-track{height:12px;background:rgba(255,255,255,.08);border-radius:6px;overflow:hidden}
+.quota-bar-fill{height:100%;border-radius:6px;transition:width .6s ease}
+.quota-labels{display:flex;justify-content:space-between;font-size:9px;color:var(--tm);margin-top:3px}
+.two-col{display:grid;grid-template-columns:1fr 1fr;gap:16px;margin-bottom:24px}
+@media(max-width:800px){.two-col{grid-template-columns:1fr}}
+.section-card{background:var(--card);border:1px solid var(--border);border-radius:var(--r);padding:18px 20px}
+.section-title{font-size:10px;font-weight:800;text-transform:uppercase;letter-spacing:1px;
+  color:var(--ts);margin-bottom:14px;display:flex;align-items:center;gap:6px}
+.cnt{background:rgba(255,255,255,.08);border-radius:4px;padding:1px 6px;font-size:9px;color:var(--tp)}
+.data-row{display:flex;align-items:center;gap:10px;padding:9px 0;border-bottom:1px solid rgba(255,255,255,.06);cursor:pointer}
+.data-row:last-child{border-bottom:none}
+.data-row:hover{background:rgba(15,98,254,.05);margin:0 -6px;padding:9px 6px;border-radius:6px}
+.dr-dot{width:9px;height:9px;border-radius:50%;flex-shrink:0}
+.dr-name{flex:1;font-size:12px;font-weight:600;color:var(--tp)}
+.dr-sub{font-size:10px;color:var(--ts)}
+.dr-badge{font-size:9px;font-weight:800;text-transform:uppercase;letter-spacing:.4px;padding:2px 8px;border-radius:4px;white-space:nowrap}
+.empty-state{font-size:12px;color:var(--tm);font-style:italic;padding:8px 0}
+.action-row{display:flex;gap:10px;flex-wrap:wrap;margin-top:18px}
+.action-btn{padding:9px 18px;border-radius:7px;font-size:12px;font-weight:700;cursor:pointer;
+  border:1px solid;transition:all .15s;text-decoration:none;display:inline-flex;align-items:center;gap:6px}
+.action-btn.secondary{background:rgba(255,255,255,.04);border-color:var(--border);color:var(--ts)}
+.action-btn.secondary:hover{background:rgba(255,255,255,.08);color:var(--tp)}
+</style>
+</head>
+<body>
+<header id="hdr">
+  <a class="logo" href="search.html"><img src="assets/scout-logo.png" alt="IBM Scout" onerror="this.style.display='none'"/>
+    <div class="logo-txt">IBM <span>Scout</span></div></a>
+  <div class="hdr-div"></div>
+  <nav class="hdr-nav">
+    <a href="search.html" class="hdr-btn">
+      <svg width="12" height="12" viewBox="0 0 16 16" fill="none"><circle cx="6.5" cy="6.5" r="5" stroke="currentColor" stroke-width="1.5"/><line x1="10.5" y1="10.5" x2="14" y2="14" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/></svg>Search
+    </a>
+    <a href="index.html" class="hdr-btn">
+      <svg width="12" height="12" viewBox="0 0 14 14" fill="none"><circle cx="7" cy="3" r="2" stroke="currentColor" stroke-width="1.5"/><circle cx="3" cy="11" r="2" stroke="currentColor" stroke-width="1.5"/><circle cx="11" cy="11" r="2" stroke="currentColor" stroke-width="1.5"/><line x1="7" y1="5" x2="4.5" y2="9.2" stroke="currentColor" stroke-width="1.2"/><line x1="7" y1="5" x2="9.5" y2="9.2" stroke="currentColor" stroke-width="1.2"/></svg>Graph View
+    </a>
+    <a href="#" class="hdr-btn active" style="color:var(--ibm-teal);border-color:rgba(0,157,154,.3);background:rgba(0,157,154,.08)">📍 Territory</a>
+  </nav>
+  <div class="hdr-right"><span id="mode-badge" style="padding:3px 8px;border-radius:8px;font-size:9px;font-weight:800;letter-spacing:.5px;text-transform:uppercase;background:rgba(255,131,43,.1);color:var(--ibm-orange);border:1px solid rgba(255,131,43,.2)">Demo Mode</span></div>
+</header>
+
+<div id="page">
+  <div class="breadcrumb"><a href="search.html">IBM Scout</a><span class="breadcrumb-sep">›</span><a href="search.html">Territories</a><span class="breadcrumb-sep">›</span><span id="bc-name">Loading…</span></div>
+
+  <div id="hero-banner">
+    <div class="hero-icon">📍</div>
+    <div class="hero-body">
+      <div class="hero-label" id="hero-region">Territory</div>
+      <div class="hero-title" id="hero-title">Loading…</div>
+      <div class="hero-sub" id="hero-sub"></div>
+      <div class="hero-tags" id="hero-tags"></div>
+    </div>
+    <div class="hero-right">
+      <div class="stat-box">
+        <div class="stat-num" id="hero-quota" style="color:var(--ibm-teal)">—</div>
+        <div class="stat-lbl">Annual Quota</div>
+      </div>
+    </div>
+  </div>
+
+  <div id="kpi-strip">
+    <div class="kpi-card"><div class="kpi-val" id="kpi-sellers" style="color:var(--ibm-blue)">—</div><div class="kpi-label">Sellers</div><div class="kpi-sub" id="kpi-sellers-sub"></div></div>
+    <div class="kpi-card"><div class="kpi-val" id="kpi-accounts" style="color:var(--ibm-cyan)">—</div><div class="kpi-label">Accounts</div><div class="kpi-sub" id="kpi-accounts-sub"></div></div>
+    <div class="kpi-card"><div class="kpi-val" id="kpi-pipeline" style="color:var(--ibm-yellow)">—</div><div class="kpi-label">Open Pipeline</div><div class="kpi-sub">active opportunities</div></div>
+    <div class="kpi-card">
+      <div style="font-size:11px;font-weight:700;color:var(--ts);margin-bottom:8px;text-transform:uppercase;letter-spacing:.5px">Quota Coverage</div>
+      <div class="quota-bar-wrap">
+        <div class="quota-bar-track"><div class="quota-bar-fill" id="quota-bar" style="width:0%"></div></div>
+        <div class="quota-labels"><span>0%</span><span id="quota-pct-lbl">—</span><span>100%</span></div>
+      </div>
+    </div>
+  </div>
+
+  <div class="two-col">
+    <div class="section-card">
+      <div class="section-title">👤 Sellers <span class="cnt" id="cnt-sellers">0</span></div>
+      <div id="sellers-list"></div>
+    </div>
+    <div class="section-card">
+      <div class="section-title">🏢 Accounts <span class="cnt" id="cnt-accounts">0</span></div>
+      <div id="accounts-list"></div>
+    </div>
+  </div>
+
+  <div class="action-row" id="action-row">
+    <a href="search.html" class="action-btn secondary">← Back to Search</a>
+  </div>
+</div>
+
+<script>
+const API='http://localhost:8000';
+function fmtM(v){if(!v)return'—';if(v>=1e9)return`$${(v/1e9).toFixed(1)}B`;if(v>=1e6)return`$${(v/1e6).toFixed(1)}M`;if(v>=1e3)return`$${(v/1e3).toFixed(0)}K`;return`$${v}`;}
+
+const TERRITORIES = {
+  'ter-001':{id:'ter-001',name:'NYC Metro Enterprise',region:'Northeast US',geo:'New York, NJ',quota:8500000,description:'Large enterprise accounts in New York metro area. BFSI and insurance focus.',sellers:['sel-001'],accounts:['acc-001','acc-005'],pipeline:2400000+890000},
+  'ter-002':{id:'ter-002',name:'New England Mid-Market',region:'Northeast US',geo:'MA, CT, RI, NH, VT, ME',quota:4200000,description:'Mid-market technology focus across New England states. watsonx.ai specialist coverage.',sellers:['sel-002'],accounts:['acc-004'],pipeline:560000},
+  'ter-003':{id:'ter-003',name:'Southeast Enterprise',region:'Southeast US',geo:'GA, FL, SC, NC, TN',quota:6100000,description:'Enterprise accounts across the Southeast. Healthcare and retail verticals.',sellers:['sel-003','sel-004'],accounts:['acc-002','acc-003'],pipeline:640000},
+  'ter-004':{id:'ter-004',name:'Bay Area Tech',region:'West US',geo:'San Francisco Bay Area, CA',quota:9200000,description:'Technology companies in Silicon Valley and Bay Area. Largest quota territory.',sellers:['sel-005'],accounts:['acc-004'],pipeline:2400000+560000},
+  'ter-005':{id:'ter-005',name:'Southern California',region:'West US',geo:'Los Angeles, San Diego, CA',quota:5800000,description:'Entertainment, media, and financial accounts in SoCal.',sellers:['sel-006'],accounts:['acc-006'],pipeline:0},
+};
+const SELLERS = {
+  'sel-001':{id:'sel-001',name:'Marcus Webb',role:'Client Executive',geo:'New York, NY',sellerType:'CE'},
+  'sel-002':{id:'sel-002',name:'Aisha Thornton',role:'BSS / watsonx Specialist',geo:'Boston, MA',sellerType:'BSS'},
+  'sel-003':{id:'sel-003',name:'James Kowalski',role:'Client Executive',geo:'Atlanta, GA',sellerType:'CE'},
+  'sel-004':{id:'sel-004',name:'Lin Mei Zhang',role:'Technology Sales Specialist',geo:'Miami, FL',sellerType:'TSL'},
+  'sel-005':{id:'sel-005',name:'Tyler Oduya',role:'Client Executive',geo:'San Francisco, CA',sellerType:'CE'},
+  'sel-006':{id:'sel-006',name:'Rachel Patel',role:'BSS / Security Specialist',geo:'Los Angeles, CA',sellerType:'BSS'},
+  'sel-007':{id:'sel-007',name:'Monique Tureaud',role:'Brand Sales Specialist (TSL)',geo:'Baton Rouge, LA',sellerType:'TSL'},
+};
+const ACCOUNTS_SHORT = {
+  'acc-001':{id:'acc-001',name:'First National Bancorp',industry:'Financial Services',segment:'Enterprise'},
+  'acc-002':{id:'acc-002',name:'Meridian Health Systems',industry:'Healthcare',segment:'Enterprise'},
+  'acc-003':{id:'acc-003',name:'Nova Retail Group',industry:'Retail',segment:'Mid-Market'},
+  'acc-004':{id:'acc-004',name:'Apex Technology Partners',industry:'Technology',segment:'Enterprise'},
+  'acc-005':{id:'acc-005',name:'Cascadia Insurance Group',industry:'Insurance',segment:'Enterprise'},
+  'acc-006':{id:'acc-006',name:'SunCoast Logistics',industry:'Logistics',segment:'Mid-Market'},
+  'acc-007':{id:'acc-007',name:'State of Louisiana',industry:'Government',segment:'Public Sector'},
+};
+const BADGE_COL={CE:['rgba(15,98,254,.15)','#6ea6ff'],BSS:['rgba(255,131,43,.15)','#ff832b'],TSL:['rgba(0,157,154,.15)','#009d9a'],ATL:['rgba(165,110,255,.12)','#a56eff']};
+
+function renderPage(ter){
+  document.title=`IBM Scout — ${ter.name}`;
+  document.getElementById('bc-name').textContent=ter.name;
+  document.getElementById('hero-region').textContent=`${ter.region} Territory`;
+  document.getElementById('hero-title').textContent=ter.name;
+  document.getElementById('hero-sub').textContent=ter.description;
+  document.getElementById('hero-quota').textContent=fmtM(ter.quota);
+  document.getElementById('hero-tags').innerHTML=`
+    <span class="h-tag" style="background:rgba(0,157,154,.12);color:var(--ibm-teal);border:1px solid rgba(0,157,154,.25)">${ter.region}</span>
+    <span class="h-tag" style="background:rgba(255,255,255,.07);color:var(--ts);border:1px solid var(--border)">${ter.geo}</span>`;
+
+  const sellers=ter.sellers.map(s=>SELLERS[s]).filter(Boolean);
+  const accounts=ter.accounts.map(a=>ACCOUNTS_SHORT[a]).filter(Boolean);
+  const pipePct=ter.quota?Math.min(100,Math.round(ter.pipeline/ter.quota*100)):0;
+
+  document.getElementById('kpi-sellers').textContent=sellers.length;
+  document.getElementById('kpi-sellers-sub').textContent=sellers.map(s=>s.name.split(' ')[0]).join(', ');
+  document.getElementById('kpi-accounts').textContent=accounts.length;
+  document.getElementById('kpi-accounts-sub').textContent=accounts.map(a=>a.name.split(' ')[0]).join(', ')||'none';
+  document.getElementById('kpi-pipeline').textContent=fmtM(ter.pipeline);
+  const bar=document.getElementById('quota-bar');
+  bar.style.width=pipePct+'%';
+  bar.style.background=pipePct>=80?'#24a148':pipePct>=50?'#f1c21b':'#da1e28';
+  document.getElementById('quota-pct-lbl').textContent=pipePct+'%';
+
+  document.getElementById('cnt-sellers').textContent=sellers.length;
+  document.getElementById('sellers-list').innerHTML=sellers.length?sellers.map(s=>{
+    const bc=BADGE_COL[s.sellerType]||BADGE_COL.CE;
+    return `<div class="data-row" onclick="window.location='index.html#node=${s.id}'">
+      <div class="dr-dot" style="background:${bc[1]}"></div>
+      <div><div class="dr-name">${s.name}</div><div class="dr-sub">${s.geo} · ${s.role}</div></div>
+      <div class="dr-badge" style="background:${bc[0]};color:${bc[1]}">${s.sellerType}</div>
+    </div>`;
+  }).join(''):'<div class="empty-state">No sellers assigned.</div>';
+
+  document.getElementById('cnt-accounts').textContent=accounts.length;
+  document.getElementById('accounts-list').innerHTML=accounts.length?accounts.map(a=>`
+    <div class="data-row" onclick="window.location='account.html?id=${a.id}'">
+      <div class="dr-dot" style="background:var(--ibm-cyan)"></div>
+      <div><div class="dr-name">${a.name}</div><div class="dr-sub">${a.industry} · ${a.segment}</div></div>
+      <div class="dr-badge" style="background:rgba(17,146,232,.12);color:var(--ibm-cyan)">${a.segment}</div>
+    </div>`).join(''):'<div class="empty-state">No accounts linked.</div>';
+
+  document.getElementById('action-row').innerHTML=`
+    <a href="search.html" class="action-btn secondary">← Back to Search</a>
+    <a href="index.html#node=${ter.id}" class="action-btn secondary">🕸 View in Graph</a>`;
+}
+
+const id=new URLSearchParams(window.location.search).get('id');
+if(id&&TERRITORIES[id])renderPage(TERRITORIES[id]);
+else{document.getElementById('bc-name').textContent='Not Found';document.getElementById('hero-title').textContent='Territory Not Found';}
+
+(async()=>{try{const r=await fetch(`${API}/healthz`,{signal:AbortSignal.timeout(1500)});if(r.ok){const b=document.getElementById('mode-badge');b.textContent='Live API';b.style.background='rgba(36,161,72,.1)';b.style.color='#24a148';b.style.borderColor='rgba(36,161,72,.2)';}}catch(_){}})();
+</script>
+</body>
+</html>

@@ -1,0 +1,303 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+<title>IBM Scout — Install Record</title>
+<link rel="icon" href="assets/scout-logo.png"/>
+<style>
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+:root{
+  --ibm-blue:#0f62fe;--ibm-dk:#0043ce;--ibm-teal:#009d9a;--ibm-cyan:#1192e8;
+  --ibm-purple:#6929c4;--ibm-orange:#ff832b;--ibm-red:#da1e28;
+  --ibm-green:#24a148;--ibm-yellow:#f1c21b;
+  --bg:#0a0c14;--surface:rgba(255,255,255,0.04);--card:rgba(255,255,255,0.06);
+  --border:rgba(255,255,255,0.1);--tp:#f4f4f8;--ts:#a0a8c0;--tm:#5c6480;--r:10px;
+}
+html,body{min-height:100vh;background:var(--bg);color:var(--tp);
+  font-family:'IBM Plex Sans',-apple-system,BlinkMacSystemFont,sans-serif;font-size:14px;line-height:1.5}
+::-webkit-scrollbar{width:5px}::-webkit-scrollbar-thumb{background:rgba(120,130,180,.3);border-radius:10px}
+#hdr{position:sticky;top:0;z-index:200;display:flex;align-items:center;gap:16px;
+  padding:0 28px;height:54px;background:rgba(10,12,20,0.92);
+  border-bottom:1px solid var(--border);backdrop-filter:blur(16px)}
+.logo{display:flex;align-items:center;gap:9px;text-decoration:none;color:var(--tp)}
+.logo img{width:28px;height:28px;object-fit:contain;border-radius:4px}
+.logo-txt{font-size:14px;font-weight:700}.logo-txt span{color:var(--ibm-blue)}
+.hdr-div{width:1px;height:20px;background:var(--border)}
+.hdr-nav{display:flex;gap:4px}
+.hdr-btn{padding:5px 12px;border-radius:6px;font-size:12px;font-weight:600;cursor:pointer;
+  border:1px solid transparent;color:var(--ts);transition:all .15s;background:none;
+  text-decoration:none;display:flex;align-items:center;gap:5px}
+.hdr-btn:hover{color:var(--tp);background:var(--surface);border-color:var(--border)}
+.hdr-right{margin-left:auto;display:flex;align-items:center;gap:8px}
+#page{max-width:1160px;margin:0 auto;padding:32px 28px 80px}
+.breadcrumb{display:flex;align-items:center;gap:8px;font-size:11px;color:var(--tm);margin-bottom:20px}
+.breadcrumb a{color:var(--ts);text-decoration:none}.breadcrumb a:hover{color:var(--ibm-blue)}
+.breadcrumb-sep{opacity:.4}
+.urgency-banner{border-radius:8px;padding:14px 18px;margin-bottom:24px;display:flex;align-items:flex-start;gap:12px}
+.urgency-banner.critical{background:rgba(218,30,40,.08);border:1px solid rgba(218,30,40,.3)}
+.urgency-banner.warn{background:rgba(255,131,43,.08);border:1px solid rgba(255,131,43,.3)}
+.urgency-banner.stable{background:rgba(36,161,72,.06);border:1px solid rgba(36,161,72,.25)}
+.ub-icon{font-size:20px;flex-shrink:0}
+.ub-body h4{font-size:13px;font-weight:700;margin-bottom:3px}
+.ub-body p{font-size:11px;color:var(--ts);line-height:1.5}
+.ub-badge{margin-left:auto;font-size:9px;font-weight:800;text-transform:uppercase;letter-spacing:.5px;
+  padding:3px 10px;border-radius:4px;white-space:nowrap;flex-shrink:0;align-self:flex-start}
+#hero-banner{background:var(--card);border:1px solid var(--border);border-radius:var(--r);
+  padding:24px 28px;margin-bottom:24px;display:flex;align-items:flex-start;gap:20px}
+.hero-icon{width:56px;height:56px;border-radius:12px;background:rgba(36,161,72,.15);
+  display:flex;align-items:center;justify-content:center;font-size:26px;flex-shrink:0}
+.hero-body{flex:1;min-width:0}
+.hero-label{font-size:11px;font-weight:700;text-transform:uppercase;letter-spacing:1px;color:var(--ibm-green);margin-bottom:4px}
+.hero-title{font-size:22px;font-weight:700;line-height:1.2;margin-bottom:6px}
+.hero-sub{font-size:13px;color:var(--ts);margin-bottom:10px}
+.hero-tags{display:flex;gap:6px;flex-wrap:wrap}
+.h-tag{padding:3px 10px;border-radius:20px;font-size:10px;font-weight:700;text-transform:uppercase;letter-spacing:.5px}
+.hero-right{display:flex;flex-direction:column;align-items:flex-end;gap:8px;flex-shrink:0}
+.stat-box{background:var(--surface);border:1px solid var(--border);border-radius:10px;padding:12px 18px;text-align:center}
+.stat-num{font-size:28px;font-weight:700;line-height:1}
+.stat-lbl{font-size:9px;text-transform:uppercase;letter-spacing:1px;color:var(--ts);margin-top:3px}
+#kpi-strip{display:grid;grid-template-columns:repeat(auto-fit,minmax(150px,1fr));gap:12px;margin-bottom:24px}
+.kpi-card{background:var(--card);border:1px solid var(--border);border-radius:var(--r);padding:14px 16px}
+.kpi-val{font-size:26px;font-weight:700;line-height:1;margin-bottom:3px}
+.kpi-label{font-size:10px;color:var(--ts);text-transform:uppercase;letter-spacing:.5px}
+.kpi-sub{font-size:10px;color:var(--tm);margin-top:3px}
+.timeline-bar-wrap{margin:8px 0 4px}
+.tl-track{height:8px;background:rgba(255,255,255,.08);border-radius:4px;position:relative;overflow:hidden}
+.tl-fill{height:100%;border-radius:4px;transition:width .6s}
+.two-col{display:grid;grid-template-columns:1fr 1fr;gap:16px;margin-bottom:24px}
+@media(max-width:800px){.two-col{grid-template-columns:1fr}}
+.section-card{background:var(--card);border:1px solid var(--border);border-radius:var(--r);padding:18px 20px}
+.section-title{font-size:10px;font-weight:800;text-transform:uppercase;letter-spacing:1px;
+  color:var(--ts);margin-bottom:14px;display:flex;align-items:center;gap:6px}
+.info-row{display:flex;justify-content:space-between;align-items:center;padding:8px 0;border-bottom:1px solid rgba(255,255,255,.06);font-size:12px}
+.info-row:last-child{border-bottom:none}
+.info-label{color:var(--ts)}
+.info-val{color:var(--tp);font-weight:600}
+.tl-row{display:flex;gap:12px;padding:8px 0;border-bottom:1px solid rgba(255,255,255,.06)}
+.tl-row:last-child{border-bottom:none}
+.tl-date{font-size:10px;color:var(--tm);width:90px;flex-shrink:0;padding-top:1px}
+.tl-dot{width:8px;height:8px;border-radius:50%;background:var(--ibm-blue);margin-top:4px;flex-shrink:0}
+.tl-text{font-size:12px;color:var(--tp);line-height:1.45}
+.data-row{display:flex;align-items:center;gap:10px;padding:9px 0;border-bottom:1px solid rgba(255,255,255,.06);cursor:pointer}
+.data-row:last-child{border-bottom:none}
+.data-row:hover{background:rgba(15,98,254,.05);margin:0 -6px;padding:9px 6px;border-radius:6px}
+.dr-dot{width:9px;height:9px;border-radius:50%;flex-shrink:0}
+.dr-name{flex:1;font-size:12px;font-weight:600;color:var(--tp)}
+.dr-sub{font-size:10px;color:var(--ts)}
+.dr-badge{font-size:9px;font-weight:800;text-transform:uppercase;letter-spacing:.4px;padding:2px 8px;border-radius:4px;white-space:nowrap}
+.action-row{display:flex;gap:10px;flex-wrap:wrap;margin-top:18px}
+.action-btn{padding:9px 18px;border-radius:7px;font-size:12px;font-weight:700;cursor:pointer;
+  border:1px solid;transition:all .15s;text-decoration:none;display:inline-flex;align-items:center;gap:6px}
+.action-btn.primary{background:var(--ibm-blue);border-color:var(--ibm-blue);color:#fff}
+.action-btn.primary:hover{background:var(--ibm-dk)}
+.action-btn.warn{background:rgba(255,131,43,.08);border-color:rgba(255,131,43,.4);color:var(--ibm-orange)}
+.action-btn.warn:hover{background:rgba(255,131,43,.15)}
+.action-btn.secondary{background:rgba(255,255,255,.04);border-color:var(--border);color:var(--ts)}
+.action-btn.secondary:hover{background:rgba(255,255,255,.08);color:var(--tp)}
+</style>
+</head>
+<body>
+<header id="hdr">
+  <a class="logo" href="search.html"><img src="assets/scout-logo.png" alt="IBM Scout" onerror="this.style.display='none'"/>
+    <div class="logo-txt">IBM <span>Scout</span></div></a>
+  <div class="hdr-div"></div>
+  <nav class="hdr-nav">
+    <a href="search.html" class="hdr-btn">
+      <svg width="12" height="12" viewBox="0 0 16 16" fill="none"><circle cx="6.5" cy="6.5" r="5" stroke="currentColor" stroke-width="1.5"/><line x1="10.5" y1="10.5" x2="14" y2="14" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/></svg>Search
+    </a>
+    <a href="index.html" class="hdr-btn">
+      <svg width="12" height="12" viewBox="0 0 14 14" fill="none"><circle cx="7" cy="3" r="2" stroke="currentColor" stroke-width="1.5"/><circle cx="3" cy="11" r="2" stroke="currentColor" stroke-width="1.5"/><circle cx="11" cy="11" r="2" stroke="currentColor" stroke-width="1.5"/><line x1="7" y1="5" x2="4.5" y2="9.2" stroke="currentColor" stroke-width="1.2"/><line x1="7" y1="5" x2="9.5" y2="9.2" stroke="currentColor" stroke-width="1.2"/></svg>Graph View
+    </a>
+    <a href="#" class="hdr-btn active" style="color:var(--ibm-green);border-color:rgba(36,161,72,.3);background:rgba(36,161,72,.08)">⚙️ Install</a>
+  </nav>
+  <div class="hdr-right"><span id="mode-badge" style="padding:3px 8px;border-radius:8px;font-size:9px;font-weight:800;letter-spacing:.5px;text-transform:uppercase;background:rgba(255,131,43,.1);color:var(--ibm-orange);border:1px solid rgba(255,131,43,.2)">Demo Mode</span></div>
+</header>
+
+<div id="page">
+  <div class="breadcrumb"><a href="search.html">IBM Scout</a><span class="breadcrumb-sep">›</span><a href="search.html">Installs</a><span class="breadcrumb-sep">›</span><span id="bc-name">Loading…</span></div>
+
+  <div id="urgency-banner" class="urgency-banner stable">
+    <div class="ub-icon" id="ub-icon">✅</div>
+    <div class="ub-body"><h4 id="ub-title">—</h4><p id="ub-msg">—</p></div>
+    <div class="ub-badge" id="ub-badge">—</div>
+  </div>
+
+  <div id="hero-banner">
+    <div class="hero-icon" id="hero-icon">⚙️</div>
+    <div class="hero-body">
+      <div class="hero-label" id="hero-product-label">Install Record</div>
+      <div class="hero-title" id="hero-title">Loading…</div>
+      <div class="hero-sub" id="hero-sub"></div>
+      <div class="hero-tags" id="hero-tags"></div>
+    </div>
+    <div class="hero-right">
+      <div class="stat-box">
+        <div class="stat-num" id="hero-value" style="color:var(--ibm-green)">—</div>
+        <div class="stat-lbl">Contract Value</div>
+      </div>
+    </div>
+  </div>
+
+  <div id="kpi-strip">
+    <div class="kpi-card"><div class="kpi-val" id="kpi-days" style="color:var(--ibm-green)">—</div><div class="kpi-label">Days to Support End</div><div class="kpi-sub" id="kpi-days-sub"></div></div>
+    <div class="kpi-card"><div class="kpi-val" id="kpi-version" style="color:var(--ibm-blue)">—</div><div class="kpi-label">Installed Version</div><div class="kpi-sub" id="kpi-version-sub"></div></div>
+    <div class="kpi-card"><div class="kpi-val" id="kpi-installed" style="color:var(--ibm-cyan)">—</div><div class="kpi-label">Install Date</div><div class="kpi-sub">contract start</div></div>
+    <div class="kpi-card"><div class="kpi-val" id="kpi-support-end" style="color:var(--ibm-yellow)">—</div><div class="kpi-label">Support End</div><div class="kpi-sub" id="kpi-support-sub"></div></div>
+  </div>
+
+  <div class="two-col">
+    <div class="section-card">
+      <div class="section-title">📋 Contract Details</div>
+      <div id="details-list"></div>
+    </div>
+    <div class="section-card">
+      <div class="section-title">🚀 Active Deployment</div>
+      <div id="dep-panel"></div>
+    </div>
+  </div>
+
+  <div class="section-card" style="margin-bottom:24px">
+    <div class="section-title">📅 Support Lifecycle</div>
+    <div id="timeline"></div>
+  </div>
+
+  <div class="action-row" id="action-row">
+    <a href="search.html" class="action-btn secondary">← Back to Search</a>
+  </div>
+</div>
+
+<script>
+const API='http://localhost:8000';
+function fmtM(v){if(!v)return'—';if(v>=1e9)return`$${(v/1e9).toFixed(1)}B`;if(v>=1e6)return`$${(v/1e6).toFixed(1)}M`;if(v>=1e3)return`$${(v/1e3).toFixed(0)}K`;return`$${v}`;}
+function daysUntil(d){return d?Math.ceil((new Date(d)-new Date())/86400000):null;}
+
+const INSTALLS = {
+  'ins-001':{id:'ins-001',name:'IBM Turbonomic @ First National Bancorp',product:'IBM Turbonomic',productId:'prd-007',account:'First National Bancorp',accountId:'acc-001',version:'8.10',latestVersion:'8.12',installDate:'2023-04-12',supportEnd:'2026-04-12',contractValue:480000,status:'ACTIVE',description:'Turbonomic managing 4,200 production VMs across hybrid cloud at First National Bancorp HQ.',deployment:{id:'dep-001',name:'Turbonomic @ FNB HQ',deploymentStatus:'LIVE',gainsightHealthLabel:'GREEN',gainsightScore:88,adoptionPct:97}},
+  'ins-002':{id:'ins-002',name:'watsonx.ai @ Apex Technology Partners',product:'watsonx.ai',productId:'prd-001',account:'Apex Technology Partners',accountId:'acc-004',version:'2.0',latestVersion:'2.1',installDate:'2024-01-20',supportEnd:'2027-01-20',contractValue:1200000,status:'ACTIVE',description:'watsonx.ai for internal developer copilot and fraud detection model training. 500 entitled seats.',deployment:{id:'dep-002',name:'watsonx.ai @ Apex',deploymentStatus:'IN_PROGRESS',gainsightHealthLabel:'YELLOW',gainsightScore:61,adoptionPct:42}},
+  'ins-003':{id:'ins-003',name:'IBM OpenPages @ Cascadia Insurance Group',product:'IBM OpenPages',productId:'prd-005',account:'Cascadia Insurance Group',accountId:'acc-005',version:'8.3',latestVersion:'9.0',installDate:'2022-09-01',supportEnd:'2025-09-01',contractValue:640000,status:'ACTIVE',description:'OpenPages GRC — support renewal at risk, upgrade path to v9 required urgently.',deployment:{id:'dep-003',name:'OpenPages @ Cascadia',deploymentStatus:'LIVE',gainsightHealthLabel:'YELLOW',gainsightScore:72,adoptionPct:96}},
+  'ins-004':{id:'ins-004',name:'IBM Sterling OMS @ Nova Retail Group',product:'IBM Sterling Order Management',productId:'prd-006',account:'Nova Retail Group',accountId:'acc-003',version:'9.5',latestVersion:'10.0',installDate:'2021-11-15',supportEnd:'2024-11-15',contractValue:380000,status:'STALE',description:'Sterling OMS — version 9.5 is out of standard support since November 2024. Competitive risk is high.',deployment:{id:'dep-004',name:'Sterling OMS @ Nova Retail',deploymentStatus:'STALLED',gainsightHealthLabel:'RED',gainsightScore:31,adoptionPct:38}},
+  'ins-005':{id:'ins-005',name:'IBM Cloud Pak for Security @ First National Bancorp',product:'IBM Cloud Pak for Security',productId:'prd-004',account:'First National Bancorp',accountId:'acc-001',version:'1.9',latestVersion:'1.10',installDate:'2023-07-01',supportEnd:'2026-07-01',contractValue:920000,status:'ACTIVE',description:'Cloud Pak for Security — SIEM consolidation project with QRadar. Firewall dependency blocking SOAR go-live.',deployment:{id:'dep-005',name:'CP4Security @ FNB HQ',deploymentStatus:'IN_PROGRESS',gainsightHealthLabel:'YELLOW',gainsightScore:74,adoptionPct:68}},
+  'ins-006':{id:'ins-006',name:'IBM Cognos Analytics @ State of Louisiana — DCFS',product:'IBM Cognos Analytics',productId:'prd-008',account:'State of Louisiana — DCFS',accountId:'acc-007',version:'12.0',latestVersion:'12.0',installDate:'2023-02-01',supportEnd:'2026-02-01',contractValue:290000,status:'ACTIVE',description:'Cognos v12 fully deployed and healthy at DCFS site LA-GOV-0041. 99% adoption, all 8 use cases live.',deployment:{id:'dep-006',name:'Cognos @ LA — DCFS',deploymentStatus:'LIVE',gainsightHealthLabel:'GREEN',gainsightScore:91,adoptionPct:99}},
+  'ins-007':{id:'ins-007',name:'IBM Cognos Analytics @ State of Louisiana — DOTD',product:'IBM Cognos Analytics',productId:'prd-008',account:'State of Louisiana — DOTD',accountId:'acc-007',version:'11.2',latestVersion:'12.0',installDate:'2021-06-15',supportEnd:'2025-06-15',contractValue:210000,status:'STALE',description:'Cognos v11.2 out of support at DOTD (LA-GOV-0089). Procurement freeze blocking upgrade. Admin turnover gap.',deployment:{id:'dep-007',name:'Cognos @ LA — DOTD',deploymentStatus:'STALLED',gainsightHealthLabel:'RED',gainsightScore:44,adoptionPct:51}},
+};
+
+const GS_COL={GREEN:'#24a148',YELLOW:'#f1c21b',RED:'#da1e28'};
+const ST_COL={LIVE:'#24a148',IN_PROGRESS:'#1192e8',STALLED:'#da1e28',NOT_STARTED:'#6f6f6f'};
+
+function renderPage(ins){
+  const d=daysUntil(ins.supportEnd);
+  const isExpired=ins.status==='STALE'||(d!==null&&d<0);
+  const isSoon=d!==null&&d>=0&&d<180;
+  const supportCol=isExpired?'#da1e28':isSoon?'#f1c21b':'#24a148';
+  const versionBehind=ins.version!==ins.latestVersion;
+
+  document.title=`IBM Scout — ${ins.product} @ ${ins.account}`;
+  document.getElementById('bc-name').textContent=`${ins.product} @ ${ins.account}`;
+
+  // Urgency banner
+  const ub=document.getElementById('urgency-banner');
+  if(isExpired){
+    ub.className='urgency-banner critical';
+    document.getElementById('ub-icon').textContent='🔴';
+    document.getElementById('ub-title').textContent='Out of Standard Support — Immediate Action Required';
+    document.getElementById('ub-msg').textContent=`Support ended ${ins.supportEnd}. Customer is exposed to unpatched vulnerabilities and IBM cannot guarantee SLA response times. Upgrade conversation must begin immediately or risk churn.`;
+    document.getElementById('ub-badge').textContent='EOS';
+    document.getElementById('ub-badge').style.cssText='background:rgba(218,30,40,.12);color:#da1e28;border:1px solid rgba(218,30,40,.3);font-size:9px;font-weight:800;text-transform:uppercase;padding:3px 10px;border-radius:4px';
+  } else if(isSoon){
+    ub.className='urgency-banner warn';
+    document.getElementById('ub-icon').textContent='🟠';
+    document.getElementById('ub-title').textContent=`Support ends in ${d} days — renewal proposal required`;
+    document.getElementById('ub-msg').textContent=`Initiate renewal conversation now. If upgrade to ${ins.latestVersion} is applicable, include that in the proposal to protect the account from future support gaps.`;
+    document.getElementById('ub-badge').textContent=`${d}d left`;
+    document.getElementById('ub-badge').style.cssText='background:rgba(255,131,43,.12);color:#ff832b;border:1px solid rgba(255,131,43,.3);font-size:9px;font-weight:800;text-transform:uppercase;padding:3px 10px;border-radius:4px';
+  } else {
+    ub.className='urgency-banner stable';
+    document.getElementById('ub-icon').textContent='✅';
+    document.getElementById('ub-title').textContent='Install is within support — no immediate action required';
+    document.getElementById('ub-msg').textContent=`Support active until ${ins.supportEnd}. ${versionBehind?`Note: v${ins.version} is behind current release v${ins.latestVersion} — consider upgrade conversation at next QBR.`:'Version is current.'}`;
+    document.getElementById('ub-badge').textContent='Active';
+    document.getElementById('ub-badge').style.cssText='background:rgba(36,161,72,.1);color:#24a148;border:1px solid rgba(36,161,72,.25);font-size:9px;font-weight:800;text-transform:uppercase;padding:3px 10px;border-radius:4px';
+  }
+
+  // Hero
+  document.getElementById('hero-product-label').textContent=`${ins.product} · Install Record`;
+  document.getElementById('hero-title').textContent=`${ins.product} @ ${ins.account}`;
+  document.getElementById('hero-sub').textContent=ins.description;
+  document.getElementById('hero-icon').textContent = isExpired ? '⚠️' : '⚙️';
+  document.getElementById('hero-icon').style.background = isExpired ? 'rgba(218,30,40,.15)' : isSoon ? 'rgba(255,131,43,.15)' : 'rgba(36,161,72,.15)';
+  document.getElementById('hero-value').textContent=fmtM(ins.contractValue);
+  document.getElementById('hero-value').style.color=isExpired?'#da1e28':isSoon?'#f1c21b':'#24a148';
+  document.getElementById('hero-tags').innerHTML=[
+    `<span class="h-tag" style="background:${supportCol}18;color:${supportCol};border:1px solid ${supportCol}30">${isExpired?'⚠ EOS':isSoon?`Expiring ${d}d`:'In Support'}</span>`,
+    `<span class="h-tag" style="background:rgba(255,255,255,.07);color:var(--ts);border:1px solid var(--border)">v${ins.version}</span>`,
+    versionBehind?`<span class="h-tag" style="background:rgba(255,131,43,.1);color:var(--ibm-orange);border:1px solid rgba(255,131,43,.2)">Latest: v${ins.latestVersion}</span>`:'',
+  ].join('');
+
+  // KPIs
+  const daysEl=document.getElementById('kpi-days');
+  daysEl.textContent=d!==null?(isExpired?Math.abs(d)+' ago':d):('—');
+  daysEl.style.color=supportCol;
+  document.getElementById('kpi-days-sub').textContent=isExpired?'expired':'remaining';
+  document.getElementById('kpi-version').textContent=`v${ins.version}`;
+  document.getElementById('kpi-version').style.color=versionBehind?'#f1c21b':'var(--ibm-blue)';
+  document.getElementById('kpi-version-sub').textContent=versionBehind?`Latest is v${ins.latestVersion}`:'Up to date';
+  document.getElementById('kpi-installed').textContent=ins.installDate;
+  document.getElementById('kpi-support-end').textContent=ins.supportEnd;
+  document.getElementById('kpi-support-end').style.color=supportCol;
+  document.getElementById('kpi-support-sub').textContent=isExpired?'EXPIRED':isSoon?`⚠ ${d} days left`:'In support';
+
+  // Contract details
+  document.getElementById('details-list').innerHTML=[
+    ['Product',ins.product],['Account',ins.account],['Version',`v${ins.version}`],
+    ['Latest Version',`v${ins.latestVersion}`],['Install Date',ins.installDate],
+    ['Support End',ins.supportEnd],['Annual Contract Value',fmtM(ins.contractValue)],
+    ['Status',ins.status],
+  ].map(([l,v])=>`<div class="info-row"><span class="info-label">${l}</span><span class="info-val">${v}</span></div>`).join('');
+
+  // Deployment panel
+  const dep=ins.deployment;
+  if(dep){
+    const gsCol=GS_COL[dep.gainsightHealthLabel]||'#888';
+    const stCol=ST_COL[dep.deploymentStatus]||'#888';
+    document.getElementById('dep-panel').innerHTML=`
+      <div class="data-row" onclick="window.location='deployment.html?id=${dep.id}'">
+        <div class="dr-dot" style="background:${gsCol}"></div>
+        <div><div class="dr-name">${dep.name}</div><div class="dr-sub">Adoption ${dep.adoptionPct}% · Gainsight ${dep.gainsightScore} · ${dep.deploymentStatus.replace('_',' ')}</div></div>
+        <div class="dr-badge" style="background:${gsCol}18;color:${gsCol}">${dep.gainsightHealthLabel}</div>
+      </div>
+      <div style="font-size:10px;color:var(--tm);margin-top:10px">Click to open full Gainsight deployment view →</div>`;
+  } else {
+    document.getElementById('dep-panel').innerHTML='<div style="font-size:12px;color:var(--tm);font-style:italic">No active deployment tracked for this install.</div>';
+  }
+
+  // Timeline
+  const events=[];
+  if(ins.installDate) events.push({date:ins.installDate,text:`Contract signed — v${ins.version} installed`,dot:'var(--ibm-blue)'});
+  if(dep&&dep.deploymentStatus==='LIVE') events.push({date:ins.installDate,text:'Deployment confirmed LIVE',dot:'#24a148'});
+  if(ins.supportEnd) events.push({date:ins.supportEnd,text:isExpired?`⚠ Support EXPIRED — action required now`:`Support ends — renewal required before this date`,dot:supportCol});
+  events.sort((a,b)=>new Date(a.date)-new Date(b.date));
+  document.getElementById('timeline').innerHTML=events.map(e=>`
+    <div class="tl-row">
+      <div class="tl-date">${e.date}</div>
+      <div class="tl-dot" style="background:${e.dot}"></div>
+      <div class="tl-text">${e.text}</div>
+    </div>`).join('');
+
+  // Actions
+  const btns=[`<a href="search.html" class="action-btn secondary">← Back to Search</a>`];
+  if(isExpired||isSoon) btns.push(`<a href="#" class="action-btn warn" onclick="alert('Renewal workflow — connect to CRM in production mode.')">⚠ Initiate Renewal</a>`);
+  if(versionBehind) btns.push(`<a href="product.html?id=${ins.productId}" class="action-btn secondary">📦 View Upgrade Path</a>`);
+  btns.push(`<a href="account.html?id=${ins.accountId}" class="action-btn secondary">🏢 View Account 360</a>`);
+  btns.push(`<a href="index.html#node=${ins.id}" class="action-btn secondary">🕸 View in Graph</a>`);
+  document.getElementById('action-row').innerHTML=btns.join('');
+}
+
+const id=new URLSearchParams(window.location.search).get('id');
+if(id&&INSTALLS[id])renderPage(INSTALLS[id]);
+else{document.getElementById('bc-name').textContent='Not Found';document.getElementById('hero-title').textContent='Install Record Not Found';}
+
+(async()=>{try{const r=await fetch(`${API}/healthz`,{signal:AbortSignal.timeout(1500)});if(r.ok){const b=document.getElementById('mode-badge');b.textContent='Live API';b.style.background='rgba(36,161,72,.1)';b.style.color='#24a148';b.style.borderColor='rgba(36,161,72,.2)';}}catch(_){}})();
+</script>
+</body>
+</html>

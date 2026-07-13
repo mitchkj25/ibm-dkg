@@ -1,0 +1,287 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+<title>IBM Scout — Product</title>
+<link rel="icon" href="assets/scout-logo.png"/>
+<style>
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+:root{
+  --ibm-blue:#0f62fe;--ibm-dk:#0043ce;--ibm-teal:#009d9a;--ibm-cyan:#1192e8;
+  --ibm-purple:#6929c4;--ibm-orange:#ff832b;--ibm-red:#da1e28;
+  --ibm-green:#24a148;--ibm-yellow:#f1c21b;
+  --bg:#0a0c14;--surface:rgba(255,255,255,0.04);--card:rgba(255,255,255,0.06);
+  --border:rgba(255,255,255,0.1);--tp:#f4f4f8;--ts:#a0a8c0;--tm:#5c6480;--r:10px;
+}
+html,body{min-height:100vh;background:var(--bg);color:var(--tp);
+  font-family:'IBM Plex Sans',-apple-system,BlinkMacSystemFont,sans-serif;font-size:14px;line-height:1.5}
+::-webkit-scrollbar{width:5px}::-webkit-scrollbar-thumb{background:rgba(120,130,180,.3);border-radius:10px}
+#hdr{position:sticky;top:0;z-index:200;display:flex;align-items:center;gap:16px;
+  padding:0 28px;height:54px;background:rgba(10,12,20,0.92);
+  border-bottom:1px solid var(--border);backdrop-filter:blur(16px)}
+.logo{display:flex;align-items:center;gap:9px;text-decoration:none;color:var(--tp)}
+.logo img{width:28px;height:28px;object-fit:contain;border-radius:4px}
+.logo-txt{font-size:14px;font-weight:700}.logo-txt span{color:var(--ibm-blue)}
+.hdr-div{width:1px;height:20px;background:var(--border)}
+.hdr-nav{display:flex;gap:4px}
+.hdr-btn{padding:5px 12px;border-radius:6px;font-size:12px;font-weight:600;cursor:pointer;
+  border:1px solid transparent;color:var(--ts);transition:all .15s;background:none;
+  text-decoration:none;display:flex;align-items:center;gap:5px}
+.hdr-btn:hover{color:var(--tp);background:var(--surface);border-color:var(--border)}
+.hdr-right{margin-left:auto;display:flex;align-items:center;gap:8px}
+#page{max-width:1160px;margin:0 auto;padding:32px 28px 80px}
+.breadcrumb{display:flex;align-items:center;gap:8px;font-size:11px;color:var(--tm);margin-bottom:20px}
+.breadcrumb a{color:var(--ts);text-decoration:none}.breadcrumb a:hover{color:var(--ibm-blue)}
+.breadcrumb-sep{opacity:.4}
+#hero-banner{background:var(--card);border:1px solid var(--border);border-radius:var(--r);
+  padding:24px 28px;margin-bottom:24px;display:flex;align-items:flex-start;gap:20px}
+.hero-icon{width:56px;height:56px;border-radius:12px;background:rgba(255,131,43,.15);
+  display:flex;align-items:center;justify-content:center;font-size:26px;flex-shrink:0}
+.hero-body{flex:1;min-width:0}
+.hero-label{font-size:11px;font-weight:700;text-transform:uppercase;letter-spacing:1px;color:var(--ibm-orange);margin-bottom:4px}
+.hero-title{font-size:22px;font-weight:700;line-height:1.2;margin-bottom:6px}
+.hero-sub{font-size:13px;color:var(--ts);margin-bottom:10px}
+.hero-tags{display:flex;gap:6px;flex-wrap:wrap}
+.h-tag{padding:3px 10px;border-radius:20px;font-size:10px;font-weight:700;text-transform:uppercase;letter-spacing:.5px}
+.hero-right{display:flex;flex-direction:column;align-items:flex-end;gap:8px;flex-shrink:0}
+.stat-box{background:var(--surface);border:1px solid var(--border);border-radius:10px;padding:12px 18px;text-align:center}
+.stat-num{font-size:28px;font-weight:700;line-height:1}
+.stat-lbl{font-size:9px;text-transform:uppercase;letter-spacing:1px;color:var(--ts);margin-top:3px}
+#kpi-strip{display:grid;grid-template-columns:repeat(auto-fit,minmax(150px,1fr));gap:12px;margin-bottom:24px}
+.kpi-card{background:var(--card);border:1px solid var(--border);border-radius:var(--r);padding:14px 16px}
+.kpi-val{font-size:26px;font-weight:700;line-height:1;margin-bottom:3px}
+.kpi-label{font-size:10px;color:var(--ts);text-transform:uppercase;letter-spacing:.5px}
+.kpi-sub{font-size:10px;color:var(--tm);margin-top:3px}
+.two-col{display:grid;grid-template-columns:1fr 1fr;gap:16px;margin-bottom:24px}
+@media(max-width:800px){.two-col{grid-template-columns:1fr}}
+.section-card{background:var(--card);border:1px solid var(--border);border-radius:var(--r);padding:18px 20px}
+.section-title{font-size:10px;font-weight:800;text-transform:uppercase;letter-spacing:1px;
+  color:var(--ts);margin-bottom:14px;display:flex;align-items:center;gap:6px}
+.cnt{background:rgba(255,255,255,.08);border-radius:4px;padding:1px 6px;font-size:9px;color:var(--tp)}
+.data-row{display:flex;align-items:center;gap:10px;padding:9px 0;border-bottom:1px solid rgba(255,255,255,.06);cursor:pointer}
+.data-row:last-child{border-bottom:none}
+.data-row:hover{background:rgba(15,98,254,.05);margin:0 -6px;padding:9px 6px;border-radius:6px}
+.dr-dot{width:9px;height:9px;border-radius:50%;flex-shrink:0}
+.dr-name{flex:1;font-size:12px;font-weight:600;color:var(--tp)}
+.dr-sub{font-size:10px;color:var(--ts)}
+.dr-badge{font-size:9px;font-weight:800;text-transform:uppercase;letter-spacing:.4px;padding:2px 8px;border-radius:4px;white-space:nowrap}
+.cert-row{display:flex;align-items:center;gap:8px;padding:8px 0;border-bottom:1px solid rgba(255,255,255,.06)}
+.cert-row:last-child{border-bottom:none}
+.cert-avatar{width:30px;height:30px;border-radius:50%;background:rgba(15,98,254,.12);display:flex;align-items:center;justify-content:center;font-size:13px;flex-shrink:0}
+.cert-name{flex:1;font-size:12px;font-weight:600}
+.cert-role{font-size:10px;color:var(--ts)}
+.cert-badge{font-size:9px;font-weight:800;padding:2px 8px;border-radius:4px}
+.empty-state{font-size:12px;color:var(--tm);font-style:italic;padding:8px 0}
+.action-row{display:flex;gap:10px;flex-wrap:wrap;margin-top:18px}
+.action-btn{padding:9px 18px;border-radius:7px;font-size:12px;font-weight:700;cursor:pointer;
+  border:1px solid;transition:all .15s;text-decoration:none;display:inline-flex;align-items:center;gap:6px}
+.action-btn.secondary{background:rgba(255,255,255,.04);border-color:var(--border);color:var(--ts)}
+.action-btn.secondary:hover{background:rgba(255,255,255,.08);color:var(--tp)}
+.family-banner{border-radius:8px;padding:14px 18px;margin-bottom:24px;display:flex;align-items:center;gap:12px;
+  background:rgba(255,131,43,.07);border:1px solid rgba(255,131,43,.2)}
+.fb-icon{font-size:20px}
+.fb-body{font-size:12px;color:var(--ts);line-height:1.5}
+.fb-body strong{color:var(--tp)}
+</style>
+</head>
+<body>
+<header id="hdr">
+  <a class="logo" href="search.html"><img src="assets/scout-logo.png" alt="IBM Scout" onerror="this.style.display='none'"/>
+    <div class="logo-txt">IBM <span>Scout</span></div></a>
+  <div class="hdr-div"></div>
+  <nav class="hdr-nav">
+    <a href="search.html" class="hdr-btn">
+      <svg width="12" height="12" viewBox="0 0 16 16" fill="none"><circle cx="6.5" cy="6.5" r="5" stroke="currentColor" stroke-width="1.5"/><line x1="10.5" y1="10.5" x2="14" y2="14" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/></svg>Search
+    </a>
+    <a href="index.html" class="hdr-btn">
+      <svg width="12" height="12" viewBox="0 0 14 14" fill="none"><circle cx="7" cy="3" r="2" stroke="currentColor" stroke-width="1.5"/><circle cx="3" cy="11" r="2" stroke="currentColor" stroke-width="1.5"/><circle cx="11" cy="11" r="2" stroke="currentColor" stroke-width="1.5"/><line x1="7" y1="5" x2="4.5" y2="9.2" stroke="currentColor" stroke-width="1.2"/><line x1="7" y1="5" x2="9.5" y2="9.2" stroke="currentColor" stroke-width="1.2"/></svg>Graph View
+    </a>
+    <a href="#" class="hdr-btn active" style="color:var(--ibm-orange);border-color:rgba(255,131,43,.3);background:rgba(255,131,43,.08)">📦 Product</a>
+  </nav>
+  <div class="hdr-right"><span id="mode-badge" style="padding:3px 8px;border-radius:8px;font-size:9px;font-weight:800;letter-spacing:.5px;text-transform:uppercase;background:rgba(255,131,43,.1);color:var(--ibm-orange);border:1px solid rgba(255,131,43,.2)">Demo Mode</span></div>
+</header>
+
+<div id="page">
+  <div class="breadcrumb"><a href="search.html">IBM Scout</a><span class="breadcrumb-sep">›</span><a href="search.html">Products</a><span class="breadcrumb-sep">›</span><span id="bc-name">Loading…</span></div>
+
+  <div id="family-banner" class="family-banner" style="display:none">
+    <div class="fb-icon">📦</div>
+    <div class="fb-body" id="family-msg">—</div>
+  </div>
+
+  <div id="hero-banner">
+    <div class="hero-icon">📦</div>
+    <div class="hero-body">
+      <div class="hero-label" id="hero-family">Product</div>
+      <div class="hero-title" id="hero-title">Loading…</div>
+      <div class="hero-sub" id="hero-sub"></div>
+      <div class="hero-tags" id="hero-tags"></div>
+    </div>
+    <div class="hero-right">
+      <div class="stat-box">
+        <div class="stat-num" id="hero-version" style="color:var(--ibm-orange)">—</div>
+        <div class="stat-lbl">Current Version</div>
+      </div>
+    </div>
+  </div>
+
+  <div id="kpi-strip">
+    <div class="kpi-card"><div class="kpi-val" id="kpi-installs" style="color:var(--ibm-blue)">—</div><div class="kpi-label">Active Installs</div><div class="kpi-sub" id="kpi-installs-sub"></div></div>
+    <div class="kpi-card"><div class="kpi-val" id="kpi-sellers" style="color:var(--ibm-teal)">—</div><div class="kpi-label">Certified Sellers</div><div class="kpi-sub" id="kpi-sellers-sub"></div></div>
+    <div class="kpi-card"><div class="kpi-val" id="kpi-deployments" style="color:var(--ibm-purple)">—</div><div class="kpi-label">Active Deployments</div><div class="kpi-sub" id="kpi-deployments-sub"></div></div>
+    <div class="kpi-card"><div class="kpi-val" id="kpi-value" style="color:var(--ibm-green)">—</div><div class="kpi-label">Total Contract Value</div><div class="kpi-sub">across all installs</div></div>
+  </div>
+
+  <div class="two-col">
+    <div class="section-card">
+      <div class="section-title">⚙️ Installed Accounts <span class="cnt" id="cnt-installs">0</span></div>
+      <div id="installs-list"></div>
+    </div>
+    <div class="section-card">
+      <div class="section-title">👤 Certified Sellers <span class="cnt" id="cnt-sellers">0</span></div>
+      <div id="sellers-list"></div>
+    </div>
+  </div>
+
+  <div class="section-card" style="margin-bottom:24px">
+    <div class="section-title">🚀 Deployments <span class="cnt" id="cnt-deps">0</span></div>
+    <div id="deps-list"></div>
+  </div>
+
+  <div class="action-row" id="action-row">
+    <a href="search.html" class="action-btn secondary">← Back to Search</a>
+  </div>
+</div>
+
+<script>
+const API='http://localhost:8000';
+function fmtM(v){if(!v)return'—';if(v>=1e9)return`$${(v/1e9).toFixed(1)}B`;if(v>=1e6)return`$${(v/1e6).toFixed(1)}M`;if(v>=1e3)return`$${(v/1e3).toFixed(0)}K`;return`$${v}`;}
+
+const PRODUCTS = {
+  'prd-001':{id:'prd-001',name:'watsonx.ai',brand:'IBM',family:'watsonx',version:'2.1',description:'AI studio for training, validating, tuning and deploying AI models. Foundation model access and AutoAI capabilities.',
+    installs:[{id:'ins-002',account:'Apex Technology Partners',accountId:'acc-004',version:'2.0',supportEnd:'2027-01-20',status:'ACTIVE',contractValue:1200000}],
+    sellers:[{id:'sel-002',name:'Aisha Thornton',role:'BSS / watsonx Specialist',sellerType:'BSS',primary:true},{id:'sel-005',name:'Tyler Oduya',role:'Client Executive',sellerType:'CE',primary:false}],
+    deployments:[{id:'dep-002',name:'watsonx.ai @ Apex Technology',deploymentStatus:'IN_PROGRESS',gainsightHealthLabel:'YELLOW',gainsightScore:61,adoptionPct:42}],
+    cosell:['watsonx.data','watsonx.governance'],relatedOpps:['opp-001','opp-004']},
+  'prd-002':{id:'prd-002',name:'watsonx.data',brand:'IBM',family:'watsonx',version:'2.0',description:'Fit-for-purpose data store built on open lakehouse architecture. Connects to existing data without full migration.',
+    installs:[],sellers:[{id:'sel-002',name:'Aisha Thornton',role:'BSS / watsonx Specialist',sellerType:'BSS',primary:false}],
+    deployments:[],cosell:['watsonx.ai','watsonx.governance'],relatedOpps:[]},
+  'prd-003':{id:'prd-003',name:'watsonx.governance',brand:'IBM',family:'watsonx',version:'1.5',description:'AI governance and risk management platform. Model risk management, bias detection, compliance reporting.',
+    installs:[],sellers:[{id:'sel-002',name:'Aisha Thornton',role:'BSS / watsonx Specialist',sellerType:'BSS',primary:false}],
+    deployments:[],cosell:['watsonx.ai'],relatedOpps:[{id:'opp-004',name:'Apex — watsonx.governance Pilot',stage:'Qualify',value:560000}]},
+  'prd-004':{id:'prd-004',name:'IBM Cloud Pak for Security',brand:'IBM',family:'Security',version:'1.10',description:'Unified security platform with threat intelligence, SIEM/SOAR, QRadar integration, and threat hunting.',
+    installs:[{id:'ins-005',account:'First National Bancorp',accountId:'acc-001',version:'1.9',supportEnd:'2026-07-01',status:'ACTIVE',contractValue:920000}],
+    sellers:[{id:'sel-001',name:'Marcus Webb',role:'Client Executive',sellerType:'CE',primary:true},{id:'sel-006',name:'Rachel Patel',role:'BSS / Security Specialist',sellerType:'BSS',primary:true}],
+    deployments:[{id:'dep-005',name:'CP4Security @ FNB HQ',deploymentStatus:'IN_PROGRESS',gainsightHealthLabel:'YELLOW',gainsightScore:74,adoptionPct:68}],
+    cosell:['watsonx.governance'],relatedOpps:[]},
+  'prd-005':{id:'prd-005',name:'IBM OpenPages',brand:'IBM',family:'Risk & Compliance',version:'9.0',description:'Integrated GRC platform for risk, compliance, audit management, and policy lifecycle.',
+    installs:[{id:'ins-003',account:'Cascadia Insurance Group',accountId:'acc-005',version:'8.3',supportEnd:'2025-09-01',status:'ACTIVE',contractValue:640000}],
+    sellers:[{id:'sel-001',name:'Marcus Webb',role:'Client Executive',sellerType:'CE',primary:true},{id:'sel-006',name:'Rachel Patel',role:'BSS / Security Specialist',sellerType:'BSS',primary:false}],
+    deployments:[{id:'dep-003',name:'OpenPages @ Cascadia Insurance',deploymentStatus:'LIVE',gainsightHealthLabel:'YELLOW',gainsightScore:72,adoptionPct:96}],
+    cosell:['IBM Cloud Pak for Security'],relatedOpps:[{id:'opp-002',name:'OpenPages Upgrade to v9',stage:'Propose',value:890000}]},
+  'prd-006':{id:'prd-006',name:'IBM Sterling Order Management',brand:'IBM',family:'Supply Chain',version:'10.0',description:'Omnichannel order orchestration and fulfillment. Real-time inventory, distributed order management.',
+    installs:[{id:'ins-004',account:'Nova Retail Group',accountId:'acc-003',version:'9.5',supportEnd:'2024-11-15',status:'STALE',contractValue:380000}],
+    sellers:[{id:'sel-003',name:'James Kowalski',role:'Client Executive',sellerType:'CE',primary:true}],
+    deployments:[{id:'dep-004',name:'Sterling OMS @ Nova Retail',deploymentStatus:'STALLED',gainsightHealthLabel:'RED',gainsightScore:31,adoptionPct:38}],
+    cosell:['watsonx.ai'],relatedOpps:[{id:'opp-003',name:'Sterling OMS v10 Upgrade',stage:'Identify',value:640000}]},
+  'prd-007':{id:'prd-007',name:'IBM Turbonomic',brand:'IBM',family:'AIOps',version:'8.12',description:'Application resource management and FinOps platform. AI-driven infrastructure optimization.',
+    installs:[{id:'ins-001',account:'First National Bancorp',accountId:'acc-001',version:'8.10',supportEnd:'2026-04-12',status:'ACTIVE',contractValue:480000}],
+    sellers:[{id:'sel-001',name:'Marcus Webb',role:'Client Executive',sellerType:'CE',primary:false},{id:'sel-005',name:'Tyler Oduya',role:'Client Executive',sellerType:'CE',primary:true}],
+    deployments:[{id:'dep-001',name:'Turbonomic @ FNB HQ',deploymentStatus:'LIVE',gainsightHealthLabel:'GREEN',gainsightScore:88,adoptionPct:97}],
+    cosell:['IBM Cloud Pak for Security'],relatedOpps:[]},
+  'prd-008':{id:'prd-008',name:'IBM Cognos Analytics',brand:'IBM',family:'Business Intelligence',version:'12.0',description:'Business intelligence and analytics platform for enterprise reporting and dashboards.',
+    installs:[{id:'ins-006',account:'State of Louisiana — DCFS',accountId:'acc-007',version:'12.0',supportEnd:'2026-02-01',status:'ACTIVE',contractValue:290000},{id:'ins-007',account:'State of Louisiana — DOTD',accountId:'acc-007',version:'11.2',supportEnd:'2025-06-15',status:'STALE',contractValue:210000}],
+    sellers:[{id:'sel-007',name:'Monique Tureaud',role:'Brand Sales Specialist (TSL)',sellerType:'TSL',primary:true}],
+    deployments:[{id:'dep-006',name:'Cognos @ LA — DCFS',deploymentStatus:'LIVE',gainsightHealthLabel:'GREEN',gainsightScore:91,adoptionPct:99},{id:'dep-007',name:'Cognos @ LA — DOTD',deploymentStatus:'STALLED',gainsightHealthLabel:'RED',gainsightScore:44,adoptionPct:51}],
+    cosell:['watsonx.ai','IBM Planning Analytics'],relatedOpps:[]},
+};
+
+const BADGE_COL={CE:['rgba(15,98,254,.15)','#6ea6ff'],BSS:['rgba(255,131,43,.15)','#ff832b'],TSL:['rgba(0,157,154,.15)','#009d9a'],ATL:['rgba(165,110,255,.12)','#a56eff']};
+const GS_COL={GREEN:'#24a148',YELLOW:'#f1c21b',RED:'#da1e28'};
+const ST_COL={LIVE:'#24a148',IN_PROGRESS:'#1192e8',STALLED:'#da1e28',NOT_STARTED:'#6f6f6f'};
+const STAGE_COL={Validate:'#24a148',Propose:'#0f62fe',Qualify:'#009d9a',Identify:'#1192e8'};
+
+function renderPage(p){
+  document.title=`IBM Scout — ${p.name}`;
+  document.getElementById('bc-name').textContent=p.name;
+  document.getElementById('hero-family').textContent=`${p.family} · ${p.brand}`;
+  document.getElementById('hero-title').textContent=p.name;
+  document.getElementById('hero-sub').textContent=p.description;
+  document.getElementById('hero-version').textContent=`v${p.version}`;
+  document.getElementById('hero-tags').innerHTML=`
+    <span class="h-tag" style="background:rgba(255,131,43,.12);color:var(--ibm-orange);border:1px solid rgba(255,131,43,.25)">${p.family}</span>
+    <span class="h-tag" style="background:rgba(255,255,255,.07);color:var(--ts);border:1px solid var(--border)">${p.brand}</span>
+    <span class="h-tag" style="background:rgba(36,161,72,.1);color:var(--ibm-green);border:1px solid rgba(36,161,72,.2)">ACTIVE</span>`;
+
+  const staleInstalls = p.installs.filter(i=>i.status==='STALE'||(i.supportEnd&&new Date(i.supportEnd)<new Date())).length;
+  const totalCV = p.installs.reduce((s,i)=>s+(i.contractValue||0),0);
+  const certPrimary = p.sellers.filter(s=>s.primary).length;
+
+  document.getElementById('kpi-installs').textContent = p.installs.length;
+  document.getElementById('kpi-installs-sub').textContent = staleInstalls ? `⚠ ${staleInstalls} out of support` : 'all in support';
+  document.getElementById('kpi-installs').style.color = staleInstalls ? '#da1e28' : 'var(--ibm-blue)';
+  document.getElementById('kpi-sellers').textContent = p.sellers.length;
+  document.getElementById('kpi-sellers-sub').textContent = `${certPrimary} primary certified`;
+  document.getElementById('kpi-deployments').textContent = p.deployments.length;
+  const redDeps = p.deployments.filter(d=>d.gainsightHealthLabel==='RED').length;
+  document.getElementById('kpi-deployments-sub').textContent = redDeps ? `⚠ ${redDeps} RED health` : 'all monitored';
+  document.getElementById('kpi-deployments').style.color = redDeps ? '#da1e28' : 'var(--ibm-purple)';
+  document.getElementById('kpi-value').textContent = fmtM(totalCV);
+
+  // Family banner with co-sell context
+  if(p.cosell && p.cosell.length){
+    document.getElementById('family-banner').style.display='flex';
+    document.getElementById('family-msg').innerHTML=`<strong>Co-sell motion:</strong> ${p.name} is commonly paired with <strong>${p.cosell.join(', ')}</strong>. Ask the co-sell agent to find co-selling partners in this territory.`;
+  }
+
+  // Installs
+  document.getElementById('cnt-installs').textContent=p.installs.length;
+  document.getElementById('installs-list').innerHTML=p.installs.length?p.installs.map(i=>{
+    const exp=i.status==='STALE'||(i.supportEnd&&new Date(i.supportEnd)<new Date());
+    const d=i.supportEnd?Math.ceil((new Date(i.supportEnd)-new Date())/86400000):null;
+    const soon=d!==null&&d>=0&&d<180;
+    const col=exp?'#da1e28':soon?'#f1c21b':'#24a148';
+    const badge=exp?'⚠ EOS':soon?`${d}d left`:'Active';
+    return `<div class="data-row" onclick="window.location='account.html?id=${i.accountId}'">
+      <div class="dr-dot" style="background:${col}"></div>
+      <div><div class="dr-name">${i.account}</div><div class="dr-sub">v${i.version} · ${i.supportEnd} · ${fmtM(i.contractValue)}</div></div>
+      <div class="dr-badge" style="background:${col}18;color:${col}">${badge}</div>
+    </div>`;
+  }).join(''):'<div class="empty-state">No installs on record.</div>';
+
+  // Sellers
+  document.getElementById('cnt-sellers').textContent=p.sellers.length;
+  document.getElementById('sellers-list').innerHTML=p.sellers.length?p.sellers.map(s=>{
+    const bc=BADGE_COL[s.sellerType]||BADGE_COL.CE;
+    return `<div class="cert-row">
+      <div class="cert-avatar">👤</div>
+      <div style="flex:1"><div class="cert-name">${s.name}</div><div class="cert-role">${s.role}</div></div>
+      <div class="cert-badge" style="background:${bc[0]};color:${bc[1]}">${s.primary?'PRIMARY':'COVERED'}</div>
+    </div>`;
+  }).join(''):'<div class="empty-state">No certified sellers found.</div>';
+
+  // Deployments
+  document.getElementById('cnt-deps').textContent=p.deployments.length;
+  document.getElementById('deps-list').innerHTML=p.deployments.length?p.deployments.map(d=>{
+    const col=GS_COL[d.gainsightHealthLabel]||'#888';
+    return `<div class="data-row" onclick="window.location='deployment.html?id=${d.id}'">
+      <div class="dr-dot" style="background:${col}"></div>
+      <div><div class="dr-name">${d.name}</div><div class="dr-sub">Adoption ${d.adoptionPct}% · Gainsight score ${d.gainsightScore} · ${d.deploymentStatus.replace('_',' ')}</div></div>
+      <div class="dr-badge" style="background:${col}18;color:${col}">${d.gainsightHealthLabel}</div>
+    </div>`;
+  }).join(''):'<div class="empty-state">No deployments tracked for this product.</div>';
+
+  document.getElementById('action-row').innerHTML=`
+    <a href="search.html" class="action-btn secondary">← Back to Search</a>
+    <a href="index.html#node=${p.id}" class="action-btn secondary">🕸 View in Graph</a>`;
+}
+
+const id=new URLSearchParams(window.location.search).get('id');
+if(id&&PRODUCTS[id])renderPage(PRODUCTS[id]);
+else{document.getElementById('bc-name').textContent='Not Found';document.getElementById('hero-title').textContent='Product Not Found';}
+
+(async()=>{try{const r=await fetch(`${API}/healthz`,{signal:AbortSignal.timeout(1500)});if(r.ok){const b=document.getElementById('mode-badge');b.textContent='Live API';b.style.background='rgba(36,161,72,.1)';b.style.color='#24a148';b.style.borderColor='rgba(36,161,72,.2)';}}catch(_){}})();
+</script>
+</body>
+</html>

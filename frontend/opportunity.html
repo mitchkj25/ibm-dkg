@@ -1,0 +1,339 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+<title>IBM Scout — Opportunity</title>
+<link rel="icon" href="assets/scout-logo.png"/>
+<style>
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+:root{
+  --ibm-blue:#0f62fe;--ibm-dk:#0043ce;--ibm-teal:#009d9a;--ibm-cyan:#1192e8;
+  --ibm-purple:#6929c4;--ibm-orange:#ff832b;--ibm-red:#da1e28;
+  --ibm-green:#24a148;--ibm-yellow:#f1c21b;
+  --bg:#0a0c14;--surface:rgba(255,255,255,0.04);--card:rgba(255,255,255,0.06);
+  --border:rgba(255,255,255,0.1);--tp:#f4f4f8;--ts:#a0a8c0;--tm:#5c6480;--r:10px;
+}
+html,body{min-height:100vh;background:var(--bg);color:var(--tp);
+  font-family:'IBM Plex Sans',-apple-system,BlinkMacSystemFont,sans-serif;font-size:14px;line-height:1.5}
+::-webkit-scrollbar{width:5px}::-webkit-scrollbar-thumb{background:rgba(120,130,180,.3);border-radius:10px}
+#hdr{position:sticky;top:0;z-index:200;display:flex;align-items:center;gap:16px;
+  padding:0 28px;height:54px;background:rgba(10,12,20,0.92);
+  border-bottom:1px solid var(--border);backdrop-filter:blur(16px)}
+.logo{display:flex;align-items:center;gap:9px;text-decoration:none;color:var(--tp)}
+.logo img{width:28px;height:28px;object-fit:contain;border-radius:4px}
+.logo-txt{font-size:14px;font-weight:700}.logo-txt span{color:var(--ibm-blue)}
+.hdr-div{width:1px;height:20px;background:var(--border)}
+.hdr-nav{display:flex;gap:4px}
+.hdr-btn{padding:5px 12px;border-radius:6px;font-size:12px;font-weight:600;cursor:pointer;
+  border:1px solid transparent;color:var(--ts);transition:all .15s;background:none;
+  text-decoration:none;display:flex;align-items:center;gap:5px}
+.hdr-btn:hover{color:var(--tp);background:var(--surface);border-color:var(--border)}
+.hdr-right{margin-left:auto;display:flex;align-items:center;gap:8px}
+#page{max-width:1160px;margin:0 auto;padding:32px 28px 80px}
+.breadcrumb{display:flex;align-items:center;gap:8px;font-size:11px;color:var(--tm);margin-bottom:20px}
+.breadcrumb a{color:var(--ts);text-decoration:none}.breadcrumb a:hover{color:var(--ibm-blue)}
+.breadcrumb-sep{opacity:.4}
+.urgency-banner{border-radius:8px;padding:14px 18px;margin-bottom:24px;display:flex;align-items:flex-start;gap:12px}
+.urgency-banner.critical{background:rgba(218,30,40,.08);border:1px solid rgba(218,30,40,.3)}
+.urgency-banner.warn{background:rgba(255,131,43,.08);border:1px solid rgba(255,131,43,.3)}
+.urgency-banner.stable{background:rgba(36,161,72,.06);border:1px solid rgba(36,161,72,.25)}
+.urgency-banner.info{background:rgba(17,146,232,.07);border:1px solid rgba(17,146,232,.25)}
+.ub-icon{font-size:20px;flex-shrink:0}
+.ub-body h4{font-size:13px;font-weight:700;margin-bottom:3px}
+.ub-body p{font-size:11px;color:var(--ts);line-height:1.5}
+.ub-badge{margin-left:auto;font-size:9px;font-weight:800;text-transform:uppercase;letter-spacing:.5px;
+  padding:3px 10px;border-radius:4px;white-space:nowrap;flex-shrink:0;align-self:flex-start}
+#hero-banner{background:var(--card);border:1px solid var(--border);border-radius:var(--r);
+  padding:24px 28px;margin-bottom:24px;display:flex;align-items:flex-start;gap:20px}
+.hero-icon{width:56px;height:56px;border-radius:12px;background:rgba(241,194,27,.12);
+  display:flex;align-items:center;justify-content:center;font-size:26px;flex-shrink:0}
+.hero-body{flex:1;min-width:0}
+.hero-label{font-size:11px;font-weight:700;text-transform:uppercase;letter-spacing:1px;color:var(--ibm-yellow);margin-bottom:4px}
+.hero-title{font-size:22px;font-weight:700;line-height:1.2;margin-bottom:6px}
+.hero-sub{font-size:13px;color:var(--ts);margin-bottom:10px}
+.hero-tags{display:flex;gap:6px;flex-wrap:wrap}
+.h-tag{padding:3px 10px;border-radius:20px;font-size:10px;font-weight:700;text-transform:uppercase;letter-spacing:.5px}
+.hero-right{display:flex;flex-direction:column;align-items:flex-end;gap:8px;flex-shrink:0}
+.stat-box{background:var(--surface);border:1px solid var(--border);border-radius:10px;padding:12px 18px;text-align:center;min-width:100px}
+.stat-num{font-size:28px;font-weight:700;line-height:1}
+.stat-lbl{font-size:9px;text-transform:uppercase;letter-spacing:1px;color:var(--ts);margin-top:3px}
+#kpi-strip{display:grid;grid-template-columns:repeat(auto-fit,minmax(150px,1fr));gap:12px;margin-bottom:24px}
+.kpi-card{background:var(--card);border:1px solid var(--border);border-radius:var(--r);padding:14px 16px}
+.kpi-val{font-size:26px;font-weight:700;line-height:1;margin-bottom:3px}
+.kpi-label{font-size:10px;color:var(--ts);text-transform:uppercase;letter-spacing:.5px}
+.kpi-sub{font-size:10px;color:var(--tm);margin-top:3px}
+/* Stage pipeline bar */
+.stage-track{display:flex;gap:4px;margin-bottom:24px}
+.stage-node{flex:1;padding:10px 8px;border-radius:7px;text-align:center;font-size:10px;font-weight:700;
+  text-transform:uppercase;letter-spacing:.4px;border:1px solid rgba(255,255,255,.08);color:var(--tm);background:rgba(255,255,255,.03)}
+.stage-node.active{border-color:rgba(15,98,254,.4);color:var(--ibm-blue);background:rgba(15,98,254,.1)}
+.stage-node.passed{border-color:rgba(36,161,72,.3);color:#24a148;background:rgba(36,161,72,.07)}
+.two-col{display:grid;grid-template-columns:1fr 1fr;gap:16px;margin-bottom:24px}
+@media(max-width:800px){.two-col{grid-template-columns:1fr}}
+.section-card{background:var(--card);border:1px solid var(--border);border-radius:var(--r);padding:18px 20px}
+.section-title{font-size:10px;font-weight:800;text-transform:uppercase;letter-spacing:1px;
+  color:var(--ts);margin-bottom:14px;display:flex;align-items:center;gap:6px}
+.info-row{display:flex;justify-content:space-between;align-items:center;padding:8px 0;border-bottom:1px solid rgba(255,255,255,.06);font-size:12px}
+.info-row:last-child{border-bottom:none}
+.info-label{color:var(--ts)}
+.info-val{color:var(--tp);font-weight:600}
+.data-row{display:flex;align-items:center;gap:10px;padding:9px 0;border-bottom:1px solid rgba(255,255,255,.06);cursor:pointer}
+.data-row:last-child{border-bottom:none}
+.data-row:hover{background:rgba(15,98,254,.05);margin:0 -6px;padding:9px 6px;border-radius:6px}
+.dr-dot{width:9px;height:9px;border-radius:50%;flex-shrink:0}
+.dr-name{flex:1;font-size:12px;font-weight:600;color:var(--tp)}
+.dr-sub{font-size:10px;color:var(--ts)}
+.dr-badge{font-size:9px;font-weight:800;text-transform:uppercase;letter-spacing:.4px;padding:2px 8px;border-radius:4px;white-space:nowrap}
+.next-steps{counter-reset:step}
+.next-step{display:flex;gap:12px;padding:10px 0;border-bottom:1px solid rgba(255,255,255,.06)}
+.next-step:last-child{border-bottom:none}
+.step-num{width:22px;height:22px;border-radius:50%;background:rgba(15,98,254,.15);color:var(--ibm-blue);
+  font-size:10px;font-weight:800;display:flex;align-items:center;justify-content:center;flex-shrink:0;margin-top:1px}
+.step-text{font-size:12px;color:var(--tp);line-height:1.5}
+.action-row{display:flex;gap:10px;flex-wrap:wrap;margin-top:18px}
+.action-btn{padding:9px 18px;border-radius:7px;font-size:12px;font-weight:700;cursor:pointer;
+  border:1px solid;transition:all .15s;text-decoration:none;display:inline-flex;align-items:center;gap:6px}
+.action-btn.primary{background:var(--ibm-blue);border-color:var(--ibm-blue);color:#fff}
+.action-btn.primary:hover{background:var(--ibm-dk)}
+.action-btn.warn{background:rgba(255,131,43,.08);border-color:rgba(255,131,43,.4);color:var(--ibm-orange)}
+.action-btn.warn:hover{background:rgba(255,131,43,.15)}
+.action-btn.secondary{background:rgba(255,255,255,.04);border-color:var(--border);color:var(--ts)}
+.action-btn.secondary:hover{background:rgba(255,255,255,.08);color:var(--tp)}
+</style>
+</head>
+<body>
+<header id="hdr">
+  <a class="logo" href="search.html"><img src="assets/scout-logo.png" alt="IBM Scout" onerror="this.style.display='none'"/>
+    <div class="logo-txt">IBM <span>Scout</span></div></a>
+  <div class="hdr-div"></div>
+  <nav class="hdr-nav">
+    <a href="search.html" class="hdr-btn">
+      <svg width="12" height="12" viewBox="0 0 16 16" fill="none"><circle cx="6.5" cy="6.5" r="5" stroke="currentColor" stroke-width="1.5"/><line x1="10.5" y1="10.5" x2="14" y2="14" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/></svg>Search
+    </a>
+    <a href="index.html" class="hdr-btn">
+      <svg width="12" height="12" viewBox="0 0 14 14" fill="none"><circle cx="7" cy="3" r="2" stroke="currentColor" stroke-width="1.5"/><circle cx="3" cy="11" r="2" stroke="currentColor" stroke-width="1.5"/><circle cx="11" cy="11" r="2" stroke="currentColor" stroke-width="1.5"/><line x1="7" y1="5" x2="4.5" y2="9.2" stroke="currentColor" stroke-width="1.2"/><line x1="7" y1="5" x2="9.5" y2="9.2" stroke="currentColor" stroke-width="1.2"/></svg>Graph View
+    </a>
+    <a href="#" class="hdr-btn active" style="color:var(--ibm-yellow);border-color:rgba(241,194,27,.3);background:rgba(241,194,27,.08)">💡 Opportunity</a>
+  </nav>
+  <div class="hdr-right"><span id="mode-badge" style="padding:3px 8px;border-radius:8px;font-size:9px;font-weight:800;letter-spacing:.5px;text-transform:uppercase;background:rgba(255,131,43,.1);color:var(--ibm-orange);border:1px solid rgba(255,131,43,.2)">Demo Mode</span></div>
+</header>
+
+<div id="page">
+  <div class="breadcrumb"><a href="search.html">IBM Scout</a><span class="breadcrumb-sep">›</span><a href="search.html">Pipeline</a><span class="breadcrumb-sep">›</span><span id="bc-name">Loading…</span></div>
+
+  <div id="urgency-banner" class="urgency-banner info">
+    <div class="ub-icon" id="ub-icon">💡</div>
+    <div class="ub-body"><h4 id="ub-title">—</h4><p id="ub-msg">—</p></div>
+    <div class="ub-badge" id="ub-badge">—</div>
+  </div>
+
+  <div id="hero-banner">
+    <div class="hero-icon">💡</div>
+    <div class="hero-body">
+      <div class="hero-label" id="hero-label">Opportunity</div>
+      <div class="hero-title" id="hero-title">Loading…</div>
+      <div class="hero-sub" id="hero-sub"></div>
+      <div class="hero-tags" id="hero-tags"></div>
+    </div>
+    <div class="hero-right">
+      <div class="stat-box">
+        <div class="stat-num" id="hero-value" style="color:var(--ibm-yellow)">—</div>
+        <div class="stat-lbl">Deal Value</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Stage pipeline bar -->
+  <div class="stage-track" id="stage-track"></div>
+
+  <div id="kpi-strip">
+    <div class="kpi-card"><div class="kpi-val" id="kpi-days" style="color:var(--ibm-yellow)">—</div><div class="kpi-label">Days to Close</div><div class="kpi-sub" id="kpi-close-sub"></div></div>
+    <div class="kpi-card"><div class="kpi-val" id="kpi-stage" style="color:var(--ibm-blue)">—</div><div class="kpi-label">Current Stage</div><div class="kpi-sub" id="kpi-stage-sub"></div></div>
+    <div class="kpi-card"><div class="kpi-val" id="kpi-product" style="color:var(--ibm-orange)">—</div><div class="kpi-label">Product</div><div class="kpi-sub" id="kpi-product-sub"></div></div>
+    <div class="kpi-card"><div class="kpi-val" id="kpi-account" style="color:var(--ibm-cyan)">—</div><div class="kpi-label">Account</div><div class="kpi-sub" id="kpi-account-sub"></div></div>
+  </div>
+
+  <div class="two-col">
+    <div class="section-card">
+      <div class="section-title">📋 Opportunity Details</div>
+      <div id="details-list"></div>
+    </div>
+    <div class="section-card">
+      <div class="section-title">🎯 Next Steps</div>
+      <div class="next-steps" id="next-steps"></div>
+    </div>
+  </div>
+
+  <div class="two-col">
+    <div class="section-card">
+      <div class="section-title">🏢 Related Account</div>
+      <div id="account-panel"></div>
+    </div>
+    <div class="section-card">
+      <div class="section-title">⚙️ Related Install</div>
+      <div id="install-panel"></div>
+    </div>
+  </div>
+
+  <div class="action-row" id="action-row">
+    <a href="search.html" class="action-btn secondary">← Back to Search</a>
+  </div>
+</div>
+
+<script>
+const API='http://localhost:8000';
+function fmtM(v){if(!v)return'—';if(v>=1e9)return`$${(v/1e9).toFixed(1)}B`;if(v>=1e6)return`$${(v/1e6).toFixed(1)}M`;if(v>=1e3)return`$${(v/1e3).toFixed(0)}K`;return`$${v}`;}
+function daysUntil(d){return d?Math.ceil((new Date(d)-new Date())/86400000):null;}
+
+const OPPS = {
+  'opp-001':{id:'opp-001',name:'First National — watsonx Expansion',account:'First National Bancorp',accountId:'acc-001',product:'watsonx.ai',productId:'prd-001',
+    stage:'Validate',closeDate:'2025-09-30',value:2400000,
+    description:'Expand watsonx.ai from internal copilot POC to full production — 8 use cases identified across fraud detection, code generation, and document intelligence. Current install has 500 entitled seats at 42% utilization.',
+    seller:'Marcus Webb',sellerRole:'Client Executive',
+    install:{id:'ins-002',name:'watsonx.ai @ Apex',version:'2.0',supportEnd:'2027-01-20',adoptionPct:42},
+    nextSteps:['Schedule executive alignment with CTO — confirm strategic AI roadmap alignment','Present watsonx.ai production business case with 8 use case ROI model','Engage Legal/IT to unblock remaining 290 seat provisioning (current blocker)','Coordinate with Aisha Thornton (BSS) for technical proof of value sessions']},
+  'opp-002':{id:'opp-002',name:'Cascadia — OpenPages Upgrade to v9',account:'Cascadia Insurance Group',accountId:'acc-005',product:'IBM OpenPages',productId:'prd-005',
+    stage:'Propose',closeDate:'2025-08-15',value:890000,
+    description:'Renewal + upgrade from OpenPages v8.3 to v9. Support expires Sep 2025 — customer must upgrade or face a support gap. Healthy deployment at 96% utilization makes this a strong retention deal.',
+    seller:'Marcus Webb',sellerRole:'Client Executive',
+    install:{id:'ins-003',name:'OpenPages @ Cascadia',version:'8.3',supportEnd:'2025-09-01',adoptionPct:96},
+    nextSteps:['Deliver upgrade proposal to CRO within this week — support expires Sep 1','Include Planning Analytics and AI governance module options in proposal','Coordinate with CSM Carlos Vega to confirm customer satisfaction before commercial conversation','Escalate to manager if proposal not accepted within 10 business days']},
+  'opp-003':{id:'opp-003',name:'Nova Retail — Sterling OMS v10 Upgrade',account:'Nova Retail Group',accountId:'acc-003',product:'IBM Sterling Order Management',productId:'prd-006',
+    stage:'Identify',closeDate:'2025-12-01',value:640000,
+    description:'Upgrade out-of-support Sterling OMS v9.5 to v10. Customer is evaluating competitors (Manhattan Associates). Deployment stalled and RED. Must present ROI case for upgrade before competitor displaces.',
+    seller:'James Kowalski',sellerRole:'Client Executive',
+    install:{id:'ins-004',name:'Sterling OMS @ Nova Retail',version:'9.5',supportEnd:'2024-11-15',adoptionPct:38},
+    nextSteps:['Schedule VP of Operations executive call — address competitive evaluation directly','Build Sterling v10 vs Manhattan Associates comparison deck','Propose short-term managed services or upgrade acceleration to reduce customer risk','Identify exec sponsor at IBM to co-present upgrade ROI at C-suite level']},
+  'opp-004':{id:'opp-004',name:'Apex — watsonx.governance Pilot',account:'Apex Technology Partners',accountId:'acc-004',product:'watsonx.governance',productId:'prd-003',
+    stage:'Qualify',closeDate:'2025-10-31',value:560000,
+    description:'AI governance layer for watsonx.ai install — compliance-driven upsell. Legal team formally requesting governance controls. This is a natural expansion of the existing watsonx.ai contract.',
+    seller:'Tyler Oduya',sellerRole:'Client Executive',
+    install:{id:'ins-002',name:'watsonx.ai @ Apex',version:'2.0',supportEnd:'2027-01-20',adoptionPct:42},
+    nextSteps:['Qualify legal and compliance team requirements — document governance use cases','Present watsonx.governance pilot scope with 30-day POC structure','Coordinate with Aisha Thornton (BSS) for governance demo — she holds product cert','Connect to IBM Governance SME for deep technical Q&A with customer legal team']},
+};
+
+const STAGE_ORDER=['Identify','Qualify','Propose','Validate'];
+const STAGE_COL={Validate:'#24a148',Propose:'#0f62fe',Qualify:'#009d9a',Identify:'#1192e8'};
+const STAGE_NEXT={Identify:'Qualify',Qualify:'Propose',Propose:'Validate',Validate:'Close'};
+
+function renderPage(opp){
+  const d=daysUntil(opp.closeDate);
+  const isUrgent=d!==null&&d<30;
+  const isPast=d!==null&&d<0;
+  const col=STAGE_COL[opp.stage]||'#888';
+
+  document.title=`IBM Scout — ${opp.name}`;
+  document.getElementById('bc-name').textContent=opp.name;
+
+  // Urgency banner
+  const ub=document.getElementById('urgency-banner');
+  if(isPast){
+    ub.className='urgency-banner critical';
+    document.getElementById('ub-icon').textContent='🔴';
+    document.getElementById('ub-title').textContent='Close date has passed — update required';
+    document.getElementById('ub-msg').textContent='This opportunity is past its projected close date. Update the forecast in CRM immediately and either reset the close date or move to closed/lost.';
+    document.getElementById('ub-badge').textContent='OVERDUE';
+    document.getElementById('ub-badge').style.cssText='background:rgba(218,30,40,.12);color:#da1e28;border:1px solid rgba(218,30,40,.3);font-size:9px;font-weight:800;padding:3px 10px;border-radius:4px';
+  } else if(isUrgent){
+    ub.className='urgency-banner warn';
+    document.getElementById('ub-icon').textContent='🟠';
+    document.getElementById('ub-title').textContent=`Closing in ${d} days — accelerate actions`;
+    document.getElementById('ub-msg').textContent=`This deal closes ${opp.closeDate}. Complete all pending next steps within the next week. Ensure exec sponsorship and commercial proposal are in front of the customer.`;
+    document.getElementById('ub-badge').textContent=`${d}d to close`;
+    document.getElementById('ub-badge').style.cssText='background:rgba(255,131,43,.12);color:#ff832b;border:1px solid rgba(255,131,43,.3);font-size:9px;font-weight:800;padding:3px 10px;border-radius:4px';
+  } else {
+    ub.className='urgency-banner info';
+    document.getElementById('ub-icon').textContent='💡';
+    document.getElementById('ub-title').textContent=`${opp.stage} stage — ${d} days to projected close`;
+    document.getElementById('ub-msg').textContent=`Complete current stage actions and advance to ${STAGE_NEXT[opp.stage]||'Close'}. Use the next steps below to guide your approach.`;
+    document.getElementById('ub-badge').textContent=opp.stage;
+    document.getElementById('ub-badge').style.cssText=`background:${col}18;color:${col};border:1px solid ${col}30;font-size:9px;font-weight:800;padding:3px 10px;border-radius:4px`;
+  }
+
+  // Hero
+  document.getElementById('hero-label').textContent=`${opp.product} · Opportunity`;
+  document.getElementById('hero-title').textContent=opp.name;
+  document.getElementById('hero-sub').textContent=opp.description;
+  document.getElementById('hero-value').textContent=fmtM(opp.value);
+  document.getElementById('hero-value').style.color=isUrgent?'#ff832b':col;
+  document.getElementById('hero-tags').innerHTML=[
+    `<span class="h-tag" style="background:${col}18;color:${col};border:1px solid ${col}30">${opp.stage}</span>`,
+    `<span class="h-tag" style="background:rgba(255,255,255,.07);color:var(--ts);border:1px solid var(--border)">Closes ${opp.closeDate}</span>`,
+    isUrgent?`<span class="h-tag" style="background:rgba(255,131,43,.12);color:var(--ibm-orange);border:1px solid rgba(255,131,43,.25)">⚠ Closing Soon</span>`:'',
+  ].join('');
+
+  // Stage pipeline bar
+  const stageIdx=STAGE_ORDER.indexOf(opp.stage);
+  document.getElementById('stage-track').innerHTML=STAGE_ORDER.map((s,i)=>{
+    const cls=i<stageIdx?'passed':i===stageIdx?'active':'';
+    const sc=cls==='passed'?'#24a148':cls==='active'?'var(--ibm-blue)':'var(--tm)';
+    return `<div class="stage-node ${cls}" style="${cls?`color:${sc};background:${sc}12;border-color:${sc}40`:''}">${i<stageIdx?'✓ ':''} ${s}</div>`;
+  }).concat([`<div class="stage-node" style="color:var(--tm)">Close</div>`]).join('');
+
+  // KPIs
+  const dEl=document.getElementById('kpi-days');
+  dEl.textContent=d!==null?Math.abs(d):'—';
+  dEl.style.color=isPast?'#da1e28':isUrgent?'#ff832b':col;
+  document.getElementById('kpi-close-sub').textContent=isPast?'OVERDUE':isUrgent?`closes ${opp.closeDate}`:`to close (${opp.closeDate})`;
+  document.getElementById('kpi-stage').textContent=opp.stage;
+  document.getElementById('kpi-stage').style.color=col;
+  document.getElementById('kpi-stage-sub').textContent=`Next: ${STAGE_NEXT[opp.stage]||'Close'}`;
+  document.getElementById('kpi-product').textContent=opp.product.split(' ').slice(-1)[0];
+  document.getElementById('kpi-product').style.color='var(--ibm-orange)';
+  document.getElementById('kpi-product-sub').textContent=opp.product;
+  document.getElementById('kpi-account').textContent=opp.account.split(' ')[0];
+  document.getElementById('kpi-account-sub').textContent=opp.account;
+
+  // Details
+  document.getElementById('details-list').innerHTML=[
+    ['Opportunity Name',opp.name],['Account',opp.account],['Product',opp.product],
+    ['Stage',opp.stage],['Close Date',opp.closeDate],['Deal Value',fmtM(opp.value)],
+    ['Account Owner',`${opp.seller} (${opp.sellerRole})`],
+  ].map(([l,v])=>`<div class="info-row"><span class="info-label">${l}</span><span class="info-val">${v}</span></div>`).join('');
+
+  // Next steps
+  document.getElementById('next-steps').innerHTML=opp.nextSteps.map((s,i)=>`
+    <div class="next-step">
+      <div class="step-num">${i+1}</div>
+      <div class="step-text">${s}</div>
+    </div>`).join('');
+
+  // Account panel
+  document.getElementById('account-panel').innerHTML=`
+    <div class="data-row" onclick="window.location='account.html?id=${opp.accountId}'">
+      <div class="dr-dot" style="background:var(--ibm-cyan)"></div>
+      <div><div class="dr-name">${opp.account}</div><div class="dr-sub">Click to open Account 360 →</div></div>
+      <div class="dr-badge" style="background:rgba(17,146,232,.12);color:var(--ibm-cyan)">ACCT</div>
+    </div>`;
+
+  // Install panel
+  if(opp.install){
+    const instCol=opp.install.adoptionPct>=80?'#24a148':opp.install.adoptionPct>=50?'#f1c21b':'#da1e28';
+    document.getElementById('install-panel').innerHTML=`
+      <div class="data-row" onclick="window.location='install.html?id=${opp.install.id}'">
+        <div class="dr-dot" style="background:${instCol}"></div>
+        <div><div class="dr-name">${opp.install.name}</div><div class="dr-sub">v${opp.install.version} · ${opp.install.adoptionPct}% adoption · support ${opp.install.supportEnd}</div></div>
+        <div class="dr-badge" style="background:${instCol}18;color:${instCol}">${opp.install.adoptionPct}%</div>
+      </div>
+      <div style="font-size:10px;color:var(--tm);margin-top:8px">Adoption data from active Gainsight deployment →</div>`;
+  } else {
+    document.getElementById('install-panel').innerHTML='<div style="font-size:12px;color:var(--tm);font-style:italic">No active install linked. This is a new-logo opportunity.</div>';
+  }
+
+  // Actions
+  const btns=[`<a href="search.html" class="action-btn secondary">← Back to Search</a>`];
+  if(isUrgent||isPast) btns.push(`<a href="#" class="action-btn warn" onclick="alert('CRM update workflow — connect to Salesforce in production mode.')">⚠ Update in CRM</a>`);
+  btns.push(`<a href="account.html?id=${opp.accountId}" class="action-btn secondary">🏢 Account 360</a>`);
+  btns.push(`<a href="index.html#node=${opp.id}" class="action-btn secondary">🕸 View in Graph</a>`);
+  document.getElementById('action-row').innerHTML=btns.join('');
+}
+
+const id=new URLSearchParams(window.location.search).get('id');
+if(id&&OPPS[id])renderPage(OPPS[id]);
+else{document.getElementById('bc-name').textContent='Not Found';document.getElementById('hero-title').textContent='Opportunity Not Found';}
+
+(async()=>{try{const r=await fetch(`${API}/healthz`,{signal:AbortSignal.timeout(1500)});if(r.ok){const b=document.getElementById('mode-badge');b.textContent='Live API';b.style.background='rgba(36,161,72,.1)';b.style.color='#24a148';b.style.borderColor='rgba(36,161,72,.2)';}}catch(_){}})();
+</script>
+</body>
+</html>
