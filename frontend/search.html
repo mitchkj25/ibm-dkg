@@ -166,6 +166,8 @@ html,body{min-height:100vh;background:var(--bg);color:var(--tp);
 .rc-tag.product{background:rgba(255,131,43,.15);color:var(--ibm-orange)}
 .rc-tag.install{background:rgba(36,161,72,.15);color:var(--ibm-green)}
 .rc-tag.opportunity{background:rgba(241,194,27,.15);color:#946500}
+.rc-tag.deployment{background:rgba(105,41,196,.15);color:#be95ff}
+.rc-tag.sitenumber{background:rgba(0,93,93,.15);color:#3ddbd9}
 .rc-tag.stale{background:rgba(255,131,43,.12);color:var(--ibm-orange);border:1px solid rgba(255,131,43,.3)}
 .rc-tag.live{background:rgba(36,161,72,.12);color:var(--ibm-green)}
 .rc-name{font-size:13px;font-weight:700;color:var(--tp);line-height:1.3}
@@ -463,24 +465,42 @@ const NODES = [
   {id:'opp-002',label:'Opportunity',name:'Cascadia OpenPages Upgrade',  stage:'Propose',  value:890000,  closeDate:'2025-08-15', status:'ACTIVE', desc:'Renewal + upgrade from OpenPages v8.3 to v9. Support expiring Sep 2025 — time pressure creates urgency.'},
   {id:'opp-003',label:'Opportunity',name:'Nova Retail Sterling v10',    stage:'Identify', value:640000,  closeDate:'2025-12-01', status:'ACTIVE', desc:'Upgrade out-of-support Sterling OMS v9.5 to v10. Risk: customer may evaluate competitive alternatives.'},
   {id:'opp-004',label:'Opportunity',name:'Apex watsonx.governance',     stage:'Qualify',  value:560000,  closeDate:'2025-10-31', status:'ACTIVE', desc:'AI governance layer on top of existing watsonx.ai install. Compliance-driven — NIST AI RMF alignment.'},
+  // Deployment nodes (Gainsight-sourced)
+  {id:'dep-001',label:'Deployment', name:'Turbonomic @ First National Bancorp',   deploymentStatus:'LIVE',        gainsightHealthLabel:'GREEN',  adoptionPct:97, gainsightScore:88, csmName:'Brittany Holloway', useCasesLive:4, useCasesIdentified:4, blockers:[], expandSignals:['Hybrid cloud expansion planned Q3','2,800 additional VMs in scope'], entitledUnits:6000, activatedUnits:5820, status:'ACTIVE', desc:'LIVE 97% utilization — 4/4 use cases active. Expand signals: renewal + 2.8K additional VMs. Green Gainsight health.'},
+  {id:'dep-002',label:'Deployment', name:'watsonx.ai @ Apex Technology Partners', deploymentStatus:'IN_PROGRESS', gainsightHealthLabel:'YELLOW', adoptionPct:42, gainsightScore:61, csmName:'Jordan Li',        useCasesLive:2, useCasesIdentified:6, blockers:['IT security review pending','API integration with data lake pending'], expandSignals:['4 additional use cases in backlog','Governance layer requested by Legal'], entitledUnits:500, activatedUnits:210, status:'ACTIVE', desc:'IN PROGRESS — only 42% activated, 2/6 use cases live. 2 active blockers. Target go-live Aug 2025.'},
+  {id:'dep-003',label:'Deployment', name:'OpenPages @ Cascadia Insurance',        deploymentStatus:'LIVE',        gainsightHealthLabel:'YELLOW', adoptionPct:96, gainsightScore:72, csmName:'Carlos Vega',      useCasesLive:5, useCasesIdentified:5, blockers:['Support contract expiring Sep 2025 — upgrade not yet signed'], expandSignals:['Operational risk module interest','Claims automation use case'], entitledUnits:300, activatedUnits:288, status:'ACTIVE', desc:'LIVE 96% utilization — but Yellow because support expires Sep 2025. Must close upgrade proposal.'},
+  {id:'dep-004',label:'Deployment', name:'Sterling OMS @ Nova Retail Group',      deploymentStatus:'STALLED',     gainsightHealthLabel:'RED',    adoptionPct:38, gainsightScore:31, csmName:'Paula Mendes',     useCasesLive:1, useCasesIdentified:3, blockers:['Out of support — customer resistant','IT freeze until Q4','Competitor eval: Manhattan Associates'], expandSignals:[], entitledUnits:1, activatedUnits:1, status:'ACTIVE', desc:'STALLED — RED health. Out of support Nov 2024. Competitor evaluation underway. IMMEDIATE seller action required.'},
+  {id:'dep-005',label:'Deployment', name:'CP4Security @ First National Bancorp',  deploymentStatus:'IN_PROGRESS', gainsightHealthLabel:'YELLOW', adoptionPct:68, gainsightScore:74, csmName:'Brittany Holloway', useCasesLive:2, useCasesIdentified:3, blockers:['QRadar migration — firewall rules not updated'], expandSignals:['SOAR playbook automation ready','UEBA module interest from CISO'], status:'ACTIVE', desc:'IN PROGRESS — 68% adoption, 2/3 use cases live. QRadar firewall dependency blocking go-live.'},
+  {id:'dep-006',label:'Deployment', name:'Cognos Analytics @ LA DCFS',             deploymentStatus:'LIVE',        gainsightHealthLabel:'GREEN',  adoptionPct:99, gainsightScore:91, csmName:'Diane Broussard',  useCasesLive:8, useCasesIdentified:8, blockers:[], expandSignals:['Planning Analytics for budget forecasting','watsonx.ai interest from data team'], entitledUnits:150, activatedUnits:148, status:'ACTIVE', desc:'FULLY LIVE at 99% — 8/8 use cases active. Reference customer. Expand: Planning Analytics + watsonx.ai.'},
+  {id:'dep-007',label:'Deployment', name:'Cognos Analytics @ LA DOTD',             deploymentStatus:'STALLED',     gainsightHealthLabel:'RED',    adoptionPct:51, gainsightScore:44, csmName:'Diane Broussard',  useCasesLive:2, useCasesIdentified:4, blockers:['v11.2 out of support — upgrade blocked by procurement','Admin left — knowledge gap','Low engineering adoption'], expandSignals:[], entitledUnits:80, activatedUnits:41, status:'ACTIVE', desc:'STALLED — RED health. 51% adoption, 2/4 use cases. Admin turnover + procurement freeze blocking upgrade.'},
 ];
 
 const WHATS_NEW = [
-  {tag:'critical', text:'Sterling OMS @ Nova Retail — OUT OF SUPPORT since Nov 2024'},
-  {tag:'alert',    text:'OpenPages @ Cascadia — support ends Sep 2025'},
+  {tag:'critical', text:'🚀 Sterling OMS @ Nova Retail — STALLED, RED health, competitor eval underway'},
+  {tag:'critical', text:'🚀 Cognos @ LA DOTD — STALLED, RED, admin gap, upgrade blocked'},
+  {tag:'alert',    text:'🚀 watsonx.ai @ Apex — 42% adoption, 2 blockers, target go-live Aug 2025'},
+  {tag:'alert',    text:'OpenPages @ Cascadia — support ends Sep 2025, deployment still healthy'},
+  {tag:'new',      text:'🚀 Turbonomic @ FNB — 97% utilization, expand signals active'},
+  {tag:'new',      text:'🚀 Cognos @ LA DCFS — 99% adoption, 8/8 use cases, reference account'},
   {tag:'new',      text:'FNB watsonx Expansion — moved to Validate stage'},
-  {tag:'new',      text:'Apex watsonx.governance pilot — Qualify stage'},
   {tag:'alert',    text:'2 installs expiring within 12 months'},
 ];
 
 const LABEL_ICONS = {
   Seller:'👤', Manager:'👥', Territory:'📍', Product:'📦',
   Account:'🏢', Install:'⚙️', Opportunity:'💡', KnowledgeAsset:'📄',
+  Deployment:'🚀', SiteNumber:'🔢',
 };
 const LABEL_COLORS = {
   Seller:'#0f62fe', Manager:'#a56eff', Territory:'#009d9a',
   Product:'#ff832b', Account:'#1192e8', Install:'#24a148',
   Opportunity:'#f1c21b', KnowledgeAsset:'#ee5396',
+  Deployment:'#6929c4', SiteNumber:'#005d5d',
+};
+const GS_HEALTH_COLOR = { GREEN:'#24a148', YELLOW:'#f1c21b', RED:'#da1e28' };
+const DEP_STATUS_COLOR = {
+  LIVE:'#24a148', IN_PROGRESS:'#1192e8', STALLED:'#da1e28',
+  NOT_STARTED:'#6f6f6f', CHURNED:'#8a3800',
 };
 
 // ── State ────────────────────────────────────────────────────────────
@@ -500,7 +520,7 @@ function buildWhatsNew() {
 }
 
 // ── Filter pills ─────────────────────────────────────────────────────
-const FILTERS = ['all','Seller','Manager','Territory','Account','Product','Install','Opportunity'];
+const FILTERS = ['all','Seller','Manager','Territory','Account','Product','Install','Deployment','Opportunity'];
 
 function buildFilters() {
   document.getElementById('filter-row').innerHTML = FILTERS.map(f => `
@@ -614,15 +634,31 @@ function renderCards(nodes) {
 
     // Meta line
     let meta = '';
-    if (n.label === 'Seller') meta = `<span class="rc-meta-dot" style="background:${col}"></span><span class="rc-meta-txt">${n.role || 'AE'} · <strong>${n.geo || '—'}</strong></span>`;
-    if (n.label === 'Manager') meta = `<span class="rc-meta-dot" style="background:${col}"></span><span class="rc-meta-txt">FLM / SLM · <strong>${n.geo || '—'}</strong></span>`;
-    if (n.label === 'Territory') meta = `<span class="rc-meta-dot" style="background:${col}"></span><span class="rc-meta-txt">Quota: <strong>$${(n.quota/1e6).toFixed(1)}M</strong> · ${n.region}</span>`;
-    if (n.label === 'Account') meta = `<span class="rc-meta-dot" style="background:${col}"></span><span class="rc-meta-txt">${n.industry || ''} · <strong>$${n.revenue ? (n.revenue/1e9).toFixed(1)+'B' : '—'}</strong></span>`;
-    if (n.label === 'Product') meta = `<span class="rc-meta-dot" style="background:${col}"></span><span class="rc-meta-txt">v${n.version || '—'} · <strong>${n.family || '—'}</strong></span>`;
-    if (n.label === 'Install') meta = `<span class="rc-meta-dot" style="background:${col}"></span><span class="rc-meta-txt">v${n.version || '—'} · Support: <strong>${n.supportEnd || '—'}</strong></span>`;
-    if (n.label === 'Opportunity') meta = `<span class="rc-meta-dot" style="background:${col}"></span><span class="rc-meta-txt"><strong>$${(n.value/1e6).toFixed(2)}M</strong> · Close: ${n.closeDate || '—'}</span>`;
+    if (n.label === 'Deployment') {
+      const depStatus = n.deploymentStatus || '—';
+      const gsHealth = n.gainsightHealthLabel || '—';
+      const gsScore = n.gainsightScore || '—';
+      const depCol = DEP_STATUS_COLOR[depStatus] || '#888';
+      const gsCol = GS_HEALTH_COLOR[gsHealth] || '#888';
+      const adoPct = n.adoptionPct != null ? n.adoptionPct : '—';
+      const usecases = n.useCasesLive != null ? `${n.useCasesLive}/${n.useCasesIdentified} use cases` : '';
+      tag2 = `<span class="rc-tag" style="background:${depCol}18;color:${depCol};border:1px solid ${depCol}30">${depStatus}</span>
+              <span class="rc-tag" style="background:${gsCol}18;color:${gsCol};border:1px solid ${gsCol}30">GS ${gsScore}</span>`;
+      meta = `<span class="rc-meta-dot" style="background:${gsCol}"></span>
+              <span class="rc-meta-txt">Adoption: <strong>${adoPct}%</strong> · ${usecases}</span>`;
+      const depRight = n.blockers && n.blockers.length
+        ? `<span style="margin-left:auto;font-size:8px;color:var(--ibm-red);font-weight:700">⚠ ${n.blockers.length} blocker${n.blockers.length>1?'s':''}</span>`
+        : (n.expandSignals && n.expandSignals.length ? `<span style="margin-left:auto;font-size:8px;color:var(--ibm-green);font-weight:700">↑ Expand signal</span>` : '');
+      meta += depRight;
+    } else if (n.label === 'Seller') meta = `<span class="rc-meta-dot" style="background:${col}"></span><span class="rc-meta-txt">${n.role || 'AE'} · <strong>${n.geo || '—'}</strong></span>`;
+    else if (n.label === 'Manager') meta = `<span class="rc-meta-dot" style="background:${col}"></span><span class="rc-meta-txt">FLM / SLM · <strong>${n.geo || '—'}</strong></span>`;
+    else if (n.label === 'Territory') meta = `<span class="rc-meta-dot" style="background:${col}"></span><span class="rc-meta-txt">Quota: <strong>$${(n.quota/1e6).toFixed(1)}M</strong> · ${n.region}</span>`;
+    else if (n.label === 'Account') meta = `<span class="rc-meta-dot" style="background:${col}"></span><span class="rc-meta-txt">${n.industry || ''} · <strong>$${n.revenue ? (n.revenue/1e9).toFixed(1)+'B' : '—'}</strong></span>`;
+    else if (n.label === 'Product') meta = `<span class="rc-meta-dot" style="background:${col}"></span><span class="rc-meta-txt">v${n.version || '—'} · <strong>${n.family || '—'}</strong></span>`;
+    else if (n.label === 'Install') meta = `<span class="rc-meta-dot" style="background:${col}"></span><span class="rc-meta-txt">v${n.version || '—'} · Support: <strong>${n.supportEnd || '—'}</strong></span>`;
+    else if (n.label === 'Opportunity') meta = `<span class="rc-meta-dot" style="background:${col}"></span><span class="rc-meta-txt"><strong>$${(n.value/1e6).toFixed(2)}M</strong> · Close: ${n.closeDate || '—'}</span>`;
 
-    const action = n.label === 'Opportunity' ? 'View opp →' : n.label === 'Account' ? 'Account 360 →' : n.label === 'Install' ? 'Check renewal →' : 'Explore →';
+    const action = n.label === 'Opportunity' ? 'View opp →' : n.label === 'Account' ? 'Account 360 →' : n.label === 'Install' ? 'Check renewal →' : n.label === 'Deployment' ? 'Deployment details →' : 'Explore →';
 
     return `
       <div class="result-card ${isStale ? 'stale' : ''}" onclick="openNode('${n.id}')">
@@ -844,8 +880,12 @@ async function loadInsightsSummary() {
       const items = [
         { label: 'Expiring support', value: data.expiring_soon, color: '#f1c21b', bg: 'rgba(241,194,27,.12)' },
         { label: 'Critical EOS', value: data.critical_support_expired, color: '#da1e28', bg: 'rgba(218,30,40,.1)' },
+        { label: '🚀 RED deployments', value: data.deployment_red_count ?? '—', color: '#da1e28', bg: 'rgba(218,30,40,.08)' },
+        { label: '🚀 Stalled', value: data.deployment_stalled_count ?? '—', color: '#ff832b', bg: 'rgba(255,131,43,.1)' },
+        { label: '🚀 Expand ready', value: data.deployment_expand_ready ?? '—', color: '#24a148', bg: 'rgba(36,161,72,.1)' },
+        { label: '🚀 Avg adoption', value: `${data.avg_adoption_pct ?? '—'}%`, color: '#a56eff', bg: 'rgba(165,110,255,.1)' },
         { label: 'Whitespace gaps', value: data.whitespace_gaps, color: '#1192e8', bg: 'rgba(17,146,232,.12)' },
-        { label: `Trust score`, value: `${data.overall_trust_score}%`, color: '#24a148', bg: 'rgba(36,161,72,.1)' },
+        { label: 'Trust score', value: `${data.overall_trust_score}%`, color: '#24a148', bg: 'rgba(36,161,72,.1)' },
       ];
       bar.innerHTML = items.map(i => `
         <div style="background:${i.bg};border:1px solid ${i.color}30;border-radius:7px;padding:6px 12px;display:flex;align-items:center;gap:6px;cursor:pointer" onclick="doSearch('${i.label}')">
