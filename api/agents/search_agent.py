@@ -47,6 +47,9 @@ INTENT_PATTERNS = {
     "site_spend": re.compile(r"(site.*spend|spend.*site|most.*spend|highest.*spend|site number.*spend|how much.*site)", re.I),
     "site_product": re.compile(r"(site.*product|product.*site|site number.*product|what.*site.*have|cognos.*site|site.*cognos)", re.I),
     "account_sites": re.compile(r"(site.*number|site number|what site|which site|sites.*for|account.*site)", re.I),
+    # Deployment / adoption intents  ← NEW
+    "deployment_health": re.compile(r"(gainsight|health.*score|adoption|utiliz|not.*deploy|stall|red.*health|yellow.*health|land.*expand|deployment|go.live|csm|entitled|activated|use.case)", re.I),
+    "deployment_blockers": re.compile(r"(block|stuck|risk|churn|not.*using|low.*adoption|expand|upsell|whitespace.*deploy)", re.I),
 }
 
 ENTITY_KEYWORDS = {
@@ -55,7 +58,8 @@ ENTITY_KEYWORDS = {
     "Account": ["account", "client", "customer", "company", "enterprise", "state", "louisiana", "government"],
     "Product": ["product", "software", "solution", "platform", "tool", "ibm", "cognos", "watsonx"],
     "Territory": ["territory", "region", "geo", "area", "patch"],
-    "Install": ["install", "deployment", "running", "using", "license"],
+    "Install": ["install", "running", "using", "license", "entitled"],
+    "Deployment": ["deployment", "deploy", "gainsight", "adoption", "utilization", "go-live", "live", "stalled", "csm", "use case", "activated"],
     "Opportunity": ["opportunity", "opp", "deal", "pipeline", "forecast"],
     "SiteNumber": ["site", "site number", "sitenumber", "customer number", "location"],
 }
@@ -333,6 +337,8 @@ async def _synthesize_narrative(query: str, results: list[dict], intent: str) ->
         "site_spend": f"Found {len(results)} site number(s) ranked by spend. Highest spend sites: {', '.join(names)}.",
         "site_product": f"Found {len(results)} site-product relationship(s). Sites: {', '.join(names)}.",
         "account_sites": f"Found {len(results)} site number(s). Account-to-site mappings: {', '.join(names)}.",
+        "deployment_health": f"Found {len(results)} deployment record(s). Check adoption % and Gainsight health labels — RED/STALLED deployments are churn risk and land-and-expand blockers. Top: {', '.join(names)}.",
+        "deployment_blockers": f"Found {len(results)} deployment record(s) with active blockers or low adoption. These are your highest-priority deployment engagement accounts. Top: {', '.join(names)}.",
         "general": f"Found {len(results)} {label}(s) matching '{query}'. Top results: {', '.join(names)}.",
     }
     base_narrative = templates.get(intent, templates["general"])

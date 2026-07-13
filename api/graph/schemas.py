@@ -105,6 +105,47 @@ class InstallNode(ProvenanceMixin):
     description: Optional[str] = None
 
 
+class DeploymentNode(ProvenanceMixin):
+    """
+    Tracks actual customer activation and usage of an entitled product.
+    Distinct from Install (what was sold) — Deployment answers 'are they using it?'
+    Sourced from Gainsight, product telemetry, or manual CSM updates.
+    """
+    id: str = Field(default_factory=_uid)
+    install_id: str = Field(..., description="Parent Install this deployment belongs to")
+    product_id: str
+    account_id: str
+    site_id: Optional[str] = None  # SiteNumber id if site-level deployment
+    # Deployment status lifecycle
+    deployment_status: str = Field(
+        default="NOT_STARTED",
+        description="NOT_STARTED | IN_PROGRESS | LIVE | STALLED | CHURNED",
+    )
+    # Entitlement vs actual usage
+    entitled_units: Optional[int] = Field(None, description="Licensed seats / capacity")
+    activated_units: Optional[int] = Field(None, description="Actually provisioned units")
+    active_users_30d: Optional[int] = Field(None, description="Users active in last 30 days")
+    adoption_pct: Optional[float] = Field(None, ge=0.0, le=100.0, description="% of entitled units in active use")
+    # Gainsight health signals
+    gainsight_score: Optional[int] = Field(None, ge=0, le=100, description="Gainsight health score 0-100")
+    gainsight_health_label: Optional[str] = Field(None, description="RED | YELLOW | GREEN")
+    last_gainsight_sync: Optional[str] = Field(None, description="ISO timestamp of last sync from Gainsight")
+    # Go-live tracking
+    go_live_date: Optional[str] = None
+    target_go_live_date: Optional[str] = None
+    # CSM / deployment team
+    csm_name: Optional[str] = None
+    csm_email: Optional[str] = None
+    deployment_owner_id: Optional[str] = Field(None, description="Seller id driving deployment")
+    # Blockers and expand signals
+    blockers: list[str] = Field(default_factory=list, description="Active blockers to deployment progress")
+    expand_signals: list[str] = Field(default_factory=list, description="Signals suggesting expansion opportunity")
+    # Use cases
+    use_cases_identified: int = Field(default=0)
+    use_cases_live: int = Field(default=0)
+    description: Optional[str] = None
+
+
 class KnowledgeAssetNode(ProvenanceMixin):
     id: str = Field(default_factory=_uid)
     asset_type: str  # "process", "policy", "product_brief", "competitive_intel", etc.

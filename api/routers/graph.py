@@ -20,6 +20,7 @@ router = APIRouter(prefix="/graph", tags=["Graph"])
 _VALID_LABELS = {
     "Seller", "Manager", "Territory", "Product",
     "Account", "Opportunity", "Install", "KnowledgeAsset",
+    "Deployment", "SiteNumber",
 }
 
 

@@ -70,6 +70,21 @@ def _now() -> datetime:
     return datetime.now(timezone.utc)
 
 
+def _parse_date(date_str: str) -> datetime | None:
+    """Parse an ISO date string to a timezone-aware datetime. Returns None on failure."""
+    if not date_str:
+        return None
+    try:
+        # If no timezone info, assume UTC
+        dt = datetime.fromisoformat(date_str.replace("Z", "+00:00"))
+        if dt.tzinfo is None:
+            from datetime import timezone as _tz
+            dt = dt.replace(tzinfo=_tz.utc)
+        return dt
+    except (ValueError, TypeError):
+        return None
+
+
 # ── 1. Next Best Actions ──────────────────────────────────────────────────────
 
 @router.get("/nba/{seller_id}", summary="Next Best Actions for a seller — ranked by urgency and revenue impact")
@@ -102,11 +117,9 @@ async def next_best_actions(seller_id: str) -> dict[str, Any]:
             is_stale = inst.get("status") == "STALE"
             days_left = None
             if support_end:
-                try:
-                    end_dt = datetime.fromisoformat(support_end.replace("Z", "+00:00"))
+                end_dt = _parse_date(support_end)
+                if end_dt:
                     days_left = (end_dt - today).days
-                except ValueError:
-                    pass
 
             products = _neighbors(inst["id"], rel_type="RUNS_PRODUCT", direction="out")
             prod_name = products[0]["name"] if products else "Unknown product"
@@ -149,11 +162,9 @@ async def next_best_actions(seller_id: str) -> dict[str, Any]:
             close_date = opp.get("closeDate") or opp.get("close_date")
             days_to_close = None
             if close_date:
-                try:
-                    close_dt = datetime.fromisoformat(close_date.replace("Z", "+00:00"))
+                close_dt = _parse_date(close_date)
+                if close_dt:
                     days_to_close = (close_dt - today).days
-                except ValueError:
-                    pass
 
             if stage in ("Identify", "Qualify") and days_to_close is not None and days_to_close < 30:
                 actions.append({
@@ -238,9 +249,14 @@ async def next_best_actions(seller_id: str) -> dict[str, Any]:
 # ── 2. Whitespace & Coverage Gap Analysis ────────────────────────────────────
 
 @router.get("/whitespace", summary="Accounts with installs but no linked opportunity — expansion whitespace")
-async def whitespace_analysis(
+async def whitespace_analysis_route(
     min_revenue: float = Query(0, description="Minimum account revenue filter"),
 ) -> dict[str, Any]:
+    """Route shim."""
+    return await whitespace_analysis(min_revenue=min_revenue)
+
+
+async def whitespace_analysis(min_revenue: float = 0) -> dict[str, Any]:
     """
     Graph traversal: accounts that HAVE installs but do NOT have open opportunities.
     Also surfaces accounts with thin product coverage (installs on <2 products).
@@ -332,9 +348,14 @@ def _whitespace_recommendation(acc, gap_types, installed, not_installed) -> str:
 # ── 3. Expiring Support ───────────────────────────────────────────────────────
 
 @router.get("/expiring", summary="Installs with support ending within N days — ranked by contract value")
-async def expiring_support(
+async def expiring_support_route(
     days: int = Query(180, description="Alert window in days"),
 ) -> dict[str, Any]:
+    """Route shim."""
+    return await expiring_support(days=days)
+
+
+async def expiring_support(days: int = 180) -> dict[str, Any]:
     installs = _nodes_by_label("Install")
     today = _now()
     alerts: list[dict] = []
@@ -343,9 +364,8 @@ async def expiring_support(
         support_end = inst.get("supportEnd") or inst.get("support_end")
         if not support_end:
             continue
-        try:
-            end_dt = datetime.fromisoformat(support_end.replace("Z", "+00:00"))
-        except ValueError:
+        end_dt = _parse_date(support_end)
+        if end_dt is None:
             continue
         days_left = (end_dt - today).days
         if days_left > days:
@@ -521,11 +541,9 @@ async def account_360(account_id: str) -> dict[str, Any]:
         support_end = inst.get("supportEnd") or inst.get("support_end")
         days_left = None
         if support_end:
-            try:
-                end_dt = datetime.fromisoformat(support_end.replace("Z", "+00:00"))
+            end_dt = _parse_date(support_end)
+            if end_dt:
                 days_left = (end_dt - today).days
-            except ValueError:
-                pass
         install_details.append({
             "product": prod["name"] if prod else "Unknown",
             "version": inst.get("version"),
@@ -737,13 +755,217 @@ def _provenance_note(source: str) -> str:
     return notes.get(source, f"Source '{source}' — no provenance policy defined.")
 
 
-# ── 8. Summary (dashboard header) ────────────────────────────────────────────
+# ── 8. Deployment Health (Land & Expand) ─────────────────────────────────────
+
+@router.get("/deployment", summary="Deployment health — Gainsight adoption signals, entitlement utilization, expand triggers")
+async def deployment_health_route(
+    seller_id: str = Query("", description="Filter by seller id driving deployments"),
+    status: str = Query("", description="Filter by deploymentStatus: NOT_STARTED|IN_PROGRESS|LIVE|STALLED|CHURNED"),
+    health: str = Query("", description="Filter by Gainsight health label: RED|YELLOW|GREEN"),
+) -> dict[str, Any]:
+    """Route shim — delegates to deployment_health() so it can also be called directly from insights_summary."""
+    return await deployment_health(seller_id=seller_id, status=status, health=health)
+
+
+async def deployment_health(
+    seller_id: str = "",
+    status: str = "",
+    health: str = "",
+) -> dict[str, Any]:
+    """
+    The land-and-expand view. Aggregates Deployment nodes to show:
+      - Entitlement utilization % per install
+      - Gainsight health score and label (RED/YELLOW/GREEN)
+      - Active blockers blocking go-live
+      - Expand signals for upsell/cross-sell opportunities
+      - Use case progress (identified vs live)
+      - Stalled / not-started deployments (churn risk)
+
+    Cross-references Install → Account → Seller for full context.
+    Source: Gainsight sync (simulated in demo mode).
+    """
+    deployments = _nodes_by_label("Deployment")
+    today = _now()
+    records: list[dict] = []
+
+    for dep in deployments:
+        dep_id = dep["id"]
+
+        # Apply filters
+        if status and dep.get("deploymentStatus") != status:
+            continue
+        if health and dep.get("gainsightHealthLabel") != health:
+            continue
+
+        # Resolve account
+        acc = _node(dep.get("accountId", ""))
+        # Resolve product
+        prod = _node(dep.get("productId", ""))
+        # Resolve site
+        site = _node(dep.get("siteId", "")) if dep.get("siteId") else None
+        # Resolve install
+        install = _node(dep.get("installId", ""))
+
+        # Find driving seller(s) via DRIVES_DEPLOYMENT
+        driving_sellers = []
+        for edge in _edges_of_type("DRIVES_DEPLOYMENT"):
+            if edge["to"] == dep_id:
+                s = _node(edge["from"])
+                if s:
+                    driving_sellers.append({"id": s["id"], "name": s["name"], "role": s.get("role", "CE")})
+
+        # Apply seller_id filter
+        if seller_id and not any(s["id"] == seller_id for s in driving_sellers):
+            continue
+
+        # Compute staleness signal from last Gainsight sync
+        last_sync = dep.get("lastGainsightSync")
+        days_since_sync = None
+        if last_sync:
+            sync_dt = _parse_date(last_sync)
+            if sync_dt:
+                days_since_sync = (today - sync_dt).days
+
+        # Adoption gap (entitled - activated)
+        entitled = dep.get("entitledUnits")
+        activated = dep.get("activatedUnits")
+        adoption_gap = (entitled - activated) if (entitled and activated) else None
+
+        # Urgency score for ranking
+        dep_status = dep.get("deploymentStatus", "")
+        gs_score = dep.get("gainsightScore") or 50
+        urgency = _deployment_urgency(dep_status, gs_score, dep.get("adoptionPct"), dep.get("blockers", []))
+
+        records.append({
+            "deployment_id": dep_id,
+            "deployment_name": dep.get("name"),
+            "deployment_status": dep_status,
+            "gainsight_score": gs_score,
+            "gainsight_health": dep.get("gainsightHealthLabel", "UNKNOWN"),
+            "last_gainsight_sync": last_sync,
+            "days_since_sync": days_since_sync,
+            "account_id": acc["id"] if acc else None,
+            "account_name": acc["name"] if acc else "Unknown",
+            "product_name": prod["name"] if prod else "Unknown",
+            "product_id": prod["id"] if prod else None,
+            "site_id": dep.get("siteId"),
+            "site_name": site["name"] if site else None,
+            "agency": site.get("agency") if site else None,
+            "entitled_units": entitled,
+            "activated_units": activated,
+            "active_users_30d": dep.get("activeUsers30d"),
+            "adoption_pct": dep.get("adoptionPct"),
+            "adoption_gap": adoption_gap,
+            "use_cases_identified": dep.get("useCasesIdentified", 0),
+            "use_cases_live": dep.get("useCasesLive", 0),
+            "use_case_completion_pct": round(
+                dep.get("useCasesLive", 0) / max(dep.get("useCasesIdentified", 1), 1) * 100, 1
+            ),
+            "go_live_date": dep.get("goLiveDate"),
+            "target_go_live_date": dep.get("targetGoLiveDate"),
+            "csm_name": dep.get("csmName"),
+            "driving_sellers": driving_sellers,
+            "blockers": dep.get("blockers", []),
+            "blocker_count": len(dep.get("blockers", [])),
+            "expand_signals": dep.get("expandSignals", []),
+            "expand_signal_count": len(dep.get("expandSignals", [])),
+            "install_support_end": install.get("supportEnd") if install else None,
+            "contract_value": install.get("contractValue") if install else None,
+            "urgency_score": urgency["score"],
+            "urgency_label": urgency["label"],
+            "action": urgency["action"],
+            "description": dep.get("description"),
+        })
+
+    # Sort by urgency descending
+    records.sort(key=lambda x: -x["urgency_score"])
+
+    # Aggregate summary stats
+    total = len(records)
+    red_count = sum(1 for r in records if r["gainsight_health"] == "RED")
+    yellow_count = sum(1 for r in records if r["gainsight_health"] == "YELLOW")
+    green_count = sum(1 for r in records if r["gainsight_health"] == "GREEN")
+    stalled_count = sum(1 for r in records if r["deployment_status"] == "STALLED")
+    not_started_count = sum(1 for r in records if r["deployment_status"] == "NOT_STARTED")
+    expand_ready = sum(1 for r in records if r["expand_signal_count"] > 0 and r["gainsight_health"] != "RED")
+
+    avg_adoption = round(
+        sum(r["adoption_pct"] for r in records if r["adoption_pct"] is not None)
+        / max(sum(1 for r in records if r["adoption_pct"] is not None), 1),
+        1,
+    )
+
+    return {
+        "generated_at": _now().isoformat(),
+        "total_deployments": total,
+        "summary": {
+            "red_health": red_count,
+            "yellow_health": yellow_count,
+            "green_health": green_count,
+            "stalled": stalled_count,
+            "not_started": not_started_count,
+            "expand_ready": expand_ready,
+            "avg_adoption_pct": avg_adoption,
+        },
+        "filters_applied": {
+            "seller_id": seller_id or None,
+            "status": status or None,
+            "health": health or None,
+        },
+        "deployments": records,
+        "mode": "mock",
+    }
+
+
+def _deployment_urgency(status: str, gs_score: int, adoption_pct: float | None, blockers: list) -> dict:
+    """Score deployment urgency for ranking and seller action prioritisation."""
+    score = 0
+    label = "Monitor"
+    action = "Continue monitoring deployment progress."
+
+    if status == "CHURNED":
+        score = 100
+        label = "Critical — Churn Risk"
+        action = "IMMEDIATE escalation required. Customer has churned from this product — retention conversation must happen this week."
+    elif status == "STALLED":
+        score = 85 + len(blockers) * 3
+        label = "High — Stalled"
+        action = f"Deployment stalled with {len(blockers)} blocker(s). Seller must engage customer stakeholders to unblock. Schedule executive alignment call."
+    elif status == "IN_PROGRESS" and gs_score < 65:
+        score = 70
+        label = "High — Low Adoption"
+        action = "Deployment in progress but adoption below threshold. Risk of renewal pushback. Schedule deployment review with CSM and customer IT lead."
+    elif status == "NOT_STARTED":
+        score = 60
+        label = "Medium — Not Started"
+        action = "Product entitled but deployment not started. Contact CSM to schedule kick-off. Every day without deployment is renewal risk."
+    elif status == "LIVE" and gs_score < 70:
+        score = 50
+        label = "Medium — Live / Yellow Health"
+        action = "Product is live but health score is Yellow. Review blockers and use case completion. Protect the renewal."
+    elif status == "LIVE" and adoption_pct is not None and adoption_pct > 85:
+        score = 20
+        label = "Expand Ready"
+        action = "High adoption and healthy deployment. Prioritise expand conversation — review expand signals for upsell/cross-sell."
+    elif status == "LIVE":
+        score = 30
+        label = "Stable"
+        action = "Deployment live and healthy. Maintain CSM cadence and monitor for expand signals."
+
+    return {"score": min(score, 100), "label": label, "action": action}
+
+
+# ── 9. Summary (dashboard header) ────────────────────────────────────────────
 
 @router.get("/summary", summary="Aggregated insight counts for dashboard header cards")
 async def insights_summary() -> dict[str, Any]:
     expiry_data = await expiring_support(days=90)
     whitespace_data = await whitespace_analysis()
     trust_data = await trust_dashboard()
+    deploy_data = await deployment_health()
+
+    red_dep = deploy_data["summary"]["red_health"]
+    stalled_dep = deploy_data["summary"]["stalled"]
 
     return {
         "generated_at": _now().isoformat(),
@@ -753,5 +975,9 @@ async def insights_summary() -> dict[str, Any]:
         "no_opportunity_gaps": whitespace_data["no_opp_count"],
         "overall_trust_score": trust_data["overall_trust_score"],
         "trust_label": trust_data["overall_trust_label"],
+        "deployment_red_count": red_dep,
+        "deployment_stalled_count": stalled_dep,
+        "deployment_expand_ready": deploy_data["summary"]["expand_ready"],
+        "avg_adoption_pct": deploy_data["summary"]["avg_adoption_pct"],
         "mode": "mock",
     }
