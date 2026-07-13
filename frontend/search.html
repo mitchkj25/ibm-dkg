@@ -412,6 +412,19 @@ html,body{min-height:100vh;background:var(--bg);color:var(--tp);
 
 const API = 'http://localhost:8000';
 
+// ── API health check ─────────────────────────────────────────────────
+let API_LIVE = false;
+(async () => {
+  try {
+    const r = await fetch(`${API}/healthz`, { signal: AbortSignal.timeout(1500) });
+    if (r.ok) {
+      API_LIVE = true;
+      const badge = document.querySelector('.badge-demo');
+      if (badge) { badge.textContent = 'Live API'; badge.style.background = 'rgba(36,161,72,.1)'; badge.style.color = 'var(--ibm-green)'; badge.style.borderColor = 'rgba(36,161,72,.2)'; }
+    }
+  } catch (_) { /* API not running — use local mock */ }
+})();
+
 // ── Seed data (same as graph view) ──────────────────────────────────
 const NODES = [
   {id:'mgr-001',label:'Manager',  name:'Sandra Okafor',    role:'First-line Manager',  geo:'Northeast', status:'ACTIVE', desc:'First-line manager, Northeast. Oversees Marcus Webb & Aisha Thornton. 2 direct reports, $12.7M combined quota.'},
@@ -637,7 +650,7 @@ function openNode(id) {
 }
 
 // ── Search ────────────────────────────────────────────────────────────
-function doSearch(q) {
+async function doSearch(q) {
   q = q.trim();
   if (!q) {
     currentQuery = '';
@@ -650,15 +663,38 @@ function doSearch(q) {
   document.getElementById('search-inp').value = q;
   updateBrowseLabel();
 
+  // If backend is live, try real API first
+  if (API_LIVE) {
+    try {
+      const res = await fetch(`${API}/search/quick?q=${encodeURIComponent(q)}&limit=20`,
+        { signal: AbortSignal.timeout(3000) });
+      if (res.ok) {
+        const data = await res.json();
+        const apiNodes = (data.results || []).map(r => ({
+          ...r.properties, id: r.id, label: r.label, name: r.name,
+          status: r.status, desc: r.properties?.description || r.properties?.desc || '',
+          _score: r.score,
+        }));
+        if (apiNodes.length > 0) {
+          renderCards(apiNodes);
+          const narrative = data.narrative || buildNarrative(q, apiNodes, data.intent || 'general');
+          showNarrative(`🔴 Live API · ${narrative}`);
+          pushUserMsg(q);
+          setTimeout(() => pushAgentMsg(`${narrative}\n\nResults sourced live from the IBM Scout knowledge graph.`), 600);
+          return;
+        }
+      }
+    } catch (_) { /* fall through to local */ }
+  }
+
+  // Local mock fallback
   const nodes = getFilteredNodes(q);
   renderCards(nodes);
 
-  // Try API narrative, fall back to template
   const intent = detectIntent(q.toLowerCase());
   const narrative = buildNarrative(q, nodes, intent);
   showNarrative(narrative);
 
-  // Also pass to chat agent
   pushUserMsg(q);
   setTimeout(() => pushAgentMsg(narrative + '\n\nClick any card to explore in the graph view.'), 800);
 }
@@ -735,7 +771,7 @@ function askAgent(q) {
   sendChat();
 }
 
-function sendChat() {
+async function sendChat() {
   const inp = document.getElementById('cr-input');
   const q = inp.value.trim();
   if (!q) return;
@@ -743,16 +779,82 @@ function sendChat() {
   pushUserMsg(q);
   showTyping();
 
-  // Run local search and respond
+  // Try /chat endpoint first (richer response with follow-ups)
+  if (API_LIVE) {
+    try {
+      const res = await fetch(`${API}/chat`, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ message: q }),
+        signal: AbortSignal.timeout(5000),
+      });
+      if (res.ok) {
+        const data = await res.json();
+        let reply = data.answer || '';
+        if (data.follow_ups && data.follow_ups.length) {
+          const followUpsHtml = data.follow_ups
+            .map(fq => `<button class="suggested-q" onclick="askAgent(${JSON.stringify(fq)})">${fq}</button>`)
+            .join('');
+          // Build agent message div manually with follow-ups
+          const msgs = document.getElementById('cr-msgs');
+          const typing = msgs.querySelector('.typing-wrap');
+          if (typing) msgs.removeChild(typing);
+          const el = document.createElement('div');
+          el.className = 'msg agent';
+          el.innerHTML = `<div class="msg-name">Scout · ${data.mode === 'live' ? '🟢 Live' : '🟡 Mock'}</div>${reply.replace(/\n/g,'<br>')}<div style="margin-top:8px">${followUpsHtml}</div>`;
+          msgs.appendChild(el);
+          msgs.scrollTop = msgs.scrollHeight;
+          doSearch(q);
+          return;
+        }
+        pushAgentMsg(reply);
+        doSearch(q);
+        return;
+      }
+    } catch (_) { /* fall through */ }
+  }
+
+  // Local mock fallback
   const results = getFilteredNodes(q);
   const intent = detectIntent(q.toLowerCase());
   const response = buildNarrative(q, results, intent);
 
   setTimeout(() => {
     pushAgentMsg(response);
-    // Also update search results
     doSearch(q);
-  }, 900);
+  }, 800);
+}
+
+// ── Load insights summary (hero counts) ──────────────────────────────
+async function loadInsightsSummary() {
+  if (!API_LIVE) return;
+  try {
+    const res = await fetch(`${API}/insights/summary`, { signal: AbortSignal.timeout(3000) });
+    if (res.ok) {
+      const data = await res.json();
+      // Inject a small summary bar below the hero role pills
+      const hero = document.getElementById('hero');
+      let bar = document.getElementById('insights-hero-bar');
+      if (!bar) {
+        bar = document.createElement('div');
+        bar.id = 'insights-hero-bar';
+        bar.style.cssText = 'display:flex;gap:12px;margin-top:16px;flex-wrap:wrap';
+        hero.appendChild(bar);
+      }
+      const items = [
+        { label: 'Expiring support', value: data.expiring_soon, color: '#f1c21b', bg: 'rgba(241,194,27,.12)' },
+        { label: 'Critical EOS', value: data.critical_support_expired, color: '#da1e28', bg: 'rgba(218,30,40,.1)' },
+        { label: 'Whitespace gaps', value: data.whitespace_gaps, color: '#1192e8', bg: 'rgba(17,146,232,.12)' },
+        { label: `Trust score`, value: `${data.overall_trust_score}%`, color: '#24a148', bg: 'rgba(36,161,72,.1)' },
+      ];
+      bar.innerHTML = items.map(i => `
+        <div style="background:${i.bg};border:1px solid ${i.color}30;border-radius:7px;padding:6px 12px;display:flex;align-items:center;gap:6px;cursor:pointer" onclick="doSearch('${i.label}')">
+          <span style="font-size:15px;font-weight:700;color:${i.color}">${i.value}</span>
+          <span style="font-size:10px;color:var(--ts)">${i.label}</span>
+        </div>
+      `).join('');
+    }
+  } catch (_) {}
 }
 
 // ── Event bindings ────────────────────────────────────────────────────
@@ -774,6 +876,8 @@ document.getElementById('search-inp').addEventListener('input', e => {
 buildWhatsNew();
 buildFilters();
 renderCards(NODES);
+// After API check resolves, load live summary counts
+setTimeout(loadInsightsSummary, 1800);
 </script>
 </body>
 </html>

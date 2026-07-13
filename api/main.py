@@ -112,12 +112,14 @@ def create_app() -> FastAPI:
     from api.routers.ingest import router as ingest_router
     from api.routers.pruning import router as pruning_router
     from api.routers.insights import router as insights_router
+    from api.routers.chat import router as chat_router
 
     app.include_router(graph_router)
     app.include_router(search_router)
     app.include_router(ingest_router)
     app.include_router(pruning_router)
     app.include_router(insights_router)
+    app.include_router(chat_router)
 
     # ── Health check ──────────────────────────────────────────────────────────
     @app.get("/healthz", tags=["Health"])
