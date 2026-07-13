@@ -2993,7 +2993,16 @@ function init(){
   window.addEventListener('resize', () => buildGraph());
 }
 
-window.addEventListener('load', () => { init(); buildRoleDropdown(); });
+window.addEventListener('load', () => {
+  init();
+  buildRoleDropdown();
+  // Deep-link: index.html#node=sel-001 → pre-select that node
+  const hash = window.location.hash;
+  if (hash && hash.startsWith('#node=')) {
+    const nodeId = hash.slice(6);
+    setTimeout(() => selectNodeById(nodeId), 120);
+  }
+});
 </script>
 </body>
 </html>
