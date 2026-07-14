@@ -1,6 +1,6 @@
 # IBM Scout — Sales Content Optimization & Utility Tool
 
-> **v0.6.0** — Enterprise knowledge graph mapping every IBM seller relationship, account install base, product coverage, territory assignment, site-number hierarchy, deployment adoption health (Gainsight), and open pipeline. Powered by IBM Granite + Neo4j. Fully operational in demo mode with zero backend dependencies.
+> **v0.7.0** — Enterprise knowledge graph mapping every IBM seller relationship, account install base, product coverage, territory assignment, site-number hierarchy, deployment adoption health (Gainsight), open pipeline, and active Business Partner relationships. Powered by IBM Granite + Neo4j. Fully operational in demo mode with zero backend dependencies.
 
 ---
 
@@ -14,7 +14,6 @@ IBM Scout is a **living, graph-powered seller intelligence platform** that turns
 - *"Show me all stalled deployments"* → Gainsight-sourced deployment health with blockers and expand signals
 - *"What open opportunities are closing in the next 30 days?"* → pipeline with urgency flags and stage bar
 - *"Which sellers cover the Southeast territory?"* → territory detail with quota bar, sellers, accounts
-- *"Which sellers are certified on watsonx.ai?"* → product page with certified seller roster
 - *"Find all expiring support contracts in the next 90 days"* → install base with EOS/expiry urgency banners
 - *"Who can co-sell watsonx with a CE in the Northeast?"* → co-sell partner matching
 
@@ -26,6 +25,22 @@ IBM Scout is a **living, graph-powered seller intelligence platform** that turns
 Every relationship is a **Knowledge Asset** with W3C PROV-DM provenance metadata. A background **Pruning Agent** validates data freshness — stale records are flagged before they mislead anyone.
 
 ---
+
+## What's New in v0.7.0
+
+| Area | Change |
+|---|---|
+| **Account 360 — Site Numbers** | Every account now has at least one `SiteNumber` node with real IBM spend. Site cards show a spend bar per site + a **Total IBM Spend** total row at the bottom. Each site row is clickable and navigates to a search query for that site ID. |
+| **Account 360 — Business Partners** | New `🤝 Active Business Partners` section on every account. Shows partner name, IBM product they are aligned to (pill), BP contact name + email, IBM liaison name + title, and the active deal narrative. 5 partners seeded: Onix, Perficient, Presidio, Cognizant, Carahsoft. |
+| **Seed data — 6 new SiteNumber nodes** | `site-006` through `site-011` added for acc-002 (Meridian Health ×2), acc-003 (Nova Retail), acc-004 (Apex), acc-005 (Cascadia), acc-006 (SunCoast). All include `annualSpend`, `agency`, `accountId`, `HAS_SITE` and `HAS_PRODUCT` relationships. |
+| **Seed data — AT_SITE fixed** | `dep-003` (OpenPages @ Cascadia) and `dep-004` (Sterling OMS @ Nova Retail) now have `AT_SITE` edges to their correct SiteNumber nodes. |
+| **Graph — enterprise zone grows** | Enterprise graph ellipse: `cx*0.48`, `rx*0.54`, `ry*0.86` — wider, taller, more room for nodes. Personal graph: `cx*1.56`, `rx*0.34`, `ry*0.72` — compact. |
+| **Graph — personal hub clicks fixed** | `My Accounts` hub → navigates to `search.html?q=accounts`. `Site Numbers` hub → navigates to `search.html?q=site numbers`. `Goals / Quota` → opens Insights tab. All hubs now respond to click. |
+| **Light theme — all pages** | All 8 pages (`index.html`, `search.html`, `account.html`, `install.html`, `territory.html`, `product.html`, `opportunity.html`, `deployment.html`) now use the full IBM Scout light theme: `--bg:#f0f4ff`, `--panel:#ffffff`, `--card:#f4f7ff`, `--border:#dde2f0`, `--tp:#161616`. No remaining dark-glass rgba tokens. |
+| **Toolbar / source-rail overlap fixed** | Graph toolbar (`#gctrls`) moved to `bottom:52px` so it no longer overlaps the data sources bar. |
+| **Left-panel tab buttons fixed** | `switchTab()` now sets `style.display='block'` (was `''`) — Insights, Modernize, Partners, Trust panels all render correctly. |
+| **Role dropdown in header** | `search.html` header now has a color-dotted role picker dropdown (All Roles / CE Seller / BSS / Manager FLM / Executive SLM) replacing the hero-section role pills. Auto-dismisses on outside click. |
+| **Removed: What's New strip** | The scrolling `#whats-new` ticker has been removed from `search.html`. WHATS_NEW data, buildWhatsNew() function, and related CSS all removed. |
 
 ## What's New in v0.6.0
 
