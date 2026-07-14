@@ -17,7 +17,7 @@ class Settings(BaseSettings):
     watsonx_api_key: str = ""   # optional — leave blank for demo/mock mode
     watsonx_project_id: str = ""  # optional — leave blank for demo/mock mode
     watsonx_url: str = "https://us-south.ml.cloud.ibm.com"
-    watsonx_model_id: str = "ibm/granite-13b-instruct-v2"
+    watsonx_model_id: str = "ibm/granite-3-8b-instruct"
     watsonx_embed_model_id: str = "ibm/slate-125m-english-rtrvr"
 
     # ── ChromaDB (vector store) ─────────────────────────────────────────────

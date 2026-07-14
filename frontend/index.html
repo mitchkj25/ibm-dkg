@@ -5,24 +5,28 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
 <title>IBM Scout — Sales Content Optimization & Utility Tool</title>
 <link rel="icon" href="assets/scout-logo.png"/>
+<link rel="preconnect" href="https://fonts.googleapis.com"/>
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin/>
+<link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Sans:wght@400;500;600;700&family=IBM+Plex+Mono:wght@400;500&display=swap" rel="stylesheet"/>
 <style>
 *,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
 :root{
   --ibm-blue:#0f62fe;--ibm-blue-dk:#0043ce;--ibm-cyan:#1192e8;
   --ibm-teal:#009d9a;--ibm-purple:#a56eff;--ibm-orange:#ff832b;
   --ibm-red:#da1e28;--ibm-green:#24a148;--ibm-yellow:#f1c21b;
-  --bg:#f0f4ff;--bg2:#e8eeff;--panel:#ffffff;--card:#f7f9ff;
-  --border:#dde3f0;--tp:#161616;--ts:#525252;--tm:#8d8d8d;--r:8px;
+  /* Dark theme — matches search.html and all detail pages */
+  --bg:#0a0c14;--bg2:#0d1020;--panel:#131726;--card:rgba(255,255,255,0.06);
+  --border:rgba(255,255,255,0.1);--tp:#f4f4f8;--ts:#a0a8c0;--tm:#5c6480;--r:8px;
   --sw:320px;
 }
 html,body{height:100%;background:var(--bg);color:var(--tp);font-family:'IBM Plex Sans',-apple-system,BlinkMacSystemFont,sans-serif;font-size:13px;line-height:1.5;overflow:hidden}
 #app{display:grid;grid-template-rows:52px 1fr;grid-template-columns:var(--sw) 1fr var(--sw);height:100vh}
 
 /* ── Role selector pill ──────────────────────────────────────────────────── */
-#role-pill{display:flex;align-items:center;gap:5px;background:#fff;border:1px solid var(--border);border-radius:6px;padding:3px 8px;cursor:pointer;position:relative;box-shadow:0 1px 3px rgba(0,0,0,.06)}
+#role-pill{display:flex;align-items:center;gap:5px;background:var(--panel);border:1px solid var(--border);border-radius:6px;padding:3px 8px;cursor:pointer;position:relative;box-shadow:0 1px 3px rgba(0,0,0,.06)}
 #role-pill .rp-name{font-size:10px;font-weight:700;color:var(--ibm-blue)}
 #role-pill .rp-role{font-size:8px;color:var(--ts);text-transform:uppercase;letter-spacing:.4px}
-#role-dropdown{position:absolute;top:calc(100% + 6px);right:0;background:#fff;border:1px solid var(--border);border-radius:8px;padding:6px;z-index:500;min-width:220px;display:none;box-shadow:0 8px 24px rgba(0,0,60,.12)}
+#role-dropdown{position:absolute;top:calc(100% + 6px);right:0;background:var(--panel);border:1px solid var(--border);border-radius:8px;padding:6px;z-index:500;min-width:220px;display:none;box-shadow:0 8px 24px rgba(0,0,60,.12)}
 #role-dropdown.open{display:block}
 .rd-item{display:flex;align-items:center;gap:8px;padding:6px 8px;border-radius:5px;cursor:pointer;transition:background .15s}
 .rd-item:hover{background:#f0f4ff}
@@ -33,7 +37,7 @@ html,body{height:100%;background:var(--bg);color:var(--tp);font-family:'IBM Plex
 
 /* ── Modernization panel ─────────────────────────────────────────────────── */
 #mod-panel{display:none}
-.mod-card{background:#fff;border:1px solid var(--border);border-radius:var(--r);padding:10px;margin-bottom:8px;transition:border-color .2s;box-shadow:0 1px 3px rgba(0,0,0,.04)}
+.mod-card{background:var(--panel);border:1px solid var(--border);border-radius:var(--r);padding:10px;margin-bottom:8px;transition:border-color .2s;box-shadow:0 1px 3px rgba(0,0,0,.04)}
 .mod-card:hover{border-color:rgba(15,98,254,0.4)}
 .mod-card-hdr{display:flex;align-items:flex-start;gap:6px;margin-bottom:5px}
 .mod-badge{padding:1px 7px;border-radius:4px;font-size:8px;font-weight:800;text-transform:uppercase;letter-spacing:.5px;flex-shrink:0}
@@ -48,13 +52,13 @@ html,body{height:100%;background:var(--bg);color:var(--tp);font-family:'IBM Plex
 .mod-btn{padding:3px 9px;border-radius:4px;font-size:8px;font-weight:800;cursor:pointer;border:1px solid;transition:all .15s;text-transform:uppercase;letter-spacing:.3px}
 .mod-btn.primary{background:rgba(15,98,254,0.08);border-color:rgba(15,98,254,0.3);color:var(--ibm-blue)}
 .mod-btn.primary:hover{background:rgba(15,98,254,0.15)}
-.mod-btn.secondary{background:#f4f4f4;border-color:var(--border);color:var(--ts)}
+.mod-btn.secondary{background:var(--card);border-color:var(--border);color:var(--ts)}
 .mod-btn.secondary:hover{background:#e8e8e8;color:var(--tp)}
 .mod-btn.green{background:rgba(36,161,72,.08);border-color:rgba(36,161,72,.3);color:var(--ibm-green)}
 
 /* ── Business Partner panel ──────────────────────────────────────────────── */
 #partner-panel{display:none}
-.bp-card{background:#fff;border:1px solid rgba(165,110,255,0.25);border-radius:var(--r);padding:9px;margin-bottom:7px;cursor:pointer;transition:border-color .2s;box-shadow:0 1px 3px rgba(0,0,0,.04)}
+.bp-card{background:var(--panel);border:1px solid rgba(165,110,255,0.25);border-radius:var(--r);padding:9px;margin-bottom:7px;cursor:pointer;transition:border-color .2s;box-shadow:0 1px 3px rgba(0,0,0,.04)}
 .bp-card:hover{border-color:rgba(165,110,255,0.5)}
 .bp-hdr{display:flex;align-items:center;gap:6px;margin-bottom:4px}
 .bp-dot{width:8px;height:8px;border-radius:50%;background:var(--ibm-purple);flex-shrink:0}
@@ -65,7 +69,7 @@ html,body{height:100%;background:var(--bg);color:var(--tp);font-family:'IBM Plex
 .bp-opp{font-size:9px;background:rgba(241,194,27,0.06);border:1px solid rgba(241,194,27,0.2);border-radius:4px;padding:3px 6px;margin-top:5px;color:#946500}
 
 /* ── Write-back panel ────────────────────────────────────────────────────── */
-#wb-panel{background:#fff;border:1px solid var(--border);border-radius:var(--r);padding:10px;display:none;margin-top:6px}
+#wb-panel{background:var(--panel);border:1px solid var(--border);border-radius:var(--r);padding:10px;display:none;margin-top:6px}
 .wb-header{font-size:8px;font-weight:800;text-transform:uppercase;letter-spacing:1px;color:var(--ibm-teal);margin-bottom:8px;display:flex;align-items:center;gap:5px}
 .wb-btn{padding:4px 10px;border-radius:4px;font-size:9px;font-weight:700;cursor:pointer;border:1px solid;transition:all .15s;width:100%;text-align:center;margin-bottom:4px}
 .wb-btn.confirm{background:rgba(36,161,72,.08);border-color:rgba(36,161,72,.3);color:var(--ibm-green)}
@@ -87,7 +91,7 @@ html,body{height:100%;background:var(--bg);color:var(--tp);font-family:'IBM Plex
 .conflict-resolved{color:var(--ibm-green);font-size:8px;margin-top:3px}
 
 /* ── Explainability trail ────────────────────────────────────────────────── */
-.xplain-trail{background:#f7f9ff;border:1px solid var(--border);border-radius:5px;padding:7px;margin-top:5px;font-size:8px;font-family:'IBM Plex Mono',monospace}
+.xplain-trail{background:var(--card);border:1px solid var(--border);border-radius:5px;padding:7px;margin-top:5px;font-size:8px;font-family:'IBM Plex Mono',monospace}
 .xplain-row{display:flex;gap:6px;padding:2px 0;border-bottom:1px solid var(--border)}
 .xplain-row:last-child{border-bottom:none}
 .xplain-k{color:var(--ts);min-width:90px;flex-shrink:0}
@@ -97,30 +101,30 @@ html,body{height:100%;background:var(--bg);color:var(--tp);font-family:'IBM Plex
 /* ── Email draft modal ───────────────────────────────────────────────────── */
 #email-modal{display:none;position:fixed;inset:0;background:rgba(22,22,22,0.5);z-index:600;align-items:center;justify-content:center;backdrop-filter:blur(6px)}
 #email-modal.open{display:flex}
-#email-panel{background:#fff;border:1px solid var(--border);border-radius:10px;padding:22px;width:520px;max-width:94vw;max-height:88vh;overflow-y:auto;box-shadow:0 8px 40px rgba(0,0,60,.15)}
+#email-panel{background:var(--panel);border:1px solid var(--border);border-radius:10px;padding:22px;width:520px;max-width:94vw;max-height:88vh;overflow-y:auto;box-shadow:0 8px 40px rgba(0,0,60,.15)}
 .em-label{font-size:8px;font-weight:800;text-transform:uppercase;letter-spacing:.8px;color:var(--ts);margin-bottom:4px;margin-top:10px}
-.em-field{background:#f4f4f4;border:1px solid var(--border);border-radius:5px;padding:6px 9px;font-size:10px;color:var(--tp);width:100%;font-family:inherit}
+.em-field{background:var(--card);border:1px solid var(--border);border-radius:5px;padding:6px 9px;font-size:10px;color:var(--tp);width:100%;font-family:inherit}
 .em-field:focus{outline:none;border-color:rgba(15,98,254,0.5);background:#fff}
 .em-body{min-height:180px;resize:vertical}
 .em-footer{display:flex;gap:8px;margin-top:14px}
 .em-btn{flex:1;padding:9px;border-radius:6px;font-size:11px;font-weight:700;cursor:pointer;border:none;transition:background .2s}
 .em-btn.send{background:var(--ibm-blue);color:#fff}
 .em-btn.send:hover{background:var(--ibm-blue-dk)}
-.em-btn.cancel{background:#f4f4f4;color:var(--ts);border:1px solid var(--border)}
+.em-btn.cancel{background:var(--card);color:var(--ts);border:1px solid var(--border)}
 .em-btn.copy{background:rgba(36,161,72,0.1);color:var(--ibm-green);border:1px solid rgba(36,161,72,0.3)}
 
 /* ── Digest modal ────────────────────────────────────────────────────────── */
 #digest-modal{display:none;position:fixed;inset:0;background:rgba(22,22,22,0.5);z-index:600;align-items:center;justify-content:center;backdrop-filter:blur(6px)}
 #digest-modal.open{display:flex}
-#digest-panel{background:#fff;border:1px solid var(--border);border-radius:10px;padding:22px;width:500px;max-width:94vw;max-height:88vh;overflow-y:auto;box-shadow:0 8px 40px rgba(0,0,60,.15)}
+#digest-panel{background:var(--panel);border:1px solid var(--border);border-radius:10px;padding:22px;width:500px;max-width:94vw;max-height:88vh;overflow-y:auto;box-shadow:0 8px 40px rgba(0,0,60,.15)}
 
 /* ── Header ───────────────────────────────────────────────────────────── */
-#hdr{grid-column:1/-1;background:#fff;border-bottom:1px solid var(--border);display:flex;align-items:center;padding:0 16px;gap:12px;z-index:100;box-shadow:0 1px 4px rgba(0,0,60,.06)}
+#hdr{grid-column:1/-1;background:rgba(10,12,20,0.92);border-bottom:1px solid var(--border);display:flex;align-items:center;padding:0 16px;gap:12px;z-index:100;box-shadow:0 1px 4px rgba(0,0,60,.06)}
 .logo{display:flex;align-items:center;gap:9px;font-weight:700;font-size:14px;white-space:nowrap;color:var(--tp)}
 .pill{background:var(--ibm-blue);color:#fff;padding:2px 7px;border-radius:4px;font-size:9px;font-weight:800;letter-spacing:1.5px}
 .hdiv{width:1px;height:22px;background:var(--border)}
-#sbar{flex:1;display:flex;align-items:center;background:#f4f4f4;border:1px solid var(--border);border-radius:var(--r);padding:0 12px;gap:8px;max-width:600px;transition:border-color .2s}
-#sbar:focus-within{border-color:rgba(15,98,254,0.5);background:#fff;box-shadow:0 0 0 2px rgba(15,98,254,0.1)}
+#sbar{flex:1;display:flex;align-items:center;background:var(--card);border:1px solid var(--border);border-radius:var(--r);padding:0 12px;gap:8px;max-width:600px;transition:border-color .2s}
+#sbar:focus-within{border-color:rgba(15,98,254,0.5);background:var(--panel);box-shadow:0 0 0 2px rgba(15,98,254,0.1)}
 #sbar input{flex:1;background:none;border:none;outline:none;color:var(--tp);font-size:12px;padding:8px 0;font-family:inherit}
 #sbar input::placeholder{color:var(--tm)}
 #sbtn{background:var(--ibm-blue);color:#fff;border:none;cursor:pointer;padding:5px 12px;border-radius:5px;font-size:11px;font-weight:700;transition:background .2s}
@@ -165,8 +169,8 @@ hr{border:none;border-top:1px solid var(--border);margin:10px 0}
 .node-selected circle{filter:drop-shadow(0 0 6px currentColor)}
 
 /* ── Graph overlay controls ───────────────────────────────────────────── */
-#gctrls{position:absolute;bottom:16px;left:50%;transform:translateX(-50%);display:flex;gap:5px;background:#fff;border:1px solid var(--border);border-radius:8px;padding:5px;box-shadow:0 2px 8px rgba(0,0,60,.1)}
-.gcb{background:#f4f4f4;border:1px solid var(--border);color:var(--tp);width:30px;height:30px;border-radius:5px;cursor:pointer;font-size:14px;display:flex;align-items:center;justify-content:center;transition:background .15s}
+#gctrls{position:absolute;bottom:16px;left:50%;transform:translateX(-50%);display:flex;gap:5px;background:var(--panel);border:1px solid var(--border);border-radius:8px;padding:5px;box-shadow:0 2px 8px rgba(0,0,60,.1)}
+.gcb{background:var(--card);border:1px solid var(--border);color:var(--tp);width:30px;height:30px;border-radius:5px;cursor:pointer;font-size:14px;display:flex;align-items:center;justify-content:center;transition:background .15s}
 .gcb:hover{background:#e8e8e8}
 
 /* ── Source rail (bottom of graph) ──────────────────────────────────── */
@@ -176,13 +180,13 @@ hr{border:none;border-top:1px solid var(--border);margin:10px 0}
 .gov-bar{margin-left:auto;display:flex;align-items:center;gap:5px;font-size:8px;font-weight:700;color:var(--ibm-green);letter-spacing:.3px}
 
 /* ── Tooltip ──────────────────────────────────────────────────────────── */
-#tip{position:absolute;pointer-events:none;background:#fff;border:1px solid var(--border);border-radius:var(--r);padding:10px 13px;max-width:240px;z-index:200;display:none;box-shadow:0 4px 16px rgba(0,0,60,.12)}
+#tip{position:absolute;pointer-events:none;background:var(--panel);border:1px solid var(--border);border-radius:var(--r);padding:10px 13px;max-width:240px;z-index:200;display:none;box-shadow:0 4px 16px rgba(0,0,60,.12)}
 .tl{font-size:8px;font-weight:800;text-transform:uppercase;letter-spacing:.8px;margin-bottom:3px}
 .tn{font-size:13px;font-weight:700;color:var(--tp)}
 .td{color:var(--ts);margin-top:4px;font-size:10px;line-height:1.5}
 
 /* ── Search results ───────────────────────────────────────────────────── */
-.ri{background:#fff;border:1px solid var(--border);border-radius:var(--r);padding:9px;margin-bottom:6px;cursor:pointer;transition:border-color .2s,background .2s;box-shadow:0 1px 3px rgba(0,0,0,.03)}
+.ri{background:var(--panel);border:1px solid var(--border);border-radius:var(--r);padding:9px;margin-bottom:6px;cursor:pointer;transition:border-color .2s,background .2s;box-shadow:0 1px 3px rgba(0,0,0,.03)}
 .ri:hover{border-color:rgba(15,98,254,0.4);background:#f0f4ff}
 .ri.stale{opacity:.6;border-color:rgba(255,131,43,.2)}
 .rih{display:flex;align-items:center;gap:6px;margin-bottom:3px}
@@ -195,7 +199,7 @@ hr{border:none;border-top:1px solid var(--border);margin:10px 0}
 .nbl{font-size:8px;font-weight:800;text-transform:uppercase;letter-spacing:.8px;color:var(--ibm-blue);margin-bottom:4px;display:flex;align-items:center;gap:5px}
 
 /* ── Detail panel ─────────────────────────────────────────────────────── */
-#dp{background:#fff;border:1px solid var(--border);border-radius:var(--r);padding:12px;display:none;box-shadow:0 1px 4px rgba(0,0,0,.04)}
+#dp{background:var(--panel);border:1px solid var(--border);border-radius:var(--r);padding:12px;display:none;box-shadow:0 1px 4px rgba(0,0,0,.04)}
 .dpt{font-size:8px;font-weight:800;text-transform:uppercase;letter-spacing:.8px;margin-bottom:4px}
 .dpn{font-size:14px;font-weight:700;margin-bottom:5px;line-height:1.2;color:var(--tp)}
 .dprow{display:flex;gap:8px;margin:3px 0}
@@ -204,25 +208,25 @@ hr{border:none;border-top:1px solid var(--border);margin:10px 0}
 .dps{display:inline-block;padding:2px 7px;border-radius:8px;font-size:8px;font-weight:800;margin-bottom:8px;letter-spacing:.3px}
 .dps.ACTIVE{background:rgba(36,161,72,.1);color:var(--ibm-green)}
 .dps.STALE{background:rgba(255,131,43,.1);color:var(--ibm-orange)}
-.conn-badge{display:inline-block;padding:1px 6px;border-radius:6px;font-size:9px;margin:2px;background:#f4f4f4;border:1px solid var(--border);color:var(--ts)}
+.conn-badge{display:inline-block;padding:1px 6px;border-radius:6px;font-size:9px;margin:2px;background:var(--card);border:1px solid var(--border);color:var(--ts)}
 
 /* ── Org Hierarchy Panel ─────────────────────────────────────────────── */
-#ohp{background:#fff;border:1px solid var(--border);border-radius:var(--r);padding:12px;display:none;margin-top:6px}
+#ohp{background:var(--panel);border:1px solid var(--border);border-radius:var(--r);padding:12px;display:none;margin-top:6px}
 .oh-header{display:flex;align-items:center;justify-content:space-between;margin-bottom:10px}
 .oh-close{background:none;border:none;color:var(--ts);cursor:pointer;font-size:13px;padding:2px 6px;border-radius:4px;transition:color .15s}
 .oh-close:hover{color:var(--tp)}
 .oh-tree{display:flex;flex-direction:column;gap:0}
 .oh-node{display:flex;align-items:center;gap:7px;padding:5px 7px;border-radius:5px;cursor:pointer;transition:background .15s;border-left:2px solid transparent}
-.oh-node:hover{background:#f0f4ff;border-left-color:var(--ibm-blue)}
+.oh-node:hover{background:var(--card);border-left-color:var(--ibm-blue)}
 .oh-dot{width:8px;height:8px;border-radius:50%;flex-shrink:0}
 .oh-name{font-size:11px;font-weight:600;flex:1;color:var(--tp)}
-.oh-role{font-size:8px;padding:1px 5px;border-radius:4px;background:#f4f4f4;color:var(--ts);letter-spacing:.3px;font-weight:700;text-transform:uppercase}
+.oh-role{font-size:8px;padding:1px 5px;border-radius:4px;background:var(--card);color:var(--ts);letter-spacing:.3px;font-weight:700;text-transform:uppercase}
 .oh-indent{padding-left:14px}
 .oh-indent2{padding-left:28px}
 .oh-spend-bar{height:3px;border-radius:2px;margin-top:3px;background:linear-gradient(90deg,var(--ibm-blue),var(--ibm-cyan))}
 
 /* ── Pruning panel ────────────────────────────────────────────────────── */
-#ps{background:#fff;border:1px solid var(--border);border-radius:var(--r);padding:11px}
+#ps{background:var(--panel);border:1px solid var(--border);border-radius:var(--r);padding:11px}
 .psh{display:flex;align-items:center;justify-content:space-between;margin-bottom:8px}
 #rpb{background:rgba(165,110,255,0.08);border:1px solid rgba(165,110,255,0.25);color:var(--ibm-purple);padding:3px 10px;border-radius:5px;cursor:pointer;font-size:9px;font-weight:700;transition:background .15s}
 #rpb:hover{background:rgba(165,110,255,.18)}
@@ -232,14 +236,14 @@ hr{border:none;border-top:1px solid var(--border);margin:10px 0}
 
 /* ── View tabs ────────────────────────────────────────────────────────── */
 .vtabs{display:flex;gap:4px;margin-bottom:12px}
-.vtab{flex:1;padding:5px 8px;border-radius:5px;border:1px solid var(--border);background:#f4f4f4;cursor:pointer;font-size:9px;font-weight:800;text-transform:uppercase;letter-spacing:.6px;color:var(--ts);text-align:center;transition:all .15s}
+.vtab{flex:1;padding:5px 8px;border-radius:5px;border:1px solid var(--border);background:var(--card);cursor:pointer;font-size:9px;font-weight:800;text-transform:uppercase;letter-spacing:.6px;color:var(--ts);text-align:center;transition:all .15s}
 .vtab.active{background:rgba(15,98,254,0.08);border-color:rgba(15,98,254,0.3);color:var(--ibm-blue)}
 .vtab:hover:not(.active){background:#e8e8e8;color:var(--tp)}
 
 /* ── Insights cards ──────────────────────────────────────────────────── */
 #ins-panel{display:none}
 .ins-sumgrid{display:grid;grid-template-columns:1fr 1fr;gap:6px;margin-bottom:12px}
-.ins-sc{background:#fff;border:1px solid var(--border);border-radius:var(--r);padding:9px;text-align:center;cursor:pointer;transition:border-color .2s;box-shadow:0 1px 3px rgba(0,0,0,.03)}
+.ins-sc{background:var(--panel);border:1px solid var(--border);border-radius:var(--r);padding:9px;text-align:center;cursor:pointer;transition:border-color .2s;box-shadow:0 1px 3px rgba(0,0,0,.03)}
 .ins-sc:hover{border-color:rgba(15,98,254,0.3)}
 .ins-sc .iv{font-size:22px;font-weight:700;line-height:1;font-variant-numeric:tabular-nums}
 .ins-sc .il{font-size:8px;color:var(--tm);text-transform:uppercase;letter-spacing:.5px;margin-top:2px}
@@ -248,7 +252,7 @@ hr{border:none;border-top:1px solid var(--border);margin:10px 0}
 .ins-sc.ok .iv{color:var(--ibm-green)}
 .ins-sc.neutral .iv{color:var(--ibm-blue)}
 
-.icard{background:#fff;border:1px solid var(--border);border-radius:var(--r);padding:9px;margin-bottom:6px;transition:border-color .2s,background .2s;cursor:pointer;box-shadow:0 1px 3px rgba(0,0,0,.03)}
+.icard{background:var(--panel);border:1px solid var(--border);border-radius:var(--r);padding:9px;margin-bottom:6px;transition:border-color .2s,background .2s;cursor:pointer;box-shadow:0 1px 3px rgba(0,0,0,.03)}
 .icard:hover{border-color:rgba(15,98,254,0.3);background:#f0f4ff}
 .icard-hdr{display:flex;align-items:flex-start;gap:6px;margin-bottom:4px}
 .icard-badge{padding:1px 6px;border-radius:4px;font-size:8px;font-weight:800;text-transform:uppercase;letter-spacing:.4px;flex-shrink:0;margin-top:1px}
@@ -260,12 +264,12 @@ hr{border:none;border-top:1px solid var(--border);margin:10px 0}
 .icard-title{font-size:11px;font-weight:600;color:var(--tp);line-height:1.35}
 .icard-body{font-size:9px;color:var(--ts);line-height:1.5;margin-top:2px}
 .icard-meta{display:flex;gap:8px;margin-top:5px;flex-wrap:wrap}
-.icard-tag{font-size:8px;color:var(--ts);background:#f4f4f4;padding:1px 5px;border-radius:3px}
+.icard-tag{font-size:8px;color:var(--ts);background:var(--card);padding:1px 5px;border-radius:3px}
 
 .ins-section-title{font-size:8px;font-weight:800;text-transform:uppercase;letter-spacing:1px;color:var(--ts);margin:10px 0 5px 0;padding:4px 0;border-bottom:1px solid var(--border)}
 
 /* ── Trace panel ─────────────────────────────────────────────────────── */
-#trace-panel{background:#f7f9ff;border:1px solid var(--border);border-radius:var(--r);padding:10px;display:none;margin-top:6px;font-family:'IBM Plex Mono',monospace}
+#trace-panel{background:var(--card);border:1px solid var(--border);border-radius:var(--r);padding:10px;display:none;margin-top:6px;font-family:'IBM Plex Mono',monospace}
 .trace-row{display:flex;gap:8px;padding:2px 0;border-bottom:1px solid var(--border)}
 .trace-row:last-child{border-bottom:none}
 .trace-k{font-size:8px;color:var(--ts);min-width:110px;flex-shrink:0}
@@ -283,10 +287,10 @@ hr{border:none;border-top:1px solid var(--border);margin:10px 0}
 /* ── Hierarchy flow view ─────────────────────────────────────────────── */
 #hier-flow{position:absolute;inset:0;background:var(--bg);z-index:10;display:none;overflow:auto;padding:24px}
 #hier-flow.open{display:block}
-.hf-close{position:sticky;top:0;float:right;background:#fff;border:1px solid var(--border);border-radius:6px;padding:4px 12px;cursor:pointer;font-size:11px;font-weight:700;color:var(--ts);z-index:20;box-shadow:0 2px 8px rgba(0,0,60,.1)}
+.hf-close{position:sticky;top:0;float:right;background:var(--panel);border:1px solid var(--border);border-radius:6px;padding:4px 12px;cursor:pointer;font-size:11px;font-weight:700;color:var(--ts);z-index:20;box-shadow:0 2px 8px rgba(0,0,60,.1)}
 .hf-title{font-size:14px;font-weight:800;color:var(--tp);margin-bottom:4px}
 .hf-sub{font-size:10px;color:var(--ts);margin-bottom:8px}
-.hf-chain-bar{display:flex;align-items:center;gap:6px;flex-wrap:wrap;margin-bottom:14px;padding:6px 10px;background:#fff;border:1px solid var(--border);border-radius:7px}
+.hf-chain-bar{display:flex;align-items:center;gap:6px;flex-wrap:wrap;margin-bottom:14px;padding:6px 10px;background:var(--panel);border:1px solid var(--border);border-radius:7px}
 .hf-chain-btn{background:rgba(0,157,154,0.1);border:1px solid rgba(0,157,154,0.3);color:#009d9a;border-radius:5px;padding:3px 10px;font-size:9px;font-weight:800;cursor:pointer;text-transform:uppercase;letter-spacing:.4px;transition:background .15s}
 .hf-chain-btn:hover{background:rgba(0,157,154,0.2)}
 .hf-chain-btn.active{background:#009d9a;color:#fff}
@@ -294,13 +298,13 @@ hr{border:none;border-top:1px solid var(--border);margin:10px 0}
 #hf-chain-panel{max-width:900px;margin:16px auto 0;display:none}
 .hf-chain-title{font-size:11px;font-weight:800;text-transform:uppercase;letter-spacing:.8px;color:var(--ts);margin-bottom:10px;padding-bottom:5px;border-bottom:1px solid var(--border)}
 .hf-chain-row{display:grid;grid-template-columns:repeat(auto-fill,minmax(180px,1fr));gap:8px;margin-bottom:10px}
-.hf-seller-card{background:#fff;border:1px solid var(--border);border-radius:8px;padding:9px 10px;cursor:pointer;transition:border-color .15s}
+.hf-seller-card{background:var(--panel);border:1px solid var(--border);border-radius:8px;padding:9px 10px;cursor:pointer;transition:border-color .15s}
 .hf-seller-card:hover{border-color:#33b1ff}
 .hf-seller-card .sc-name{font-size:11px;font-weight:700;color:var(--tp);margin-bottom:3px}
 .hf-seller-card .sc-type{display:inline-block;font-size:7.5px;font-weight:800;padding:1px 5px;border-radius:3px;text-transform:uppercase;margin-bottom:4px}
 .hf-seller-card .sc-sites{font-size:8px;color:#33b1ff;font-weight:600;line-height:1.5}
 .hf-seller-card .sc-accs{font-size:7.5px;color:var(--ts);line-height:1.5}
-.hf-mgr-card{background:#fff;border-left:4px solid #009d9a;border-radius:0 8px 8px 0;border-top:1px solid var(--border);border-right:1px solid var(--border);border-bottom:1px solid var(--border);padding:10px 12px;margin-bottom:10px}
+.hf-mgr-card{background:var(--panel);border-left:4px solid #009d9a;border-radius:0 8px 8px 0;border-top:1px solid var(--border);border-right:1px solid var(--border);border-bottom:1px solid var(--border);padding:10px 12px;margin-bottom:10px}
 .hf-mgr-card .mc-label{font-size:8px;font-weight:800;text-transform:uppercase;letter-spacing:.7px;margin-bottom:4px}
 .hf-mgr-card .mc-name{font-size:13px;font-weight:700;color:var(--tp);margin-bottom:2px}
 .hf-mgr-card .mc-sub{font-size:9px;color:var(--ts)}
@@ -485,7 +489,7 @@ hr{border:none;border-top:1px solid var(--border);margin:10px 0}
 
   <!-- Export Modal -->
   <div id="expmodal" style="display:none;position:absolute;inset:0;background:rgba(22,22,22,0.5);z-index:500;align-items:center;justify-content:center;backdrop-filter:blur(6px)">
-    <div id="exmpanel" style="background:#fff;border:1px solid var(--border);border-radius:10px;padding:22px;width:420px;max-width:92vw;box-shadow:0 8px 32px rgba(0,0,60,.15)">
+    <div id="exmpanel" style="background:var(--panel);border:1px solid var(--border);border-radius:10px;padding:22px;width:420px;max-width:92vw;box-shadow:0 8px 32px rgba(0,0,60,.15)">
       <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:16px">
         <div style="font-size:13px;font-weight:700;color:var(--tp)">Export / Share Graph</div>
         <button id="exmclose" style="background:none;border:none;color:var(--ts);cursor:pointer;font-size:16px;line-height:1">✕</button>
@@ -497,7 +501,7 @@ hr{border:none;border-top:1px solid var(--border);margin:10px 0}
           <div style="font-size:11px;font-weight:700;color:var(--ibm-blue);margin-bottom:2px">Full Graph</div>
           <div style="font-size:9px;color:var(--ts)">All visible nodes &amp; edges</div>
         </label>
-        <label id="scope-sub-lbl" style="flex:1;background:#f4f4f4;border:1px solid var(--border);border-radius:6px;padding:8px;cursor:pointer;text-align:center">
+        <label id="scope-sub-lbl" style="flex:1;background:var(--card);border:1px solid var(--border);border-radius:6px;padding:8px;cursor:pointer;text-align:center">
           <input type="radio" name="exscope" value="subgraph" style="display:none">
           <div style="font-size:11px;font-weight:700;color:var(--ts);margin-bottom:2px" id="scope-sub-name">Subgraph</div>
           <div style="font-size:9px;color:var(--ts)" id="scope-sub-hint">Select a node first</div>
@@ -505,17 +509,17 @@ hr{border:none;border-top:1px solid var(--border);margin:10px 0}
       </div>
       <div style="font-size:9px;font-weight:800;text-transform:uppercase;letter-spacing:1px;color:var(--ts);margin-bottom:8px">Format</div>
       <div style="display:flex;gap:6px;margin-bottom:20px">
-        <label style="flex:1;background:#f4f4f4;border:1px solid var(--border);border-radius:6px;padding:7px;cursor:pointer;text-align:center">
+        <label style="flex:1;background:var(--card);border:1px solid var(--border);border-radius:6px;padding:7px;cursor:pointer;text-align:center">
           <input type="radio" name="exfmt" value="png" checked style="display:none">
           <div style="font-size:11px;font-weight:700;color:var(--tp)">PNG Image</div>
           <div style="font-size:9px;color:var(--ts)">Share-ready visual</div>
         </label>
-        <label style="flex:1;background:#f4f4f4;border:1px solid var(--border);border-radius:6px;padding:7px;cursor:pointer;text-align:center">
+        <label style="flex:1;background:var(--card);border:1px solid var(--border);border-radius:6px;padding:7px;cursor:pointer;text-align:center">
           <input type="radio" name="exfmt" value="csv" style="display:none">
           <div style="font-size:11px;font-weight:700;color:var(--tp)">CSV Data</div>
           <div style="font-size:9px;color:var(--ts)">Nodes + Edges</div>
         </label>
-        <label style="flex:1;background:#f4f4f4;border:1px solid var(--border);border-radius:6px;padding:7px;cursor:pointer;text-align:center">
+        <label style="flex:1;background:var(--card);border:1px solid var(--border);border-radius:6px;padding:7px;cursor:pointer;text-align:center">
           <input type="radio" name="exfmt" value="json" style="display:none">
           <div style="font-size:11px;font-weight:700;color:var(--tp)">JSON</div>
           <div style="font-size:9px;color:var(--ts)">Graph data</div>
@@ -527,7 +531,7 @@ hr{border:none;border-top:1px solid var(--border);margin:10px 0}
       </div>
       <div style="display:flex;gap:8px">
         <button id="exmbtn" style="flex:1;background:var(--ibm-blue);color:#fff;border:none;border-radius:6px;padding:10px;font-size:12px;font-weight:700;cursor:pointer">↓ Download</button>
-        <button id="exmcopybtn" style="background:#f4f4f4;border:1px solid var(--border);color:var(--tp);border-radius:6px;padding:10px 14px;font-size:12px;cursor:pointer" title="Copy PNG to clipboard">Copy</button>
+        <button id="exmcopybtn" style="background:var(--card);border:1px solid var(--border);color:var(--tp);border-radius:6px;padding:10px 14px;font-size:12px;cursor:pointer" title="Copy PNG to clipboard">Copy</button>
       </div>
       <div id="exmfeedback" style="text-align:center;font-size:10px;color:var(--ibm-green);margin-top:8px;min-height:16px"></div>
     </div>
@@ -616,7 +620,7 @@ hr{border:none;border-top:1px solid var(--border);margin:10px 0}
 
 <!-- ── Correct Fact Modal ─────────────────────────────────────────────────── -->
 <div id="correct-modal" style="display:none;position:fixed;inset:0;background:rgba(22,22,22,0.5);z-index:610;align-items:center;justify-content:center;backdrop-filter:blur(6px)">
-  <div style="background:#fff;border:1px solid rgba(255,131,43,0.3);border-radius:10px;padding:22px;width:440px;max-width:94vw;box-shadow:0 8px 32px rgba(0,0,60,.15)">
+  <div style="background:var(--panel);border:1px solid rgba(255,131,43,0.3);border-radius:10px;padding:22px;width:440px;max-width:94vw;box-shadow:0 8px 32px rgba(0,0,60,.15)">
     <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:14px">
       <div style="font-size:13px;font-weight:700;color:var(--ibm-orange)">✎ Submit a Correction</div>
       <button onclick="document.getElementById('correct-modal').style.display='none'" style="background:none;border:none;color:var(--ts);cursor:pointer;font-size:16px">✕</button>
@@ -632,7 +636,7 @@ hr{border:none;border-top:1px solid var(--border);margin:10px 0}
     <input id="correct-src" class="em-field" placeholder="e.g. Customer call 2025-07-10, Salesforce ID 00Q…"/>
     <div style="display:flex;gap:8px;margin-top:14px">
       <button onclick="submitCorrection()" style="flex:1;background:rgba(255,131,43,0.1);border:1px solid rgba(255,131,43,0.3);color:var(--ibm-orange);border-radius:6px;padding:9px;font-size:11px;font-weight:700;cursor:pointer">Submit Correction</button>
-      <button onclick="document.getElementById('correct-modal').style.display='none'" style="background:#f4f4f4;border:1px solid var(--border);color:var(--ts);border-radius:6px;padding:9px 14px;font-size:11px;cursor:pointer">Cancel</button>
+      <button onclick="document.getElementById('correct-modal').style.display='none'" style="background:var(--card);border:1px solid var(--border);color:var(--ts);border-radius:6px;padding:9px 14px;font-size:11px;cursor:pointer">Cancel</button>
     </div>
     <div id="correct-feedback" style="text-align:center;font-size:10px;color:var(--ibm-green);margin-top:6px;min-height:14px"></div>
   </div>
@@ -648,7 +652,7 @@ hr{border:none;border-top:1px solid var(--border);margin:10px 0}
     <div id="digest-content" style="font-size:10px;color:var(--ts);line-height:1.7"></div>
     <div style="display:flex;gap:8px;margin-top:16px">
       <button onclick="copyDigest()" style="flex:1;background:rgba(36,161,72,0.1);border:1px solid rgba(36,161,72,0.3);color:var(--ibm-green);border-radius:6px;padding:9px;font-size:11px;font-weight:700;cursor:pointer">⧉ Copy Digest</button>
-      <button onclick="document.getElementById('digest-modal').classList.remove('open')" style="background:#f4f4f4;border:1px solid var(--border);color:var(--ts);border-radius:6px;padding:9px 14px;font-size:11px;cursor:pointer">Close</button>
+      <button onclick="document.getElementById('digest-modal').classList.remove('open')" style="background:var(--card);border:1px solid var(--border);color:var(--ts);border-radius:6px;padding:9px 14px;font-size:11px;cursor:pointer">Close</button>
     </div>
     <div style="font-size:8px;color:var(--tm);margin-top:8px;text-align:center">IBM Scout · Powered by IBM Granite · Weekly cadence</div>
   </div>
@@ -1622,7 +1626,7 @@ function showChainDetail(mode) {
     return html;
   }
 
-  panel.innerHTML = `<div style="background:#fff;border:1px solid var(--border);border-radius:10px;padding:16px">` + renderMgrCard(tree) + `</div>`;
+  panel.innerHTML = `<div style="background:var(--panel);border:1px solid var(--border);border-radius:10px;padding:16px">` + renderMgrCard(tree) + `</div>`;
   panel.style.display = 'block';
   panel.scrollIntoView({behavior:'smooth', block:'nearest'});
 }
@@ -2059,7 +2063,7 @@ function buildSiteSpendTable(siteNodes, grouped) {
     accGroupHtml = `<div style="display:flex;flex-wrap:wrap;gap:6px;margin-bottom:12px">` +
       accEntries.map(([name, d]) => {
         const pct = totalSpend ? Math.round(d.spend/totalSpend*100) : 0;
-        return `<div onclick="${d.id?`focusNode('${d.id}')`:'void 0'}" style="cursor:${d.id?'pointer':'default'};background:#fff;border:1px solid var(--border);border-radius:7px;padding:7px 10px;min-width:130px;flex:1">
+        return `<div onclick="${d.id?`focusNode('${d.id}')`:'void 0'}" style="cursor:${d.id?'pointer':'default'};background:var(--panel);border:1px solid var(--border);border-radius:7px;padding:7px 10px;min-width:130px;flex:1">
           <div style="font-size:8px;font-weight:800;text-transform:uppercase;letter-spacing:.6px;color:var(--ibm-blue);margin-bottom:3px">${name.length>22?name.slice(0,20)+'…':name}</div>
           <div style="font-size:13px;font-weight:700;color:#33b1ff">$${(d.spend/1e6).toFixed(2)}M</div>
           <div style="font-size:7.5px;color:var(--ts);margin-top:1px">${d.count} site${d.count>1?'s':''} · ${pct}% of total</div>
@@ -2142,7 +2146,7 @@ function buildProductCoverageReport(ql) {
       const without   = sites.filter(s=>!SEED_EDGES.some(e=>e.s===s.id&&e.t===p.id&&e.type==='HAS_PRODUCT'));
       const pct       = Math.round(withProd.length/sites.length*100);
       const statusColor = withProd.length===sites.length?'#24a148':withProd.length>0?'#ff832b':'#da1e28';
-      html += `<div style="background:#fff;border:1px solid var(--border);border-radius:6px;padding:8px;margin-bottom:6px">
+      html += `<div style="background:var(--panel);border:1px solid var(--border);border-radius:6px;padding:8px;margin-bottom:6px">
         <div style="display:flex;align-items:center;gap:6px;margin-bottom:6px">
           <span style="width:8px;height:8px;border-radius:50%;background:#ff832b;flex-shrink:0"></span>
           <span style="font-size:10px;font-weight:700;color:var(--tp)">${p.name.replace('IBM ','')}</span>
@@ -2306,7 +2310,7 @@ function buildClientSiteProduct(ql) {
     }
 
     const prodCheck = focusProds ? focusProds[0] : null;
-    html += `<div style="background:#f7f9ff;border:1px solid var(--border);border-radius:8px;padding:10px;margin-bottom:10px">
+    html += `<div style="background:var(--card);border:1px solid var(--border);border-radius:8px;padding:10px;margin-bottom:10px">
       <div style="display:flex;align-items:center;gap:7px;margin-bottom:8px">
         <span style="width:8px;height:8px;border-radius:50%;background:#1192e8"></span>
         <span onclick="focusNode('${acc.id}')" style="cursor:pointer;font-size:12px;font-weight:700;color:var(--ibm-cyan);text-decoration:underline">${acc.name}</span>
@@ -2320,7 +2324,7 @@ function buildClientSiteProduct(ql) {
       const pct = sites.length ? Math.round(withProd.length/sites.length*100) : 0;
       const barColor = pct===100?'#24a148':pct>0?'#ff832b':'#da1e28';
 
-      html += `<div style="background:#fff;border:1px solid var(--border);border-radius:6px;padding:8px;margin-bottom:7px">
+      html += `<div style="background:var(--panel);border:1px solid var(--border);border-radius:6px;padding:8px;margin-bottom:7px">
         <div style="display:flex;align-items:center;gap:6px;margin-bottom:5px">
           <span style="width:7px;height:7px;border-radius:50%;background:#ff832b;flex-shrink:0"></span>
           <span style="font-size:11px;font-weight:700;color:var(--tp)">${prod.name.replace('IBM ','')}</span>
@@ -2388,7 +2392,7 @@ function buildAccountSitesList(nodes, ql) {
     const sites = SEED_EDGES.filter(e=>e.s===acc.id&&e.type==='HAS_SITE').map(e=>SEED_NODES.find(x=>x.id===e.t)).filter(Boolean).sort((a,b)=>(b.annualSpend||0)-(a.annualSpend||0));
     if (!sites.length) continue;
     const totalSpend = sites.reduce((a,s)=>a+(s.annualSpend||0),0);
-    html += `<div style="background:#f7f9ff;border:1px solid var(--border);border-radius:8px;padding:10px;margin-bottom:10px">
+    html += `<div style="background:var(--card);border:1px solid var(--border);border-radius:8px;padding:10px;margin-bottom:10px">
       <div style="display:flex;align-items:center;gap:7px;margin-bottom:8px">
         <span style="width:8px;height:8px;border-radius:50%;background:#1192e8"></span>
         <span onclick="focusNode('${acc.id}')" style="cursor:pointer;font-size:12px;font-weight:700;color:var(--ibm-cyan);text-decoration:underline">${acc.name}</span>
@@ -2397,7 +2401,7 @@ function buildAccountSitesList(nodes, ql) {
       <div style="display:flex;flex-direction:column;gap:5px">
       ${sites.map(s=>{
         const prods = SEED_EDGES.filter(e=>e.s===s.id&&e.type==='HAS_PRODUCT').map(e=>{ const p=SEED_NODES.find(x=>x.id===e.t); return p?p.name.replace('IBM ',''):null; }).filter(Boolean);
-        return `<div onclick="focusNode('${s.id}')" style="cursor:pointer;background:#fff;border:1px solid var(--border);border-radius:5px;padding:7px 8px;display:flex;align-items:center;gap:8px" onmouseover="this.style.borderColor='#33b1ff55'" onmouseout="this.style.borderColor='var(--border)'">
+        return `<div onclick="focusNode('${s.id}')" style="cursor:pointer;background:var(--panel);border:1px solid var(--border);border-radius:5px;padding:7px 8px;display:flex;align-items:center;gap:8px" onmouseover="this.style.borderColor='#33b1ff55'" onmouseout="this.style.borderColor='var(--border)'">
           <div style="flex:1;min-width:0">
             <div style="font-weight:700;color:#33b1ff;font-size:10px">${s.siteId} <span style="color:var(--ts);font-weight:400;font-size:9px">· ${s.agency||'–'}</span></div>
             <div style="margin-top:3px;display:flex;flex-wrap:wrap;gap:3px">${prods.length?prods.map(p=>`<span style="background:rgba(255,131,43,0.08);border:1px solid rgba(255,131,43,0.2);border-radius:3px;padding:0px 4px;font-size:7.5px;color:var(--ibm-orange)">${p}</span>`).join(''):'<span style="color:var(--tm);font-size:8px">○ No products</span>'}</div>
@@ -2864,7 +2868,7 @@ function renderFullGraphToCanvas(targetCanvas,expNodes,expEdges,W2,H2,scaleFacto
   const HEADER_H=isPreview?0:52,TOTAL_H=H2+HEADER_H;
   targetCanvas.width=W2;targetCanvas.height=TOTAL_H;
   const c=targetCanvas.getContext('2d');
-  c.fillStyle='#f0f4ff';c.fillRect(0,0,W2,TOTAL_H);
+  c.fillStyle='#0a0c14';c.fillRect(0,0,W2,TOTAL_H);
   if(!isPreview){c.fillStyle='rgba(255,255,255,0.95)';c.fillRect(0,0,W2,HEADER_H);c.font='bold 13px "IBM Plex Sans",system-ui,sans-serif';c.fillStyle='#161616';c.fillText('IBM Scout',18,33);c.font='10px "IBM Plex Sans",system-ui,sans-serif';c.fillStyle='#525252';c.fillText(`${expNodes.length} nodes, ${expEdges.length} edges`,70,33);c.textAlign='right';c.fillStyle='#8d8d8d';c.fillText(new Date().toLocaleString(),W2-18,33);c.textAlign='left';}
   if(!expNodes.length)return;
   const drawY0=HEADER_H+10,drawH=H2-20;

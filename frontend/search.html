@@ -5,6 +5,9 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
 <title>IBM Scout — Seller Intelligence</title>
 <link rel="icon" href="assets/scout-logo.png"/>
+<link rel="preconnect" href="https://fonts.googleapis.com"/>
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin/>
+<link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Sans:wght@400;500;600;700&family=IBM+Plex+Mono:wght@400;500&display=swap" rel="stylesheet"/>
 <style>
 *,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
 :root{
@@ -418,6 +421,7 @@ html,body{min-height:100vh;background:var(--bg);color:var(--tp);
       I'm your AI-powered knowledge graph agent. Ask me about org hierarchy, accounts, installs, deployments, pipeline, territory coverage, or product certifications.
       <div style="margin-top:10px;display:flex;flex-direction:column;gap:4px">
         <div style="font-size:9px;font-weight:700;text-transform:uppercase;letter-spacing:.6px;color:var(--tm);margin-bottom:2px">Try asking…</div>
+        <button class="suggested-q" onclick="askAgent('What are my next best actions today?')">⚡ Next best actions today</button>
         <button class="suggested-q" onclick="askAgent('Who does Marcus Webb report to and what accounts does he own?')">🏢 Who manages Marcus Webb?</button>
         <button class="suggested-q" onclick="askAgent('What does First National Bancorp have installed?')">⚙️ First National install base</button>
         <button class="suggested-q" onclick="askAgent('Show me all stalled deployments and adoption blockers')">🚀 Stalled deployments</button>
@@ -456,6 +460,14 @@ let API_LIVE = false;
   } catch (_) { /* API not running — use local mock */ }
 })();
 
+// ── Date helper — returns ISO date string N days from today ──────────
+// Used to keep all demo dates relative so nothing accidentally appears stale.
+function _dt(offsetDays) {
+  const d = new Date();
+  d.setDate(d.getDate() + offsetDays);
+  return d.toISOString().slice(0, 10);
+}
+
 // ── Seed data (same as graph view) ──────────────────────────────────
 const NODES = [
   {id:'mgr-001',label:'Manager',  name:'Sandra Okafor',    role:'First-line Manager (FLM)',  geo:'Northeast', status:'ACTIVE', desc:'First-line manager, Northeast. Oversees Marcus Webb (CE) & Aisha Thornton (BSS). 2 direct reports, $12.7M combined quota.'},
@@ -487,15 +499,17 @@ const NODES = [
   {id:'acc-004',label:'Account',  name:'Apex Technology Partners', industry:'Technology',         revenue:15000000000, status:'ACTIVE', desc:'SaaS company — $15B revenue. watsonx.ai installed (v2.0). watsonx.governance pilot in Qualify stage ($560K).'},
   {id:'acc-005',label:'Account',  name:'Cascadia Insurance Group', industry:'Insurance',          revenue:6500000000,  status:'ACTIVE', desc:'Multi-line P&C insurer — $6.5B revenue. OpenPages v8.3 installed — support renewal at risk. Upgrade to v9 ($890K opp).'},
   {id:'acc-006',label:'Account',  name:'SunCoast Logistics',       industry:'Logistics',          revenue:890000000,   status:'ACTIVE', desc:'Regional 3PL — $890M revenue. Evaluating AI-driven order orchestration. New logo opportunity.'},
-  {id:'ins-001',label:'Install',  name:'Turbonomic @ First National',   product:'IBM Turbonomic',         version:'8.10', supportEnd:'2026-04-12', contractValue:480000, status:'ACTIVE', desc:'Managing 4,200 VMs across hybrid cloud. Renewal due Apr 2026. Upgrade path to 8.12 recommended.'},
-  {id:'ins-002',label:'Install',  name:'watsonx.ai @ Apex Tech',        product:'watsonx.ai',             version:'2.0',  supportEnd:'2027-01-20', contractValue:1200000, status:'ACTIVE', desc:'Internal developer copilot + fraud model training. Expanding to 3 additional LOBs in current proposal.'},
-  {id:'ins-003',label:'Install',  name:'OpenPages @ Cascadia',          product:'IBM OpenPages',          version:'8.3',  supportEnd:'2025-09-01', contractValue:640000, status:'ACTIVE', desc:'⚠ Support ends Sep 2025. Upgrade to v9 = $890K renewal + expansion opp. Risk of churn without action.'},
-  {id:'ins-004',label:'Install',  name:'Sterling OMS @ Nova Retail',    product:'IBM Sterling OMS',       version:'9.5',  supportEnd:'2024-11-15', contractValue:380000, status:'STALE',  desc:'⚠ OUT OF STANDARD SUPPORT since Nov 2024. Upgrade to v10 identified as $640K opportunity.'},
-  {id:'ins-005',label:'Install',  name:'CP4Security @ First National',  product:'IBM Cloud Pak for Security', version:'1.9', supportEnd:'2026-07-01', contractValue:920000, status:'ACTIVE', desc:'SIEM consolidation project. Support ends Jul 2026. Cross-sell QRadar migration opportunity.'},
-  {id:'opp-001',label:'Opportunity',name:'FNB watsonx Expansion',       stage:'Validate', value:2400000, closeDate:'2025-09-30', status:'ACTIVE', desc:'Expand watsonx.ai to 8 LOBs at First National Bancorp. Currently in CP4D environment. Close Q3 2025.'},
-  {id:'opp-002',label:'Opportunity',name:'Cascadia OpenPages Upgrade',  stage:'Propose',  value:890000,  closeDate:'2025-08-15', status:'ACTIVE', desc:'Renewal + upgrade from OpenPages v8.3 to v9. Support expiring Sep 2025 — time pressure creates urgency.'},
-  {id:'opp-003',label:'Opportunity',name:'Nova Retail Sterling v10',    stage:'Identify', value:640000,  closeDate:'2025-12-01', status:'ACTIVE', desc:'Upgrade out-of-support Sterling OMS v9.5 to v10. Risk: customer may evaluate competitive alternatives.'},
-  {id:'opp-004',label:'Opportunity',name:'Apex watsonx.governance',     stage:'Qualify',  value:560000,  closeDate:'2025-10-31', status:'ACTIVE', desc:'AI governance layer on top of existing watsonx.ai install. Compliance-driven — NIST AI RMF alignment.'},
+  // Dates are computed relative to today so the demo never shows stale data unintentionally.
+  // Only ins-004 (Sterling OMS) is intentionally STALE to tell the out-of-support story.
+  {id:'ins-001',label:'Install',  name:'Turbonomic @ First National',   product:'IBM Turbonomic',         version:'8.10', supportEnd:_dt(640), contractValue:480000, status:'ACTIVE', desc:'Managing 4,200 VMs across hybrid cloud. Renewal due in ~21 months. Upgrade path to 8.12 recommended.'},
+  {id:'ins-002',label:'Install',  name:'watsonx.ai @ Apex Tech',        product:'watsonx.ai',             version:'2.0',  supportEnd:_dt(920), contractValue:1200000, status:'ACTIVE', desc:'Internal developer copilot + fraud model training. Expanding to 3 additional LOBs in current proposal.'},
+  {id:'ins-003',label:'Install',  name:'OpenPages @ Cascadia',          product:'IBM OpenPages',          version:'8.3',  supportEnd:_dt(68),  contractValue:640000, status:'ACTIVE', desc:'⚠ Support ends in ~68 days. Upgrade to v9 = $890K renewal + expansion opp. Risk of churn without action.'},
+  {id:'ins-004',label:'Install',  name:'Sterling OMS @ Nova Retail',    product:'IBM Sterling OMS',       version:'9.5',  supportEnd:_dt(-270),contractValue:380000, status:'STALE',  desc:'⚠ OUT OF STANDARD SUPPORT (intentional stale story). Upgrade to v10 identified as $640K opportunity.'},
+  {id:'ins-005',label:'Install',  name:'CP4Security @ First National',  product:'IBM Cloud Pak for Security', version:'1.9', supportEnd:_dt(730), contractValue:920000, status:'ACTIVE', desc:'SIEM consolidation project. Support ends in ~2 years. Cross-sell QRadar migration opportunity.'},
+  {id:'opp-001',label:'Opportunity',name:'FNB watsonx Expansion',       stage:'Validate', value:2400000, closeDate:_dt(75),  status:'ACTIVE', desc:'Expand watsonx.ai to 8 LOBs at First National Bancorp. Currently in CP4D environment.'},
+  {id:'opp-002',label:'Opportunity',name:'Cascadia OpenPages Upgrade',  stage:'Propose',  value:890000,  closeDate:_dt(28),  status:'ACTIVE', desc:'Renewal + upgrade from OpenPages v8.3 to v9. Support expiring in 68 days — time pressure creates urgency.'},
+  {id:'opp-003',label:'Opportunity',name:'Nova Retail Sterling v10',    stage:'Identify', value:640000,  closeDate:_dt(145), status:'ACTIVE', desc:'Upgrade out-of-support Sterling OMS v9.5 to v10. Risk: customer may evaluate competitive alternatives.'},
+  {id:'opp-004',label:'Opportunity',name:'Apex watsonx.governance',     stage:'Qualify',  value:560000,  closeDate:_dt(105), status:'ACTIVE', desc:'AI governance layer on top of existing watsonx.ai install. Compliance-driven — NIST AI RMF alignment.'},
   // Deployment nodes (Gainsight-sourced)
   {id:'dep-001',label:'Deployment', name:'Turbonomic @ First National Bancorp',   deploymentStatus:'LIVE',        gainsightHealthLabel:'GREEN',  adoptionPct:97, gainsightScore:88, csmName:'Brittany Holloway', useCasesLive:4, useCasesIdentified:4, blockers:[], expandSignals:['Hybrid cloud expansion planned Q3','2,800 additional VMs in scope'], entitledUnits:6000, activatedUnits:5820, status:'ACTIVE', desc:'LIVE 97% utilization — 4/4 use cases active. Expand signals: renewal + 2.8K additional VMs. Green Gainsight health.'},
   {id:'dep-002',label:'Deployment', name:'watsonx.ai @ Apex Technology Partners', deploymentStatus:'IN_PROGRESS', gainsightHealthLabel:'YELLOW', adoptionPct:42, gainsightScore:61, csmName:'Jordan Li',        useCasesLive:2, useCasesIdentified:6, blockers:['IT security review pending','API integration with data lake pending'], expandSignals:['4 additional use cases in backlog','Governance layer requested by Legal'], entitledUnits:500, activatedUnits:210, status:'ACTIVE', desc:'IN PROGRESS — only 42% activated, 2/6 use cases live. 2 active blockers. Target go-live Aug 2025.'},
@@ -792,13 +806,19 @@ function hideNarrative() {
 }
 
 function detectIntent(q) {
-  if (/who.*manage|manage.*who|reports? to|direct report|hierarchy|org|alt|tsl|atl|flm|slm/.test(q)) return 'org';
-  if (/deploy|adoption|gainsight|utiliz|stall|go.live|use case|csm|activated/.test(q)) return 'deployment';
-  if (/install|running|deployed|using|expir|support|renewal/.test(q)) return 'install';
-  if (/territory|region|cover|patch|quota/.test(q)) return 'territory';
-  if (/certif|covers product|sell.*product|product.*sell/.test(q)) return 'product';
-  if (/opport|deal|pipeline|stage|forecast/.test(q)) return 'opportunity';
-  if (/co.sell|partner|together|collaborat/.test(q)) return 'cosell';
+  // NBA / next best actions — check before org so "actions" doesn't fall to general
+  if (/next best action|nba|what.*do.*today|my actions|priorities today|what should i/.test(q)) return 'nba';
+  // Org hierarchy — before anything else to catch "who manages"
+  if (/who.*manage|manage.*who|reports? to|direct report|hierarchy|org\b|atl\b|tsl\b|flm\b|slm\b/.test(q)) return 'org';
+  // Deployment — must NOT match "installed" — require word boundary or deploy/adoption/gainsight etc.
+  // "stall" is guarded by \bstall to avoid matching "installed"
+  if (/\bdeploy(?!ment\s+record)|\badoption\b|\bgainsight\b|\butiliz|\bstall(ed|ing|s)?\b|\bgo.live\b|\buse case\b|\bcsm\b|\bactivated\b/.test(q)) return 'deployment';
+  // Install — catches "installed", "install base", "expiring", "support", "renewal"
+  if (/\binstall|\brunning\b|\bexpir|\bsupport\b|\brenewal\b|\beos\b|\bout of support/.test(q)) return 'install';
+  if (/territory|region|\bcover\b|\bpatch\b|\bquota\b/.test(q)) return 'territory';
+  if (/\bcertif|\bcovers product\b|\bsell.*product\b|\bproduct.*sell\b/.test(q)) return 'product';
+  if (/opport|deal|\bpipeline\b|\bstage\b|\bforecast\b/.test(q)) return 'opportunity';
+  if (/co.sell|\bpartner\b|\btogether\b|\bcollaborat/.test(q)) return 'cosell';
   if (/account|client|customer|install base|what.*have|360/.test(q)) return 'account';
   return 'general';
 }
@@ -832,10 +852,56 @@ function fmtMoney(v) {
 // Returns an HTML string to inject as `.msg agent` content in the chat rail.
 
 function buildRichAnswer(q, intent, nodes) {
-  if (!nodes.length) {
+  if (intent !== 'nba' && !nodes.length) {
     return `<div class="msg-name">Scout</div>No results found for <strong>"${q}"</strong>. Try a different query or clear your filters.`;
   }
   const ql = q.toLowerCase();
+
+  // ── NBA — Next Best Actions ───────────────────────────────────────────
+  if (intent === 'nba') {
+    // Derive actions from current node state
+    const actions = [];
+    const staleDeps = nodes.filter(n => n.label === 'Deployment' && n.gainsightHealthLabel === 'RED');
+    const inProgDeps = nodes.filter(n => n.label === 'Deployment' && n.deploymentStatus === 'IN_PROGRESS');
+    const expInstalls = nodes.filter(n => n.label === 'Install' && n.status === 'STALE');
+    const soonInstalls = nodes.filter(n => {
+      if (n.label !== 'Install') return false;
+      const d = n.supportEnd ? Math.ceil((new Date(n.supportEnd) - new Date()) / 86400000) : null;
+      return d !== null && d >= 0 && d < 90;
+    });
+    const urgentOpps = nodes.filter(n => {
+      if (n.label !== 'Opportunity') return false;
+      const d = n.closeDate ? Math.ceil((new Date(n.closeDate) - new Date()) / 86400000) : null;
+      return d !== null && d < 30;
+    });
+    const expandable = nodes.filter(n => n.label === 'Deployment' && n.expandSignals?.length > 0 && n.gainsightHealthLabel !== 'RED');
+
+    if (staleDeps.length)   actions.push({ icon:'🔴', priority:'CRITICAL', text:`${staleDeps.length} deployment${staleDeps.length>1?'s are':' is'} RED / stalled — seller intervention required immediately`, sub:`${staleDeps.map(d=>d.name).join(', ')}`, onclick:`doSearch('stalled deployments')` });
+    if (urgentOpps.length)  actions.push({ icon:'🟠', priority:'HIGH',     text:`${urgentOpps.length} opportunit${urgentOpps.length>1?'ies':' y'} closing within 30 days — accelerate close actions`, sub:`${urgentOpps.map(o=>`${o.name} (${fmtMoney(o.value)})`).join(', ')}`, onclick:`doSearch('closing pipeline')` });
+    if (expInstalls.length) actions.push({ icon:'🟠', priority:'HIGH',     text:`${expInstalls.length} install record${expInstalls.length>1?'s':''} out of standard support — initiate upgrade conversation`, sub:`${expInstalls.map(i=>i.name).join(', ')}`, onclick:`doSearch('expiring support')` });
+    if (soonInstalls.length)actions.push({ icon:'🟡', priority:'MEDIUM',   text:`${soonInstalls.length} support contract${soonInstalls.length>1?'s':''} expiring within 90 days — send renewal proposal`, sub:`${soonInstalls.map(i=>i.name).join(', ')}`, onclick:`doSearch('support contracts')` });
+    if (inProgDeps.length)  actions.push({ icon:'🟡', priority:'MEDIUM',   text:`${inProgDeps.length} in-progress deployment${inProgDeps.length>1?'s':''} need adoption check-in with CSM`, sub:`${inProgDeps.map(d=>d.name).join(', ')}`, onclick:`doSearch('in progress deployments')` });
+    if (expandable.length)  actions.push({ icon:'🟢', priority:'EXPAND',   text:`${expandable.length} deployment${expandable.length>1?'s':''} showing expand signals — schedule expansion QBR`, sub:`${expandable.map(d=>d.name).join(', ')}`, onclick:`doSearch('expand deployments')` });
+
+    if (!actions.length) actions.push({ icon:'✅', priority:'ALL GOOD', text:'No urgent actions detected — all installs in support, pipeline on track', sub:'Continue regular CSM cadence and QBR schedule', onclick:`doSearch('accounts')` });
+
+    const priorityColor = { CRITICAL:'#da1e28', HIGH:'#ff832b', MEDIUM:'#f1c21b', EXPAND:'#24a148', 'ALL GOOD':'#24a148' };
+    const actionRows = actions.map((a,i) => {
+      const col = priorityColor[a.priority] || '#888';
+      return `<div style="display:flex;gap:10px;align-items:flex-start;padding:10px 12px;border-radius:7px;margin-bottom:8px;background:${col}09;border:1px solid ${col}30;cursor:pointer" onclick="${a.onclick}">
+        <div style="font-size:16px;flex-shrink:0;margin-top:1px">${a.icon}</div>
+        <div style="flex:1">
+          <div style="font-size:12px;font-weight:600;color:var(--tp);line-height:1.4">${a.text}</div>
+          <div style="font-size:10px;color:var(--ts);margin-top:3px">${a.sub}</div>
+        </div>
+        <div style="font-size:9px;font-weight:800;text-transform:uppercase;letter-spacing:.4px;padding:2px 8px;border-radius:4px;flex-shrink:0;align-self:flex-start;background:${col}18;color:${col}">${a.priority}</div>
+      </div>`;
+    }).join('');
+
+    return `<div class="msg-name">Scout · Next Best Actions</div>
+      <strong>${actions.length} action${actions.length!==1?'s':''}</strong> across your book of business today.
+      <div class="ans-panel" style="margin-top:8px">${actionRows}</div>`;
+  }
 
   // ── ORG / hierarchy ──────────────────────────────────────────────────
   if (intent === 'org') {
@@ -1207,6 +1273,30 @@ function pushRichAnswer(q, intent, nodes) {
     el.appendChild(fwrap);
   }
 
+  // ── Granite trace + provenance footer ─────────────────────────────
+  // Shows model, intent, source systems, and node count — visible on camera
+  const sourceMap = {};
+  nodes.forEach(n => { if (n.source) sourceMap[n.source] = true; });
+  const sources = Object.keys(sourceMap);
+  const sourcePills = sources.length
+    ? sources.map(s => {
+        const col = {salesforce:'#0f62fe',gainsight:'#6929c4','passport_advantage':'#009d9a',w3:'#ff832b',seed:'#5c6480',human_writeback:'#24a148'}[s] || '#888';
+        return `<span style="font-size:9px;font-weight:700;padding:2px 7px;border-radius:3px;background:${col}18;color:${col};border:1px solid ${col}30;text-transform:uppercase;letter-spacing:.4px">${s.replace('_',' ')}</span>`;
+      }).join(' ')
+    : `<span style="font-size:9px;color:var(--tm)">mock store</span>`;
+
+  const traceFoot = document.createElement('div');
+  traceFoot.style.cssText = 'margin-top:10px;padding:8px 10px;border-radius:6px;background:rgba(255,255,255,.03);border:1px solid rgba(255,255,255,.07);display:flex;align-items:center;gap:8px;flex-wrap:wrap';
+  traceFoot.innerHTML = `
+    <span style="font-size:9px;color:var(--tm)">🤖</span>
+    <span style="font-size:9px;font-weight:700;color:var(--ts)">ibm/granite-3-8b-instruct</span>
+    <span style="font-size:9px;color:var(--tm)">·</span>
+    <span style="font-size:9px;color:var(--ts)">intent: <strong style="color:var(--tp)">${intent}</strong></span>
+    <span style="font-size:9px;color:var(--tm)">·</span>
+    <span style="font-size:9px;color:var(--ts)">${nodes.length} node${nodes.length!==1?'s':''}</span>
+    ${sources.length ? `<span style="font-size:9px;color:var(--tm)">·</span> ${sourcePills}` : ''}`;
+  el.appendChild(traceFoot);
+
   msgs.appendChild(el);
   msgs.scrollTop = msgs.scrollHeight;
 }
@@ -1219,6 +1309,12 @@ function getFollowUps(intent, nodes) {
   const name   = (person?.name || acct?.name || '').split(' ')[0];
 
   switch (intent) {
+    case 'nba':
+      return [
+        'Show me all stalled deployments',
+        'Find expiring support contracts',
+        'Which deals close in the next 30 days?',
+      ];
     case 'org':
       return [
         name ? `What accounts does ${name} own?` : 'Show all territories',
@@ -1334,12 +1430,13 @@ async function sendChat() {
   }
 
   // Local mock fallback
-  const results = getFilteredNodes(q);
   const intent = detectIntent(q.toLowerCase());
+  // NBA uses all nodes; everything else uses filtered results
+  const results = intent === 'nba' ? NODES : getFilteredNodes(q);
 
   setTimeout(() => {
     pushRichAnswer(q, intent, results);
-    doSearch(q);
+    if (intent !== 'nba') doSearch(q);
   }, 800);
 }
 

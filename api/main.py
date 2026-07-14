@@ -58,6 +58,27 @@ async def lifespan(app: FastAPI):
     except Exception as exc:
         logger.warning("Pruning scheduler failed to start: %s", exc)
 
+    # 4. Seed an initial pruning report so the Trust/Pruning UI never shows "Never"
+    try:
+        from datetime import datetime, timezone
+        from api.data import mock_store as _ms
+        _nodes = _ms.get_all_nodes()
+        _stale = [n for n in _nodes if n.get("status") == "STALE"]
+        from api.routers import pruning as _pruning_router
+        _pruning_router._last_report = {
+            "run_at": datetime.now(timezone.utc).isoformat(),
+            "nodes_scanned": len(_nodes),
+            "nodes_marked_stale": len(_stale),
+            "nodes_deleted": 0,
+            "relationships_pruned": 0,
+            "details": [f"STALE: {n['label']}:{n['id']}" for n in _stale],
+            "mode": "mock",
+            "note": "Initial scan on startup — next scheduled run in 6h",
+        }
+        logger.info("Pruning bootstrap report seeded — %d nodes scanned, %d stale", len(_nodes), len(_stale))
+    except Exception as exc:
+        logger.warning("Could not seed initial pruning report: %s", exc)
+
     logger.info("IBM Scout API ready")
     yield
 
