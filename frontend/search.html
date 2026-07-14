@@ -100,38 +100,34 @@ html,body{min-height:100vh;background:var(--bg);color:var(--tp);
 }
 #search-go:hover{background:var(--ibm-dk)}
 
-/* Role pills */
-.role-row{display:flex;align-items:center;gap:8px;margin-top:16px;flex-wrap:wrap}
-.role-lbl{font-size:10px;font-weight:700;color:var(--tm);text-transform:uppercase;letter-spacing:.5px}
-.role-pill{
-  padding:5px 14px;border-radius:20px;font-size:11px;font-weight:700;
-  cursor:pointer;transition:all .15s;
-  border:1px solid var(--border);color:var(--ts);background:none;
+/* Role dropdown in header */
+#role-select-wrap{position:relative;display:flex;align-items:center}
+#role-select-btn{
+  display:flex;align-items:center;gap:7px;
+  padding:5px 12px;border-radius:7px;
+  border:1px solid var(--border);background:rgba(255,255,255,.04);
+  color:var(--ts);font-size:11px;font-weight:700;cursor:pointer;
+  transition:all .15s;font-family:inherit;white-space:nowrap;
 }
-.role-pill:hover{border-color:var(--border-hi);color:var(--tp)}
-.role-pill.active{background:var(--ibm-blue);border-color:var(--ibm-blue);color:#fff}
-
-/* ══════════════ WHAT'S NEW TICKER ══════════════ */
-#whats-new{
-  border-bottom:1px solid var(--border);
-  padding:10px 48px;
-  display:flex;align-items:center;gap:10px;overflow:hidden;
+#role-select-btn:hover{color:var(--tp);border-color:var(--border-hi);background:rgba(255,255,255,.07)}
+#role-select-btn .role-caret{margin-left:2px;opacity:.5;font-size:8px}
+#role-select-btn .role-dot{width:7px;height:7px;border-radius:50%;background:var(--ibm-blue);flex-shrink:0}
+#role-dropdown{
+  position:absolute;top:calc(100% + 6px);left:0;z-index:300;
+  background:#131a2e;border:1px solid var(--border);
+  border-radius:9px;padding:5px;min-width:200px;
+  box-shadow:0 8px 32px rgba(0,0,0,.5);display:none;
 }
-.wn-label{font-size:9px;font-weight:800;letter-spacing:1px;text-transform:uppercase;color:var(--ibm-orange);white-space:nowrap;display:flex;align-items:center;gap:5px}
-.wn-scroll{display:flex;gap:8px;overflow-x:auto;flex:1;scrollbar-width:none}
-.wn-scroll::-webkit-scrollbar{display:none}
-.wn-chip{
-  display:flex;align-items:center;gap:6px;
-  background:var(--surface);border:1px solid var(--border);
-  border-radius:6px;padding:5px 10px;white-space:nowrap;cursor:pointer;
-  transition:border-color .15s;flex-shrink:0;
+#role-dropdown.open{display:block}
+.rd-opt{
+  display:flex;align-items:center;gap:9px;
+  padding:8px 10px;border-radius:6px;cursor:pointer;
+  font-size:11px;font-weight:600;color:var(--ts);transition:all .12s;
 }
-.wn-chip:hover{border-color:var(--border-hi)}
-.wn-tag{font-size:8px;font-weight:800;padding:1px 5px;border-radius:3px;text-transform:uppercase;letter-spacing:.5px}
-.wn-tag.new{background:rgba(36,161,72,.15);color:var(--ibm-green)}
-.wn-tag.critical{background:rgba(218,30,40,.15);color:var(--ibm-red)}
-.wn-tag.alert{background:rgba(241,194,27,.15);color:#946500}
-.wn-text{font-size:11px;color:var(--ts)}
+.rd-opt:hover{background:rgba(15,98,254,.1);color:var(--tp)}
+.rd-opt.active{background:rgba(15,98,254,.15);color:var(--ibm-blue)}
+.rd-dot{width:8px;height:8px;border-radius:50%;flex-shrink:0}
+.rd-divider{height:1px;background:var(--border);margin:4px 2px}
 
 /* ══════════════ BROWSE SECTION ══════════════ */
 #browse{padding:28px 48px}
@@ -301,7 +297,7 @@ html,body{min-height:100vh;background:var(--bg);color:var(--tp);
 /* ══════════════ RESPONSIVE ══════════════ */
 @media(max-width:1100px){
   #chat-rail{display:none}
-  #hero,#browse,#whats-new{padding-left:28px;padding-right:28px}
+  #hero,#browse{padding-left:28px;padding-right:28px}
   #narrative-bar,#graph-banner{margin-left:28px;margin-right:28px}
 }
 @media(max-width:700px){
@@ -334,6 +330,20 @@ html,body{min-height:100vh;background:var(--bg);color:var(--tp);
       Graph View
     </a>
   </nav>
+  <div id="role-select-wrap">
+    <button id="role-select-btn" onclick="toggleRoleDropdown()">
+      <span class="role-dot"></span>
+      <span id="role-btn-label">All Roles</span>
+      <span class="role-caret">▼</span>
+    </button>
+    <div id="role-dropdown">
+      <div class="rd-opt active" data-role="all" onclick="setRole('all',this)"><span class="rd-dot" style="background:#6f6f6f"></span>All Roles</div>
+      <div class="rd-opt" data-role="seller" onclick="setRole('seller',this)"><span class="rd-dot" style="background:#0f62fe"></span>CE / Seller</div>
+      <div class="rd-opt" data-role="bss" onclick="setRole('bss',this)"><span class="rd-dot" style="background:#a56eff"></span>BSS / Brand Specialist</div>
+      <div class="rd-opt" data-role="manager" onclick="setRole('manager',this)"><span class="rd-dot" style="background:#009d9a"></span>Manager / FLM</div>
+      <div class="rd-opt" data-role="executive" onclick="setRole('executive',this)"><span class="rd-dot" style="background:#ff832b"></span>Executive / SLM</div>
+    </div>
+  </div>
   <div class="hdr-right">
     <span class="badge-demo">Demo Mode</span>
   </div>
@@ -354,24 +364,7 @@ html,body{min-height:100vh;background:var(--bg);color:var(--tp);
       <button id="search-go">Search</button>
     </div>
 
-    <div class="role-row">
-      <span class="role-lbl">I'm a</span>
-      <button class="role-pill active" data-role="all">All</button>
-      <button class="role-pill" data-role="seller">CE / Seller</button>
-      <button class="role-pill" data-role="bss">BSS / Brand Specialist</button>
-      <button class="role-pill" data-role="manager">Manager / FLM</button>
-      <button class="role-pill" data-role="executive">Executive / SLM</button>
-    </div>
   </section>
-
-  <!-- ══════════════ WHAT'S NEW ══════════════ -->
-  <div id="whats-new">
-    <div class="wn-label">
-      <svg width="10" height="10" viewBox="0 0 10 10" fill="none"><circle cx="5" cy="5" r="4" stroke="currentColor" stroke-width="1.5"/><line x1="5" y1="3" x2="5" y2="5.5" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/><circle cx="5" cy="7" r=".7" fill="currentColor"/></svg>
-      What's New
-    </div>
-    <div class="wn-scroll" id="wn-scroll"></div>
-  </div>
 
   <!-- ══════════════ RESULTS / BROWSE ══════════════ -->
   <div id="narrative-bar">
@@ -520,17 +513,6 @@ const NODES = [
   {id:'dep-007',label:'Deployment', name:'Cognos Analytics @ LA DOTD',             deploymentStatus:'STALLED',     gainsightHealthLabel:'RED',    adoptionPct:51, gainsightScore:44, csmName:'Diane Broussard',  useCasesLive:2, useCasesIdentified:4, blockers:['v11.2 out of support — upgrade blocked by procurement','Admin left — knowledge gap','Low engineering adoption'], expandSignals:[], entitledUnits:80, activatedUnits:41, status:'ACTIVE', desc:'STALLED — RED health. 51% adoption, 2/4 use cases. Admin turnover + procurement freeze blocking upgrade.'},
 ];
 
-const WHATS_NEW = [
-  {tag:'critical', text:'🚀 Sterling OMS @ Nova Retail — STALLED, RED health, competitor eval underway'},
-  {tag:'critical', text:'🚀 Cognos @ LA DOTD — STALLED, RED, admin gap, upgrade blocked'},
-  {tag:'alert',    text:'🚀 watsonx.ai @ Apex — 42% adoption, 2 blockers, target go-live Aug 2025'},
-  {tag:'alert',    text:'OpenPages @ Cascadia — support ends Sep 2025, deployment still healthy'},
-  {tag:'new',      text:'🚀 Turbonomic @ FNB — 97% utilization, expand signals active'},
-  {tag:'new',      text:'🚀 Cognos @ LA DCFS — 99% adoption, 8/8 use cases, reference account'},
-  {tag:'new',      text:'FNB watsonx Expansion — moved to Validate stage'},
-  {tag:'alert',    text:'2 installs expiring within 12 months'},
-];
-
 const LABEL_ICONS = {
   Seller:'👤', Manager:'👥', Territory:'📍', Product:'📦',
   Account:'🏢', Install:'⚙️', Opportunity:'💡', KnowledgeAsset:'📄',
@@ -553,17 +535,6 @@ let activeRole = 'all';
 let activeFilter = 'all';
 let currentQuery = '';
 
-// ── Whats New ────────────────────────────────────────────────────────
-function buildWhatsNew() {
-  const el = document.getElementById('wn-scroll');
-  el.innerHTML = WHATS_NEW.map(w => `
-    <div class="wn-chip">
-      <span class="wn-tag ${w.tag}">${w.tag === 'critical' ? '🔴 CRITICAL' : w.tag === 'alert' ? '⚠ ALERT' : '✦ NEW'}</span>
-      <span class="wn-text">${w.text}</span>
-    </div>
-  `).join('');
-}
-
 // ── Filter pills ─────────────────────────────────────────────────────
 const FILTERS = ['all','Seller','Manager','Territory','Account','Product','Install','Deployment','Opportunity'];
 
@@ -585,14 +556,24 @@ function clearFilters() {
   document.getElementById('clear-btn').style.display = 'none';
 }
 
-// ── Role filter ───────────────────────────────────────────────────────
-document.querySelectorAll('.role-pill').forEach(btn => {
-  btn.addEventListener('click', () => {
-    activeRole = btn.dataset.role;
-    document.querySelectorAll('.role-pill').forEach(b => b.classList.toggle('active', b === btn));
-    renderCards(getFilteredNodes());
-    updateBrowseLabel();
-  });
+// ── Role dropdown ─────────────────────────────────────────────────────
+const ROLE_LABELS = {all:'All Roles', seller:'CE / Seller', bss:'BSS / Brand Specialist', manager:'Manager / FLM', executive:'Executive / SLM'};
+
+function toggleRoleDropdown() {
+  document.getElementById('role-dropdown').classList.toggle('open');
+}
+function setRole(role, el) {
+  activeRole = role;
+  document.querySelectorAll('.rd-opt').forEach(o => o.classList.toggle('active', o === el));
+  document.getElementById('role-btn-label').textContent = ROLE_LABELS[role] || role;
+  document.getElementById('role-dropdown').classList.remove('open');
+  renderCards(getFilteredNodes());
+  updateBrowseLabel();
+}
+document.addEventListener('click', e => {
+  if (!e.target.closest('#role-select-wrap')) {
+    document.getElementById('role-dropdown').classList.remove('open');
+  }
 });
 
 function updateBrowseLabel() {
@@ -1492,7 +1473,6 @@ document.getElementById('search-inp').addEventListener('input', e => {
 });
 
 // ── Boot ──────────────────────────────────────────────────────────────
-buildWhatsNew();
 buildFilters();
 renderCards(NODES);
 // After API check resolves, load live summary counts

@@ -977,14 +977,14 @@ function buildGraph() {
   svg.appendChild(defs);
 
   // ── two background zones ──
-  const zoneEnt = svgEl('ellipse',{cx:cx*0.52,cy:cy,rx:cx*0.46,ry:cy*0.82,fill:'#edf1ff',stroke:'#c7d2f8','stroke-width':'1.2',opacity:'0.7'});
-  const zonePer = svgEl('ellipse',{cx:cx*1.48,cy:cy,rx:cx*0.46,ry:cy*0.82,fill:'#eaf4ff',stroke:'#b3d7f5','stroke-width':'1.2',opacity:'0.7'});
+  const zoneEnt = svgEl('ellipse',{cx:cx*0.52,cy:cy,rx:cx*0.46,ry:cy*0.82,fill:'rgba(15,98,254,0.04)',stroke:'rgba(99,147,254,0.18)','stroke-width':'1.2',opacity:'1'});
+  const zonePer = svgEl('ellipse',{cx:cx*1.48,cy:cy,rx:cx*0.46,ry:cy*0.82,fill:'rgba(17,146,232,0.04)',stroke:'rgba(99,179,254,0.18)','stroke-width':'1.2',opacity:'1'});
   svg.appendChild(zoneEnt);
   svg.appendChild(zonePer);
 
   // Zone labels
-  const lblEnt = svgText('Enterprise Graph', cx*0.52, 22, {fill:'#4361b5','font-size':'11','font-weight':'700','text-anchor':'middle','letter-spacing':'0.5','opacity':'0.7'});
-  const lblPer = svgText('Personal Graph',   cx*1.48, 22, {fill:'#1565c0','font-size':'11','font-weight':'700','text-anchor':'middle','letter-spacing':'0.5','opacity':'0.7'});
+  const lblEnt = svgText('Enterprise Graph', cx*0.52, 22, {fill:'rgba(139,167,254,0.7)','font-size':'11','font-weight':'700','text-anchor':'middle','letter-spacing':'0.5','opacity':'1'});
+  const lblPer = svgText('Personal Graph',   cx*1.48, 22, {fill:'rgba(99,179,254,0.7)', 'font-size':'11','font-weight':'700','text-anchor':'middle','letter-spacing':'0.5','opacity':'1'});
   svg.appendChild(lblEnt);
   svg.appendChild(lblPer);
 
@@ -998,9 +998,9 @@ function buildGraph() {
   const centerR = 32;
   const centerG = svgEl('g',{class:'svg-node',id:'center-node'});
   centerG.appendChild(svgEl('circle',{cx,cy,r:centerR+8,fill:'rgba(15,98,254,0.06)',stroke:'none'}));
-  centerG.appendChild(svgEl('circle',{cx,cy,r:centerR,fill:'#fff',stroke:'#0f62fe','stroke-width':'2.5',filter:'drop-shadow(0 2px 8px rgba(15,98,254,.2))'}));
-  centerG.appendChild(svgText('IBM Scout', cx, cy-4,  {fill:'#0f62fe','font-size':'10','font-weight':'800','text-anchor':'middle'}));
-  centerG.appendChild(svgText('Seller Intelligence', cx, cy+8, {fill:'#7986cb','font-size':'7.5','text-anchor':'middle'}));
+  centerG.appendChild(svgEl('circle',{cx,cy,r:centerR,fill:'#111828',stroke:'#0f62fe','stroke-width':'2.5',filter:'drop-shadow(0 2px 12px rgba(15,98,254,.45))'}));
+  centerG.appendChild(svgText('IBM Scout', cx, cy-4,  {fill:'#a8c0ff','font-size':'10','font-weight':'800','text-anchor':'middle'}));
+  centerG.appendChild(svgText('Seller Intelligence', cx, cy+8, {fill:'#6392fe','font-size':'7.5','text-anchor':'middle'}));
   nodeLayer.appendChild(centerG);
 
   // ── Enterprise hub nodes (left half circle) ──
@@ -1045,7 +1045,7 @@ function drawHubNode(nodeLayer, edgeLayer, hub, hx, hy, cx, cy, side, svg) {
   const g = svgEl('g',{class:'svg-node',id:hub.id,'data-hub':'1','data-types':hub.types?hub.types.join(','):''});
 
   g.appendChild(svgEl('circle',{cx:hx,cy:hy,r:R+5,fill:col,opacity:'0.08',stroke:'none'}));
-  g.appendChild(svgEl('circle',{cx:hx,cy:hy,r:R,fill:'#fff',stroke:col,'stroke-width':'2',filter:`drop-shadow(0 1px 4px ${col}44)`}));
+  g.appendChild(svgEl('circle',{cx:hx,cy:hy,r:R,fill:'#111828',stroke:col,'stroke-width':'2',filter:`drop-shadow(0 1px 6px ${col}66)`}));
   g.appendChild(svgText(hub.label,hx,hy+4,{fill:col,'font-size':'9','font-weight':'800','text-anchor':'middle','letter-spacing':'0.3'}));
 
   g.style.cursor = 'grab';
@@ -1070,7 +1070,7 @@ function drawPersonalHub(nodeLayer, edgeLayer, hub, hx, hy, cx, cy, svg) {
 
   const g = svgEl('g',{class:'svg-node',id:hub.id});
   g.appendChild(svgEl('circle',{cx:hx,cy:hy,r:R+4,fill:col,opacity:'0.06',stroke:'none'}));
-  g.appendChild(svgEl('circle',{cx:hx,cy:hy,r:R,fill:'#f0f8ff',stroke:col,'stroke-width':'1.8',filter:`drop-shadow(0 1px 3px ${col}33)`}));
+  g.appendChild(svgEl('circle',{cx:hx,cy:hy,r:R,fill:'#111828',stroke:col,'stroke-width':'1.8',filter:`drop-shadow(0 1px 5px ${col}55)`}));
   g.appendChild(svgText(hub.label,hx,hy+4,{fill:col,'font-size':'8.5','font-weight':'700','text-anchor':'middle'}));
 
   g.style.cursor = 'grab';
