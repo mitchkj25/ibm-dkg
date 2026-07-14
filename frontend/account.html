@@ -65,9 +65,9 @@ html,body{min-height:100vh;background:var(--bg);color:var(--tp);
 .section-card{background:var(--card);border:1px solid var(--border);border-radius:var(--r);padding:18px 20px}
 .section-title{font-size:10px;font-weight:800;text-transform:uppercase;letter-spacing:1px;
   color:var(--ts);margin-bottom:14px;display:flex;align-items:center;gap:6px}
-.section-title .cnt{background:rgba(255,255,255,.08);border-radius:4px;padding:1px 6px;font-size:9px;color:var(--tp)}
+.section-title .cnt{background:var(--card);border:1px solid var(--border);border-radius:4px;padding:1px 6px;font-size:9px;color:var(--tp)}
 /* Data rows */
-.data-row{display:flex;align-items:center;gap:10px;padding:9px 0;border-bottom:1px solid rgba(255,255,255,.06);cursor:pointer}
+.data-row{display:flex;align-items:center;gap:10px;padding:9px 0;border-bottom:1px solid var(--border);cursor:pointer}
 .data-row:last-child{border-bottom:none}
 .data-row:hover{background:rgba(15,98,254,.05);margin:0 -6px;padding:9px 6px;border-radius:6px}
 .dr-dot{width:9px;height:9px;border-radius:50%;flex-shrink:0}
@@ -77,7 +77,7 @@ html,body{min-height:100vh;background:var(--bg);color:var(--tp);
 .empty-state{font-size:12px;color:var(--tm);font-style:italic;padding:8px 0}
 /* Spend bar */
 .spend-bar-wrap{margin:4px 0 10px;padding-left:19px}
-.spend-bar-track{height:6px;background:rgba(255,255,255,.08);border-radius:3px;overflow:hidden}
+.spend-bar-track{height:6px;background:rgba(15,98,254,.1);border-radius:3px;overflow:hidden}
 .spend-bar-fill{height:100%;border-radius:3px}
 /* Alert */
 .alert-banner{border-radius:8px;padding:14px 18px;margin-bottom:24px;display:flex;align-items:flex-start;gap:12px}
@@ -93,8 +93,24 @@ html,body{min-height:100vh;background:var(--bg);color:var(--tp);
   border:1px solid;transition:all .15s;text-decoration:none;display:inline-flex;align-items:center;gap:6px}
 .action-btn.primary{background:var(--ibm-blue);border-color:var(--ibm-blue);color:#fff}
 .action-btn.primary:hover{background:var(--ibm-dk)}
-.action-btn.secondary{background:rgba(255,255,255,.04);border-color:var(--border);color:var(--ts)}
-.action-btn.secondary:hover{background:rgba(255,255,255,.08);color:var(--tp)}
+.action-btn.secondary{background:var(--card);border-color:var(--border);color:var(--ts)}
+.action-btn.secondary:hover{background:var(--card-hover,#eef2ff);color:var(--tp)}
+/* Business Partner card */
+.bp-card{background:var(--surface);border:1px solid rgba(105,41,196,.2);border-radius:var(--r);padding:14px 16px;margin-bottom:8px}
+.bp-card:last-child{margin-bottom:0}
+.bp-hdr{display:flex;align-items:center;gap:8px;margin-bottom:6px}
+.bp-dot{width:9px;height:9px;border-radius:50%;background:#6929c4;flex-shrink:0}
+.bp-name{font-size:13px;font-weight:700;color:#6929c4}
+.bp-product{display:inline-block;font-size:8px;font-weight:800;text-transform:uppercase;letter-spacing:.4px;padding:2px 7px;border-radius:4px;background:rgba(255,131,43,.1);color:var(--ibm-orange);border:1px solid rgba(255,131,43,.2);margin-left:auto;white-space:nowrap}
+.bp-rows{display:flex;flex-direction:column;gap:3px}
+.bp-row{display:flex;gap:6px;font-size:11px}
+.bp-lbl{color:var(--tm);min-width:72px;flex-shrink:0;font-size:10px}
+.bp-val{color:var(--ts)}
+/* Site spend row */
+.site-spend-row{display:flex;align-items:center;justify-content:space-between;font-size:11px;color:var(--ts);margin-top:2px;padding:0 19px 4px}
+.site-total-row{display:flex;align-items:center;justify-content:space-between;padding:10px 0 0;border-top:1px solid var(--border);margin-top:6px}
+.site-total-lbl{font-size:10px;font-weight:700;text-transform:uppercase;letter-spacing:.4px;color:var(--ts)}
+.site-total-val{font-size:16px;font-weight:700;color:var(--ibm-green)}
 </style>
 </head>
 <body>
@@ -176,9 +192,15 @@ html,body{min-height:100vh;background:var(--bg);color:var(--tp);
     </div>
   </div>
 
-  <div class="section-card" style="margin-bottom:24px">
-    <div class="section-title">👤 Account Team</div>
-    <div id="team-list"></div>
+  <div class="two-col" style="margin-bottom:0">
+    <div class="section-card" style="margin-bottom:24px">
+      <div class="section-title">👤 Account Team</div>
+      <div id="team-list"></div>
+    </div>
+    <div class="section-card" style="margin-bottom:24px">
+      <div class="section-title">🤝 Active Business Partners <span class="cnt" id="cnt-bps">0</span></div>
+      <div id="bp-list"><div class="empty-state">No active partners on record.</div></div>
+    </div>
   </div>
 
   <div class="action-row" id="action-row">
@@ -195,17 +217,27 @@ const ACCOUNTS = {
   'acc-001':{id:'acc-001',name:'First National Bancorp',industry:'Financial Services',segment:'Enterprise',revenue:24000000000,country:'USA',description:'Top-10 US retail bank. Heavy mainframe and cloud modernization initiative underway. Two active IBM site numbers. Key relationships with Marcus Webb (CE) and Aisha Thornton (BSS).',
     installs:['ins-001','ins-005'],opps:['opp-001'],deployments:['dep-001','dep-005'],sites:['site-004','site-005'],sellers:[{name:'Marcus Webb',role:'Client Executive',email:'mwebb@ibm.com'},{name:'Aisha Thornton',role:'Brand Specialist (BSS)',email:'athornton@ibm.com'}]},
   'acc-002':{id:'acc-002',name:'Meridian Health Systems',industry:'Healthcare',segment:'Enterprise',revenue:8700000000,country:'USA',description:'Regional hospital network across Southeast US. Epic EHR integration in progress. Focus on AI-assisted clinical workflows and security.',
-    installs:[],opps:[],deployments:[],sites:[],sellers:[{name:'James Kowalski',role:'Client Executive',email:'jkowalski@ibm.com'}]},
+    installs:[],opps:[],deployments:[],sites:['site-006','site-007'],partners:['bp-002'],sellers:[{name:'James Kowalski',role:'Client Executive',email:'jkowalski@ibm.com'}]},
   'acc-003':{id:'acc-003',name:'Nova Retail Group',industry:'Retail',segment:'Mid-Market',revenue:2100000000,country:'USA',description:'Omnichannel retailer with 400+ stores. Supply chain modernization focus. Sterling OMS install is stalled and out of support — churn risk.',
-    installs:['ins-004'],opps:['opp-003'],deployments:['dep-004'],sites:[],sellers:[{name:'James Kowalski',role:'Client Executive',email:'jkowalski@ibm.com'},{name:'Lin Mei Zhang',role:'Technology Sales Specialist',email:'lzhang@ibm.com'}]},
+    installs:['ins-004'],opps:['opp-003'],deployments:['dep-004'],sites:['site-008'],partners:['bp-003'],sellers:[{name:'James Kowalski',role:'Client Executive',email:'jkowalski@ibm.com'},{name:'Lin Mei Zhang',role:'Technology Sales Specialist',email:'lzhang@ibm.com'}]},
   'acc-004':{id:'acc-004',name:'Apex Technology Partners',industry:'Technology',segment:'Enterprise',revenue:15000000000,country:'USA',description:'SaaS platform company. watsonx.ai deployment in progress at 42% adoption. Governance upsell opportunity identified. Tyler Oduya is account owner.',
-    installs:['ins-002'],opps:['opp-004'],deployments:['dep-002'],sites:['site-005'],sellers:[{name:'Tyler Oduya',role:'Client Executive',email:'toduya@ibm.com'}]},
+    installs:['ins-002'],opps:['opp-004'],deployments:['dep-002'],sites:['site-009'],partners:['bp-001'],sellers:[{name:'Tyler Oduya',role:'Client Executive',email:'toduya@ibm.com'}]},
   'acc-005':{id:'acc-005',name:'Cascadia Insurance Group',industry:'Insurance',segment:'Enterprise',revenue:6500000000,country:'USA',description:'Multi-line P&C insurer. OpenPages GRC deployment live at 96% utilization but support expiring Sep 2025. Upgrade proposal must close immediately.',
-    installs:['ins-003'],opps:['opp-002'],deployments:['dep-003'],sites:[],sellers:[{name:'Marcus Webb',role:'Client Executive',email:'mwebb@ibm.com'}]},
+    installs:['ins-003'],opps:['opp-002'],deployments:['dep-003'],sites:['site-010'],partners:['bp-004'],sellers:[{name:'Marcus Webb',role:'Client Executive',email:'mwebb@ibm.com'}]},
   'acc-006':{id:'acc-006',name:'SunCoast Logistics',industry:'Logistics',segment:'Mid-Market',revenue:890000000,country:'USA',description:'Regional 3PL. Evaluating AI-driven order orchestration. No active IBM deployment yet — whitespace opportunity.',
-    installs:[],opps:[],deployments:[],sites:[],sellers:[{name:'Lin Mei Zhang',role:'Technology Sales Specialist',email:'lzhang@ibm.com'}]},
+    installs:[],opps:[],deployments:[],sites:['site-011'],partners:[],sellers:[{name:'Lin Mei Zhang',role:'Technology Sales Specialist',email:'lzhang@ibm.com'}]},
   'acc-007':{id:'acc-007',name:'State of Louisiana',industry:'Government / Public Sector',segment:'Public Sector',revenue:0,country:'USA',description:'State government of Louisiana spanning multiple agencies across 3 active site numbers: DCFS (healthy Cognos deploy), DOTD (stalled, out of support), DHH (Turbonomic only — expansion gap).',
-    installs:['ins-006','ins-007'],opps:[],deployments:['dep-006','dep-007'],sites:['site-001','site-002','site-003'],sellers:[{name:'Monique Tureaud',role:'Brand Sales Specialist (TSL)',email:'mtureaud@ibm.com'},{name:'Derek Callahan',role:'ATL — Public Sector South',email:'dcallahan@ibm.com'}]},
+    installs:['ins-006','ins-007'],opps:[],deployments:['dep-006','dep-007'],sites:['site-001','site-002','site-003'],partners:['bp-005'],sellers:[{name:'Monique Tureaud',role:'Brand Sales Specialist (TSL)',email:'mtureaud@ibm.com'},{name:'Derek Callahan',role:'ATL — Public Sector South',email:'dcallahan@ibm.com'}]},
+};
+// First National - add partners ref
+ACCOUNTS['acc-001'].partners = ['bp-001'];
+
+const BUSINESS_PARTNERS = {
+  'bp-001':{id:'bp-001',name:'Onix Networking Corp.',alignedProduct:'watsonx.ai',productId:'prd-001',type:'IBM Business Partner',tier:'Gold',contact:{name:'Sarah Kim',title:'IBM Alliance Director',email:'skim@onix.com',phone:'216-800-1234'},liaison:{name:'Aisha Thornton',title:'BSS — watsonx AI & Automation',email:'athornton@ibm.com'},opp:'Jointly pursing watsonx.ai enterprise expansion and governance layer at FNB and Apex.'},
+  'bp-002':{id:'bp-002',name:'Perficient Digital',alignedProduct:'IBM Cloud Pak for Security',productId:'prd-004',type:'IBM Business Partner',tier:'Platinum',contact:{name:'David Ruiz',title:'IBM Practice Lead',email:'druiz@perficient.com',phone:'314-529-9900'},liaison:{name:'Marcus Webb',title:'CE — Northeast Enterprise',email:'mwebb@ibm.com'},opp:'Co-selling CP4Security and QRadar SIEM consolidation for Meridian Health clinical security initiative.'},
+  'bp-003':{id:'bp-003',name:'Presidio Inc.',alignedProduct:'IBM Sterling Order Management',productId:'prd-006',type:'IBM Business Partner',tier:'Gold',contact:{name:'Jen Torres',title:'IBM Solutions Lead',email:'jtorres@presidio.com',phone:'212-744-0022'},liaison:{name:'James Kowalski',title:'CE — Southeast',email:'jkowalski@ibm.com'},opp:'Presidio leading the Sterling OMS v10 upgrade delivery for Nova Retail — $640K opportunity in identify stage.'},
+  'bp-004':{id:'bp-004',name:'Cognizant Technology Solutions',alignedProduct:'IBM OpenPages',productId:'prd-005',type:'IBM Business Partner',tier:'Platinum',contact:{name:'Anita Mehta',title:'IBM GRC Practice Director',email:'amehta@cognizant.com',phone:'800-926-1215'},liaison:{name:'Marcus Webb',title:'CE — Northeast Enterprise',email:'mwebb@ibm.com'},opp:'Cognizant delivering OpenPages v9 upgrade configuration and system integration for Cascadia Insurance.'},
+  'bp-005':{id:'bp-005',name:'Carahsoft Technology Corp.',alignedProduct:'IBM Cognos Analytics',productId:'prd-008',type:'IBM Business Partner',tier:'Gold',contact:{name:'Tom Nguyen',title:'IBM Public Sector Lead',email:'tnguyen@carahsoft.com',phone:'703-871-8500'},liaison:{name:'Monique Tureaud',title:'TSL — Cognos & Planning Analytics',email:'mtureaud@ibm.com'},opp:'Carahsoft holds State of Louisiana contract vehicle. Coordinating DOTD upgrade and DHH Cognos expansion proposal.'},
 };
 
 const INSTALLS = {
@@ -238,6 +270,12 @@ const SITES = {
   'site-003':{id:'site-003',siteId:'LA-GOV-0117',agency:'DHH',annualSpend:670000},
   'site-004':{id:'site-004',siteId:'FNB-CORP-0012',agency:'Corporate HQ',annualSpend:3200000},
   'site-005':{id:'site-005',siteId:'FNB-RET-0031',agency:'Retail Banking Div.',annualSpend:2600000},
+  'site-006':{id:'site-006',siteId:'MHS-ENT-0044',agency:'Enterprise IT',annualSpend:1450000},
+  'site-007':{id:'site-007',siteId:'MHS-CLN-0055',agency:'Clinical Operations',annualSpend:980000},
+  'site-008':{id:'site-008',siteId:'NRG-CORP-0021',agency:'Corporate Technology',annualSpend:620000},
+  'site-009':{id:'site-009',siteId:'ATP-HQ-0088',agency:'HQ — Engineering',annualSpend:2100000},
+  'site-010':{id:'site-010',siteId:'CIG-ENT-0033',agency:'Enterprise GRC',annualSpend:890000},
+  'site-011':{id:'site-011',siteId:'SCL-OPS-0017',agency:'Operations',annualSpend:310000},
 };
 
 const STAGE_COL={Validate:'#24a148',Propose:'#0f62fe',Qualify:'#009d9a',Identify:'#1192e8'};
@@ -336,20 +374,48 @@ function renderPage(acc) {
     </div>`;
   }).join('') : '<div class="empty-state">No deployments tracked.</div>';
 
-  // Sites list
+  // Sites list — with spend bars and total
   document.getElementById('cnt-sites').textContent = sites.length;
   const maxSpend = Math.max(...sites.map(s=>s.annualSpend||0), 1);
-  document.getElementById('sites-list').innerHTML = sites.length ? sites.map(s=>{
-    const pct = Math.round((s.annualSpend||0)/maxSpend*100);
-    return `<div>
-      <div class="data-row" style="cursor:default">
-        <div class="dr-dot" style="background:var(--ibm-teal)"></div>
-        <div><div class="dr-name">${s.siteId}</div><div class="dr-sub">${s.agency}</div></div>
-        <div class="dr-badge" style="background:rgba(0,157,154,.12);color:var(--ibm-teal)">${fmtM(s.annualSpend)}</div>
+  if (sites.length) {
+    const rows = sites.map(s=>{
+      const pct = Math.round((s.annualSpend||0)/maxSpend*100);
+      return `<div>
+        <div class="data-row" onclick="window.location='search.html?q=${encodeURIComponent(s.siteId)}'">
+          <div class="dr-dot" style="background:var(--ibm-teal)"></div>
+          <div><div class="dr-name">${s.siteId}</div><div class="dr-sub">${s.agency}</div></div>
+          <div class="dr-badge" style="background:rgba(0,157,154,.12);color:var(--ibm-teal)">${fmtM(s.annualSpend)}</div>
+        </div>
+        <div class="spend-bar-wrap"><div class="spend-bar-track"><div class="spend-bar-fill" style="width:${pct}%;background:var(--ibm-teal)"></div></div></div>
+      </div>`;
+    }).join('');
+    const total = sites.reduce((s,si)=>s+(si.annualSpend||0),0);
+    document.getElementById('sites-list').innerHTML = rows + `
+      <div class="site-total-row">
+        <span class="site-total-lbl">Total IBM Spend</span>
+        <span class="site-total-val">${fmtM(total)}</span>
+      </div>`;
+  } else {
+    document.getElementById('sites-list').innerHTML = '<div class="empty-state">No site numbers on record.</div>';
+  }
+
+  // Business Partners
+  const partners = (acc.partners||[]).map(p=>BUSINESS_PARTNERS[p]).filter(Boolean);
+  document.getElementById('cnt-bps').textContent = partners.length;
+  document.getElementById('bp-list').innerHTML = partners.length ? partners.map(p=>`
+    <div class="bp-card">
+      <div class="bp-hdr">
+        <div class="bp-dot"></div>
+        <div class="bp-name">${p.name}</div>
+        <div class="bp-product">${p.alignedProduct}</div>
       </div>
-      <div class="spend-bar-wrap"><div class="spend-bar-track"><div class="spend-bar-fill" style="width:${pct}%;background:var(--ibm-teal)"></div></div></div>
-    </div>`;
-  }).join('') : '<div class="empty-state">No site numbers on record.</div>';
+      <div class="bp-rows">
+        <div class="bp-row"><span class="bp-lbl">Tier</span><span class="bp-val">${p.tier} · ${p.type}</span></div>
+        <div class="bp-row"><span class="bp-lbl">BP Contact</span><span class="bp-val">${p.contact.name} · <a href="mailto:${p.contact.email}" style="color:var(--ibm-blue)">${p.contact.email}</a></span></div>
+        <div class="bp-row"><span class="bp-lbl">IBM Liaison</span><span class="bp-val">${p.liaison.name} (${p.liaison.title})</span></div>
+        <div class="bp-row" style="margin-top:4px"><span class="bp-lbl">Active Deal</span><span class="bp-val" style="color:var(--ts)">${p.opp}</span></div>
+      </div>
+    </div>`).join('') : '<div class="empty-state">No active partners on record.</div>';
 
   // Team
   document.getElementById('team-list').innerHTML = acc.sellers.map(s=>`

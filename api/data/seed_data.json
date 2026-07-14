@@ -635,6 +635,90 @@
       }
     },
     {
+      "label": "SiteNumber",
+      "props": {
+        "id": "site-006",
+        "siteId": "MHS-ENT-0044",
+        "name": "MHS-ENT-0044",
+        "accountId": "acc-002",
+        "agency": "Enterprise IT",
+        "annualSpend": 1450000,
+        "description": "Meridian Health Systems enterprise site — primary IBM footprint. watsonx.ai pilot and security tooling.",
+        "source": "seed",
+        "status": "ACTIVE"
+      }
+    },
+    {
+      "label": "SiteNumber",
+      "props": {
+        "id": "site-007",
+        "siteId": "MHS-CLN-0055",
+        "name": "MHS-CLN-0055",
+        "accountId": "acc-002",
+        "agency": "Clinical Operations",
+        "annualSpend": 980000,
+        "description": "Meridian Health clinical operations site — data integration and analytics workloads.",
+        "source": "seed",
+        "status": "ACTIVE"
+      }
+    },
+    {
+      "label": "SiteNumber",
+      "props": {
+        "id": "site-008",
+        "siteId": "NRG-CORP-0021",
+        "name": "NRG-CORP-0021",
+        "accountId": "acc-003",
+        "agency": "Corporate Technology",
+        "annualSpend": 620000,
+        "description": "Nova Retail Group corporate tech site — Sterling OMS installed. Out of support — upgrade required.",
+        "source": "seed",
+        "status": "ACTIVE"
+      }
+    },
+    {
+      "label": "SiteNumber",
+      "props": {
+        "id": "site-009",
+        "siteId": "ATP-HQ-0088",
+        "name": "ATP-HQ-0088",
+        "accountId": "acc-004",
+        "agency": "HQ — Engineering",
+        "annualSpend": 2100000,
+        "description": "Apex Technology Partners HQ engineering site — watsonx.ai deployment in progress. Governance upsell identified.",
+        "source": "seed",
+        "status": "ACTIVE"
+      }
+    },
+    {
+      "label": "SiteNumber",
+      "props": {
+        "id": "site-010",
+        "siteId": "CIG-ENT-0033",
+        "name": "CIG-ENT-0033",
+        "accountId": "acc-005",
+        "agency": "Enterprise GRC",
+        "annualSpend": 890000,
+        "description": "Cascadia Insurance Group GRC site — OpenPages v8.3 deployed, support expiring Sep 2025.",
+        "source": "seed",
+        "status": "ACTIVE"
+      }
+    },
+    {
+      "label": "SiteNumber",
+      "props": {
+        "id": "site-011",
+        "siteId": "SCL-OPS-0017",
+        "name": "SCL-OPS-0017",
+        "accountId": "acc-006",
+        "agency": "Operations",
+        "annualSpend": 310000,
+        "description": "SunCoast Logistics operations site — no active IBM deployment yet. Whitespace: AI order orchestration.",
+        "source": "seed",
+        "status": "ACTIVE"
+      }
+    },
+    {
       "label": "Install",
       "props": {
         "id": "ins-006",
@@ -957,6 +1041,20 @@
     { "type": "relationship", "from_label": "Seller", "from_id": "sel-003", "rel_type": "DRIVES_DEPLOYMENT", "to_label": "Deployment", "to_id": "dep-004", "props": { "role": "Account Owner" } },
     { "type": "relationship", "from_label": "Seller", "from_id": "sel-001", "rel_type": "DRIVES_DEPLOYMENT", "to_label": "Deployment", "to_id": "dep-005", "props": { "role": "Account Owner" } },
     { "type": "relationship", "from_label": "Seller", "from_id": "sel-007", "rel_type": "DRIVES_DEPLOYMENT", "to_label": "Deployment", "to_id": "dep-006", "props": { "role": "Primary TSL" } },
-    { "type": "relationship", "from_label": "Seller", "from_id": "sel-007", "rel_type": "DRIVES_DEPLOYMENT", "to_label": "Deployment", "to_id": "dep-007", "props": { "role": "Primary TSL" } }
+    { "type": "relationship", "from_label": "Seller", "from_id": "sel-007", "rel_type": "DRIVES_DEPLOYMENT", "to_label": "Deployment", "to_id": "dep-007", "props": { "role": "Primary TSL" } },
+
+    { "type": "relationship", "from_label": "Account", "from_id": "acc-002", "rel_type": "HAS_SITE", "to_label": "SiteNumber", "to_id": "site-006", "props": { "since": "2022-06-01" } },
+    { "type": "relationship", "from_label": "Account", "from_id": "acc-002", "rel_type": "HAS_SITE", "to_label": "SiteNumber", "to_id": "site-007", "props": { "since": "2022-06-01" } },
+    { "type": "relationship", "from_label": "Account", "from_id": "acc-003", "rel_type": "HAS_SITE", "to_label": "SiteNumber", "to_id": "site-008", "props": { "since": "2021-11-01" } },
+    { "type": "relationship", "from_label": "Account", "from_id": "acc-004", "rel_type": "HAS_SITE", "to_label": "SiteNumber", "to_id": "site-009", "props": { "since": "2024-01-20" } },
+    { "type": "relationship", "from_label": "Account", "from_id": "acc-005", "rel_type": "HAS_SITE", "to_label": "SiteNumber", "to_id": "site-010", "props": { "since": "2022-09-01" } },
+    { "type": "relationship", "from_label": "Account", "from_id": "acc-006", "rel_type": "HAS_SITE", "to_label": "SiteNumber", "to_id": "site-011", "props": { "since": "2023-01-15" } },
+    { "type": "relationship", "from_label": "SiteNumber", "from_id": "site-006", "rel_type": "HAS_PRODUCT", "to_label": "Product", "to_id": "prd-001", "props": { "active": false } },
+    { "type": "relationship", "from_label": "SiteNumber", "from_id": "site-007", "rel_type": "HAS_PRODUCT", "to_label": "Product", "to_id": "prd-004", "props": { "active": false } },
+    { "type": "relationship", "from_label": "SiteNumber", "from_id": "site-008", "rel_type": "HAS_PRODUCT", "to_label": "Product", "to_id": "prd-006", "props": { "active": true } },
+    { "type": "relationship", "from_label": "SiteNumber", "from_id": "site-009", "rel_type": "HAS_PRODUCT", "to_label": "Product", "to_id": "prd-001", "props": { "active": true } },
+    { "type": "relationship", "from_label": "SiteNumber", "from_id": "site-010", "rel_type": "HAS_PRODUCT", "to_label": "Product", "to_id": "prd-005", "props": { "active": true } },
+    { "type": "relationship", "from_label": "Deployment", "from_id": "dep-003", "rel_type": "AT_SITE", "to_label": "SiteNumber", "to_id": "site-010", "props": {} },
+    { "type": "relationship", "from_label": "Deployment", "from_id": "dep-004", "rel_type": "AT_SITE", "to_label": "SiteNumber", "to_id": "site-008", "props": {} }
   ]
 }

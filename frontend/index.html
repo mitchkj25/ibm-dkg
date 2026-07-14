@@ -976,15 +976,15 @@ function buildGraph() {
   </marker>`;
   svg.appendChild(defs);
 
-  // ── two background zones ──
-  const zoneEnt = svgEl('ellipse',{cx:cx*0.52,cy:cy,rx:cx*0.46,ry:cy*0.82,fill:'#edf1ff',stroke:'#c7d2f8','stroke-width':'1.2',opacity:'0.7'});
-  const zonePer = svgEl('ellipse',{cx:cx*1.48,cy:cy,rx:cx*0.46,ry:cy*0.82,fill:'#eaf4ff',stroke:'#b3d7f5','stroke-width':'1.2',opacity:'0.7'});
+  // ── two background zones ── enterprise is wider, personal is compact
+  const zoneEnt = svgEl('ellipse',{cx:cx*0.48,cy:cy,rx:cx*0.54,ry:cy*0.86,fill:'#edf1ff',stroke:'#c7d2f8','stroke-width':'1.2',opacity:'0.7'});
+  const zonePer = svgEl('ellipse',{cx:cx*1.56,cy:cy,rx:cx*0.34,ry:cy*0.72,fill:'#eaf4ff',stroke:'#b3d7f5','stroke-width':'1.2',opacity:'0.7'});
   svg.appendChild(zoneEnt);
   svg.appendChild(zonePer);
 
   // Zone labels
-  const lblEnt = svgText('Enterprise Graph', cx*0.52, 22, {fill:'#4361b5','font-size':'11','font-weight':'700','text-anchor':'middle','letter-spacing':'0.5','opacity':'0.7'});
-  const lblPer = svgText('Personal Graph',   cx*1.48, 22, {fill:'#1565c0','font-size':'11','font-weight':'700','text-anchor':'middle','letter-spacing':'0.5','opacity':'0.7'});
+  const lblEnt = svgText('Enterprise Graph', cx*0.48, 22, {fill:'#4361b5','font-size':'11','font-weight':'700','text-anchor':'middle','letter-spacing':'0.5','opacity':'0.7'});
+  const lblPer = svgText('Personal Graph',   cx*1.56, 22, {fill:'#1565c0','font-size':'11','font-weight':'700','text-anchor':'middle','letter-spacing':'0.5','opacity':'0.7'});
   svg.appendChild(lblEnt);
   svg.appendChild(lblPer);
 
@@ -1014,8 +1014,8 @@ function buildGraph() {
   });
 
   // ── Personal hub nodes (right half circle) ──
-  const perR  = Math.min(cx * 0.38, cy * 0.56);
-  const perCX = cx * 1.48;
+  const perR  = Math.min(cx * 0.22, cy * 0.42);
+  const perCX = cx * 1.56;
   PER_HUBS.forEach((h, i) => {
     const angle = Math.PI * (0.18 + i * (0.64 / (PER_HUBS.length - 1)));
     const hx    = perCX + perR * Math.cos(angle);
@@ -1409,9 +1409,17 @@ function onHubClick(hub) {
 function onPersonalHubClick(hub) {
   if (hub.id === 'per-renewals') switchTab('mod');
   else if (hub.id === 'per-nba') switchTab('insights');
-  else if (hub.id === 'per-book' || hub.id === 'per-cosell') switchTab('graph');
+  else if (hub.id === 'per-cosell') switchTab('graph');
+  else if (hub.id === 'per-book') {
+    // Navigate to search filtered to accounts
+    window.location.href = 'search.html?q=accounts';
+  }
   else if (hub.id === 'per-sites') {
-    doSearch('What site numbers have the most spend?');
+    // Navigate to search filtered to site numbers
+    window.location.href = 'search.html?q=site numbers';
+  }
+  else if (hub.id === 'per-quota') {
+    switchTab('insights');
   }
 }
 
