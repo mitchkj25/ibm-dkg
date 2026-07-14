@@ -14,9 +14,9 @@
   --ibm-blue:#0f62fe;--ibm-blue-dk:#0043ce;--ibm-cyan:#1192e8;
   --ibm-teal:#009d9a;--ibm-purple:#a56eff;--ibm-orange:#ff832b;
   --ibm-red:#da1e28;--ibm-green:#24a148;--ibm-yellow:#f1c21b;
-  /* Dark theme — matches search.html and all detail pages */
-  --bg:#0a0c14;--bg2:#0d1020;--panel:#131726;--card:rgba(255,255,255,0.06);
-  --border:rgba(255,255,255,0.1);--tp:#f4f4f8;--ts:#a0a8c0;--tm:#5c6480;--r:8px;
+  /* Light theme */
+  --bg:#f0f4ff;--bg2:#e8eeff;--panel:#ffffff;--card:#f4f7ff;
+  --border:#dde2f0;--tp:#161616;--ts:#525252;--tm:#8d8d8d;--r:8px;
   --sw:320px;
 }
 html,body{height:100%;background:var(--bg);color:var(--tp);font-family:'IBM Plex Sans',-apple-system,BlinkMacSystemFont,sans-serif;font-size:13px;line-height:1.5;overflow:hidden}
@@ -119,7 +119,7 @@ html,body{height:100%;background:var(--bg);color:var(--tp);font-family:'IBM Plex
 #digest-panel{background:var(--panel);border:1px solid var(--border);border-radius:10px;padding:22px;width:500px;max-width:94vw;max-height:88vh;overflow-y:auto;box-shadow:0 8px 40px rgba(0,0,60,.15)}
 
 /* ── Header ───────────────────────────────────────────────────────────── */
-#hdr{grid-column:1/-1;background:rgba(10,12,20,0.92);border-bottom:1px solid var(--border);display:flex;align-items:center;padding:0 16px;gap:12px;z-index:100;box-shadow:0 1px 4px rgba(0,0,60,.06)}
+#hdr{grid-column:1/-1;background:rgba(255,255,255,0.95);border-bottom:1px solid var(--border);display:flex;align-items:center;padding:0 16px;gap:12px;z-index:100;box-shadow:0 1px 4px rgba(0,0,60,.06)}
 .logo{display:flex;align-items:center;gap:9px;font-weight:700;font-size:14px;white-space:nowrap;color:var(--tp)}
 .pill{background:var(--ibm-blue);color:#fff;padding:2px 7px;border-radius:4px;font-size:9px;font-weight:800;letter-spacing:1.5px}
 .hdiv{width:1px;height:22px;background:var(--border)}
@@ -153,7 +153,7 @@ hr{border:none;border-top:1px solid var(--border);margin:10px 0}
 .qitem:hover{color:var(--ibm-blue);background:rgba(15,98,254,0.06);border-left-color:var(--ibm-blue)}
 
 /* ── SVG Graph area ───────────────────────────────────────────────────── */
-#cw{position:relative;overflow:hidden;background:var(--bg);background-image:radial-gradient(circle,#c8d4f8 1px,transparent 1px);background-size:28px 28px}
+#cw{position:relative;overflow:hidden;background:var(--bg);background-image:radial-gradient(circle,#b8c6e8 1px,transparent 1px);background-size:28px 28px}
 #dkg-svg{user-select:none;-webkit-user-select:none}
 
 /* ── Hub nodes ────────────────────────────────────────────────────────── */
@@ -169,12 +169,12 @@ hr{border:none;border-top:1px solid var(--border);margin:10px 0}
 .node-selected circle{filter:drop-shadow(0 0 6px currentColor)}
 
 /* ── Graph overlay controls ───────────────────────────────────────────── */
-#gctrls{position:absolute;bottom:16px;left:50%;transform:translateX(-50%);display:flex;gap:5px;background:var(--panel);border:1px solid var(--border);border-radius:8px;padding:5px;box-shadow:0 2px 8px rgba(0,0,60,.1)}
+#gctrls{position:absolute;bottom:52px;left:50%;transform:translateX(-50%);display:flex;gap:5px;background:var(--panel);border:1px solid var(--border);border-radius:8px;padding:5px;box-shadow:0 2px 8px rgba(0,0,60,.1);z-index:10}
 .gcb{background:var(--card);border:1px solid var(--border);color:var(--tp);width:30px;height:30px;border-radius:5px;cursor:pointer;font-size:14px;display:flex;align-items:center;justify-content:center;transition:background .15s}
-.gcb:hover{background:#e8e8e8}
+.gcb:hover{background:#e0e8ff}
 
 /* ── Source rail (bottom of graph) ──────────────────────────────────── */
-#source-rail{position:absolute;bottom:0;left:0;right:0;height:36px;background:rgba(255,255,255,0.92);border-top:1px solid var(--border);display:flex;align-items:center;padding:0 16px;gap:14px;backdrop-filter:blur(8px);font-size:9px;color:var(--ts)}
+#source-rail{position:absolute;bottom:0;left:0;right:0;height:36px;background:rgba(240,244,255,0.96);border-top:1px solid var(--border);display:flex;align-items:center;padding:0 16px;gap:14px;backdrop-filter:blur(8px);font-size:9px;color:var(--ts);z-index:5}
 .src-logo{display:flex;align-items:center;gap:4px;padding:2px 7px;border-radius:4px;background:#f4f7ff;border:1px solid var(--border);font-weight:700;font-size:8px;color:var(--ts);letter-spacing:.3px}
 .src-sep{width:1px;height:14px;background:var(--border)}
 .gov-bar{margin-left:auto;display:flex;align-items:center;gap:5px;font-size:8px;font-weight:700;color:var(--ibm-green);letter-spacing:.3px}
@@ -977,14 +977,14 @@ function buildGraph() {
   svg.appendChild(defs);
 
   // ── two background zones ──
-  const zoneEnt = svgEl('ellipse',{cx:cx*0.52,cy:cy,rx:cx*0.46,ry:cy*0.82,fill:'rgba(15,98,254,0.04)',stroke:'rgba(99,147,254,0.18)','stroke-width':'1.2',opacity:'1'});
-  const zonePer = svgEl('ellipse',{cx:cx*1.48,cy:cy,rx:cx*0.46,ry:cy*0.82,fill:'rgba(17,146,232,0.04)',stroke:'rgba(99,179,254,0.18)','stroke-width':'1.2',opacity:'1'});
+  const zoneEnt = svgEl('ellipse',{cx:cx*0.52,cy:cy,rx:cx*0.46,ry:cy*0.82,fill:'#edf1ff',stroke:'#c7d2f8','stroke-width':'1.2',opacity:'0.7'});
+  const zonePer = svgEl('ellipse',{cx:cx*1.48,cy:cy,rx:cx*0.46,ry:cy*0.82,fill:'#eaf4ff',stroke:'#b3d7f5','stroke-width':'1.2',opacity:'0.7'});
   svg.appendChild(zoneEnt);
   svg.appendChild(zonePer);
 
   // Zone labels
-  const lblEnt = svgText('Enterprise Graph', cx*0.52, 22, {fill:'rgba(139,167,254,0.7)','font-size':'11','font-weight':'700','text-anchor':'middle','letter-spacing':'0.5','opacity':'1'});
-  const lblPer = svgText('Personal Graph',   cx*1.48, 22, {fill:'rgba(99,179,254,0.7)', 'font-size':'11','font-weight':'700','text-anchor':'middle','letter-spacing':'0.5','opacity':'1'});
+  const lblEnt = svgText('Enterprise Graph', cx*0.52, 22, {fill:'#4361b5','font-size':'11','font-weight':'700','text-anchor':'middle','letter-spacing':'0.5','opacity':'0.7'});
+  const lblPer = svgText('Personal Graph',   cx*1.48, 22, {fill:'#1565c0','font-size':'11','font-weight':'700','text-anchor':'middle','letter-spacing':'0.5','opacity':'0.7'});
   svg.appendChild(lblEnt);
   svg.appendChild(lblPer);
 
@@ -998,9 +998,9 @@ function buildGraph() {
   const centerR = 32;
   const centerG = svgEl('g',{class:'svg-node',id:'center-node'});
   centerG.appendChild(svgEl('circle',{cx,cy,r:centerR+8,fill:'rgba(15,98,254,0.06)',stroke:'none'}));
-  centerG.appendChild(svgEl('circle',{cx,cy,r:centerR,fill:'#111828',stroke:'#0f62fe','stroke-width':'2.5',filter:'drop-shadow(0 2px 12px rgba(15,98,254,.45))'}));
-  centerG.appendChild(svgText('IBM Scout', cx, cy-4,  {fill:'#a8c0ff','font-size':'10','font-weight':'800','text-anchor':'middle'}));
-  centerG.appendChild(svgText('Seller Intelligence', cx, cy+8, {fill:'#6392fe','font-size':'7.5','text-anchor':'middle'}));
+  centerG.appendChild(svgEl('circle',{cx,cy,r:centerR,fill:'#fff',stroke:'#0f62fe','stroke-width':'2.5',filter:'drop-shadow(0 2px 8px rgba(15,98,254,.2))'}));
+  centerG.appendChild(svgText('IBM Scout', cx, cy-4,  {fill:'#0f62fe','font-size':'10','font-weight':'800','text-anchor':'middle'}));
+  centerG.appendChild(svgText('Seller Intelligence', cx, cy+8, {fill:'#7986cb','font-size':'7.5','text-anchor':'middle'}));
   nodeLayer.appendChild(centerG);
 
   // ── Enterprise hub nodes (left half circle) ──
@@ -1045,7 +1045,7 @@ function drawHubNode(nodeLayer, edgeLayer, hub, hx, hy, cx, cy, side, svg) {
   const g = svgEl('g',{class:'svg-node',id:hub.id,'data-hub':'1','data-types':hub.types?hub.types.join(','):''});
 
   g.appendChild(svgEl('circle',{cx:hx,cy:hy,r:R+5,fill:col,opacity:'0.08',stroke:'none'}));
-  g.appendChild(svgEl('circle',{cx:hx,cy:hy,r:R,fill:'#111828',stroke:col,'stroke-width':'2',filter:`drop-shadow(0 1px 6px ${col}66)`}));
+  g.appendChild(svgEl('circle',{cx:hx,cy:hy,r:R,fill:'#fff',stroke:col,'stroke-width':'2',filter:`drop-shadow(0 1px 4px ${col}44)`}));
   g.appendChild(svgText(hub.label,hx,hy+4,{fill:col,'font-size':'9','font-weight':'800','text-anchor':'middle','letter-spacing':'0.3'}));
 
   g.style.cursor = 'grab';
@@ -1070,7 +1070,7 @@ function drawPersonalHub(nodeLayer, edgeLayer, hub, hx, hy, cx, cy, svg) {
 
   const g = svgEl('g',{class:'svg-node',id:hub.id});
   g.appendChild(svgEl('circle',{cx:hx,cy:hy,r:R+4,fill:col,opacity:'0.06',stroke:'none'}));
-  g.appendChild(svgEl('circle',{cx:hx,cy:hy,r:R,fill:'#111828',stroke:col,'stroke-width':'1.8',filter:`drop-shadow(0 1px 5px ${col}55)`}));
+  g.appendChild(svgEl('circle',{cx:hx,cy:hy,r:R,fill:'#f0f8ff',stroke:col,'stroke-width':'1.8',filter:`drop-shadow(0 1px 3px ${col}33)`}));
   g.appendChild(svgText(hub.label,hx,hy+4,{fill:col,'font-size':'8.5','font-weight':'700','text-anchor':'middle'}));
 
   g.style.cursor = 'grab';
@@ -2629,10 +2629,10 @@ function switchTab(tab) {
   ['graph','insights','mod','partners','trust'].forEach(t=>{
     document.getElementById('tab-'+t).classList.toggle('active',t===tab);
   });
-  document.getElementById('graph-panel').style.display   =tab==='graph'   ?'':'none';
-  document.getElementById('ins-panel').style.display     =tab==='insights'?'':'none';
-  document.getElementById('mod-panel').style.display     =tab==='mod'     ?'':'none';
-  document.getElementById('partner-panel').style.display =tab==='partners'?'':'none';
+  document.getElementById('graph-panel').style.display   =tab==='graph'   ?'block':'none';
+  document.getElementById('ins-panel').style.display     =tab==='insights'?'block':'none';
+  document.getElementById('mod-panel').style.display     =tab==='mod'     ?'block':'none';
+  document.getElementById('partner-panel').style.display =tab==='partners'?'block':'none';
   document.getElementById('trust-panel').style.display   =tab==='trust'   ?'block':'none';
   if(tab==='insights'&&!window._insightsLoaded) loadInsights();
   if(tab==='trust'   &&!window._trustLoaded)    loadTrustDashboard();
