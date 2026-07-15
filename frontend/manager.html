@@ -1,0 +1,266 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+<title>IBM Scout — Manager Profile</title>
+<link rel="icon" href="assets/scout-logo.png"/>
+<link rel="preconnect" href="https://fonts.googleapis.com"/>
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin/>
+<link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Sans:wght@400;500;600;700&family=IBM+Plex+Mono:wght@400;500&display=swap" rel="stylesheet"/>
+<style>
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+:root{
+  --ibm-blue:#0f62fe;--ibm-dk:#0043ce;--ibm-teal:#009d9a;--ibm-cyan:#1192e8;
+  --ibm-purple:#6929c4;--ibm-orange:#ff832b;--ibm-red:#da1e28;
+  --ibm-green:#24a148;--ibm-yellow:#f1c21b;
+  --bg:#f0f4ff;--surface:#ffffff;--card:#f4f7ff;
+  --border:#dde2f0;--tp:#161616;--ts:#525252;--tm:#8d8d8d;--r:10px;
+}
+html,body{min-height:100vh;background:var(--bg);color:var(--tp);
+  font-family:'IBM Plex Sans',-apple-system,BlinkMacSystemFont,sans-serif;font-size:14px;line-height:1.5}
+::-webkit-scrollbar{width:5px}::-webkit-scrollbar-thumb{background:rgba(0,0,80,.15);border-radius:10px}
+#hdr{position:sticky;top:0;z-index:200;display:flex;align-items:center;gap:16px;
+  padding:0 28px;height:54px;background:rgba(255,255,255,0.95);
+  border-bottom:1px solid var(--border);backdrop-filter:blur(16px);box-shadow:0 1px 4px rgba(0,0,60,.06)}
+.logo{display:flex;align-items:center;gap:9px;text-decoration:none;color:var(--tp)}
+.logo img{width:28px;height:28px;object-fit:contain;border-radius:4px}
+.logo-txt{font-size:14px;font-weight:700}.logo-txt span{color:var(--ibm-blue)}
+.hdr-div{width:1px;height:20px;background:var(--border)}
+.hdr-nav{display:flex;gap:4px}
+.hdr-btn{padding:5px 12px;border-radius:6px;font-size:12px;font-weight:600;cursor:pointer;
+  border:1px solid transparent;color:var(--ts);transition:all .15s;background:none;
+  text-decoration:none;display:flex;align-items:center;gap:5px}
+.hdr-btn:hover{color:var(--tp);background:var(--surface);border-color:var(--border)}
+.hdr-right{margin-left:auto;display:flex;align-items:center;gap:8px}
+#page{max-width:1160px;margin:0 auto;padding:32px 28px 80px}
+.breadcrumb{display:flex;align-items:center;gap:8px;font-size:11px;color:var(--tm);margin-bottom:20px}
+.breadcrumb a{color:var(--ts);text-decoration:none}.breadcrumb a:hover{color:var(--ibm-blue)}
+.breadcrumb-sep{opacity:.4}
+/* Hero */
+#hero-banner{background:var(--card);border:1px solid var(--border);border-radius:var(--r);
+  padding:24px 28px;margin-bottom:24px;display:flex;align-items:flex-start;gap:20px}
+.hero-avatar{width:56px;height:56px;border-radius:50%;background:rgba(0,157,154,.12);
+  border:2px solid rgba(0,157,154,.4);display:flex;align-items:center;justify-content:center;font-size:22px;flex-shrink:0}
+.hero-body{flex:1;min-width:0}
+.hero-label{font-size:11px;font-weight:700;text-transform:uppercase;letter-spacing:1px;color:var(--ibm-teal);margin-bottom:4px}
+.hero-title{font-size:22px;font-weight:700;line-height:1.2;margin-bottom:4px}
+.hero-sub{font-size:13px;color:var(--ts);margin-bottom:10px}
+.hero-tags{display:flex;gap:6px;flex-wrap:wrap}
+.h-tag{padding:3px 10px;border-radius:20px;font-size:10px;font-weight:700;text-transform:uppercase;letter-spacing:.5px}
+.hero-right{display:flex;flex-direction:column;align-items:flex-end;gap:8px;flex-shrink:0}
+.stat-box{background:var(--surface);border:1px solid var(--border);border-radius:10px;padding:12px 18px;text-align:center;min-width:100px}
+.stat-num{font-size:28px;font-weight:700;line-height:1}
+.stat-lbl{font-size:9px;text-transform:uppercase;letter-spacing:1px;color:var(--ts);margin-top:3px}
+/* KPI */
+#kpi-strip{display:grid;grid-template-columns:repeat(auto-fit,minmax(150px,1fr));gap:12px;margin-bottom:24px}
+.kpi-card{background:var(--card);border:1px solid var(--border);border-radius:var(--r);padding:14px 16px}
+.kpi-val{font-size:26px;font-weight:700;line-height:1;margin-bottom:3px}
+.kpi-label{font-size:10px;color:var(--ts);text-transform:uppercase;letter-spacing:.5px}
+.kpi-sub{font-size:10px;color:var(--tm);margin-top:3px}
+/* Layout */
+.two-col{display:grid;grid-template-columns:1fr 1fr;gap:16px;margin-bottom:24px}
+@media(max-width:800px){.two-col{grid-template-columns:1fr}}
+.section-card{background:var(--card);border:1px solid var(--border);border-radius:var(--r);padding:18px 20px}
+.section-title{font-size:10px;font-weight:800;text-transform:uppercase;letter-spacing:1px;
+  color:var(--ts);margin-bottom:14px;display:flex;align-items:center;gap:6px}
+.cnt{background:var(--surface);border:1px solid var(--border);border-radius:4px;padding:1px 6px;font-size:9px;color:var(--tp)}
+.data-row{display:flex;align-items:center;gap:10px;padding:9px 0;border-bottom:1px solid var(--border);cursor:pointer}
+.data-row:last-child{border-bottom:none}
+.data-row:hover{background:rgba(15,98,254,.05);margin:0 -6px;padding:9px 6px;border-radius:6px}
+.dr-dot{width:9px;height:9px;border-radius:50%;flex-shrink:0}
+.dr-name{flex:1;font-size:12px;font-weight:600;color:var(--tp)}
+.dr-sub{font-size:10px;color:var(--ts)}
+.dr-badge{font-size:9px;font-weight:800;text-transform:uppercase;letter-spacing:.4px;padding:2px 8px;border-radius:4px;white-space:nowrap}
+.empty-state{font-size:12px;color:var(--tm);font-style:italic;padding:8px 0}
+/* SLM card */
+.slm-card{background:var(--surface);border:1px solid rgba(165,110,255,.25);border-radius:var(--r);
+  padding:14px 16px;display:flex;align-items:center;gap:12px;cursor:pointer;transition:border-color .15s;margin-bottom:16px}
+.slm-card:hover{border-color:rgba(165,110,255,.5)}
+.slm-avatar{width:40px;height:40px;border-radius:50%;background:rgba(165,110,255,.12);
+  display:flex;align-items:center;justify-content:center;font-size:18px;flex-shrink:0}
+/* Actions */
+.action-row{display:flex;gap:10px;flex-wrap:wrap;margin-top:18px}
+.action-btn{padding:9px 18px;border-radius:7px;font-size:12px;font-weight:700;cursor:pointer;
+  border:1px solid;transition:all .15s;text-decoration:none;display:inline-flex;align-items:center;gap:6px}
+.action-btn.primary{background:var(--ibm-blue);border-color:var(--ibm-blue);color:#fff}
+.action-btn.primary:hover{background:var(--ibm-dk)}
+.action-btn.secondary{background:var(--card);border-color:var(--border);color:var(--ts)}
+.action-btn.secondary:hover{background:#eef2ff;color:var(--tp)}
+</style>
+</head>
+<body>
+<header id="hdr">
+  <a class="logo" href="search.html"><img src="assets/scout-logo.png" alt="IBM Scout" onerror="this.style.display='none'"/>
+    <div class="logo-txt">IBM <span>Scout</span></div></a>
+  <div class="hdr-div"></div>
+  <nav class="hdr-nav">
+    <a href="search.html" class="hdr-btn">
+      <svg width="12" height="12" viewBox="0 0 16 16" fill="none"><circle cx="6.5" cy="6.5" r="5" stroke="currentColor" stroke-width="1.5"/><line x1="10.5" y1="10.5" x2="14" y2="14" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/></svg>Search
+    </a>
+    <a href="index.html" class="hdr-btn">
+      <svg width="12" height="12" viewBox="0 0 14 14" fill="none"><circle cx="7" cy="3" r="2" stroke="currentColor" stroke-width="1.5"/><circle cx="3" cy="11" r="2" stroke="currentColor" stroke-width="1.5"/><circle cx="11" cy="11" r="2" stroke="currentColor" stroke-width="1.5"/><line x1="7" y1="5" x2="4.5" y2="9.2" stroke="currentColor" stroke-width="1.2"/><line x1="7" y1="5" x2="9.5" y2="9.2" stroke="currentColor" stroke-width="1.2"/></svg>Graph View
+    </a>
+    <a href="#" class="hdr-btn active" style="color:var(--ibm-teal);border-color:rgba(0,157,154,.3);background:rgba(0,157,154,.08)">👥 Manager</a>
+  </nav>
+  <div class="hdr-right"><span id="mode-badge" style="padding:3px 8px;border-radius:8px;font-size:9px;font-weight:800;letter-spacing:.5px;text-transform:uppercase;background:rgba(255,131,43,.1);color:var(--ibm-orange);border:1px solid rgba(255,131,43,.2)">Demo Mode</span></div>
+</header>
+
+<div id="page">
+  <div class="breadcrumb"><a href="search.html">IBM Scout</a><span class="breadcrumb-sep">›</span><a href="search.html">Managers</a><span class="breadcrumb-sep">›</span><span id="bc-name">Loading…</span></div>
+
+  <div id="hero-banner">
+    <div class="hero-avatar">👥</div>
+    <div class="hero-body">
+      <div class="hero-label" id="hero-label">Manager</div>
+      <div class="hero-title" id="hero-title">Loading…</div>
+      <div class="hero-sub" id="hero-sub"></div>
+      <div class="hero-tags" id="hero-tags"></div>
+    </div>
+    <div class="hero-right">
+      <div class="stat-box">
+        <div class="stat-num" id="hero-band" style="color:var(--ibm-teal)">—</div>
+        <div class="stat-lbl">Band Level</div>
+      </div>
+    </div>
+  </div>
+
+  <div id="kpi-strip">
+    <div class="kpi-card"><div class="kpi-val" id="kpi-reports" style="color:var(--ibm-blue)">—</div><div class="kpi-label">Direct Reports</div><div class="kpi-sub" id="kpi-reports-sub"></div></div>
+    <div class="kpi-card"><div class="kpi-val" id="kpi-accounts" style="color:var(--ibm-cyan)">—</div><div class="kpi-label">Accounts Covered</div><div class="kpi-sub" id="kpi-accounts-sub"></div></div>
+    <div class="kpi-card"><div class="kpi-val" id="kpi-pipeline" style="color:var(--ibm-yellow)">—</div><div class="kpi-label">Total Pipeline</div><div class="kpi-sub">across all sellers</div></div>
+    <div class="kpi-card"><div class="kpi-val" id="kpi-territory" style="color:var(--ibm-teal)">—</div><div class="kpi-label">Territory</div><div class="kpi-sub" id="kpi-territory-sub"></div></div>
+  </div>
+
+  <div id="slm-section" style="margin-bottom:24px;display:none">
+    <div style="font-size:10px;font-weight:800;text-transform:uppercase;letter-spacing:1px;color:var(--ts);margin-bottom:10px">Reports To</div>
+    <div id="slm-card-wrap"></div>
+  </div>
+
+  <div class="two-col">
+    <div class="section-card">
+      <div class="section-title">👤 Direct Reports <span class="cnt" id="cnt-reports">0</span></div>
+      <div id="reports-list"></div>
+    </div>
+    <div class="section-card">
+      <div class="section-title">🏢 Accounts in Book <span class="cnt" id="cnt-accounts">0</span></div>
+      <div id="accounts-list"></div>
+    </div>
+  </div>
+
+  <div class="action-row" id="action-row">
+    <a href="search.html" class="action-btn secondary">← Back to Search</a>
+  </div>
+</div>
+
+<script>
+const API = 'http://localhost:8000';
+function fmtM(v){if(!v)return'—';if(v>=1e9)return`$${(v/1e9).toFixed(1)}B`;if(v>=1e6)return`$${(v/1e6).toFixed(1)}M`;if(v>=1e3)return`$${(v/1e3).toFixed(0)}K`;return`$${v}`;}
+
+const MANAGERS = {
+  'mgr-001':{id:'mgr-001',name:'Sandra Okafor',email:'sokafor@ibm.com',band:'Band 10',territory:'Northeast US',role:'First Line Manager (FLM)',description:'First Line Manager covering Northeast US. Directly manages Marcus Webb (CE) and Aisha Thornton (BSS). Reports to Priya Nambiar (SLM).',reportsTo:'mgr-003',directReports:['sel-001','sel-002'],accounts:['acc-001','acc-005','acc-004'],pipeline:2400000+890000+560000},
+  'mgr-002':{id:'mgr-002',name:'David Reyes',email:'dreyes@ibm.com',band:'Band 10',territory:'Southeast US',role:'First Line Manager (FLM)',description:'First Line Manager covering Southeast US. Manages James Kowalski (CE), Lin Mei Zhang (TSL), and Monique Tureaud (TSL). ATL Derek Callahan is a peer on the Public Sector book.',reportsTo:'mgr-003',directReports:['sel-003','sel-004','sel-007'],accounts:['acc-002','acc-003','acc-006','acc-007'],pipeline:640000},
+  'mgr-003':{id:'mgr-003',name:'Priya Nambiar',email:'pnambiar@ibm.com',band:'Band 11',territory:'West US + National',role:'Second Line Manager (SLM)',description:'Second Line Manager overseeing West US region and national enterprise coverage. Sandra Okafor and David Reyes both report to Priya.',reportsTo:null,directReports:['mgr-001','mgr-002','sel-005','sel-006'],accounts:['acc-001','acc-002','acc-003','acc-004','acc-005','acc-006','acc-007'],pipeline:2400000+890000+640000+560000},
+  'mgr-004':{id:'mgr-004',name:'Derek Callahan',email:'dcallahan@ibm.com',band:'Band 9',territory:'Public Sector South',role:'ATL — Area Tech Leader',description:'ATL (Area Tech Leader) for Public Sector South. Peer to TSL Monique Tureaud — both report directly to FLM David Reyes. Owns technical brand activation for Louisiana, Mississippi, Arkansas.',reportsTo:'mgr-002',directReports:[],accounts:['acc-007'],pipeline:0},
+};
+
+const SELLERS_SHORT = {
+  'sel-001':{id:'sel-001',name:'Marcus Webb',role:'Client Executive',geo:'New York, NY',sellerType:'CE',email:'mwebb@ibm.com'},
+  'sel-002':{id:'sel-002',name:'Aisha Thornton',role:'BSS / watsonx Specialist',geo:'Boston, MA',sellerType:'BSS',email:'athornton@ibm.com'},
+  'sel-003':{id:'sel-003',name:'James Kowalski',role:'Client Executive',geo:'Atlanta, GA',sellerType:'CE',email:'jkowalski@ibm.com'},
+  'sel-004':{id:'sel-004',name:'Lin Mei Zhang',role:'Technology Sales Specialist',geo:'Miami, FL',sellerType:'TSL',email:'lzhang@ibm.com'},
+  'sel-005':{id:'sel-005',name:'Tyler Oduya',role:'Client Executive',geo:'San Francisco, CA',sellerType:'CE',email:'toduya@ibm.com'},
+  'sel-006':{id:'sel-006',name:'Rachel Patel',role:'BSS / Security Specialist',geo:'Los Angeles, CA',sellerType:'BSS',email:'rpatel@ibm.com'},
+  'sel-007':{id:'sel-007',name:'Monique Tureaud',role:'Brand Sales Specialist (TSL)',geo:'Baton Rouge, LA',sellerType:'TSL',email:'mtureaud@ibm.com'},
+};
+
+const ACCOUNTS_SHORT = {
+  'acc-001':{id:'acc-001',name:'First National Bancorp',industry:'Financial Services',segment:'Enterprise'},
+  'acc-002':{id:'acc-002',name:'Meridian Health Systems',industry:'Healthcare',segment:'Enterprise'},
+  'acc-003':{id:'acc-003',name:'Nova Retail Group',industry:'Retail',segment:'Mid-Market'},
+  'acc-004':{id:'acc-004',name:'Apex Technology Partners',industry:'Technology',segment:'Enterprise'},
+  'acc-005':{id:'acc-005',name:'Cascadia Insurance Group',industry:'Insurance',segment:'Enterprise'},
+  'acc-006':{id:'acc-006',name:'SunCoast Logistics',industry:'Logistics',segment:'Mid-Market'},
+  'acc-007':{id:'acc-007',name:'State of Louisiana',industry:'Government',segment:'Public Sector'},
+};
+
+const BADGE_COL={CE:['rgba(15,98,254,.12)','#0f62fe'],BSS:['rgba(255,131,43,.12)','#ff832b'],TSL:['rgba(0,157,154,.12)','#009d9a'],ATL:['rgba(165,110,255,.12)','#a56eff'],FLM:['rgba(0,157,154,.12)','#009d9a'],SLM:['rgba(165,110,255,.12)','#a56eff']};
+
+function renderPage(mgr) {
+  document.title = `IBM Scout — ${mgr.name}`;
+  document.getElementById('bc-name').textContent = mgr.name;
+  document.getElementById('hero-label').textContent = mgr.role;
+  document.getElementById('hero-title').textContent = mgr.name;
+  document.getElementById('hero-sub').textContent = mgr.description;
+  document.getElementById('hero-band').textContent = mgr.band.replace('Band ','B');
+
+  document.getElementById('hero-tags').innerHTML = `
+    <span class="h-tag" style="background:rgba(0,157,154,.1);color:var(--ibm-teal);border:1px solid rgba(0,157,154,.25)">${mgr.role}</span>
+    <span class="h-tag" style="background:rgba(0,0,0,.04);color:var(--ts);border:1px solid var(--border)">${mgr.territory}</span>
+    <a href="mailto:${mgr.email}" style="padding:3px 10px;border-radius:20px;font-size:10px;font-weight:700;background:rgba(15,98,254,.08);color:var(--ibm-blue);border:1px solid rgba(15,98,254,.2);text-decoration:none">${mgr.email}</a>`;
+
+  // SLM / reports-to card
+  const slm = mgr.reportsTo ? MANAGERS[mgr.reportsTo] : null;
+  if (slm) {
+    document.getElementById('slm-section').style.display = 'block';
+    document.getElementById('slm-card-wrap').innerHTML = `
+      <div class="slm-card" onclick="window.location='manager.html?id=${slm.id}'">
+        <div class="slm-avatar">👥</div>
+        <div style="flex:1">
+          <div style="font-size:13px;font-weight:700;color:var(--ibm-purple)">${slm.name}</div>
+          <div style="font-size:10px;color:var(--ts);margin-top:2px">${slm.role} · ${slm.band} · ${slm.territory}</div>
+        </div>
+        <div style="font-size:10px;font-weight:700;color:var(--ibm-purple)">View profile →</div>
+      </div>`;
+  }
+
+  // Direct reports — can be sellers OR managers
+  const reports = (mgr.directReports||[]).map(rid => SELLERS_SHORT[rid] || (MANAGERS[rid] ? {...MANAGERS[rid], sellerType:'FLM'} : null)).filter(Boolean);
+  const accounts = (mgr.accounts||[]).map(a=>ACCOUNTS_SHORT[a]).filter(Boolean);
+
+  // KPIs
+  document.getElementById('kpi-reports').textContent = reports.length;
+  document.getElementById('kpi-reports-sub').textContent = reports.map(r=>r.name.split(' ')[0]).join(', ')||'none';
+  document.getElementById('kpi-accounts').textContent = accounts.length;
+  document.getElementById('kpi-accounts-sub').textContent = `${accounts.length} account${accounts.length!==1?'s':''}`;
+  document.getElementById('kpi-pipeline').textContent = fmtM(mgr.pipeline);
+  document.getElementById('kpi-territory').textContent = mgr.territory.split(' ')[0];
+  document.getElementById('kpi-territory-sub').textContent = mgr.territory;
+
+  // Reports list
+  document.getElementById('cnt-reports').textContent = reports.length;
+  document.getElementById('reports-list').innerHTML = reports.length ? reports.map(r=>{
+    const isMgr = !!MANAGERS[r.id];
+    const bc = BADGE_COL[r.sellerType]||BADGE_COL.CE;
+    const page = isMgr ? `manager.html?id=${r.id}` : `seller.html?id=${r.id}`;
+    const label = isMgr ? (r.role||'Manager') : (r.sellerType||'CE');
+    return `<div class="data-row" onclick="window.location='${page}'">
+      <div class="dr-dot" style="background:${bc[1]}"></div>
+      <div><div class="dr-name">${r.name}</div><div class="dr-sub">${r.geo||r.territory||''} · ${isMgr ? r.role : r.role}</div></div>
+      <div class="dr-badge" style="background:${bc[0]};color:${bc[1]}">${label}</div>
+    </div>`;
+  }).join('') : '<div class="empty-state">No direct reports.</div>';
+
+  // Accounts list
+  document.getElementById('cnt-accounts').textContent = accounts.length;
+  document.getElementById('accounts-list').innerHTML = accounts.length ? accounts.map(a=>`
+    <div class="data-row" onclick="window.location='account.html?id=${a.id}'">
+      <div class="dr-dot" style="background:var(--ibm-cyan)"></div>
+      <div><div class="dr-name">${a.name}</div><div class="dr-sub">${a.industry} · ${a.segment}</div></div>
+      <div class="dr-badge" style="background:rgba(17,146,232,.12);color:var(--ibm-cyan)">${a.segment}</div>
+    </div>`).join('') : '<div class="empty-state">No accounts in book.</div>';
+
+  document.getElementById('action-row').innerHTML = `
+    <a href="search.html" class="action-btn secondary">← Back to Search</a>
+    <a href="index.html#node=${mgr.id}" class="action-btn secondary">🕸 View in Graph</a>
+    <a href="mailto:${mgr.email}" class="action-btn primary">✉ Email ${mgr.name.split(' ')[0]}</a>`;
+}
+
+const id = new URLSearchParams(window.location.search).get('id');
+if (id && MANAGERS[id]) renderPage(MANAGERS[id]);
+else { document.getElementById('bc-name').textContent='Not Found'; document.getElementById('hero-title').textContent='Manager Not Found'; }
+
+(async()=>{try{const r=await fetch(`${API}/healthz`,{signal:AbortSignal.timeout(1500)});if(r.ok){const b=document.getElementById('mode-badge');b.textContent='Live API';b.style.background='rgba(36,161,72,.1)';b.style.color='#24a148';b.style.borderColor='rgba(36,161,72,.2)';}}catch(_){}})();
+</script>
+</body>
+</html>

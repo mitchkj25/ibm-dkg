@@ -1,0 +1,319 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+<title>IBM Scout — Site Number</title>
+<link rel="icon" href="assets/scout-logo.png"/>
+<link rel="preconnect" href="https://fonts.googleapis.com"/>
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin/>
+<link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Sans:wght@400;500;600;700&family=IBM+Plex+Mono:wght@400;500&display=swap" rel="stylesheet"/>
+<style>
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+:root{
+  --ibm-blue:#0f62fe;--ibm-dk:#0043ce;--ibm-teal:#009d9a;--ibm-cyan:#1192e8;
+  --ibm-purple:#6929c4;--ibm-orange:#ff832b;--ibm-red:#da1e28;
+  --ibm-green:#24a148;--ibm-yellow:#f1c21b;
+  --bg:#f0f4ff;--surface:#ffffff;--card:#f4f7ff;
+  --border:#dde2f0;--tp:#161616;--ts:#525252;--tm:#8d8d8d;--r:10px;
+}
+html,body{min-height:100vh;background:var(--bg);color:var(--tp);
+  font-family:'IBM Plex Sans',-apple-system,BlinkMacSystemFont,sans-serif;font-size:14px;line-height:1.5}
+::-webkit-scrollbar{width:5px}::-webkit-scrollbar-thumb{background:rgba(0,0,80,.15);border-radius:10px}
+#hdr{position:sticky;top:0;z-index:200;display:flex;align-items:center;gap:16px;
+  padding:0 28px;height:54px;background:rgba(255,255,255,0.95);
+  border-bottom:1px solid var(--border);backdrop-filter:blur(16px);box-shadow:0 1px 4px rgba(0,0,60,.06)}
+.logo{display:flex;align-items:center;gap:9px;text-decoration:none;color:var(--tp)}
+.logo img{width:28px;height:28px;object-fit:contain;border-radius:4px}
+.logo-txt{font-size:14px;font-weight:700}.logo-txt span{color:var(--ibm-blue)}
+.hdr-div{width:1px;height:20px;background:var(--border)}
+.hdr-nav{display:flex;gap:4px}
+.hdr-btn{padding:5px 12px;border-radius:6px;font-size:12px;font-weight:600;cursor:pointer;
+  border:1px solid transparent;color:var(--ts);transition:all .15s;background:none;
+  text-decoration:none;display:flex;align-items:center;gap:5px}
+.hdr-btn:hover{color:var(--tp);background:var(--surface);border-color:var(--border)}
+.hdr-right{margin-left:auto;display:flex;align-items:center;gap:8px}
+#page{max-width:1160px;margin:0 auto;padding:32px 28px 80px}
+.breadcrumb{display:flex;align-items:center;gap:8px;font-size:11px;color:var(--tm);margin-bottom:20px}
+.breadcrumb a{color:var(--ts);text-decoration:none}.breadcrumb a:hover{color:var(--ibm-blue)}
+.breadcrumb-sep{opacity:.4}
+/* Hero */
+#hero-banner{background:var(--card);border:1px solid var(--border);border-radius:var(--r);
+  padding:24px 28px;margin-bottom:24px;display:flex;align-items:flex-start;gap:20px}
+.hero-icon{width:56px;height:56px;border-radius:12px;background:rgba(0,157,154,.12);
+  display:flex;align-items:center;justify-content:center;font-size:26px;flex-shrink:0}
+.hero-body{flex:1;min-width:0}
+.hero-label{font-size:11px;font-weight:700;text-transform:uppercase;letter-spacing:1px;color:var(--ibm-teal);margin-bottom:4px}
+.hero-title{font-size:22px;font-weight:700;line-height:1.2;margin-bottom:4px;font-family:'IBM Plex Mono',monospace;letter-spacing:.5px}
+.hero-sub{font-size:13px;color:var(--ts);margin-bottom:10px}
+.hero-tags{display:flex;gap:6px;flex-wrap:wrap}
+.h-tag{padding:3px 10px;border-radius:20px;font-size:10px;font-weight:700;text-transform:uppercase;letter-spacing:.5px}
+.hero-right{display:flex;flex-direction:column;align-items:flex-end;gap:8px;flex-shrink:0}
+.stat-box{background:var(--surface);border:1px solid var(--border);border-radius:10px;padding:12px 18px;text-align:center;min-width:110px}
+.stat-num{font-size:24px;font-weight:700;line-height:1}
+.stat-lbl{font-size:9px;text-transform:uppercase;letter-spacing:1px;color:var(--ts);margin-top:3px}
+/* KPI */
+#kpi-strip{display:grid;grid-template-columns:repeat(auto-fit,minmax(150px,1fr));gap:12px;margin-bottom:24px}
+.kpi-card{background:var(--card);border:1px solid var(--border);border-radius:var(--r);padding:14px 16px}
+.kpi-val{font-size:26px;font-weight:700;line-height:1;margin-bottom:3px}
+.kpi-label{font-size:10px;color:var(--ts);text-transform:uppercase;letter-spacing:.5px}
+.kpi-sub{font-size:10px;color:var(--tm);margin-top:3px}
+/* Account link card */
+.acc-card{background:var(--surface);border:1px solid rgba(17,146,232,.25);border-radius:var(--r);
+  padding:14px 16px;display:flex;align-items:center;gap:12px;cursor:pointer;transition:border-color .15s;margin-bottom:16px}
+.acc-card:hover{border-color:rgba(17,146,232,.5)}
+/* Layout */
+.two-col{display:grid;grid-template-columns:1fr 1fr;gap:16px;margin-bottom:24px}
+@media(max-width:800px){.two-col{grid-template-columns:1fr}}
+.section-card{background:var(--card);border:1px solid var(--border);border-radius:var(--r);padding:18px 20px}
+.section-title{font-size:10px;font-weight:800;text-transform:uppercase;letter-spacing:1px;
+  color:var(--ts);margin-bottom:14px;display:flex;align-items:center;gap:6px}
+.cnt{background:var(--surface);border:1px solid var(--border);border-radius:4px;padding:1px 6px;font-size:9px;color:var(--tp)}
+.data-row{display:flex;align-items:center;gap:10px;padding:9px 0;border-bottom:1px solid var(--border);cursor:pointer}
+.data-row:last-child{border-bottom:none}
+.data-row:hover{background:rgba(15,98,254,.05);margin:0 -6px;padding:9px 6px;border-radius:6px}
+.dr-dot{width:9px;height:9px;border-radius:50%;flex-shrink:0}
+.dr-name{flex:1;font-size:12px;font-weight:600;color:var(--tp)}
+.dr-sub{font-size:10px;color:var(--ts)}
+.dr-badge{font-size:9px;font-weight:800;text-transform:uppercase;letter-spacing:.4px;padding:2px 8px;border-radius:4px;white-space:nowrap}
+.empty-state{font-size:12px;color:var(--tm);font-style:italic;padding:8px 0}
+/* Spend bar */
+.spend-bar-wrap{margin:14px 0 0}
+.spend-bar-label{display:flex;justify-content:space-between;font-size:10px;color:var(--ts);margin-bottom:5px;font-weight:600}
+.spend-bar-track{height:10px;background:rgba(0,157,154,.1);border-radius:5px;overflow:hidden}
+.spend-bar-fill{height:100%;border-radius:5px;background:linear-gradient(90deg,var(--ibm-teal),#33b1ff)}
+/* Actions */
+.action-row{display:flex;gap:10px;flex-wrap:wrap;margin-top:18px}
+.action-btn{padding:9px 18px;border-radius:7px;font-size:12px;font-weight:700;cursor:pointer;
+  border:1px solid;transition:all .15s;text-decoration:none;display:inline-flex;align-items:center;gap:6px}
+.action-btn.primary{background:var(--ibm-teal);border-color:var(--ibm-teal);color:#fff}
+.action-btn.primary:hover{background:#007d79}
+.action-btn.secondary{background:var(--card);border-color:var(--border);color:var(--ts)}
+.action-btn.secondary:hover{background:#eef2ff;color:var(--tp)}
+</style>
+</head>
+<body>
+<header id="hdr">
+  <a class="logo" href="search.html"><img src="assets/scout-logo.png" alt="IBM Scout" onerror="this.style.display='none'"/>
+    <div class="logo-txt">IBM <span>Scout</span></div></a>
+  <div class="hdr-div"></div>
+  <nav class="hdr-nav">
+    <a href="search.html" class="hdr-btn">
+      <svg width="12" height="12" viewBox="0 0 16 16" fill="none"><circle cx="6.5" cy="6.5" r="5" stroke="currentColor" stroke-width="1.5"/><line x1="10.5" y1="10.5" x2="14" y2="14" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/></svg>Search
+    </a>
+    <a href="index.html" class="hdr-btn">
+      <svg width="12" height="12" viewBox="0 0 14 14" fill="none"><circle cx="7" cy="3" r="2" stroke="currentColor" stroke-width="1.5"/><circle cx="3" cy="11" r="2" stroke="currentColor" stroke-width="1.5"/><circle cx="11" cy="11" r="2" stroke="currentColor" stroke-width="1.5"/><line x1="7" y1="5" x2="4.5" y2="9.2" stroke="currentColor" stroke-width="1.2"/><line x1="7" y1="5" x2="9.5" y2="9.2" stroke="currentColor" stroke-width="1.2"/></svg>Graph View
+    </a>
+    <a href="#" class="hdr-btn active" style="color:var(--ibm-teal);border-color:rgba(0,157,154,.3);background:rgba(0,157,154,.08)">🔢 Site Number</a>
+  </nav>
+  <div class="hdr-right"><span id="mode-badge" style="padding:3px 8px;border-radius:8px;font-size:9px;font-weight:800;letter-spacing:.5px;text-transform:uppercase;background:rgba(255,131,43,.1);color:var(--ibm-orange);border:1px solid rgba(255,131,43,.2)">Demo Mode</span></div>
+</header>
+
+<div id="page">
+  <div class="breadcrumb"><a href="search.html">IBM Scout</a><span class="breadcrumb-sep">›</span><a href="search.html">Site Numbers</a><span class="breadcrumb-sep">›</span><span id="bc-name">Loading…</span></div>
+
+  <div id="hero-banner">
+    <div class="hero-icon">🔢</div>
+    <div class="hero-body">
+      <div class="hero-label" id="hero-label">IBM Site Number</div>
+      <div class="hero-title" id="hero-title">Loading…</div>
+      <div class="hero-sub" id="hero-sub"></div>
+      <div class="hero-tags" id="hero-tags"></div>
+    </div>
+    <div class="hero-right">
+      <div class="stat-box">
+        <div class="stat-num" id="hero-spend" style="color:var(--ibm-teal)">—</div>
+        <div class="stat-lbl">Annual IBM Spend</div>
+      </div>
+    </div>
+  </div>
+
+  <div id="kpi-strip">
+    <div class="kpi-card"><div class="kpi-val" id="kpi-installs" style="color:var(--ibm-blue)">—</div><div class="kpi-label">Active Installs</div><div class="kpi-sub" id="kpi-installs-sub"></div></div>
+    <div class="kpi-card"><div class="kpi-val" id="kpi-deps" style="color:var(--ibm-purple)">—</div><div class="kpi-label">Deployments</div><div class="kpi-sub" id="kpi-deps-sub"></div></div>
+    <div class="kpi-card"><div class="kpi-val" id="kpi-products" style="color:var(--ibm-orange)">—</div><div class="kpi-label">IBM Products</div><div class="kpi-sub" id="kpi-products-sub"></div></div>
+    <div class="kpi-card"><div class="kpi-val" id="kpi-status" style="color:var(--ibm-green)">Active</div><div class="kpi-label">Site Status</div><div class="kpi-sub" id="kpi-status-sub"></div></div>
+  </div>
+
+  <div style="margin-bottom:24px">
+    <div style="font-size:10px;font-weight:800;text-transform:uppercase;letter-spacing:1px;color:var(--ts);margin-bottom:10px">Parent Account</div>
+    <div id="acc-card-wrap"></div>
+  </div>
+
+  <div class="two-col">
+    <div class="section-card">
+      <div class="section-title">⚙️ Installs at this Site <span class="cnt" id="cnt-installs">0</span></div>
+      <div id="installs-list"></div>
+    </div>
+    <div class="section-card">
+      <div class="section-title">🚀 Deployments at this Site <span class="cnt" id="cnt-deps">0</span></div>
+      <div id="deps-list"></div>
+    </div>
+  </div>
+
+  <div class="section-card" style="margin-bottom:24px">
+    <div class="section-title">📦 IBM Products at this Site <span class="cnt" id="cnt-products">0</span></div>
+    <div id="products-list"></div>
+  </div>
+
+  <div class="action-row" id="action-row">
+    <a href="search.html" class="action-btn secondary">← Back to Search</a>
+  </div>
+</div>
+
+<script>
+const API = 'http://localhost:8000';
+function fmtM(v){if(!v)return'—';if(v>=1e9)return`$${(v/1e9).toFixed(1)}B`;if(v>=1e6)return`$${(v/1e6).toFixed(1)}M`;if(v>=1e3)return`$${(v/1e3).toFixed(0)}K`;return`$${v}`;}
+function daysUntil(d){return d?Math.ceil((new Date(d)-new Date())/86400000):null;}
+
+const SITES = {
+  'site-001':{id:'site-001',siteId:'LA-GOV-0041',accountId:'acc-007',agency:'Dept. of Children & Family Services',annualSpend:1840000,description:'Louisiana DCFS site — IBM Cognos Analytics and watsonx.ai footprint. Highest spend site in the State of Louisiana account.',status:'ACTIVE',installs:['ins-006'],deployments:['dep-006'],products:['prd-008','prd-001']},
+  'site-002':{id:'site-002',siteId:'LA-GOV-0089',accountId:'acc-007',agency:'Dept. of Transportation & Development',annualSpend:1120000,description:'Louisiana DOTD site — IBM Cognos Analytics deployed. Stalled deployment: version 11.2 out of support, upgrade blocked by procurement freeze.',status:'ACTIVE',installs:['ins-007'],deployments:['dep-007'],products:['prd-008']},
+  'site-003':{id:'site-003',siteId:'LA-GOV-0117',accountId:'acc-007',agency:'Dept. of Health & Hospitals',annualSpend:670000,description:'Louisiana DHH site — IBM Turbonomic only. No Cognos footprint yet — whitespace expansion opportunity.',status:'ACTIVE',installs:[],deployments:[],products:['prd-007']},
+  'site-004':{id:'site-004',siteId:'FNB-CORP-0012',accountId:'acc-001',agency:'Corporate HQ',annualSpend:3200000,description:'First National Bancorp HQ site — Turbonomic and CP4Security active. Primary IBM site for FNB with highest spend.',status:'ACTIVE',installs:['ins-001','ins-005'],deployments:['dep-001','dep-005'],products:['prd-007','prd-004']},
+  'site-005':{id:'site-005',siteId:'FNB-RET-0031',accountId:'acc-001',agency:'Retail Banking Division',annualSpend:2600000,description:'FNB Retail Banking Division site — watsonx.ai expansion in progress. Second largest FNB site by IBM spend.',status:'ACTIVE',installs:['ins-002'],deployments:['dep-002'],products:['prd-001']},
+  'site-006':{id:'site-006',siteId:'MHS-ENT-0044',accountId:'acc-002',agency:'Enterprise IT',annualSpend:1450000,description:'Meridian Health Systems enterprise IT site — primary IBM footprint. watsonx.ai pilot identified, CP4Security co-sell in evaluation.',status:'ACTIVE',installs:[],deployments:[],products:['prd-001']},
+  'site-007':{id:'site-007',siteId:'MHS-CLN-0055',accountId:'acc-002',agency:'Clinical Operations',annualSpend:980000,description:'Meridian Health clinical operations site — data integration and analytics workloads. Security tooling evaluation underway.',status:'ACTIVE',installs:[],deployments:[],products:['prd-004']},
+  'site-008':{id:'site-008',siteId:'NRG-CORP-0021',accountId:'acc-003',agency:'Corporate Technology',annualSpend:620000,description:'Nova Retail Group corporate technology site — Sterling OMS installed and stalled. Out of support. Upgrade proposal ($640K) in Identify stage.',status:'ACTIVE',installs:['ins-004'],deployments:['dep-004'],products:['prd-006']},
+  'site-009':{id:'site-009',siteId:'ATP-HQ-0088',accountId:'acc-004',agency:'HQ — Engineering',annualSpend:2100000,description:'Apex Technology Partners HQ engineering site — watsonx.ai deployment in progress at 42% adoption. Governance layer upsell identified.',status:'ACTIVE',installs:['ins-002'],deployments:['dep-002'],products:['prd-001']},
+  'site-010':{id:'site-010',siteId:'CIG-ENT-0033',accountId:'acc-005',agency:'Enterprise GRC',annualSpend:890000,description:'Cascadia Insurance Group GRC site — OpenPages v8.3 deployed. Support expires Sep 2025. Upgrade proposal ($890K) in Propose stage.',status:'ACTIVE',installs:['ins-003'],deployments:['dep-003'],products:['prd-005']},
+  'site-011':{id:'site-011',siteId:'SCL-OPS-0017',accountId:'acc-006',agency:'Operations',annualSpend:310000,description:'SunCoast Logistics operations site — no active IBM deployment yet. Whitespace opportunity: AI-driven order orchestration.',status:'ACTIVE',installs:[],deployments:[],products:[]},
+};
+
+const ACCOUNTS_SHORT = {
+  'acc-001':{id:'acc-001',name:'First National Bancorp',industry:'Financial Services',segment:'Enterprise'},
+  'acc-002':{id:'acc-002',name:'Meridian Health Systems',industry:'Healthcare',segment:'Enterprise'},
+  'acc-003':{id:'acc-003',name:'Nova Retail Group',industry:'Retail',segment:'Mid-Market'},
+  'acc-004':{id:'acc-004',name:'Apex Technology Partners',industry:'Technology',segment:'Enterprise'},
+  'acc-005':{id:'acc-005',name:'Cascadia Insurance Group',industry:'Insurance',segment:'Enterprise'},
+  'acc-006':{id:'acc-006',name:'SunCoast Logistics',industry:'Logistics',segment:'Mid-Market'},
+  'acc-007':{id:'acc-007',name:'State of Louisiana',industry:'Government',segment:'Public Sector'},
+};
+
+const INSTALLS_SHORT = {
+  'ins-001':{id:'ins-001',name:'IBM Turbonomic',version:'8.10',supportEnd:'2026-04-12',contractValue:480000,status:'ACTIVE'},
+  'ins-002':{id:'ins-002',name:'watsonx.ai',version:'2.0',supportEnd:'2027-01-20',contractValue:1200000,status:'ACTIVE'},
+  'ins-003':{id:'ins-003',name:'IBM OpenPages',version:'8.3',supportEnd:'2025-09-01',contractValue:640000,status:'ACTIVE'},
+  'ins-004':{id:'ins-004',name:'IBM Sterling OMS',version:'9.5',supportEnd:'2024-11-15',contractValue:380000,status:'STALE'},
+  'ins-005':{id:'ins-005',name:'IBM CP4Security',version:'1.9',supportEnd:'2026-07-01',contractValue:920000,status:'ACTIVE'},
+  'ins-006':{id:'ins-006',name:'IBM Cognos Analytics',version:'12.0',supportEnd:'2026-02-01',contractValue:290000,status:'ACTIVE'},
+  'ins-007':{id:'ins-007',name:'IBM Cognos Analytics',version:'11.2',supportEnd:'2025-06-15',contractValue:210000,status:'STALE'},
+};
+
+const DEPS_SHORT = {
+  'dep-001':{id:'dep-001',name:'Turbonomic @ FNB HQ',deploymentStatus:'LIVE',gainsightHealthLabel:'GREEN',adoptionPct:97},
+  'dep-002':{id:'dep-002',name:'watsonx.ai @ Apex / FNB',deploymentStatus:'IN_PROGRESS',gainsightHealthLabel:'YELLOW',adoptionPct:42},
+  'dep-003':{id:'dep-003',name:'OpenPages @ Cascadia',deploymentStatus:'LIVE',gainsightHealthLabel:'YELLOW',adoptionPct:96},
+  'dep-004':{id:'dep-004',name:'Sterling OMS @ Nova Retail',deploymentStatus:'STALLED',gainsightHealthLabel:'RED',adoptionPct:38},
+  'dep-005':{id:'dep-005',name:'CP4Security @ FNB HQ',deploymentStatus:'IN_PROGRESS',gainsightHealthLabel:'YELLOW',adoptionPct:68},
+  'dep-006':{id:'dep-006',name:'Cognos @ LA DCFS',deploymentStatus:'LIVE',gainsightHealthLabel:'GREEN',adoptionPct:99},
+  'dep-007':{id:'dep-007',name:'Cognos @ LA DOTD',deploymentStatus:'STALLED',gainsightHealthLabel:'RED',adoptionPct:51},
+};
+
+const PRODUCTS_SHORT = {
+  'prd-001':{id:'prd-001',name:'watsonx.ai',family:'watsonx',color:'#a56eff'},
+  'prd-002':{id:'prd-002',name:'watsonx.data',family:'watsonx',color:'#a56eff'},
+  'prd-003':{id:'prd-003',name:'watsonx.governance',family:'watsonx',color:'#a56eff'},
+  'prd-004':{id:'prd-004',name:'IBM Cloud Pak for Security',family:'Security',color:'#da1e28'},
+  'prd-005':{id:'prd-005',name:'IBM OpenPages',family:'Risk & Compliance',color:'#ff832b'},
+  'prd-006':{id:'prd-006',name:'IBM Sterling OMS',family:'Supply Chain',color:'#009d9a'},
+  'prd-007':{id:'prd-007',name:'IBM Turbonomic',family:'AIOps',color:'#6929c4'},
+  'prd-008':{id:'prd-008',name:'IBM Cognos Analytics',family:'Business Intelligence',color:'#1192e8'},
+};
+
+const GS_COL={GREEN:'#24a148',YELLOW:'#f1c21b',RED:'#da1e28'};
+const ST_COL={LIVE:'#24a148',IN_PROGRESS:'#1192e8',STALLED:'#da1e28'};
+
+function renderPage(site) {
+  document.title = `IBM Scout — ${site.siteId}`;
+  document.getElementById('bc-name').textContent = site.siteId;
+  document.getElementById('hero-label').textContent = `IBM Site Number · ${site.agency}`;
+  document.getElementById('hero-title').textContent = site.siteId;
+  document.getElementById('hero-sub').textContent = site.description;
+  document.getElementById('hero-spend').textContent = fmtM(site.annualSpend);
+  document.getElementById('hero-tags').innerHTML = `
+    <span class="h-tag" style="background:rgba(0,157,154,.1);color:var(--ibm-teal);border:1px solid rgba(0,157,154,.25)">${site.status}</span>
+    <span class="h-tag" style="background:rgba(0,0,0,.04);color:var(--ts);border:1px solid var(--border)">${site.agency}</span>`;
+
+  const acc = ACCOUNTS_SHORT[site.accountId];
+  const installs = (site.installs||[]).map(i=>INSTALLS_SHORT[i]).filter(Boolean);
+  const deps = (site.deployments||[]).map(d=>DEPS_SHORT[d]).filter(Boolean);
+  const products = (site.products||[]).map(p=>PRODUCTS_SHORT[p]).filter(Boolean);
+
+  const staleInstalls = installs.filter(i=>i.status==='STALE'||(i.supportEnd&&new Date(i.supportEnd)<new Date())).length;
+  const redDeps = deps.filter(d=>d.gainsightHealthLabel==='RED').length;
+
+  // KPIs
+  document.getElementById('kpi-installs').textContent = installs.length || '—';
+  document.getElementById('kpi-installs').style.color = staleInstalls ? '#da1e28' : 'var(--ibm-blue)';
+  document.getElementById('kpi-installs-sub').textContent = staleInstalls ? `⚠ ${staleInstalls} expired` : installs.length ? 'all in support' : 'no installs yet';
+  document.getElementById('kpi-deps').textContent = deps.length || '—';
+  document.getElementById('kpi-deps').style.color = redDeps ? '#da1e28' : 'var(--ibm-purple)';
+  document.getElementById('kpi-deps-sub').textContent = redDeps ? `⚠ ${redDeps} RED` : deps.length ? 'monitored' : 'none active';
+  document.getElementById('kpi-products').textContent = products.length || '—';
+  document.getElementById('kpi-products-sub').textContent = products.map(p=>p.name.split(' ').pop()).join(', ')||'none yet';
+  document.getElementById('kpi-status').textContent = site.status;
+  document.getElementById('kpi-status').style.color = site.status==='ACTIVE' ? 'var(--ibm-green)' : 'var(--ibm-orange)';
+  document.getElementById('kpi-status-sub').textContent = site.agency;
+
+  // Parent account card
+  if (acc) {
+    document.getElementById('acc-card-wrap').innerHTML = `
+      <div class="acc-card" onclick="window.location='account.html?id=${acc.id}'">
+        <div style="width:40px;height:40px;border-radius:10px;background:rgba(17,146,232,.12);display:flex;align-items:center;justify-content:center;font-size:18px;flex-shrink:0">🏢</div>
+        <div style="flex:1">
+          <div style="font-size:13px;font-weight:700;color:var(--ibm-cyan)">${acc.name}</div>
+          <div style="font-size:10px;color:var(--ts);margin-top:2px">${acc.industry} · ${acc.segment}</div>
+        </div>
+        <div style="font-size:10px;font-weight:700;color:var(--ibm-cyan)">Account 360 →</div>
+      </div>`;
+  }
+
+  // Installs
+  document.getElementById('cnt-installs').textContent = installs.length;
+  document.getElementById('installs-list').innerHTML = installs.length ? installs.map(i=>{
+    const d = daysUntil(i.supportEnd);
+    const exp = i.status==='STALE'||d<0;
+    const exp180 = d!==null&&d>=0&&d<180;
+    const col = exp?'#da1e28':exp180?'#f1c21b':'#24a148';
+    return `<div class="data-row" onclick="window.location='install.html?id=${i.id}'">
+      <div class="dr-dot" style="background:${col}"></div>
+      <div><div class="dr-name">${i.name} v${i.version}</div><div class="dr-sub">${i.supportEnd} · ${fmtM(i.contractValue)}</div></div>
+      <div class="dr-badge" style="background:${col}18;color:${col}">${exp?'EOS':exp180?`${d}d`:'Active'}</div>
+    </div>`;
+  }).join('') : '<div class="empty-state">No installs recorded at this site yet.</div>';
+
+  // Deployments
+  document.getElementById('cnt-deps').textContent = deps.length;
+  document.getElementById('deps-list').innerHTML = deps.length ? deps.map(d=>{
+    const col = GS_COL[d.gainsightHealthLabel]||'#888';
+    return `<div class="data-row" onclick="window.location='deployment.html?id=${d.id}'">
+      <div class="dr-dot" style="background:${col}"></div>
+      <div><div class="dr-name">${d.name}</div><div class="dr-sub">Adoption ${d.adoptionPct}% · ${d.deploymentStatus}</div></div>
+      <div class="dr-badge" style="background:${col}18;color:${col}">${d.gainsightHealthLabel}</div>
+    </div>`;
+  }).join('') : '<div class="empty-state">No deployments at this site yet.</div>';
+
+  // Products
+  document.getElementById('cnt-products').textContent = products.length;
+  document.getElementById('products-list').innerHTML = products.length ? products.map(p=>`
+    <div class="data-row" onclick="window.location='product.html?id=${p.id}'">
+      <div class="dr-dot" style="background:${p.color}"></div>
+      <div class="dr-name">${p.name}</div>
+      <div class="dr-badge" style="background:${p.color}18;color:${p.color}">${p.family}</div>
+    </div>`).join('') : '<div class="empty-state">No IBM products recorded at this site.</div>';
+
+  document.getElementById('action-row').innerHTML = `
+    <a href="search.html" class="action-btn secondary">← Back to Search</a>
+    ${acc ? `<a href="account.html?id=${acc.id}" class="action-btn secondary">🏢 Account 360</a>` : ''}
+    <a href="index.html#node=${site.id}" class="action-btn secondary">🕸 View in Graph</a>`;
+}
+
+const id = new URLSearchParams(window.location.search).get('id');
+if (id && SITES[id]) renderPage(SITES[id]);
+else { document.getElementById('bc-name').textContent='Not Found'; document.getElementById('hero-title').textContent='Site Not Found'; }
+
+(async()=>{try{const r=await fetch(`${API}/healthz`,{signal:AbortSignal.timeout(1500)});if(r.ok){const b=document.getElementById('mode-badge');b.textContent='Live API';b.style.background='rgba(36,161,72,.1)';b.style.color='#24a148';b.style.borderColor='rgba(36,161,72,.2)';}}catch(_){}})();
+</script>
+</body>
+</html>

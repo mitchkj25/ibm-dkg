@@ -205,7 +205,7 @@ function renderPage(ter){
   document.getElementById('cnt-sellers').textContent=sellers.length;
   document.getElementById('sellers-list').innerHTML=sellers.length?sellers.map(s=>{
     const bc=BADGE_COL[s.sellerType]||BADGE_COL.CE;
-    return `<div class="data-row" onclick="window.location='index.html#node=${s.id}'">
+    return `<div class="data-row" onclick="window.location='seller.html?id=${s.id}'">
       <div class="dr-dot" style="background:${bc[1]}"></div>
       <div><div class="dr-name">${s.name}</div><div class="dr-sub">${s.geo} · ${s.role}</div></div>
       <div class="dr-badge" style="background:${bc[0]};color:${bc[1]}">${s.sellerType}</div>

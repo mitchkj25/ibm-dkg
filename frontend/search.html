@@ -693,7 +693,16 @@ function renderCards(nodes) {
     else if (n.label === 'Install') meta = `<span class="rc-meta-dot" style="background:${col}"></span><span class="rc-meta-txt">v${n.version || '—'} · Support: <strong>${n.supportEnd || '—'}</strong></span>`;
     else if (n.label === 'Opportunity') meta = `<span class="rc-meta-dot" style="background:${col}"></span><span class="rc-meta-txt"><strong>$${(n.value/1e6).toFixed(2)}M</strong> · Close: ${n.closeDate || '—'}</span>`;
 
-    const action = n.label === 'Opportunity' ? 'View opp →' : n.label === 'Account' ? 'Account 360 →' : n.label === 'Install' ? 'Check renewal →' : n.label === 'Deployment' ? 'Deployment details →' : 'Explore →';
+    const action = n.label === 'Opportunity' ? 'View opp →'
+      : n.label === 'Account' ? 'Account 360 →'
+      : n.label === 'Install' ? 'Check renewal →'
+      : n.label === 'Deployment' ? 'Deployment details →'
+      : n.label === 'Seller' ? 'Seller profile →'
+      : n.label === 'Manager' ? 'Manager profile →'
+      : n.label === 'SiteNumber' ? 'Site detail →'
+      : n.label === 'Territory' ? 'Territory detail →'
+      : n.label === 'Product' ? 'Product detail →'
+      : 'Explore →';
 
     return `
       <div class="result-card ${isStale ? 'stale' : ''}" onclick="openNode('${n.id}')">
@@ -722,7 +731,9 @@ function openNode(id) {
   if (id.startsWith('prd-'))  { window.location.href = `product.html?id=${id}`;     return; }
   if (id.startsWith('ins-'))  { window.location.href = `install.html?id=${id}`;     return; }
   if (id.startsWith('opp-'))  { window.location.href = `opportunity.html?id=${id}`; return; }
-  // Sellers, Managers, SiteNumbers → graph view with node pre-selected
+  if (id.startsWith('sel-'))  { window.location.href = `seller.html?id=${id}`;      return; }
+  if (id.startsWith('mgr-'))  { window.location.href = `manager.html?id=${id}`;     return; }
+  if (id.startsWith('site-')) { window.location.href = `site.html?id=${id}`;        return; }
   window.location.href = `index.html#node=${id}`;
 }
 
