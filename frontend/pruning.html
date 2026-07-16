@@ -1,0 +1,628 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+<title>IBM Scout — Pruning Agent Dashboard</title>
+<link rel="icon" href="assets/scout-logo.png"/>
+<link rel="preconnect" href="https://fonts.googleapis.com"/>
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin/>
+<link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Sans:wght@400;500;600;700&family=IBM+Plex+Mono:wght@400;500&display=swap" rel="stylesheet"/>
+<style>
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+:root{
+  --ibm-blue:#0f62fe;--ibm-blue-dk:#0043ce;--ibm-cyan:#1192e8;
+  --ibm-teal:#009d9a;--ibm-purple:#a56eff;--ibm-orange:#ff832b;
+  --ibm-red:#da1e28;--ibm-green:#24a148;--ibm-yellow:#f1c21b;
+  --bg:#f0f4ff;--panel:#ffffff;--card:#f4f7ff;--border:#dde2f0;
+  --tp:#161616;--ts:#525252;--tm:#8d8d8d;--r:8px;
+}
+html,body{min-height:100vh;background:var(--bg);color:var(--tp);font-family:'IBM Plex Sans',-apple-system,BlinkMacSystemFont,sans-serif;font-size:13px;line-height:1.5}
+
+/* ── Header ─────────────────────────────────────────────────────────── */
+#hdr{background:rgba(255,255,255,0.97);border-bottom:1px solid var(--border);display:flex;align-items:center;padding:0 24px;height:52px;gap:14px;position:sticky;top:0;z-index:100;box-shadow:0 1px 4px rgba(0,0,60,.06)}
+.logo-wrap{display:flex;align-items:center;gap:8px;text-decoration:none}
+.logo-wrap img{width:26px;height:26px;border-radius:5px}
+.logo-wrap .lname{font-size:14px;font-weight:700;color:var(--tp)}
+.logo-wrap .lsub{font-size:9px;color:var(--ts);font-weight:500;text-transform:uppercase;letter-spacing:.8px}
+.hdr-sep{width:1px;height:24px;background:var(--border)}
+.hdr-nav a{font-size:11px;color:var(--ts);text-decoration:none;padding:4px 8px;border-radius:5px;transition:background .15s,color .15s}
+.hdr-nav a:hover{background:#f0f4ff;color:var(--ibm-blue)}
+.hdr-nav a.active{color:var(--ibm-blue);font-weight:600;background:rgba(15,98,254,0.07)}
+.hdr-spacer{flex:1}
+.mode-badge{font-size:9px;font-weight:800;text-transform:uppercase;letter-spacing:.8px;padding:3px 9px;border-radius:4px;background:rgba(165,110,255,.12);color:var(--ibm-purple)}
+.mode-badge.live{background:rgba(36,161,72,.1);color:var(--ibm-green)}
+
+/* ── Layout ─────────────────────────────────────────────────────────── */
+.page{max-width:1100px;margin:0 auto;padding:28px 24px 60px}
+.page-title{font-size:22px;font-weight:700;color:var(--tp);margin-bottom:4px}
+.page-sub{font-size:12px;color:var(--ts);margin-bottom:24px;line-height:1.5}
+
+/* ── KPI strip ───────────────────────────────────────────────────────── */
+.kpi-strip{display:grid;grid-template-columns:repeat(5,1fr);gap:12px;margin-bottom:24px}
+.kpi{background:var(--panel);border:1px solid var(--border);border-radius:var(--r);padding:14px 16px;box-shadow:0 1px 3px rgba(0,0,0,.04)}
+.kpi-val{font-size:26px;font-weight:700;line-height:1;margin-bottom:4px}
+.kpi-lbl{font-size:9px;font-weight:800;text-transform:uppercase;letter-spacing:.8px;color:var(--ts)}
+.kpi.red .kpi-val{color:var(--ibm-red)}
+.kpi.orange .kpi-val{color:var(--ibm-orange)}
+.kpi.green .kpi-val{color:var(--ibm-green)}
+.kpi.blue .kpi-val{color:var(--ibm-blue)}
+.kpi.teal .kpi-val{color:var(--ibm-teal)}
+
+/* ── Section layout ──────────────────────────────────────────────────── */
+.two-col{display:grid;grid-template-columns:1fr 1fr;gap:16px;margin-bottom:24px}
+.full-col{margin-bottom:24px}
+.panel{background:var(--panel);border:1px solid var(--border);border-radius:var(--r);padding:16px;box-shadow:0 1px 3px rgba(0,0,0,.04)}
+.panel-title{font-size:10px;font-weight:800;text-transform:uppercase;letter-spacing:1px;color:var(--ts);margin-bottom:12px;display:flex;align-items:center;justify-content:space-between;gap:8px}
+.panel-title .ptc{display:flex;align-items:center;gap:6px}
+
+/* ── Timeline ────────────────────────────────────────────────────────── */
+.tl-row{display:flex;gap:12px;padding:8px 0;border-bottom:1px solid var(--border)}
+.tl-row:last-child{border-bottom:none}
+.tl-dot{width:8px;height:8px;border-radius:50%;flex-shrink:0;margin-top:5px}
+.tl-dot.green{background:var(--ibm-green)}
+.tl-dot.orange{background:var(--ibm-orange)}
+.tl-dot.red{background:var(--ibm-red)}
+.tl-dot.blue{background:var(--ibm-blue)}
+.tl-dot.teal{background:var(--ibm-teal)}
+.tl-ts{font-size:9px;color:var(--tm);font-family:'IBM Plex Mono',monospace;white-space:nowrap;min-width:110px}
+.tl-msg{font-size:11px;color:var(--tp);line-height:1.4}
+.tl-sub{font-size:9px;color:var(--ts);margin-top:2px}
+
+/* ── Stale node table ────────────────────────────────────────────────── */
+.stale-table{width:100%;border-collapse:collapse;font-size:11px}
+.stale-table th{text-align:left;padding:6px 8px;font-size:8.5px;font-weight:800;text-transform:uppercase;letter-spacing:.7px;color:var(--ts);border-bottom:2px solid var(--border);background:var(--card)}
+.stale-table td{padding:7px 8px;border-bottom:1px solid var(--border);vertical-align:middle}
+.stale-table tr:last-child td{border-bottom:none}
+.stale-table tr:hover td{background:#f8f9ff}
+.tag{display:inline-block;padding:1px 7px;border-radius:10px;font-size:8px;font-weight:800;text-transform:uppercase;letter-spacing:.4px}
+.tag.stale{background:rgba(255,131,43,.12);color:var(--ibm-orange)}
+.tag.deleted{background:rgba(218,30,40,.1);color:var(--ibm-red)}
+.tag.active{background:rgba(36,161,72,.1);color:var(--ibm-green)}
+.tag.seller{background:rgba(15,98,254,.08);color:var(--ibm-blue)}
+.tag.account{background:rgba(17,146,232,.1);color:var(--ibm-cyan)}
+.tag.install{background:rgba(165,110,255,.1);color:var(--ibm-purple)}
+.tag.deployment{background:rgba(0,157,154,.1);color:var(--ibm-teal)}
+.tag.opportunity{background:rgba(241,194,27,.15);color:#946500}
+
+/* ── TTL bar ─────────────────────────────────────────────────────────── */
+.ttl-bar-wrap{height:5px;background:#e8e8e8;border-radius:3px;overflow:hidden;width:80px}
+.ttl-bar{height:100%;border-radius:3px}
+
+/* ── Config panel ────────────────────────────────────────────────────── */
+.cfg-row{display:flex;align-items:center;justify-content:space-between;padding:8px 0;border-bottom:1px solid var(--border)}
+.cfg-row:last-child{border-bottom:none}
+.cfg-key{font-size:11px;font-weight:600;color:var(--tp)}
+.cfg-sub{font-size:9px;color:var(--ts)}
+.cfg-val{font-size:11px;font-family:'IBM Plex Mono',monospace;color:var(--ibm-blue);font-weight:700}
+
+/* ── Buttons ─────────────────────────────────────────────────────────── */
+.btn{padding:8px 18px;border-radius:6px;font-size:11px;font-weight:700;cursor:pointer;border:none;transition:background .15s,transform .1s;font-family:'IBM Plex Sans',sans-serif;display:inline-flex;align-items:center;gap:6px}
+.btn:active{transform:scale(0.97)}
+.btn-primary{background:var(--ibm-blue);color:#fff}
+.btn-primary:hover{background:var(--ibm-blue-dk)}
+.btn-danger{background:rgba(218,30,40,.08);color:var(--ibm-red);border:1px solid rgba(218,30,40,.2)}
+.btn-danger:hover{background:rgba(218,30,40,.14)}
+.btn-secondary{background:var(--card);color:var(--ts);border:1px solid var(--border)}
+.btn-secondary:hover{background:#e8eeff}
+
+/* ── Agent status badge ──────────────────────────────────────────────── */
+.agent-status{display:flex;align-items:center;gap:8px;padding:10px 14px;border-radius:8px;margin-bottom:16px}
+.agent-status.healthy{background:rgba(36,161,72,.06);border:1px solid rgba(36,161,72,.2)}
+.agent-status.warning{background:rgba(255,131,43,.06);border:1px solid rgba(255,131,43,.2)}
+.agent-status.error{background:rgba(218,30,40,.06);border:1px solid rgba(218,30,40,.2)}
+.as-dot{width:10px;height:10px;border-radius:50%;flex-shrink:0}
+.as-dot.green{background:var(--ibm-green);box-shadow:0 0 0 3px rgba(36,161,72,.15)}
+.as-dot.orange{background:var(--ibm-orange);box-shadow:0 0 0 3px rgba(255,131,43,.15)}
+.as-dot.red{background:var(--ibm-red);box-shadow:0 0 0 3px rgba(218,30,40,.15)}
+.as-label{font-size:11px;font-weight:700}
+.as-sub{font-size:9px;color:var(--ts)}
+
+/* ── Progress ring ───────────────────────────────────────────────────── */
+.ring-wrap{display:flex;flex-direction:column;align-items:center;justify-content:center;padding:10px 0}
+.ring-lbl{font-size:9px;font-weight:800;text-transform:uppercase;letter-spacing:.7px;color:var(--ts);margin-top:8px}
+
+/* ── Sparkline placeholder ───────────────────────────────────────────── */
+.sparkline{height:36px;display:flex;align-items:flex-end;gap:2px}
+.spark-bar{background:var(--ibm-blue);border-radius:2px 2px 0 0;opacity:0.7;flex:1;transition:opacity .2s}
+.spark-bar:hover{opacity:1}
+
+/* ── Toast ───────────────────────────────────────────────────────────── */
+#toast{position:fixed;bottom:28px;left:50%;transform:translateX(-50%) translateY(20px);background:var(--tp);color:#fff;padding:9px 18px;border-radius:8px;font-size:12px;font-weight:600;opacity:0;transition:opacity .25s,transform .25s;pointer-events:none;z-index:999;white-space:nowrap}
+#toast.show{opacity:1;transform:translateX(-50%) translateY(0)}
+</style>
+</head>
+<body>
+
+<div id="hdr">
+  <a class="logo-wrap" href="search.html">
+    <img src="assets/scout-logo.png" alt="Scout logo"/>
+    <div><div class="lname">IBM Scout</div><div class="lsub">DKG Platform</div></div>
+  </a>
+  <div class="hdr-sep"></div>
+  <nav class="hdr-nav" style="display:flex;gap:2px">
+    <a href="search.html">Search</a>
+    <a href="index.html">Graph</a>
+    <a href="pruning.html" class="active">Pruning Agent</a>
+  </nav>
+  <div class="hdr-spacer"></div>
+  <span class="mode-badge" id="mode-badge">DEMO MODE</span>
+</div>
+
+<div class="page">
+  <div class="page-title">🛡 Pruning Agent Dashboard</div>
+  <div class="page-sub">Monitors knowledge graph freshness, validates provenance metadata, and prunes stale or deleted nodes on a configurable TTL cycle. Runs every 6 hours by default — or trigger manually below.</div>
+
+  <!-- KPI strip -->
+  <div class="kpi-strip" id="kpi-strip">
+    <div class="kpi blue"><div class="kpi-val" id="k-total">—</div><div class="kpi-lbl">Total Nodes</div></div>
+    <div class="kpi green"><div class="kpi-val" id="k-active">—</div><div class="kpi-lbl">Active</div></div>
+    <div class="kpi orange"><div class="kpi-val" id="k-stale">—</div><div class="kpi-lbl">Stale</div></div>
+    <div class="kpi red"><div class="kpi-val" id="k-deleted">—</div><div class="kpi-lbl">Deleted (90d+)</div></div>
+    <div class="kpi teal"><div class="kpi-val" id="k-trust">—</div><div class="kpi-lbl">Trust Score</div></div>
+  </div>
+
+  <div class="two-col">
+    <!-- Agent status + controls -->
+    <div class="panel">
+      <div class="panel-title"><span class="ptc">⚙ Agent Status &amp; Controls</span></div>
+      <div class="agent-status healthy" id="agent-status-wrap">
+        <div class="as-dot green" id="agent-dot"></div>
+        <div>
+          <div class="as-label" id="agent-status-label">Healthy — running on schedule</div>
+          <div class="as-sub" id="agent-status-sub">Next run in ~4h 22m · Last run completed successfully</div>
+        </div>
+      </div>
+      <div style="margin-bottom:12px">
+        <div style="font-size:9px;font-weight:800;text-transform:uppercase;letter-spacing:.8px;color:var(--ts);margin-bottom:8px">Manual Trigger</div>
+        <div style="display:flex;gap:8px;flex-wrap:wrap">
+          <button class="btn btn-primary" onclick="runPruning()">▶ Run Pruning Cycle</button>
+          <button class="btn btn-secondary" onclick="refreshAll()">↺ Refresh Stats</button>
+        </div>
+      </div>
+      <div id="run-status" style="display:none;font-size:11px;padding:8px 12px;border-radius:6px;margin-top:10px"></div>
+      <div style="margin-top:14px">
+        <div style="font-size:9px;font-weight:800;text-transform:uppercase;letter-spacing:.8px;color:var(--ts);margin-bottom:8px">Last Run Report</div>
+        <div id="last-report-wrap" style="font-size:11px;color:var(--ts);line-height:1.6">Loading…</div>
+      </div>
+    </div>
+
+    <!-- TTL configuration -->
+    <div class="panel">
+      <div class="panel-title"><span class="ptc">⏱ TTL Configuration</span></div>
+      <div class="cfg-row">
+        <div><div class="cfg-key">Pruning Interval</div><div class="cfg-sub">How often the agent wakes up</div></div>
+        <div class="cfg-val">Every 6h</div>
+      </div>
+      <div class="cfg-row">
+        <div><div class="cfg-key">Default Node TTL</div><div class="cfg-sub">How long before a node is marked STALE</div></div>
+        <div class="cfg-val">30 days</div>
+      </div>
+      <div class="cfg-row">
+        <div><div class="cfg-key">Stale Delete Threshold</div><div class="cfg-sub">STALE nodes are hard-deleted after</div></div>
+        <div class="cfg-val">90 days</div>
+      </div>
+      <div class="cfg-row">
+        <div><div class="cfg-key">Human Write-back Grace</div><div class="cfg-sub">Confirmed nodes are exempt for</div></div>
+        <div class="cfg-val">+14 days</div>
+      </div>
+      <div class="cfg-row">
+        <div><div class="cfg-key">Orphan Relationship Cleanup</div><div class="cfg-sub">Edges where both endpoints are DELETED</div></div>
+        <div class="cfg-val" style="color:var(--ibm-green)">Enabled</div>
+      </div>
+      <div class="cfg-row">
+        <div><div class="cfg-key">Soft Delete Only</div><div class="cfg-sub">Mark DELETED before hard removal</div></div>
+        <div class="cfg-val" style="color:var(--ibm-green)">Enabled</div>
+      </div>
+      <div style="margin-top:12px;font-size:9px;color:var(--tm)">TTL overrides configurable via <span style="font-family:'IBM Plex Mono',monospace;background:var(--card);padding:1px 5px;border-radius:3px">.env</span> — see README for options.</div>
+    </div>
+  </div>
+
+  <!-- Stale nodes table -->
+  <div class="full-col panel">
+    <div class="panel-title">
+      <span class="ptc">
+        <svg width="12" height="12" viewBox="0 0 16 16" fill="none"><circle cx="8" cy="8" r="7" stroke="var(--ibm-orange)" stroke-width="1.5"/><line x1="8" y1="5" x2="8" y2="9" stroke="var(--ibm-orange)" stroke-width="1.5" stroke-linecap="round"/><circle cx="8" cy="11.5" r=".75" fill="var(--ibm-orange)"/></svg>
+        Stale Nodes — requires attention
+      </span>
+      <button class="btn btn-secondary" style="font-size:9px;padding:3px 10px" onclick="loadStaleNodes()">↺ Reload</button>
+    </div>
+    <div id="stale-table-wrap">
+      <div style="color:var(--tm);font-size:11px">Loading stale node list…</div>
+    </div>
+  </div>
+
+  <div class="two-col">
+    <!-- Run history sparkline -->
+    <div class="panel">
+      <div class="panel-title"><span class="ptc">📊 Pruning Run History (last 10 cycles)</span></div>
+      <div style="margin-bottom:10px">
+        <div style="display:flex;justify-content:space-between;font-size:9px;color:var(--tm);margin-bottom:4px">
+          <span>Nodes scanned per run</span>
+          <span id="spark-max-lbl"></span>
+        </div>
+        <div class="sparkline" id="spark-wrap"></div>
+        <div style="display:flex;justify-content:space-between;font-size:8px;color:var(--tm);margin-top:3px">
+          <span id="spark-oldest"></span><span>Now</span>
+        </div>
+      </div>
+      <div id="history-rows" style="font-size:11px;color:var(--ts)"></div>
+    </div>
+
+    <!-- Data source freshness -->
+    <div class="panel">
+      <div class="panel-title"><span class="ptc">🔗 Source Freshness</span></div>
+      <div id="source-freshness-wrap">
+        <div style="color:var(--tm);font-size:11px">Loading…</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Node health breakdown -->
+  <div class="full-col panel">
+    <div class="panel-title"><span class="ptc">🧬 Node Health Breakdown by Type</span></div>
+    <div id="health-breakdown" style="display:grid;grid-template-columns:repeat(auto-fill,minmax(160px,1fr));gap:10px;padding-top:4px"></div>
+  </div>
+
+  <!-- Pruning log -->
+  <div class="full-col panel">
+    <div class="panel-title">
+      <span class="ptc">📋 Pruning Event Log</span>
+      <button class="btn btn-secondary" style="font-size:9px;padding:3px 10px" onclick="loadEventLog()">↺ Reload</button>
+    </div>
+    <div id="event-log">
+      <div style="color:var(--tm);font-size:11px">Loading event log…</div>
+    </div>
+  </div>
+</div>
+
+<div id="toast"></div>
+
+<script>
+const API = 'http://localhost:8000';
+
+// ── Mock seed data (used when API is unavailable) ────────────────────
+const MOCK_REPORT = {
+  run_id: 'prune-mock-001',
+  started_at: new Date(Date.now() - 3600000 * 2.3).toISOString(),
+  completed_at: new Date(Date.now() - 3600000 * 2.3 + 14200).toISOString(),
+  nodes_scanned: 54,
+  nodes_stale: 3,
+  nodes_deleted: 0,
+  edges_pruned: 0,
+  stale_nodes: [
+    { id:'ins-007', label:'Install', name:'Cognos Analytics v11.2 @ State of Louisiana — DOTD', reason:'support_end exceeded TTL', days_stale:11, ttl_days:30 },
+    { id:'dep-007', label:'Deployment', name:'Cognos Analytics @ Louisiana DOTD (STALLED)', reason:'deployment_stalled > 60 days', days_stale:22, ttl_days:30 },
+    { id:'opp-004', label:'Opportunity', name:'Louisiana Analytics Expansion', reason:'close_date exceeded 14 days ago without stage change', days_stale:16, ttl_days:30 }
+  ],
+  status: 'completed'
+};
+
+const MOCK_TRUST = {
+  overall_trust_score: 86,
+  sources: [
+    { name:'Salesforce CRM', score:94, last_sync:'2h ago', node_count:28, status:'fresh' },
+    { name:'Passport Advantage', score:89, last_sync:'6h ago', node_count:12, status:'fresh' },
+    { name:'w3 Bluepages', score:92, last_sync:'4h ago', node_count:8, status:'fresh' },
+    { name:'Gainsight', score:78, last_sync:'14h ago', node_count:7, status:'aging' },
+    { name:'Human Write-back', score:100, last_sync:'1h ago', node_count:3, status:'fresh' }
+  ]
+};
+
+const MOCK_HISTORY = [
+  { ts: '2025-07-01 02:00', scanned:54, stale:3, deleted:0 },
+  { ts: '2025-06-30 20:00', scanned:54, stale:3, deleted:0 },
+  { ts: '2025-06-30 14:00', scanned:52, stale:4, deleted:1 },
+  { ts: '2025-06-30 08:00', scanned:52, stale:5, deleted:0 },
+  { ts: '2025-06-30 02:00', scanned:51, stale:5, deleted:0 },
+  { ts: '2025-06-29 20:00', scanned:51, stale:6, deleted:2 },
+  { ts: '2025-06-29 14:00', scanned:51, stale:4, deleted:0 },
+  { ts: '2025-06-29 08:00', scanned:50, stale:3, deleted:0 },
+  { ts: '2025-06-29 02:00', scanned:50, stale:4, deleted:1 },
+  { ts: '2025-06-28 20:00', scanned:49, stale:5, deleted:0 }
+];
+
+const MOCK_EVENTS = [
+  { ts: new Date(Date.now()-3600000*2.3).toISOString(), level:'info',  msg:'Pruning cycle completed — 54 nodes scanned, 3 stale, 0 deleted' },
+  { ts: new Date(Date.now()-3600000*8.3).toISOString(), level:'info',  msg:'Pruning cycle completed — 54 nodes scanned, 3 stale, 0 deleted' },
+  { ts: new Date(Date.now()-3600000*14.3).toISOString(),level:'warn',  msg:'STALE — ins-007 (Install: Cognos v11.2 @ DOTD): support_end exceeded 30-day TTL' },
+  { ts: new Date(Date.now()-3600000*14.4).toISOString(),level:'warn',  msg:'STALE — dep-007 (Deployment: Cognos @ DOTD): stalled > 60 days since last status change' },
+  { ts: new Date(Date.now()-3600000*14.5).toISOString(),level:'warn',  msg:'STALE — opp-004 (Opportunity: LA Analytics Expansion): close_date exceeded 14d without stage update' },
+  { ts: new Date(Date.now()-3600000*14.6).toISOString(),level:'info',  msg:'Pruning cycle started — scanning 54 ACTIVE nodes' },
+  { ts: new Date(Date.now()-3600000*20.3).toISOString(),level:'info',  msg:'Pruning cycle completed — 54 nodes scanned, 3 stale, 0 deleted' },
+  { ts: new Date(Date.now()-3600000*32.1).toISOString(),level:'delete',msg:'DELETED — ins-old-001 (Install: Cognos v10 @ DOTD): STALE > 90 days (threshold exceeded)' },
+  { ts: new Date(Date.now()-3600000*32.2).toISOString(),level:'info',  msg:'Orphan edge pruned — HAS_INSTALL (acc-007 → ins-old-001): target node DELETED' },
+  { ts: new Date(Date.now()-3600000*32.3).toISOString(),level:'info',  msg:'Pruning cycle completed — 52 nodes scanned, 5 stale, 1 deleted, 1 edge pruned' },
+  { ts: new Date(Date.now()-3600000*38.1).toISOString(),level:'confirm',msg:'CONFIRMED — dep-001 (Turbonomic @ FNB HQ): human write-back by M.Webb — TTL extended +14 days' }
+];
+
+// ── Helpers ──────────────────────────────────────────────────────────
+function toast(msg, dur=2800) {
+  const t = document.getElementById('toast');
+  t.textContent = msg;
+  t.classList.add('show');
+  setTimeout(() => t.classList.remove('show'), dur);
+}
+
+function relTime(iso) {
+  const d = new Date(iso), now = Date.now(), diff = now - d;
+  if (diff < 60000) return 'just now';
+  if (diff < 3600000) return Math.round(diff/60000) + 'm ago';
+  if (diff < 86400000) return (diff/3600000).toFixed(1) + 'h ago';
+  return Math.round(diff/86400000) + 'd ago';
+}
+
+function formatTs(iso) {
+  const d = new Date(iso);
+  return d.toLocaleString('en-US',{month:'short',day:'numeric',hour:'2-digit',minute:'2-digit'});
+}
+
+function labelClass(label) {
+  const m = {Seller:'seller',Account:'account',Install:'install',Deployment:'deployment',Opportunity:'opportunity'};
+  return m[label] || 'active';
+}
+
+function ttlBar(dayStale, ttlDays) {
+  const pct = Math.min(100, Math.round((dayStale / ttlDays) * 100));
+  const col = pct >= 90 ? '#da1e28' : pct >= 60 ? '#ff832b' : '#f1c21b';
+  return `<div class="ttl-bar-wrap"><div class="ttl-bar" style="width:${pct}%;background:${col}"></div></div>`;
+}
+
+// ── Load last report ─────────────────────────────────────────────────
+async function loadLastReport() {
+  let report;
+  try {
+    const r = await fetch(`${API}/pruning/last-report`);
+    if (!r.ok) throw new Error();
+    report = await r.json();
+    document.getElementById('mode-badge').textContent = 'LIVE API';
+    document.getElementById('mode-badge').classList.add('live');
+  } catch {
+    report = MOCK_REPORT;
+  }
+  renderReport(report);
+  return report;
+}
+
+function renderReport(r) {
+  const dur = r.started_at && r.completed_at
+    ? Math.round((new Date(r.completed_at) - new Date(r.started_at)) / 1000)
+    : null;
+  document.getElementById('last-report-wrap').innerHTML = `
+    <div style="display:grid;grid-template-columns:1fr 1fr;gap:6px;margin-bottom:8px">
+      <div style="background:var(--card);border-radius:5px;padding:6px 10px">
+        <div style="font-size:9px;color:var(--tm);text-transform:uppercase;letter-spacing:.7px">Run ID</div>
+        <div style="font-size:10px;font-family:'IBM Plex Mono',monospace;color:var(--ibm-blue);margin-top:2px">${r.run_id || '—'}</div>
+      </div>
+      <div style="background:var(--card);border-radius:5px;padding:6px 10px">
+        <div style="font-size:9px;color:var(--tm);text-transform:uppercase;letter-spacing:.7px">Completed</div>
+        <div style="font-size:10px;color:var(--tp);margin-top:2px">${r.completed_at ? relTime(r.completed_at) : '—'}${dur ? ` <span style="color:var(--tm)">(${dur}s)</span>` : ''}</div>
+      </div>
+      <div style="background:var(--card);border-radius:5px;padding:6px 10px">
+        <div style="font-size:9px;color:var(--tm);text-transform:uppercase;letter-spacing:.7px">Nodes Scanned</div>
+        <div style="font-size:14px;font-weight:700;color:var(--ibm-blue);margin-top:2px">${r.nodes_scanned ?? '—'}</div>
+      </div>
+      <div style="background:var(--card);border-radius:5px;padding:6px 10px">
+        <div style="font-size:9px;color:var(--tm);text-transform:uppercase;letter-spacing:.7px">Stale / Deleted</div>
+        <div style="font-size:14px;font-weight:700;margin-top:2px">
+          <span style="color:var(--ibm-orange)">${r.nodes_stale ?? 0}</span>
+          <span style="color:var(--tm);font-weight:400;font-size:11px"> / </span>
+          <span style="color:var(--ibm-red)">${r.nodes_deleted ?? 0}</span>
+        </div>
+      </div>
+    </div>
+    <div style="font-size:9px;color:${r.status==='completed'?'var(--ibm-green)':'var(--ibm-orange)'};font-weight:700;text-transform:uppercase;letter-spacing:.6px">
+      ${r.status==='completed'?'✓ Completed successfully':'⚠ ' + (r.status||'unknown')}
+    </div>`;
+}
+
+// ── Load stale nodes ─────────────────────────────────────────────────
+async function loadStaleNodes() {
+  let nodes;
+  try {
+    const r = await fetch(`${API}/pruning/stale-nodes`);
+    if (!r.ok) throw new Error();
+    nodes = await r.json();
+  } catch {
+    nodes = MOCK_REPORT.stale_nodes;
+  }
+  const wrap = document.getElementById('stale-table-wrap');
+  if (!nodes || nodes.length === 0) {
+    wrap.innerHTML = '<div style="color:var(--ibm-green);font-size:11px;padding:8px 0">✓ No stale nodes — graph is fully fresh</div>';
+    return;
+  }
+  wrap.innerHTML = `
+  <table class="stale-table">
+    <thead><tr>
+      <th>Node</th><th>Type</th><th>Reason</th><th>Days Stale</th><th>TTL Progress</th><th>Action</th>
+    </tr></thead>
+    <tbody>${nodes.map(n => `
+    <tr>
+      <td><div style="font-weight:700;color:var(--tp)">${n.name || n.id}</div><div style="font-size:9px;font-family:'IBM Plex Mono',monospace;color:var(--tm)">${n.id}</div></td>
+      <td><span class="tag ${labelClass(n.label)}">${n.label}</span></td>
+      <td style="color:var(--ts)">${n.reason || '—'}</td>
+      <td style="font-weight:700;color:var(--ibm-orange)">${n.days_stale ?? '?'}d</td>
+      <td>${ttlBar(n.days_stale, n.ttl_days || 30)}</td>
+      <td style="white-space:nowrap">
+        <button class="btn btn-secondary" style="font-size:9px;padding:2px 8px" onclick="confirmNode('${n.id}','${(n.name||n.id).replace(/'/g,'&#39;')}')">✓ Confirm</button>
+      </td>
+    </tr>`).join('')}
+    </tbody>
+  </table>`;
+}
+
+// ── Load stats ────────────────────────────────────────────────────────
+async function loadStats() {
+  try {
+    const [statsR, trustR] = await Promise.all([
+      fetch(`${API}/graph/stats`),
+      fetch(`${API}/insights/trust`)
+    ]);
+    const stats = await statsR.json();
+    const trust = await trustR.json();
+    const total = Object.values(stats.nodes || {}).reduce((a,b) => a+b, 0);
+    document.getElementById('k-total').textContent = total || 54;
+    document.getElementById('k-active').textContent = stats.active_count ?? total - 3;
+    document.getElementById('k-stale').textContent = stats.stale_count ?? 3;
+    document.getElementById('k-deleted').textContent = stats.deleted_count ?? 0;
+    document.getElementById('k-trust').textContent = (trust.overall_trust_score ?? MOCK_TRUST.overall_trust_score) + '%';
+    renderHealthBreakdown(stats.nodes || {});
+  } catch {
+    document.getElementById('k-total').textContent = '54';
+    document.getElementById('k-active').textContent = '51';
+    document.getElementById('k-stale').textContent = '3';
+    document.getElementById('k-deleted').textContent = '0';
+    document.getElementById('k-trust').textContent = '86%';
+    renderHealthBreakdownMock();
+  }
+}
+
+function renderHealthBreakdown(nodes) {
+  const colors = {Seller:'#0f62fe',Manager:'#009d9a',Account:'#1192e8',Territory:'#a56eff',Product:'#ff832b',Install:'#a56eff',Opportunity:'#f1c21b',SiteNumber:'#33b1ff',Deployment:'#009d9a',KnowledgeAsset:'#24a148'};
+  const wrap = document.getElementById('health-breakdown');
+  wrap.innerHTML = Object.entries(nodes).map(([lbl, cnt]) => {
+    const col = colors[lbl] || '#525252';
+    return `<div style="background:var(--card);border:1px solid var(--border);border-radius:7px;padding:10px 12px">
+      <div style="font-size:20px;font-weight:700;color:${col};line-height:1;margin-bottom:4px">${cnt}</div>
+      <div style="font-size:9px;font-weight:800;text-transform:uppercase;letter-spacing:.7px;color:var(--ts)">${lbl}</div>
+      <div style="height:3px;background:#e8e8e8;border-radius:2px;margin-top:6px"><div style="height:100%;width:100%;background:${col};opacity:0.4;border-radius:2px"></div></div>
+    </div>`;
+  }).join('');
+}
+
+function renderHealthBreakdownMock() {
+  const data = {Seller:7,Manager:4,Account:7,Territory:5,Product:8,Install:7,Opportunity:4,SiteNumber:11,Deployment:7,KnowledgeAsset:3};
+  renderHealthBreakdown(data);
+}
+
+// ── Source freshness ─────────────────────────────────────────────────
+async function loadSourceFreshness() {
+  let trust;
+  try {
+    const r = await fetch(`${API}/insights/trust`);
+    if (!r.ok) throw new Error();
+    trust = await r.json();
+  } catch {
+    trust = MOCK_TRUST;
+  }
+  const sources = trust.sources || MOCK_TRUST.sources;
+  const wrap = document.getElementById('source-freshness-wrap');
+  wrap.innerHTML = sources.map(s => {
+    const isFresh = s.status === 'fresh';
+    const dotCol = isFresh ? 'var(--ibm-green)' : 'var(--ibm-orange)';
+    const pct = s.score ?? 80;
+    return `<div style="display:flex;align-items:center;gap:10px;padding:7px 0;border-bottom:1px solid var(--border)">
+      <div style="width:8px;height:8px;border-radius:50%;background:${dotCol};flex-shrink:0"></div>
+      <div style="flex:1;min-width:0">
+        <div style="font-size:11px;font-weight:600;color:var(--tp)">${s.name}</div>
+        <div style="font-size:9px;color:var(--ts)">${s.node_count} nodes · last sync ${s.last_sync}</div>
+      </div>
+      <div style="text-align:right;flex-shrink:0">
+        <div style="font-size:13px;font-weight:700;color:${pct>=90?'var(--ibm-green)':pct>=70?'var(--ibm-orange)':'var(--ibm-red)'}">${pct}%</div>
+        <div style="font-size:8px;color:var(--tm)">${isFresh?'Fresh':'Aging'}</div>
+      </div>
+    </div>`;
+  }).join('');
+}
+
+// ── Sparkline ────────────────────────────────────────────────────────
+function renderSparkline() {
+  const data = MOCK_HISTORY;
+  const maxVal = Math.max(...data.map(d => d.scanned));
+  const wrap = document.getElementById('spark-wrap');
+  wrap.innerHTML = data.map((d, i) => {
+    const h = Math.round((d.scanned / maxVal) * 32) + 4;
+    const col = d.stale > 0 ? (d.deleted > 0 ? 'var(--ibm-red)' : 'var(--ibm-orange)') : 'var(--ibm-blue)';
+    return `<div class="spark-bar" style="height:${h}px;background:${col}" title="${d.ts} — ${d.scanned} scanned, ${d.stale} stale, ${d.deleted} deleted"></div>`;
+  }).join('');
+  document.getElementById('spark-max-lbl').textContent = 'Max: ' + maxVal;
+  document.getElementById('spark-oldest').textContent = data[0].ts.split(' ')[0];
+  renderHistoryRows(data.slice(-4).reverse());
+}
+
+function renderHistoryRows(data) {
+  document.getElementById('history-rows').innerHTML = data.map(d => `
+    <div style="display:flex;gap:10px;padding:5px 0;border-bottom:1px solid var(--border);align-items:center">
+      <div style="font-size:9px;font-family:'IBM Plex Mono',monospace;color:var(--tm);min-width:110px">${d.ts}</div>
+      <div style="font-size:10px;color:var(--ts)">Scanned <b style="color:var(--tp)">${d.scanned}</b></div>
+      <div style="font-size:10px;color:${d.stale?'var(--ibm-orange)':'var(--ts)'}">Stale <b>${d.stale}</b></div>
+      <div style="font-size:10px;color:${d.deleted?'var(--ibm-red)':'var(--ts)'}">Deleted <b>${d.deleted}</b></div>
+    </div>`).join('');
+}
+
+// ── Event log ────────────────────────────────────────────────────────
+function loadEventLog() {
+  const events = MOCK_EVENTS;
+  const levelMeta = {
+    info:    { col:'var(--ibm-blue)',   dot:'blue',  icon:'ℹ' },
+    warn:    { col:'var(--ibm-orange)', dot:'orange', icon:'⚠' },
+    delete:  { col:'var(--ibm-red)',    dot:'red',   icon:'✕' },
+    confirm: { col:'var(--ibm-green)',  dot:'green', icon:'✓' }
+  };
+  document.getElementById('event-log').innerHTML = events.map(e => {
+    const m = levelMeta[e.level] || levelMeta.info;
+    return `<div class="tl-row">
+      <div class="tl-dot ${m.dot}"></div>
+      <div style="flex:1;min-width:0">
+        <div class="tl-ts">${formatTs(e.ts)}</div>
+        <div class="tl-msg" style="color:${m.col}">${m.icon} ${e.msg}</div>
+      </div>
+    </div>`;
+  }).join('');
+}
+
+// ── Run pruning ───────────────────────────────────────────────────────
+async function runPruning() {
+  const statusEl = document.getElementById('run-status');
+  statusEl.style.display = 'block';
+  statusEl.style.background = 'rgba(15,98,254,0.06)';
+  statusEl.style.border = '1px solid rgba(15,98,254,0.2)';
+  statusEl.style.color = 'var(--ibm-blue)';
+  statusEl.textContent = '⏳ Pruning cycle running…';
+  try {
+    const r = await fetch(`${API}/pruning/run`, { method:'POST' });
+    if (!r.ok) throw new Error();
+    const result = await r.json();
+    statusEl.style.background = 'rgba(36,161,72,0.06)';
+    statusEl.style.border = '1px solid rgba(36,161,72,0.2)';
+    statusEl.style.color = 'var(--ibm-green)';
+    statusEl.textContent = `✓ Completed — ${result.nodes_scanned} scanned, ${result.nodes_stale} stale, ${result.nodes_deleted} deleted`;
+    toast('✓ Pruning cycle complete');
+    refreshAll();
+  } catch {
+    // Demo mode — simulate a cycle
+    await new Promise(r => setTimeout(r, 1200));
+    statusEl.style.background = 'rgba(36,161,72,0.06)';
+    statusEl.style.border = '1px solid rgba(36,161,72,0.2)';
+    statusEl.style.color = 'var(--ibm-green)';
+    statusEl.textContent = '✓ Completed (demo) — 54 scanned, 3 stale, 0 deleted';
+    toast('✓ Pruning cycle complete (demo mode)');
+  }
+}
+
+// ── Confirm node ──────────────────────────────────────────────────────
+async function confirmNode(id, name) {
+  try {
+    await fetch(`${API}/graph/nodes/confirm/${id}`, { method:'POST' });
+  } catch {}
+  toast(`✓ ${name} confirmed — TTL extended +14 days`);
+  setTimeout(loadStaleNodes, 400);
+}
+
+// ── Refresh all ───────────────────────────────────────────────────────
+async function refreshAll() {
+  await Promise.all([loadStats(), loadLastReport(), loadStaleNodes(), loadSourceFreshness()]);
+  renderSparkline();
+  loadEventLog();
+  toast('↺ Stats refreshed');
+}
+
+// ── Init ──────────────────────────────────────────────────────────────
+(async () => {
+  await Promise.all([loadStats(), loadLastReport(), loadStaleNodes(), loadSourceFreshness()]);
+  renderSparkline();
+  loadEventLog();
+})();
+</script>
+</body>
+</html>

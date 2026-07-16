@@ -341,6 +341,10 @@ hr{border:none;border-top:1px solid var(--border);margin:10px 0}
       <svg width="13" height="13" viewBox="0 0 14 14" fill="none"><circle cx="7" cy="3" r="2" stroke="currentColor" stroke-width="1.5"/><circle cx="3" cy="11" r="2" stroke="currentColor" stroke-width="1.5"/><circle cx="11" cy="11" r="2" stroke="currentColor" stroke-width="1.5"/><line x1="7" y1="5" x2="4.5" y2="9.2" stroke="currentColor" stroke-width="1.2"/><line x1="7" y1="5" x2="9.5" y2="9.2" stroke="currentColor" stroke-width="1.2"/></svg>
       Graph View
     </a>
+    <a href="pruning.html" class="mode-btn" style="gap:5px">
+      <svg width="12" height="12" viewBox="0 0 16 16" fill="none"><path d="M8 2a6 6 0 1 1 0 12A6 6 0 0 1 8 2z" stroke="currentColor" stroke-width="1.4"/><path d="M8 5v3.5l2.5 1.5" stroke="currentColor" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round"/></svg>
+      Pruning
+    </a>
   </nav>
   <div class="hdiv"></div>
   <div id="sbar">
@@ -467,6 +471,7 @@ hr{border:none;border-top:1px solid var(--border);margin:10px 0}
   <!-- Toolbar -->
   <div id="gctrls">
     <button class="gcb" id="bzoomin"  title="Zoom in"  style="font-size:16px;font-weight:700;line-height:1">+</button>
+    <span id="zoom-pct" style="font-size:10px;font-weight:700;color:var(--ts);min-width:34px;text-align:center;padding:0 2px;user-select:none">72%</span>
     <button class="gcb" id="bzoomout" title="Zoom out" style="font-size:16px;font-weight:700;line-height:1">−</button>
     <button class="gcb" id="bfit" title="Fit / Reset zoom & position" style="font-size:11px;width:auto;padding:0 8px">Fit</button>
     <div style="width:1px;height:20px;background:var(--border);margin:0 2px"></div>
@@ -965,6 +970,8 @@ const _zv = { scale: 0.72, tx: 0, ty: 0 }; // start zoomed out so everything fit
 function _applyZoom() {
   const root = document.getElementById('zoom-root');
   if (root) root.setAttribute('transform', `translate(${_zv.tx},${_zv.ty}) scale(${_zv.scale})`);
+  const pct = document.getElementById('zoom-pct');
+  if (pct) pct.textContent = Math.round(_zv.scale * 100) + '%';
 }
 
 function zoomBy(delta, cx, cy) {

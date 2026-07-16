@@ -1,6 +1,6 @@
 # IBM Scout — Sales Content Optimization & Utility Tool
 
-> **v0.7.0** — Enterprise knowledge graph mapping every IBM seller relationship, account install base, product coverage, territory assignment, site-number hierarchy, deployment adoption health (Gainsight), open pipeline, and active Business Partner relationships. Powered by IBM Granite + Neo4j. Fully operational in demo mode with zero backend dependencies.
+> **v0.8.0** — Enterprise knowledge graph mapping every IBM seller relationship, account install base, product coverage, territory assignment, site-number hierarchy, deployment adoption health (Gainsight), open pipeline, and active Business Partner relationships. Powered by IBM Granite + Neo4j. Fully operational in demo mode with zero backend dependencies.
 
 ---
 
@@ -25,6 +25,18 @@ IBM Scout is a **living, graph-powered seller intelligence platform** that turns
 Every relationship is a **Knowledge Asset** with W3C PROV-DM provenance metadata. A background **Pruning Agent** validates data freshness — stale records are flagged before they mislead anyone.
 
 ---
+
+## What's New in v0.8.0
+
+| Area | Change |
+|---|---|
+| **Graph — zoom / pan** | Full zoom/pan infrastructure on `index.html` SVG. `_zv` state object (scale, tx, ty). `_applyZoom()`, `zoomBy(delta, cx, cy)`, `zoomFit()`. Mouse-wheel zoom pivoting on cursor position. Middle-mouse / Alt+drag pan. Initial scale `0.72` so graph fits on load. |
+| **Graph — zoom level indicator** | Live `%` counter between `+` and `−` toolbar buttons updates on every zoom step (e.g. `72%` → `120%`). |
+| **Graph — node spacing** | Child node orbit radius changed from `52 + min(cnt*5,30)` to `90 + cnt*14` — children spread much further from their hub, reducing overlap on dense subgraphs. |
+| **Pruning Agent Dashboard** | New `pruning.html` — full agent health dashboard: KPI strip (total/active/stale/deleted/trust), agent status badge, manual trigger button, TTL configuration table, stale nodes table with confirm-in-place, run history sparkline (10 cycles), data source freshness panel, node health breakdown by type, and a full pruning event log with color-coded entries (info/warn/delete/confirm). |
+| **Seller detail page** | `seller.html` — hero card (seller type badge, band, geo, email), Reports To manager card, accounts list with account health, product coverage pills, deployments driving panel, co-sell partners. |
+| **Manager detail page** | `manager.html` — direct reports tree with role badges, full book of accounts, Reports To SLM card. |
+| **Site Number detail page** | `site.html` — parent account card, all installs at site, deployments at site with Gainsight badges, IBM products present at site, sibling sites. |
 
 ## What's New in v0.7.0
 
@@ -190,8 +202,12 @@ In live mode the search agent runs actual Cypher queries against Neo4j and uses 
 
 | Page | Entry Point | Purpose |
 |---|---|---|
-| `search.html` | **Recommended start** | Enterprise search hub — dark theme, hero search, role pills, entity cards, AI chat rail with rich answer panels |
-| `index.html` | Graph explorer | Interactive SVG force-directed graph with hub clusters, hierarchy flow, drag engine, write-back, modernize, partners, trust tabs |
+| `search.html` | **Recommended start** | Enterprise search hub — hero search, role pills, entity cards, AI chat rail with rich answer panels |
+| `index.html` | Graph explorer | Interactive SVG dual-graph with zoom/pan, hub clusters, hierarchy flow, drag engine, write-back, modernize, partners, trust tabs |
+| `pruning.html` | Pruning dashboard | Agent health, KPI strip, stale node table, run history sparkline, source freshness, event log, manual trigger |
+| `seller.html?id=sel-XXX` | Seller profile | Hero card, reports-to, accounts, product coverage, deployments driving, co-sell partners |
+| `manager.html?id=mgr-XXX` | Manager profile | Direct reports tree, book of accounts, reports-to SLM |
+| `site.html?id=site-XXX` | Site Number detail | Parent account, installs at site, deployments at site, IBM products, sibling sites |
 | `deployment.html?id=dep-XXX` | Deployment detail | Gainsight-style — urgency banner, KPI strip, blockers, expand signals, use case tracker, team, timeline |
 | `account.html?id=acc-XXX` | Account 360 | KPI strip, install base, pipeline, deployments, site numbers, account team |
 | `territory.html?id=ter-XXX` | Territory detail | Quota coverage bar, sellers with role badges, accounts list |
@@ -478,8 +494,13 @@ IBM Scout/         (repo folder: IBM DKG)
 │   ├── search.html              # Enterprise search hub — hero search, chat rail,
 │   │                            #   rich answer engine (8 intents), role/entity pills,
 │   │                            #   insights hero chips, What's New ticker
-│   ├── index.html               # SVG dual-graph — hub clusters, hierarchy flow,
+│   ├── index.html               # SVG dual-graph — zoom/pan, hub clusters, hierarchy,
 │   │                            #   drag engine, write-back, modernize, partners, trust
+│   ├── pruning.html             # Pruning agent dashboard — KPI strip, stale table,
+│   │                            #   sparkline, source freshness, event log, trigger
+│   ├── seller.html              # Seller profile — hero, manager, accounts, products
+│   ├── manager.html             # Manager profile — direct reports, book, SLM
+│   ├── site.html                # Site Number detail — installs, deployments, products
 │   ├── deployment.html          # Gainsight deployment detail (7 records)
 │   ├── account.html             # Account 360 (7 accounts)
 │   ├── territory.html           # Territory detail (5 territories)
@@ -513,8 +534,8 @@ IBM Scout/         (repo folder: IBM DKG)
 | Human write-back → backend persistence | 🗓 Session-only today; DB persistence planned |
 | Slack / Teams query bot | 🗓 Digest copy-ready today; bot connector planned |
 | NL alert subscriptions ("tell me when…") | 🗓 Planned |
-| Seller / Manager detail pages | 🗓 Currently → graph view; dedicated pages planned |
-| SiteNumber detail page | 🗓 Currently → graph view; dedicated page planned |
+| Graph node drag-to-reposition | 🗓 Planned — mouse drag on individual nodes |
+| Recently Viewed node history trail | 🗓 Planned — right-panel persistent history |
 | Embedding-based semantic search | 🔑 Ready to plug in |
 | Conflict detection persistence | 🗓 Session-only today |
 
