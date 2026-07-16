@@ -1307,11 +1307,15 @@ function drawChildNode(nodeLayer, edgeLayer, n, nx, ny, hubX, hubY, hubColor) {
 // ══════════════════════════════════════════════════════════════════════════
 
 function getSVGPoint(e) {
-  const svg = document.getElementById('dkg-svg');
-  const pt  = svg.createSVGPoint();
+  const svg  = document.getElementById('dkg-svg');
+  const root = document.getElementById('zoom-root');
+  const pt   = svg.createSVGPoint();
   pt.x = e.clientX;
   pt.y = e.clientY;
-  return pt.matrixTransform(svg.getScreenCTM().inverse());
+  // Convert to zoom-root space (accounts for translate + scale transform)
+  // so drag deltas and edge endpoints stay in the same coordinate system as node positions.
+  const ctm = root ? root.getScreenCTM() : svg.getScreenCTM();
+  return pt.matrixTransform(ctm.inverse());
 }
 
 // ── Shared helper: translate a node <g> and update all its lines ──────────
