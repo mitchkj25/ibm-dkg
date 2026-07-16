@@ -603,12 +603,29 @@ hr{border:none;border-top:1px solid var(--border);margin:10px 0}
   </div>
   <hr>
   <div id="ps">
-    <div class="psh"><span class="ptitle" style="margin:0">Pruning Agent</span><button id="rpb">▶ Run Cycle</button></div>
+    <div class="psh">
+      <span class="ptitle" style="margin:0">Pruning Agent</span>
+      <div style="display:flex;gap:5px;align-items:center">
+        <button id="rpb">▶ Run Cycle</button>
+        <a href="pruning.html" title="Open Pruning Dashboard" style="font-size:9px;color:var(--ibm-blue);text-decoration:none;padding:2px 6px;border:1px solid rgba(15,98,254,0.25);border-radius:4px;background:rgba(15,98,254,0.04);font-weight:700">Dashboard ↗</a>
+      </div>
+    </div>
     <div class="psr"><span class="psk">Status</span><span class="psv" id="pss">Idle</span></div>
     <div class="psr"><span class="psk">Last run</span><span class="psv" id="psl">Never</span></div>
     <div class="psr"><span class="psk">Nodes scanned</span><span class="psv" id="psc">–</span></div>
     <div class="psr"><span class="psk">Marked stale</span><span class="psv" id="pst">–</span></div>
     <div class="psr"><span class="psk">Deleted</span><span class="psv" id="psd">–</span></div>
+  </div>
+  <hr>
+  <!-- ── Recently Viewed ──────────────────────────────────────────── -->
+  <div id="rv-panel">
+    <div class="ptitle" style="margin-bottom:6px;display:flex;align-items:center;justify-content:space-between">
+      <span>Recently Viewed</span>
+      <button onclick="clearRecentlyViewed()" style="font-size:8px;color:var(--tm);background:none;border:none;cursor:pointer;padding:0;font-family:'IBM Plex Sans',sans-serif">Clear</button>
+    </div>
+    <div id="rv-list">
+      <div style="font-size:10px;color:var(--tm);text-align:center;padding:12px 0">No nodes viewed yet — click any node to explore</div>
+    </div>
   </div>
 </aside>
 </div>
@@ -2510,6 +2527,7 @@ function toggleTrace() {
 
 function selectNode(n) {
   selNode = n;
+  pushRecentlyViewed(n);
   const dp=document.getElementById('dp'), dc=document.getElementById('dc');
   dp.style.display='block';
   const col=COLORS[n.label]||'#888';
@@ -3098,6 +3116,7 @@ function init(){
 window.addEventListener('load', () => {
   init();
   buildRoleDropdown();
+  renderRecentlyViewed();
   // Deep-link: index.html#node=sel-001 → pre-select that node
   const hash = window.location.hash;
   if (hash && hash.startsWith('#node=')) {
@@ -3105,6 +3124,74 @@ window.addEventListener('load', () => {
     setTimeout(() => selectNodeById(nodeId), 120);
   }
 });
+
+// ══════════════════════════════════════════════════════════════════════════
+// ── RECENTLY VIEWED TRAIL ─────────────────────────────────────────────────
+// ══════════════════════════════════════════════════════════════════════════
+
+const RV_MAX   = 12;     // keep last 12 nodes
+const RV_KEY   = 'scout_recently_viewed';
+
+function rvLoad() {
+  try { return JSON.parse(sessionStorage.getItem(RV_KEY) || '[]'); } catch { return []; }
+}
+function rvSave(arr) {
+  try { sessionStorage.setItem(RV_KEY, JSON.stringify(arr)); } catch {}
+}
+
+function pushRecentlyViewed(n) {
+  let arr = rvLoad();
+  // Remove duplicate
+  arr = arr.filter(x => x.id !== n.id);
+  // Prepend
+  arr.unshift({ id: n.id, name: n.name, label: n.label, ts: Date.now() });
+  // Trim
+  if (arr.length > RV_MAX) arr = arr.slice(0, RV_MAX);
+  rvSave(arr);
+  renderRecentlyViewed();
+}
+
+function clearRecentlyViewed() {
+  rvSave([]);
+  renderRecentlyViewed();
+}
+
+function renderRecentlyViewed() {
+  const arr  = rvLoad();
+  const list = document.getElementById('rv-list');
+  if (!list) return;
+  if (!arr.length) {
+    list.innerHTML = '<div style="font-size:10px;color:var(--tm);text-align:center;padding:12px 0">No nodes viewed yet — click any node to explore</div>';
+    return;
+  }
+  const now = Date.now();
+  list.innerHTML = arr.map(item => {
+    const col   = COLORS[item.label] || '#888';
+    const age   = now - item.ts;
+    const ageLbl = age < 60000 ? 'just now' : age < 3600000 ? Math.round(age/60000) + 'm ago' : (age/3600000).toFixed(1) + 'h ago';
+    // Decide route for click
+    const routeFn = (() => {
+      const id = item.id;
+      if (id.startsWith('dep-')) return `window.location.href='deployment.html?id=${id}'`;
+      if (id.startsWith('acc-')) return `window.location.href='account.html?id=${id}'`;
+      if (id.startsWith('ter-')) return `window.location.href='territory.html?id=${id}'`;
+      if (id.startsWith('prd-')) return `window.location.href='product.html?id=${id}'`;
+      if (id.startsWith('ins-')) return `window.location.href='install.html?id=${id}'`;
+      if (id.startsWith('opp-')) return `window.location.href='opportunity.html?id=${id}'`;
+      if (id.startsWith('sel-')) return `window.location.href='seller.html?id=${id}'`;
+      if (id.startsWith('mgr-')) return `window.location.href='manager.html?id=${id}'`;
+      if (id.startsWith('site-')) return `window.location.href='site.html?id=${id}'`;
+      return `focusNode('${id}')`;
+    })();
+    return `<div onclick="${routeFn}" style="display:flex;align-items:center;gap:8px;padding:5px 6px;border-radius:5px;cursor:pointer;transition:background .12s;border-bottom:1px solid var(--border)" onmouseover="this.style.background='#f0f4ff'" onmouseout="this.style.background=''">
+      <div style="width:7px;height:7px;border-radius:50%;background:${col};flex-shrink:0"></div>
+      <div style="flex:1;min-width:0">
+        <div style="font-size:10px;font-weight:600;color:var(--tp);white-space:nowrap;overflow:hidden;text-overflow:ellipsis">${item.name}</div>
+        <div style="font-size:8.5px;color:var(--tm)">${item.label} · ${ageLbl}</div>
+      </div>
+    </div>`;
+  }).join('');
+}
 </script>
 </body>
 </html>
