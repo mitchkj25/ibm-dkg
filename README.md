@@ -87,17 +87,17 @@ Every relationship is a **Knowledge Asset** with W3C PROV-DM provenance metadata
 │  │   Stage pipeline bar    SVG dual-graph, hierarchy flow, write-back,      │   │
 │  │   Next-steps checklist  drag engine, modernize, partners, trust          │   │
 │  └──────────────────────────────┬───────────────────────────────────────────┘   │
-│                                  │ REST / Fetch (graceful fallback to mock)      │
-│  ┌───────────────────────────────▼───────────────────────────────────────────┐   │
-│  │                         FastAPI Backend                                   │   │
-│  │  /graph   /search   /ingest   /pruning   /insights   /chat                │   │
+│                                  │ REST / Fetch (graceful fallback to mock)     │
+│  ┌───────────────────────────────▼───────────────────────────────────────────┐  │
+│  │                         FastAPI Backend                                   │  │
+│  │  /graph   /search   /ingest   /pruning   /insights   /chat                │  │
 │  └───────────────────┬──────────────────────────┬─────────────────────────── ┘  │
 │                      │                          │                               │
-│            ┌─────────▼────────┐    ┌────────────▼─────────┐                    │
-│            │   Neo4j 5.x      │    │   Mock Store         │                    │
-│            │  (Live mode)     │    │  (Demo mode — zero   │                    │
-│            │  Cypher queries  │    │   credentials needed)│                    │
-│            └──────────────────┘    └──────────────────────┘                    │
+│            ┌─────────▼────────┐    ┌────────────▼─────────┐                     │
+│            │   Neo4j 5.x      │    │   Mock Store         │                     │
+│            │  (Live mode)     │    │  (Demo mode — zero   │                     │
+│            │  Cypher queries  │    │   credentials needed)│                     │
+│            └──────────────────┘    └──────────────────────┘                     │
 │                                                                                 │
 │  ┌──────────────────────────── 3 Agents ─────────────────────────────────────┐  │
 │  │  Ingestion Agent       Pruning Agent         Search Agent                 │  │
