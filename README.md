@@ -1,6 +1,6 @@
 # IBM Scout — Sales Content Optimization & Utility Tool
 
-> **v0.8.0** — Enterprise knowledge graph mapping every IBM seller relationship, account install base, product coverage, territory assignment, site-number hierarchy, deployment adoption health (Gainsight), open pipeline, and active Business Partner relationships. Powered by IBM Granite + Neo4j. Fully operational in demo mode with zero backend dependencies.
+Enterprise knowledge graph mapping every IBM seller relationship, account install base, product coverage, territory assignment, site-number hierarchy, deployment adoption health (Gainsight), open pipeline, and active Business Partner relationships. Powered by IBM Granite + Neo4j. Fully operational in demo mode with zero backend dependencies.
 
 ---
 
