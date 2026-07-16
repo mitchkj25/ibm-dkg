@@ -466,7 +466,10 @@ hr{border:none;border-top:1px solid var(--border);margin:10px 0}
 
   <!-- Toolbar -->
   <div id="gctrls">
-    <button class="gcb" id="bfit" title="Fit / Reset view">⊡</button>
+    <button class="gcb" id="bzoomin"  title="Zoom in"  style="font-size:16px;font-weight:700;line-height:1">+</button>
+    <button class="gcb" id="bzoomout" title="Zoom out" style="font-size:16px;font-weight:700;line-height:1">−</button>
+    <button class="gcb" id="bfit" title="Fit / Reset zoom & position" style="font-size:11px;width:auto;padding:0 8px">Fit</button>
+    <div style="width:1px;height:20px;background:var(--border);margin:0 2px"></div>
     <button class="gcb" id="brst" title="Rebuild graph">↺</button>
     <button class="gcb" id="brstlayout" title="Reset node positions (undo all dragging)" style="font-size:10px;width:auto;padding:0 8px;gap:3px;display:flex;align-items:center;color:var(--ts)">
       <svg width="11" height="11" viewBox="0 0 16 16" fill="none"><path d="M2 8a6 6 0 1 1 1.5 4" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"/><polyline points="2,13 2,8 7,8" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linejoin="round" stroke-linecap="round"/></svg>
@@ -956,6 +959,33 @@ let hubNodeMap = {};  // hubId   -> {el, hub, cx, cy, childIds:[]}
 let nodePositions = {}; // id -> {x, y} — persists across filter rebuilds (child nodes)
 let hubPositions2 = {}; // hubId -> {x, y} — persists hub drag positions
 
+// ── Zoom / pan state ────────────────────────────────────────────────────
+const _zv = { scale: 0.72, tx: 0, ty: 0 }; // start zoomed out so everything fits
+
+function _applyZoom() {
+  const root = document.getElementById('zoom-root');
+  if (root) root.setAttribute('transform', `translate(${_zv.tx},${_zv.ty}) scale(${_zv.scale})`);
+}
+
+function zoomBy(delta, cx, cy) {
+  const svg = document.getElementById('dkg-svg');
+  const W = svg.clientWidth  || 900;
+  const H = svg.clientHeight || 580;
+  const pivotX = cx ?? W / 2;
+  const pivotY = cy ?? H / 2;
+  const newScale = Math.max(0.25, Math.min(3, _zv.scale * (1 + delta)));
+  const ratio = newScale / _zv.scale;
+  _zv.tx = pivotX + (_zv.tx - pivotX) * ratio;
+  _zv.ty = pivotY + (_zv.ty - pivotY) * ratio;
+  _zv.scale = newScale;
+  _applyZoom();
+}
+
+function zoomFit() {
+  _zv.scale = 0.72; _zv.tx = 0; _zv.ty = 0;
+  _applyZoom();
+}
+
 // ── Drag state ──────────────────────────────────────────────────────────
 const _drag = {
   active: false,
@@ -988,23 +1018,29 @@ function buildGraph() {
   </marker>`;
   svg.appendChild(defs);
 
+  // ── zoom root — all content lives inside this group so transform applies globally ──
+  const zoomRoot = svgEl('g', {id:'zoom-root'});
+  svg.appendChild(zoomRoot);
+  // Apply current zoom state immediately
+  _applyZoom();
+
   // ── two background zones ── enterprise is wider, personal is compact
   const zoneEnt = svgEl('ellipse',{cx:cx*0.48,cy:cy,rx:cx*0.54,ry:cy*0.86,fill:'#edf1ff',stroke:'#c7d2f8','stroke-width':'1.2',opacity:'0.7'});
   const zonePer = svgEl('ellipse',{cx:cx*1.56,cy:cy,rx:cx*0.34,ry:cy*0.72,fill:'#eaf4ff',stroke:'#b3d7f5','stroke-width':'1.2',opacity:'0.7'});
-  svg.appendChild(zoneEnt);
-  svg.appendChild(zonePer);
+  zoomRoot.appendChild(zoneEnt);
+  zoomRoot.appendChild(zonePer);
 
   // Zone labels
   const lblEnt = svgText('Enterprise Graph', cx*0.48, 22, {fill:'#4361b5','font-size':'11','font-weight':'700','text-anchor':'middle','letter-spacing':'0.5','opacity':'0.7'});
   const lblPer = svgText('Personal Graph',   cx*1.56, 22, {fill:'#1565c0','font-size':'11','font-weight':'700','text-anchor':'middle','letter-spacing':'0.5','opacity':'0.7'});
-  svg.appendChild(lblEnt);
-  svg.appendChild(lblPer);
+  zoomRoot.appendChild(lblEnt);
+  zoomRoot.appendChild(lblPer);
 
   // ── edge layer (drawn before nodes so nodes appear on top) ──
   const edgeLayer  = svgEl('g',{id:'edge-layer'});
   const nodeLayer  = svgEl('g',{id:'node-layer'});
-  svg.appendChild(edgeLayer);
-  svg.appendChild(nodeLayer);
+  zoomRoot.appendChild(edgeLayer);
+  zoomRoot.appendChild(nodeLayer);
 
   // ── Center node ──
   const centerR = 32;
@@ -1129,7 +1165,8 @@ function renderChildNodes(nodeLayer, edgeLayer, W, H, entCX, cy, perCX) {
     const cnt = group.length;
     group.forEach((n, i) => {
       const angle  = (2 * Math.PI / Math.max(cnt, 1)) * i - Math.PI / 2;
-      const radius = 52 + Math.min(cnt * 5, 30);
+      // Scale radius generously so nodes don't pile up — min 90px, grows with group size
+      const radius = 90 + cnt * 14;
       const nx = hp.x + radius * Math.cos(angle);
       const ny = hp.y + radius * Math.sin(angle);
       placed[n.id] = {x: nx, y: ny};
@@ -2988,9 +3025,43 @@ function init(){
   updateStats();
 
   // Toolbar buttons
-  document.getElementById('bfit').onclick = () => buildGraph();
+  // Zoom buttons
+  document.getElementById('bzoomin').onclick  = () => zoomBy(+0.2);
+  document.getElementById('bzoomout').onclick = () => zoomBy(-0.2);
+  document.getElementById('bfit').onclick     = () => { zoomFit(); };
   document.getElementById('brst').onclick = () => { activeLabels=new Set(Object.keys(COLORS)); buildFilters(); buildGraph(); };
   document.getElementById('brstlayout').onclick = () => { nodePositions={}; hubPositions2={}; buildGraph(); };
+
+  // Mouse-wheel zoom on the SVG canvas
+  document.getElementById('dkg-svg').addEventListener('wheel', e => {
+    e.preventDefault();
+    const rect = e.currentTarget.getBoundingClientRect();
+    const mx = e.clientX - rect.left;
+    const my = e.clientY - rect.top;
+    const delta = e.deltaY < 0 ? 0.12 : -0.12;
+    zoomBy(delta, mx, my);
+  }, { passive: false });
+
+  // Middle-mouse / space-drag pan on the SVG canvas
+  let _pan = { active: false, sx: 0, sy: 0, ox: 0, oy: 0 };
+  const svgEl2 = document.getElementById('dkg-svg');
+  svgEl2.addEventListener('mousedown', e => {
+    if (e.button === 1 || e.button === 2 || (e.button === 0 && e.altKey)) {
+      e.preventDefault();
+      _pan.active = true; _pan.sx = e.clientX; _pan.sy = e.clientY;
+      _pan.ox = _zv.tx; _pan.oy = _zv.ty;
+      svgEl2.style.cursor = 'grabbing';
+    }
+  });
+  window.addEventListener('mousemove', e => {
+    if (!_pan.active) return;
+    _zv.tx = _pan.ox + (e.clientX - _pan.sx);
+    _zv.ty = _pan.oy + (e.clientY - _pan.sy);
+    _applyZoom();
+  });
+  window.addEventListener('mouseup', e => {
+    if (_pan.active) { _pan.active = false; svgEl2.style.cursor = ''; }
+  });
   document.getElementById('bhier').onclick = showFullHierarchyMode;
   document.getElementById('bexp').onclick  = openExportModal;
   document.getElementById('exmclose').onclick = closeExportModal;
