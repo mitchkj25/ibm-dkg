@@ -43,10 +43,13 @@ html,body{min-height:100vh;background:var(--bg);color:var(--tp);
 .logo-txt span{color:var(--ibm-blue)}
 .logo-sub{font-size:9px;color:var(--ts);letter-spacing:.3px;text-transform:uppercase;margin-top:1px}
 .hdr-div{width:1px;height:22px;background:var(--border)}
-.hdr-nav{display:flex;gap:4px}
-.hdr-btn{padding:5px 12px;border-radius:6px;font-size:12px;font-weight:600;cursor:pointer;border:1px solid transparent;color:var(--ts);transition:all .15s;background:none;text-decoration:none;display:flex;align-items:center;gap:5px}
-.hdr-btn:hover,.hdr-btn.active{color:var(--tp);background:var(--surface);border-color:var(--border)}
-.hdr-btn.active{color:var(--ibm-blue);border-color:rgba(15,98,254,0.3);background:rgba(15,98,254,0.08)}
+/* ── Mode switcher ── pill-style toggle so judges can clearly see both views */
+.mode-switch{display:flex;align-items:center;background:var(--card);border:1px solid var(--border);border-radius:8px;padding:3px;gap:2px}
+.mode-btn{display:flex;align-items:center;gap:6px;padding:5px 14px;border-radius:6px;font-size:12px;font-weight:700;cursor:pointer;border:none;color:var(--ts);background:transparent;text-decoration:none;transition:all .18s;white-space:nowrap;letter-spacing:-.1px}
+.mode-btn:hover{color:var(--tp);background:rgba(15,98,254,.06)}
+.mode-btn.active{background:#ffffff;color:var(--ibm-blue);box-shadow:0 1px 4px rgba(0,0,60,.1);border:1px solid rgba(15,98,254,.25)}
+.mode-btn svg{opacity:.7}
+.mode-btn.active svg{opacity:1}
 .hdr-right{margin-left:auto;display:flex;align-items:center;gap:8px}
 .badge-demo{padding:3px 8px;border-radius:8px;font-size:9px;font-weight:800;letter-spacing:.5px;text-transform:uppercase;background:rgba(255,131,43,.1);color:var(--ibm-orange);border:1px solid rgba(255,131,43,.2)}
 
@@ -321,12 +324,12 @@ html,body{min-height:100vh;background:var(--bg);color:var(--tp);
     </div>
   </a>
   <div class="hdr-div"></div>
-  <nav class="hdr-nav">
-    <a href="search.html" class="hdr-btn active" id="btn-search">
+  <nav class="mode-switch" title="Switch between Search and Graph views">
+    <a href="search.html" class="mode-btn active" id="btn-search">
       <svg width="13" height="13" viewBox="0 0 16 16" fill="none"><circle cx="6.5" cy="6.5" r="5" stroke="currentColor" stroke-width="1.5"/><line x1="10.5" y1="10.5" x2="14" y2="14" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/></svg>
-      Search
+      Search View
     </a>
-    <a href="index.html" class="hdr-btn" id="btn-graph">
+    <a href="index.html" class="mode-btn" id="btn-graph">
       <svg width="13" height="13" viewBox="0 0 14 14" fill="none"><circle cx="7" cy="3" r="2" stroke="currentColor" stroke-width="1.5"/><circle cx="3" cy="11" r="2" stroke="currentColor" stroke-width="1.5"/><circle cx="11" cy="11" r="2" stroke="currentColor" stroke-width="1.5"/><line x1="7" y1="5" x2="4.5" y2="9.2" stroke="currentColor" stroke-width="1.2"/><line x1="7" y1="5" x2="9.5" y2="9.2" stroke="currentColor" stroke-width="1.2"/></svg>
       Graph View
     </a>

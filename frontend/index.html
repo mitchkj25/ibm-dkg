@@ -120,6 +120,13 @@ html,body{height:100%;background:var(--bg);color:var(--tp);font-family:'IBM Plex
 
 /* ── Header ───────────────────────────────────────────────────────────── */
 #hdr{grid-column:1/-1;background:rgba(255,255,255,0.95);border-bottom:1px solid var(--border);display:flex;align-items:center;padding:0 16px;gap:12px;z-index:100;box-shadow:0 1px 4px rgba(0,0,60,.06)}
+/* ── Mode switcher (shared with search.html) ── */
+.mode-switch{display:flex;align-items:center;background:var(--card);border:1px solid var(--border);border-radius:8px;padding:3px;gap:2px}
+.mode-btn{display:flex;align-items:center;gap:6px;padding:5px 14px;border-radius:6px;font-size:12px;font-weight:700;cursor:pointer;border:none;color:var(--ts);background:transparent;text-decoration:none;transition:all .18s;white-space:nowrap;letter-spacing:-.1px}
+.mode-btn:hover{color:var(--tp);background:rgba(15,98,254,.06)}
+.mode-btn.active{background:#ffffff;color:var(--ibm-blue);box-shadow:0 1px 4px rgba(0,0,60,.1);border:1px solid rgba(15,98,254,.25)}
+.mode-btn svg{opacity:.7}
+.mode-btn.active svg{opacity:1}
 .logo{display:flex;align-items:center;gap:9px;font-weight:700;font-size:14px;white-space:nowrap;color:var(--tp)}
 .pill{background:var(--ibm-blue);color:#fff;padding:2px 7px;border-radius:4px;font-size:9px;font-weight:800;letter-spacing:1.5px}
 .hdiv{width:1px;height:22px;background:var(--border)}
@@ -325,11 +332,16 @@ hr{border:none;border-top:1px solid var(--border);margin:10px 0}
     IBM Scout
   </div>
   <div class="hdiv"></div>
-  <!-- Nav tabs -->
-  <a href="search.html" style="display:flex;align-items:center;gap:5px;padding:4px 10px;border-radius:6px;font-size:11px;font-weight:600;color:var(--ts);border:1px solid transparent;text-decoration:none;transition:all .15s;white-space:nowrap" onmouseover="this.style.background='#f0f4ff';this.style.borderColor='var(--border)'" onmouseout="this.style.background='none';this.style.borderColor='transparent'">
-    <svg width="12" height="12" viewBox="0 0 16 16" fill="none"><circle cx="6.5" cy="6.5" r="5" stroke="currentColor" stroke-width="1.5"/><line x1="10.5" y1="10.5" x2="14" y2="14" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/></svg>
-    Search
-  </a>
+  <nav class="mode-switch" title="Switch between Search and Graph views">
+    <a href="search.html" class="mode-btn">
+      <svg width="13" height="13" viewBox="0 0 16 16" fill="none"><circle cx="6.5" cy="6.5" r="5" stroke="currentColor" stroke-width="1.5"/><line x1="10.5" y1="10.5" x2="14" y2="14" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/></svg>
+      Search View
+    </a>
+    <a href="index.html" class="mode-btn active">
+      <svg width="13" height="13" viewBox="0 0 14 14" fill="none"><circle cx="7" cy="3" r="2" stroke="currentColor" stroke-width="1.5"/><circle cx="3" cy="11" r="2" stroke="currentColor" stroke-width="1.5"/><circle cx="11" cy="11" r="2" stroke="currentColor" stroke-width="1.5"/><line x1="7" y1="5" x2="4.5" y2="9.2" stroke="currentColor" stroke-width="1.2"/><line x1="7" y1="5" x2="9.5" y2="9.2" stroke="currentColor" stroke-width="1.2"/></svg>
+      Graph View
+    </a>
+  </nav>
   <div class="hdiv"></div>
   <div id="sbar">
     <svg width="13" height="13" viewBox="0 0 16 16" fill="none" style="opacity:.4;flex-shrink:0"><circle cx="6.5" cy="6.5" r="5" stroke="#525252" stroke-width="1.5"/><line x1="10.5" y1="10.5" x2="14" y2="14" stroke="#525252" stroke-width="1.5" stroke-linecap="round"/></svg>
