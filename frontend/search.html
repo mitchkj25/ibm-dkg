@@ -239,6 +239,19 @@ html,body{min-height:100vh;background:var(--bg);color:var(--tp);
   display:block;margin-top:4px;
 }
 .suggested-q:hover{border-color:var(--border-hi);color:var(--tp);background:var(--surface)}
+
+/* ── Pinned queries ─────────────────────────────────────────────── */
+#pinned-panel{padding:8px 12px;border-bottom:1px solid var(--border);background:rgba(15,98,254,0.03)}
+#pinned-panel.empty{display:none}
+.pinned-hdr{display:flex;align-items:center;justify-content:space-between;margin-bottom:5px}
+.pinned-hdr-lbl{font-size:8px;font-weight:800;text-transform:uppercase;letter-spacing:.9px;color:var(--ibm-blue)}
+.pinned-clear{font-size:8px;color:var(--tm);background:none;border:none;cursor:pointer;font-family:inherit;padding:0}
+.pinned-clear:hover{color:var(--ibm-red)}
+.pinned-chip{display:inline-flex;align-items:center;gap:5px;padding:3px 8px;background:#fff;border:1px solid rgba(15,98,254,0.2);border-radius:12px;font-size:9.5px;color:var(--ibm-blue);cursor:pointer;margin:2px 3px 2px 0;transition:background .12s,border-color .12s;font-weight:600}
+.pinned-chip:hover{background:rgba(15,98,254,0.07);border-color:var(--ibm-blue)}
+.pinned-chip .pc-rm{font-size:10px;color:var(--tm);line-height:1;margin-left:2px;opacity:.6}
+.pinned-chip .pc-rm:hover{opacity:1;color:var(--ibm-red)}
+
 .cr-input-wrap{
   padding:10px 12px;border-top:1px solid var(--border);
   display:flex;gap:6px;
@@ -433,9 +446,17 @@ html,body{min-height:100vh;background:var(--bg);color:var(--tp);
       </div>
     </div>
   </div>
+  <div id="pinned-panel" class="empty">
+    <div class="pinned-hdr">
+      <span class="pinned-hdr-lbl">📌 Pinned Queries</span>
+      <button class="pinned-clear" onclick="clearPinnedQueries()" title="Clear all pinned queries">Clear all</button>
+    </div>
+    <div id="pinned-chips"></div>
+  </div>
   <div class="cr-input-wrap">
     <input class="cr-input" id="cr-input" type="text" placeholder="Ask anything about your accounts…"/>
     <button class="cr-send" id="cr-send">↑</button>
+    <button id="cr-pin" title="Pin this query" onclick="pinCurrentQuery()" style="background:rgba(15,98,254,0.06);border:1px solid rgba(15,98,254,0.2);color:var(--ibm-blue);border-radius:7px;padding:0 9px;cursor:pointer;font-size:13px;flex-shrink:0;transition:background .15s" title="Save query">📌</button>
   </div>
 </aside>
 </div><!-- #layout -->
@@ -1495,6 +1516,75 @@ buildFilters();
 renderCards(NODES);
 // After API check resolves, load live summary counts
 setTimeout(loadInsightsSummary, 1800);
+renderPinnedQueries();
+
+// ══════════════════════════════════════════════════════════════════════════
+// ── PINNED QUERIES ────────────────────────────────────────────────────────
+// ══════════════════════════════════════════════════════════════════════════
+
+const PQ_KEY = 'scout_pinned_queries';
+const PQ_MAX = 8;
+
+function pqLoad() {
+  try { return JSON.parse(localStorage.getItem(PQ_KEY) || '[]'); } catch { return []; }
+}
+function pqSave(arr) {
+  try { localStorage.setItem(PQ_KEY, JSON.stringify(arr)); } catch {}
+}
+
+function pinCurrentQuery() {
+  const inp = document.getElementById('cr-input');
+  const q = inp.value.trim();
+  if (!q) {
+    // Flash the input to signal it's empty
+    inp.style.outline = '2px solid rgba(218,30,40,0.4)';
+    setTimeout(() => inp.style.outline = '', 600);
+    return;
+  }
+  let arr = pqLoad();
+  if (arr.includes(q)) { return; } // already pinned
+  arr.unshift(q);
+  if (arr.length > PQ_MAX) arr = arr.slice(0, PQ_MAX);
+  pqSave(arr);
+  renderPinnedQueries();
+  // Flash pin button green briefly
+  const btn = document.getElementById('cr-pin');
+  btn.style.background = 'rgba(36,161,72,0.12)';
+  btn.style.borderColor = 'rgba(36,161,72,0.4)';
+  btn.style.color = '#24a148';
+  setTimeout(() => { btn.style.background=''; btn.style.borderColor=''; btn.style.color=''; }, 800);
+}
+
+function unpinQuery(q) {
+  let arr = pqLoad().filter(x => x !== q);
+  pqSave(arr);
+  renderPinnedQueries();
+}
+
+function clearPinnedQueries() {
+  pqSave([]);
+  renderPinnedQueries();
+}
+
+function renderPinnedQueries() {
+  const arr = pqLoad();
+  const panel = document.getElementById('pinned-panel');
+  const chips = document.getElementById('pinned-chips');
+  if (!panel || !chips) return;
+  if (!arr.length) {
+    panel.classList.add('empty');
+    return;
+  }
+  panel.classList.remove('empty');
+  chips.innerHTML = arr.map(q => {
+    const safe  = q.replace(/'/g, '&#39;').replace(/"/g, '&quot;');
+    const label = q.length > 38 ? q.slice(0, 36) + '…' : q;
+    return `<span class="pinned-chip" onclick="askAgent('${safe}')">
+      ${label}
+      <span class="pc-rm" title="Remove pin" onclick="event.stopPropagation();unpinQuery('${safe}')">✕</span>
+    </span>`;
+  }).join('');
+}
 </script>
 </body>
 </html>
