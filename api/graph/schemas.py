@@ -155,6 +155,61 @@ class KnowledgeAssetNode(ProvenanceMixin):
     linked_entity_ids: list[str] = Field(default_factory=list)
 
 
+class EpmReportNode(ProvenanceMixin):
+    """
+    IBM EPM (Enterprise Performance Management) report snapshot for an account.
+    Extracted from the EPM Competitive Insights dashboard.  One node per
+    account per reporting period — pruning agent keeps only the most-recent one ACTIVE.
+    """
+    id: str = Field(default_factory=_uid)
+    account_id: str
+    account_name: str
+    coverage_model: str = Field(default="Enterprise", description="Enterprise | Strategic | Named")
+    local_coverage_name: str = Field(default="", description="EPM Local Coverage Name field")
+    report_date: Optional[str] = None
+    reporting_period: Optional[str] = None
+    # Revenue metrics
+    ibm_total_revenue_ttm: Optional[float] = Field(None, description="IBM total revenue trailing 12 months")
+    ibm_revenue_yoy: Optional[float] = Field(None, description="YoY revenue growth %")
+    ibm_revenue_growth_trend: str = Field(
+        default="FLAT",
+        description="GROWING | FLAT | DECLINING | AT_RISK | NEW_LOGO",
+    )
+    coverage_tier: str = Field(default="Gold", description="Platinum | Gold | Silver | Prospect")
+    software_revenue: Optional[float] = None
+    services_revenue: Optional[float] = None
+    top_ibm_products: list[str] = Field(default_factory=list)
+    # Wallet share & competitive context
+    total_it_spend: Optional[float] = None
+    ibm_share_of_wallet: Optional[float] = Field(None, description="IBM revenue as % of total IT spend")
+    competitor_count: int = Field(default=0)
+    displacement_risk: str = Field(
+        default="MEDIUM",
+        description="CRITICAL | HIGH | MEDIUM | LOW",
+    )
+    notes: Optional[str] = None
+
+
+class CompetitorInstallNode(ProvenanceMixin):
+    """
+    A competitor product installed at an IBM account.
+    Sourced from EPM Competitive Insights.
+    """
+    id: str = Field(default_factory=_uid)
+    account_id: str
+    vendor: str = Field(..., description="Competitor vendor name (e.g. Microsoft, ServiceNow)")
+    product_name: str = Field(..., description="Competitor product name")
+    category: str = Field(..., description="Product category (AI / ML, Security, BI, etc.)")
+    competes_with_product_id: Optional[str] = Field(None, description="IBM Product id this displaces")
+    contract_value_est: Optional[float] = None
+    renewal_date: Optional[str] = None
+    displacement_risk: str = Field(
+        default="MEDIUM",
+        description="CRITICAL | HIGH | MEDIUM | LOW",
+    )
+    notes: Optional[str] = None
+
+
 # ── Relationship schemas ──────────────────────────────────────────────────────
 
 class RelationshipType(str, Enum):
@@ -168,6 +223,9 @@ class RelationshipType(str, Enum):
     HAS_OPPORTUNITY = "HAS_OPPORTUNITY"
     CO_SELLS = "CO_SELLS"
     RELATED_TO = "RELATED_TO"
+    HAS_EPM_REPORT = "HAS_EPM_REPORT"
+    HAS_COMPETITOR = "HAS_COMPETITOR"
+    COMPETES_WITH = "COMPETES_WITH"
 
 
 class RelationshipCreate(BaseModel):

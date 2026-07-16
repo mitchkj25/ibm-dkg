@@ -47,9 +47,13 @@ INTENT_PATTERNS = {
     "site_spend": re.compile(r"(site.*spend|spend.*site|most.*spend|highest.*spend|site number.*spend|how much.*site)", re.I),
     "site_product": re.compile(r"(site.*product|product.*site|site number.*product|what.*site.*have|cognos.*site|site.*cognos)", re.I),
     "account_sites": re.compile(r"(site.*number|site number|what site|which site|sites.*for|account.*site)", re.I),
-    # Deployment / adoption intents  ← NEW
+    # Deployment / adoption intents
     "deployment_health": re.compile(r"(gainsight|health.*score|adoption|utiliz|not.*deploy|stall|red.*health|yellow.*health|land.*expand|deployment|go.live|csm|entitled|activated|use.case)", re.I),
     "deployment_blockers": re.compile(r"(block|stuck|risk|churn|not.*using|low.*adoption|expand|upsell|whitespace.*deploy)", re.I),
+    # EPM intents
+    "epm_revenue": re.compile(r"(epm|revenue.*account|ibm.*revenue|share.*wallet|wallet.*share|coverage.*tier|coverage model|total.*spend|it.*spend|platinum|gold.*tier|silver.*tier)", re.I),
+    "epm_competitive": re.compile(r"(competitor|competitive|displac|microsoft.*install|servicenow.*install|crowdstrike|tableau|power.?bi|manhattan|openai|aws.*sagemaker|palo.?alto|rival|threat|competing)", re.I),
+    "epm_risk": re.compile(r"(displacement.*risk|at.risk.*account|revenue.*declin|revenue.*risk|critical.*account|churn.*risk|losing.*account)", re.I),
 }
 
 ENTITY_KEYWORDS = {
@@ -62,6 +66,8 @@ ENTITY_KEYWORDS = {
     "Deployment": ["deployment", "deploy", "gainsight", "adoption", "utilization", "go-live", "live", "stalled", "csm", "use case", "activated"],
     "Opportunity": ["opportunity", "opp", "deal", "pipeline", "forecast"],
     "SiteNumber": ["site", "site number", "sitenumber", "customer number", "location"],
+    "EpmReport": ["epm", "revenue", "share of wallet", "coverage tier", "ibm revenue", "growth", "it spend"],
+    "CompetitorInstall": ["competitor", "competitive", "microsoft", "servicenow", "tableau", "power bi", "crowdstrike", "manhattan", "displac", "threat", "rival"],
 }
 
 

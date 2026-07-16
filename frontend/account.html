@@ -203,6 +203,12 @@ html,body{min-height:100vh;background:var(--bg);color:var(--tp);
     </div>
   </div>
 
+  <!-- EPM Intelligence Panel -->
+  <div class="section-card" style="margin-bottom:24px" id="epm-section">
+    <div class="section-title">📊 EPM Intelligence — Q2 2025</div>
+    <div id="epm-content"><div class="empty-state">No EPM report available for this account.</div></div>
+  </div>
+
   <div class="action-row" id="action-row">
     <a href="search.html" class="action-btn secondary">← Back to Search</a>
   </div>
@@ -210,8 +216,28 @@ html,body{min-height:100vh;background:var(--bg);color:var(--tp);
 
 <script>
 const API = 'http://localhost:8000';
-function fmtM(v){if(!v)return'—';if(v>=1e9)return`$${(v/1e9).toFixed(1)}B`;if(v>=1e6)return`$${(v/1e6).toFixed(1)}M`;if(v>=1e3)return`$${(v/1e3).toFixed(0)}K`;return`$${v}`;}
+function fmtM(v){if(!v&&v!==0)return'—';if(v===0)return'$0';if(v>=1e9)return`$${(v/1e9).toFixed(1)}B`;if(v>=1e6)return`$${(v/1e6).toFixed(1)}M`;if(v>=1e3)return`$${(v/1e3).toFixed(0)}K`;return`$${v}`;}
 function daysUntil(d){return d?Math.ceil((new Date(d)-new Date())/86400000):null;}
+
+// ── EPM Report seed data (keyed by accountId) ─────────────────────────────
+const EPM_REPORTS = {
+  'acc-001':{id:'epm-001',reportingPeriod:'Q2 2025',reportDate:'2025-06-30',coverageModel:'Enterprise',localCoverageName:'Northeast Financial Services',ibmTotalRevenueTtm:4680000,ibmRevenueYoy:8.4,ibmRevenueGrowthTrend:'GROWING',coverageTier:'Platinum',softwareRevenue:3900000,servicesRevenue:780000,topIbmProducts:['IBM Turbonomic','IBM Cloud Pak for Security','watsonx.ai (in progress)'],totalItSpend:62000000,ibmShareOfWallet:7.5,competitorCount:4,displacementRisk:'MEDIUM',notes:'Strong IBM relationship. watsonx.ai expansion opportunity in progress. QRadar migration is the key blocker for CP4Security go-live. Renewal conversation for Turbonomic opens Q3.'},
+  'acc-002':{id:'epm-002',reportingPeriod:'Q2 2025',reportDate:'2025-06-30',coverageModel:'Enterprise',localCoverageName:'Southeast Healthcare',ibmTotalRevenueTtm:1450000,ibmRevenueYoy:-3.1,ibmRevenueGrowthTrend:'DECLINING',coverageTier:'Gold',softwareRevenue:1100000,servicesRevenue:350000,topIbmProducts:['IBM Cloud Pak for Security (pilot)','watsonx.ai (pilot)'],totalItSpend:28000000,ibmShareOfWallet:5.2,competitorCount:5,displacementRisk:'HIGH',notes:'Declining revenue trend. No active deployment driving adoption. Microsoft Azure AI and Palo Alto Networks gaining footprint. Seller must drive deployment velocity or risk losing share.'},
+  'acc-003':{id:'epm-003',reportingPeriod:'Q2 2025',reportDate:'2025-06-30',coverageModel:'Strategic',localCoverageName:'Southeast Retail',ibmTotalRevenueTtm:620000,ibmRevenueYoy:-18.2,ibmRevenueGrowthTrend:'AT_RISK',coverageTier:'Silver',softwareRevenue:620000,servicesRevenue:0,topIbmProducts:['IBM Sterling OMS (STALLED — out of support)'],totalItSpend:14000000,ibmShareOfWallet:4.4,competitorCount:3,displacementRisk:'CRITICAL',notes:'Revenue at critical risk. Sterling OMS STALLED and out of support. Manhattan Associates actively in a competitive evaluation. IBM must close upgrade proposal immediately or lose this account\'s supply chain footprint.'},
+  'acc-004':{id:'epm-004',reportingPeriod:'Q2 2025',reportDate:'2025-06-30',coverageModel:'Enterprise',localCoverageName:'Bay Area Technology',ibmTotalRevenueTtm:1200000,ibmRevenueYoy:22.5,ibmRevenueGrowthTrend:'GROWING',coverageTier:'Gold',softwareRevenue:1200000,servicesRevenue:0,topIbmProducts:['watsonx.ai (IN_PROGRESS — 42% adoption)'],totalItSpend:45000000,ibmShareOfWallet:2.7,competitorCount:6,displacementRisk:'MEDIUM',notes:'Strong YoY growth from watsonx.ai new logo. Governance upsell (watsonx.governance) identified by CSM. Share of wallet is low — large headroom. Competing against OpenAI, Anthropic, AWS SageMaker for AI platform.'},
+  'acc-005':{id:'epm-005',reportingPeriod:'Q2 2025',reportDate:'2025-06-30',coverageModel:'Enterprise',localCoverageName:'Northeast Insurance',ibmTotalRevenueTtm:890000,ibmRevenueYoy:2.1,ibmRevenueGrowthTrend:'FLAT',coverageTier:'Gold',softwareRevenue:890000,servicesRevenue:0,topIbmProducts:['IBM OpenPages (LIVE — support expiring Sep 2025)'],totalItSpend:19000000,ibmShareOfWallet:4.7,competitorCount:3,displacementRisk:'HIGH',notes:'Flat revenue but HIGH displacement risk due to support contract expiring Sep 2025 and no signed upgrade. ServiceNow GRC actively displacing in the operational risk module. Renewal must close in 45 days.'},
+  'acc-006':{id:'epm-006',reportingPeriod:'Q2 2025',reportDate:'2025-06-30',coverageModel:'Strategic',localCoverageName:'Southeast Logistics',ibmTotalRevenueTtm:0,ibmRevenueYoy:0,ibmRevenueGrowthTrend:'NEW_LOGO',coverageTier:'Prospect',softwareRevenue:0,servicesRevenue:0,topIbmProducts:[],totalItSpend:8500000,ibmShareOfWallet:0,competitorCount:2,displacementRisk:'LOW',notes:'New logo target. No IBM revenue yet. Evaluating AI-driven order orchestration. Blue Yonder and Oracle SCM are the primary competitive threats. Entry point: IBM Sterling OMS pilot on whitespace site SCL-OPS-0017.'},
+  'acc-007':{id:'epm-007',reportingPeriod:'Q2 2025',reportDate:'2025-06-30',coverageModel:'Enterprise',localCoverageName:'Public Sector South',ibmTotalRevenueTtm:3630000,ibmRevenueYoy:6.8,ibmRevenueGrowthTrend:'GROWING',coverageTier:'Platinum',softwareRevenue:3630000,servicesRevenue:0,topIbmProducts:['IBM Cognos Analytics (DCFS — GREEN)','IBM Cognos Analytics (DOTD — RED/STALLED)','IBM Turbonomic (DHH)'],totalItSpend:42000000,ibmShareOfWallet:8.6,competitorCount:4,displacementRisk:'MEDIUM',notes:'Platinum account growing. DCFS is a reference customer (99% utilization). DOTD is a critical risk — RED health, out of support. Power BI and Tableau aggressively pursuing DOTD. DHH has no Cognos yet — expansion opportunity.'},
+};
+const COMPETITOR_INSTALLS = {
+  'acc-001':[{vendor:'Microsoft',productName:'Azure OpenAI Service',category:'AI / Machine Learning',contractValueEst:850000,renewalDate:'2026-03-01',displacementRisk:'MEDIUM',notes:'Microsoft Azure OpenAI footprint growing with developer teams. Competes with watsonx.ai.'},{vendor:'CrowdStrike',productName:'Falcon XDR',category:'Security / XDR',contractValueEst:1200000,renewalDate:'2025-11-15',displacementRisk:'HIGH',notes:'CrowdStrike Falcon XDR entrenched in endpoint security. Renewal Nov 2025.'}],
+  'acc-002':[{vendor:'Microsoft',productName:'Azure AI Foundry',category:'AI / Machine Learning',contractValueEst:620000,renewalDate:'2026-01-01',displacementRisk:'HIGH',notes:'Microsoft AI Foundry piloted by data science team. IBM must accelerate watsonx.ai.'},{vendor:'Palo Alto Networks',productName:'Prisma Cloud',category:'Security / CNAPP',contractValueEst:480000,renewalDate:'2026-06-01',displacementRisk:'MEDIUM',notes:'Palo Alto Prisma Cloud covers cloud-native workload protection.'}],
+  'acc-003':[{vendor:'Manhattan Associates',productName:'Manhattan Active Omni',category:'Supply Chain / OMS',contractValueEst:750000,renewalDate:'2026-01-15',displacementRisk:'CRITICAL',notes:'Manhattan Associates actively in competitive evaluation. IBM must close upgrade now.'}],
+  'acc-004':[{vendor:'OpenAI',productName:'ChatGPT Enterprise',category:'AI / LLM',contractValueEst:540000,renewalDate:'2026-02-01',displacementRisk:'MEDIUM',notes:'OpenAI ChatGPT Enterprise deployed for productivity. Governance is IBM\'s differentiator.'},{vendor:'AWS',productName:'SageMaker',category:'AI / ML Platform',contractValueEst:380000,renewalDate:'2025-12-01',displacementRisk:'MEDIUM',notes:'AWS SageMaker for data engineering. watsonx.data is the IBM counter.'}],
+  'acc-005':[{vendor:'ServiceNow',productName:'ServiceNow GRC',category:'Risk & Compliance',contractValueEst:920000,renewalDate:'2025-10-01',displacementRisk:'HIGH',notes:'ServiceNow GRC expanding into operational risk. Cascadia evaluating OR module.'}],
+  'acc-006':[],
+  'acc-007':[{vendor:'Microsoft',productName:'Power BI Premium',category:'Business Intelligence',contractValueEst:1100000,renewalDate:'2026-04-01',displacementRisk:'HIGH',notes:'Power BI aggressively pushed to DOTD. IBM Cognos DOTD STALLED and out of support.'},{vendor:'Tableau',productName:'Tableau Cloud',category:'Business Intelligence',contractValueEst:480000,renewalDate:'2026-01-01',displacementRisk:'MEDIUM',notes:'Tableau Cloud evaluated by DHH — IBM has no Cognos footprint there yet.'}],
+};
 
 const ACCOUNTS = {
   'acc-001':{id:'acc-001',name:'First National Bancorp',industry:'Financial Services',segment:'Enterprise',revenue:24000000000,country:'USA',description:'Top-10 US retail bank. Heavy mainframe and cloud modernization initiative underway. Two active IBM site numbers. Key relationships with Marcus Webb (CE) and Aisha Thornton (BSS).',
@@ -425,11 +451,143 @@ function renderPage(acc) {
       <div style="font-size:10px;color:var(--ibm-blue);margin-left:auto">${s.email}</div>
     </div>`).join('');
 
+  // EPM Intelligence
+  renderEpmPanel(acc.id);
+
   // Actions
   const btns = [`<a href="search.html" class="action-btn secondary">← Back to Search</a>`];
   if(opps.length) btns.push(`<a href="search.html?q=${encodeURIComponent(acc.name+' pipeline')}" class="action-btn primary">💡 View Pipeline</a>`);
   btns.push(`<a href="index.html#node=${acc.id}" class="action-btn secondary">🕸 View in Graph</a>`);
   document.getElementById('action-row').innerHTML = btns.join('');
+}
+
+// ── EPM Panel renderer ────────────────────────────────────────────────────
+function renderEpmPanel(accId) {
+  const epm = EPM_REPORTS[accId];
+  const comps = COMPETITOR_INSTALLS[accId] || [];
+  const el = document.getElementById('epm-content');
+  if (!epm) { el.innerHTML = '<div class="empty-state">No EPM report available for this account.</div>'; return; }
+
+  const trendMeta = {
+    GROWING:   { col:'#24a148', bg:'rgba(36,161,72,.08)',   icon:'▲', label:'Growing' },
+    FLAT:      { col:'#525252', bg:'rgba(82,82,82,.07)',    icon:'→', label:'Flat' },
+    DECLINING: { col:'#da1e28', bg:'rgba(218,30,40,.07)',   icon:'▼', label:'Declining' },
+    AT_RISK:   { col:'#da1e28', bg:'rgba(218,30,40,.1)',    icon:'⚠', label:'At Risk' },
+    NEW_LOGO:  { col:'#0f62fe', bg:'rgba(15,98,254,.07)',   icon:'★', label:'New Logo' },
+  };
+  const riskMeta = {
+    CRITICAL: { col:'#da1e28', bg:'rgba(218,30,40,.1)',   label:'🔴 CRITICAL' },
+    HIGH:     { col:'#da1e28', bg:'rgba(218,30,40,.07)',  label:'🟠 HIGH' },
+    MEDIUM:   { col:'#ff832b', bg:'rgba(255,131,43,.07)', label:'🟡 MEDIUM' },
+    LOW:      { col:'#24a148', bg:'rgba(36,161,72,.07)',  label:'🟢 LOW' },
+  };
+  const tierMeta = {
+    Platinum: { col:'#7c5cd8', bg:'rgba(124,92,216,.1)' },
+    Gold:     { col:'#946500', bg:'rgba(241,194,27,.12)' },
+    Silver:   { col:'#525252', bg:'rgba(82,82,82,.1)' },
+    Prospect: { col:'#0f62fe', bg:'rgba(15,98,254,.08)' },
+  };
+  const tm = trendMeta[epm.ibmRevenueGrowthTrend] || trendMeta.FLAT;
+  const rm = riskMeta[epm.displacementRisk] || riskMeta.MEDIUM;
+  const tier = tierMeta[epm.coverageTier] || tierMeta.Gold;
+  const yoyStr = epm.ibmRevenueYoy > 0 ? `+${epm.ibmRevenueYoy}%` : `${epm.ibmRevenueYoy}%`;
+  const walletPct = epm.ibmShareOfWallet || 0;
+  const walletBar = walletPct > 0 ? `<div style="height:5px;background:#e8e8e8;border-radius:3px;margin:4px 0"><div style="width:${Math.min(walletPct*4,100)}%;height:100%;background:var(--ibm-blue);border-radius:3px"></div></div>` : '';
+
+  // KPI strip
+  const kpiHtml = `
+  <div style="display:grid;grid-template-columns:repeat(4,1fr);gap:10px;margin-bottom:16px">
+    <div style="background:var(--card);border:1px solid var(--border);border-radius:8px;padding:12px 14px">
+      <div style="font-size:9px;font-weight:800;text-transform:uppercase;letter-spacing:.7px;color:var(--ts)">IBM Revenue TTM</div>
+      <div style="font-size:20px;font-weight:700;color:var(--ibm-blue);line-height:1.2;margin:4px 0">${fmtM(epm.ibmTotalRevenueTtm)}</div>
+      <div style="font-size:9px;font-weight:700;color:${tm.col};background:${tm.bg};display:inline-block;padding:1px 7px;border-radius:4px">${tm.icon} ${yoyStr} YoY</div>
+    </div>
+    <div style="background:var(--card);border:1px solid var(--border);border-radius:8px;padding:12px 14px">
+      <div style="font-size:9px;font-weight:800;text-transform:uppercase;letter-spacing:.7px;color:var(--ts)">Share of Wallet</div>
+      <div style="font-size:20px;font-weight:700;color:var(--ibm-blue);line-height:1.2;margin:4px 0">${walletPct}%</div>
+      ${walletBar}
+      <div style="font-size:9px;color:var(--ts)">of ${fmtM(epm.totalItSpend)} total IT spend</div>
+    </div>
+    <div style="background:var(--card);border:1px solid var(--border);border-radius:8px;padding:12px 14px">
+      <div style="font-size:9px;font-weight:800;text-transform:uppercase;letter-spacing:.7px;color:var(--ts)">Coverage Tier</div>
+      <div style="font-size:16px;font-weight:700;margin:4px 0;line-height:1.2">
+        <span style="background:${tier.bg};color:${tier.col};padding:2px 10px;border-radius:5px;font-size:13px;font-weight:800">${epm.coverageTier}</span>
+      </div>
+      <div style="font-size:9px;color:var(--ts)">${epm.coverageModel} · ${epm.localCoverageName}</div>
+    </div>
+    <div style="background:var(--card);border:1px solid var(--border);border-radius:8px;padding:12px 14px">
+      <div style="font-size:9px;font-weight:800;text-transform:uppercase;letter-spacing:.7px;color:var(--ts)">Displacement Risk</div>
+      <div style="font-size:16px;font-weight:700;margin:4px 0;line-height:1.2">
+        <span style="background:${rm.bg};color:${rm.col};padding:2px 10px;border-radius:5px;font-size:11px;font-weight:800">${rm.label}</span>
+      </div>
+      <div style="font-size:9px;color:var(--ts)">${epm.competitorCount} competitor product${epm.competitorCount!==1?'s':''} active</div>
+    </div>
+  </div>`;
+
+  // Revenue breakdown
+  const swPct = epm.ibmTotalRevenueTtm > 0 ? Math.round((epm.softwareRevenue/epm.ibmTotalRevenueTtm)*100) : 0;
+  const svcPct = 100 - swPct;
+  const revenueHtml = epm.ibmTotalRevenueTtm > 0 ? `
+  <div style="display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-bottom:14px">
+    <div style="background:rgba(15,98,254,.04);border:1px solid rgba(15,98,254,.15);border-radius:7px;padding:10px 12px">
+      <div style="font-size:9px;font-weight:800;text-transform:uppercase;letter-spacing:.7px;color:var(--ibm-blue);margin-bottom:6px">Software Revenue</div>
+      <div style="font-size:16px;font-weight:700;color:var(--ibm-blue)">${fmtM(epm.softwareRevenue)}</div>
+      <div style="height:4px;background:#e0e8ff;border-radius:2px;margin:5px 0"><div style="width:${swPct}%;height:100%;background:var(--ibm-blue);border-radius:2px"></div></div>
+      <div style="font-size:9px;color:var(--ts)">${swPct}% of IBM revenue</div>
+    </div>
+    <div style="background:rgba(0,157,154,.04);border:1px solid rgba(0,157,154,.15);border-radius:7px;padding:10px 12px">
+      <div style="font-size:9px;font-weight:800;text-transform:uppercase;letter-spacing:.7px;color:var(--ibm-teal);margin-bottom:6px">Services Revenue</div>
+      <div style="font-size:16px;font-weight:700;color:var(--ibm-teal)">${fmtM(epm.servicesRevenue)}</div>
+      <div style="height:4px;background:#d8f5f5;border-radius:2px;margin:5px 0"><div style="width:${svcPct}%;height:100%;background:var(--ibm-teal);border-radius:2px"></div></div>
+      <div style="font-size:9px;color:var(--ts)">${svcPct}% of IBM revenue</div>
+    </div>
+  </div>` : '';
+
+  // Top IBM products
+  const prodHtml = epm.topIbmProducts.length ? `
+  <div style="margin-bottom:14px">
+    <div style="font-size:8.5px;font-weight:800;text-transform:uppercase;letter-spacing:.7px;color:var(--ts);margin-bottom:6px">Active IBM Products (EPM)</div>
+    <div style="display:flex;flex-wrap:wrap;gap:5px">
+      ${epm.topIbmProducts.map(p=>`<span style="background:rgba(255,131,43,.08);border:1px solid rgba(255,131,43,.2);border-radius:5px;padding:3px 10px;font-size:9.5px;font-weight:700;color:var(--ibm-orange)">${p}</span>`).join('')}
+    </div>
+  </div>` : '';
+
+  // EPM notes
+  const notesHtml = epm.notes ? `
+  <div style="background:rgba(15,98,254,.04);border-left:3px solid var(--ibm-blue);border-radius:0 6px 6px 0;padding:8px 12px;margin-bottom:14px;font-size:11px;color:var(--ts);line-height:1.6">
+    <strong style="color:var(--ibm-blue);font-size:9px;text-transform:uppercase;letter-spacing:.7px;display:block;margin-bottom:3px">EPM Analyst Notes</strong>
+    ${epm.notes}
+  </div>` : '';
+
+  // Competitor installs table
+  let compHtml = '';
+  if (comps.length) {
+    const riskBadge = r => {
+      const m = {CRITICAL:'background:rgba(218,30,40,.1);color:#da1e28',HIGH:'background:rgba(218,30,40,.07);color:#da1e28',MEDIUM:'background:rgba(255,131,43,.09);color:#ff832b',LOW:'background:rgba(36,161,72,.07);color:#24a148'};
+      return `<span style="${m[r]||m.MEDIUM};padding:1px 7px;border-radius:4px;font-size:8px;font-weight:800;text-transform:uppercase">${r}</span>`;
+    };
+    compHtml = `
+    <div style="font-size:8.5px;font-weight:800;text-transform:uppercase;letter-spacing:.7px;color:var(--ts);margin-bottom:8px">
+      ⚔ Competitor Landscape (${comps.length} active threat${comps.length!==1?'s':''})
+    </div>
+    ${comps.map(c=>`
+    <div style="background:var(--surface);border:1px solid ${c.displacementRisk==='CRITICAL'?'rgba(218,30,40,.25)':c.displacementRisk==='HIGH'?'rgba(218,30,40,.15)':'var(--border)'};border-radius:8px;padding:10px 12px;margin-bottom:8px">
+      <div style="display:flex;align-items:flex-start;gap:10px;margin-bottom:5px">
+        <div style="flex:1;min-width:0">
+          <div style="font-size:12px;font-weight:700;color:var(--tp)">${c.vendor} — ${c.productName}</div>
+          <div style="font-size:9px;color:var(--ts);margin-top:1px">${c.category}</div>
+        </div>
+        ${riskBadge(c.displacementRisk)}
+      </div>
+      <div style="display:flex;gap:12px;margin-bottom:6px;font-size:9px;color:var(--ts)">
+        <span>Est. value: <strong style="color:var(--tp)">${fmtM(c.contractValueEst)}</strong></span>
+        ${c.renewalDate?`<span>Renewal: <strong style="color:var(--tp)">${c.renewalDate}</strong></span>`:''}
+      </div>
+      <div style="font-size:10px;color:var(--ts);line-height:1.5">${c.notes}</div>
+    </div>`).join('')}`;
+  }
+
+  el.innerHTML = kpiHtml + revenueHtml + prodHtml + notesHtml + compHtml;
 }
 
 const params = new URLSearchParams(window.location.search);

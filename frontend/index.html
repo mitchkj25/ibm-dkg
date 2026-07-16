@@ -704,15 +704,18 @@ const API = 'http://localhost:8000';
 
 // ── Color palette ─────────────────────────────────────────────────────────
 const COLORS = {
-  Seller:         '#0f62fe',
-  Manager:        '#a56eff',
-  Account:        '#1192e8',
-  Territory:      '#009d9a',
-  Product:        '#ff832b',
-  Install:        '#24a148',
-  Opportunity:    '#f1c21b',
-  KnowledgeAsset: '#ee5396',
-  SiteNumber:     '#33b1ff',
+  Seller:           '#0f62fe',
+  Manager:          '#a56eff',
+  Account:          '#1192e8',
+  Territory:        '#009d9a',
+  Product:          '#ff832b',
+  Install:          '#24a148',
+  Opportunity:      '#f1c21b',
+  KnowledgeAsset:   '#ee5396',
+  SiteNumber:       '#33b1ff',
+  Deployment:       '#009d9a',
+  EpmReport:        '#7c5cd8',
+  CompetitorInstall:'#da1e28',
 };
 COLORS['BusinessPartner'] = '#a56eff';
 
@@ -723,11 +726,13 @@ const EDGE_COLORS = {
   RUNS_PRODUCT:'#ff832b', HAS_OPPORTUNITY:'#f1c21b',
   CO_SELLS:'#0f62fe', HAS_SITE:'#33b1ff', HAS_PRODUCT:'#ff832b',
   PARTNER_SELLS:'#a56eff', COVERED_BY:'#009d9a', LIAISED_BY:'#009d9a',
+  HAS_EPM_REPORT:'#7c5cd8', HAS_COMPETITOR:'#da1e28', COMPETES_WITH:'#da1e28',
 };
 
 const NODE_RADII = {
   Manager:16, Seller:13, Account:14, Territory:12, Product:11,
-  Install:8, Opportunity:9, KnowledgeAsset:8, SiteNumber:10, BusinessPartner:12
+  Install:8, Opportunity:9, KnowledgeAsset:8, SiteNumber:10, BusinessPartner:12,
+  Deployment:9, EpmReport:11, CompetitorInstall:10,
 };
 
 // ── Seed data ─────────────────────────────────────────────────────────────
@@ -927,6 +932,13 @@ const SAMPLE_QUERIES = [
   'Find expiring support contracts',
   'What opportunities does Louisiana have?',
   'Co-sell relationships',
+  // EPM
+  'What is the IBM revenue for Nova Retail Group?',
+  'Which accounts have CRITICAL displacement risk?',
+  'What competitors are installed at First National Bancorp?',
+  'Show me all declining revenue accounts',
+  'What is the share of wallet for Apex Technology?',
+  'Which accounts have ServiceNow or Microsoft competing?',
 ];
 
 // ── Global state ──────────────────────────────────────────────────────────
