@@ -161,7 +161,8 @@ hr{border:none;border-top:1px solid var(--border);margin:10px 0}
 
 /* ── SVG Graph area ───────────────────────────────────────────────────── */
 #cw{position:relative;overflow:hidden;background:var(--bg);background-image:radial-gradient(circle,#b8c6e8 1px,transparent 1px);background-size:28px 28px}
-#dkg-svg{user-select:none;-webkit-user-select:none}
+#dkg-svg{user-select:none;-webkit-user-select:none;cursor:grab}
+#dkg-svg:active{cursor:grabbing}
 
 /* ── Hub nodes ────────────────────────────────────────────────────────── */
 .hub-enterprise{fill:#e8eeff;stroke:#0f62fe;stroke-width:2}
@@ -1201,8 +1202,8 @@ function renderChildNodes(nodeLayer, edgeLayer, W, H, entCX, cy, perCX) {
     const cnt = group.length;
     group.forEach((n, i) => {
       const angle  = (2 * Math.PI / Math.max(cnt, 1)) * i - Math.PI / 2;
-      // Scale radius generously so nodes don't pile up — min 90px, grows with group size
-      const radius = 90 + cnt * 14;
+      // Compact orbit: hub radius ~45px + small per-node spread, stays inside the graph ellipse
+      const radius = 45 + Math.min(cnt * 7, 40);
       const nx = hp.x + radius * Math.cos(angle);
       const ny = hp.y + radius * Math.sin(angle);
       placed[n.id] = {x: nx, y: ny};
@@ -3079,11 +3080,16 @@ function init(){
     zoomBy(delta, mx, my);
   }, { passive: false });
 
-  // Middle-mouse / space-drag pan on the SVG canvas
+  // Pan: left-click-drag on the SVG background (not on a node), middle-mouse, or alt+drag
   let _pan = { active: false, sx: 0, sy: 0, ox: 0, oy: 0 };
   const svgEl2 = document.getElementById('dkg-svg');
   svgEl2.addEventListener('mousedown', e => {
-    if (e.button === 1 || e.button === 2 || (e.button === 0 && e.altKey)) {
+    // Only pan when clicking directly on the SVG or its background rects, not on nodes
+    const onBackground = e.target === svgEl2 ||
+      e.target.tagName === 'rect' ||
+      e.target.id === 'zoom-root' ||
+      (e.target.closest && !e.target.closest('.svg-node') && !e.target.closest('[data-child]'));
+    if (e.button === 1 || e.button === 2 || (e.button === 0 && e.altKey) || (e.button === 0 && onBackground)) {
       e.preventDefault();
       _pan.active = true; _pan.sx = e.clientX; _pan.sy = e.clientY;
       _pan.ox = _zv.tx; _pan.oy = _zv.ty;
