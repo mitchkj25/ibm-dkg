@@ -1263,7 +1263,7 @@ function pushRichAnswer(q, intent, nodes) {
     const fwrap = document.createElement('div');
     fwrap.style.marginTop = '8px';
     fwrap.innerHTML = followUps
-      .map(fq => `<button class="suggested-q" onclick="askAgent(${JSON.stringify(fq)})">${fq}</button>`)
+      .map(fq => `<button class="suggested-q" onclick='askAgent(${JSON.stringify(fq)})'>${fq}</button>`)
       .join('');
     el.appendChild(fwrap);
   }
@@ -1403,7 +1403,7 @@ async function sendChat() {
         let reply = data.answer || '';
         if (data.follow_ups && data.follow_ups.length) {
           const followUpsHtml = data.follow_ups
-            .map(fq => `<button class="suggested-q" onclick="askAgent(${JSON.stringify(fq)})">${fq}</button>`)
+            .map(fq => `<button class="suggested-q" onclick='askAgent(${JSON.stringify(fq)})'>${fq}</button>`)
             .join('');
           // Build agent message div manually with follow-ups
           const msgs = document.getElementById('cr-msgs');
