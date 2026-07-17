@@ -112,11 +112,11 @@ html,body{min-height:100vh;background:var(--bg);color:var(--tp);
 .cr-send:hover{background:var(--ibm-dk)}
 
 /* Role dropdown in header */
-#role-select-wrap{position:relative;display:flex;align-items:center}
+#role-select-wrap{position:relative;display:flex;align-items:center;gap:0}
 #role-select-btn{
   display:flex;align-items:center;gap:7px;
-  padding:5px 12px;border-radius:7px;
-  border:1px solid var(--border);background:var(--card);
+  padding:5px 12px;border-radius:7px 0 0 7px;
+  border:1px solid var(--border);border-right:none;background:var(--card);
   color:var(--ts);font-size:11px;font-weight:700;cursor:pointer;
   transition:all .15s;font-family:inherit;white-space:nowrap;
 }
@@ -126,7 +126,7 @@ html,body{min-height:100vh;background:var(--bg);color:var(--tp);
 #role-dropdown{
   position:absolute;top:calc(100% + 6px);left:0;z-index:300;
   background:#ffffff;border:1px solid var(--border);
-  border-radius:9px;padding:5px;min-width:200px;
+  border-radius:9px;padding:5px;min-width:220px;
   box-shadow:0 8px 24px rgba(0,0,60,.12);display:none;
 }
 #role-dropdown.open{display:block}
@@ -139,6 +139,51 @@ html,body{min-height:100vh;background:var(--bg);color:var(--tp);
 .rd-opt.active{background:rgba(15,98,254,.15);color:var(--ibm-blue)}
 .rd-dot{width:8px;height:8px;border-radius:50%;flex-shrink:0}
 .rd-divider{height:1px;background:var(--border);margin:4px 2px}
+
+/* ── Persona sub-dropdown ─────────────────────────────────── */
+#persona-select-wrap{position:relative;display:flex;align-items:center}
+#persona-select-wrap.hidden{display:none}
+#persona-select-btn{
+  display:flex;align-items:center;gap:6px;
+  padding:5px 10px 5px 8px;border-radius:0 7px 7px 0;
+  border:1px solid var(--border);background:rgba(15,98,254,0.06);
+  color:var(--ibm-blue);font-size:11px;font-weight:700;cursor:pointer;
+  transition:all .15s;font-family:inherit;white-space:nowrap;max-width:200px;
+}
+#persona-select-btn:hover{background:rgba(15,98,254,0.12);border-color:var(--border-hi)}
+#persona-select-btn .ps-avatar{
+  width:20px;height:20px;border-radius:50%;
+  background:linear-gradient(135deg,#0f62fe,#a56eff);
+  display:flex;align-items:center;justify-content:center;
+  font-size:9px;color:#fff;font-weight:800;flex-shrink:0;
+}
+#persona-select-btn .ps-label{overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+#persona-select-btn .ps-badge{
+  font-size:8px;font-weight:800;padding:1px 5px;border-radius:3px;
+  background:rgba(15,98,254,0.15);color:var(--ibm-blue);flex-shrink:0;
+}
+#persona-dropdown{
+  position:absolute;top:calc(100% + 6px);left:0;z-index:300;
+  background:#ffffff;border:1px solid var(--border);
+  border-radius:9px;padding:5px;min-width:230px;
+  box-shadow:0 8px 24px rgba(0,0,60,.12);display:none;
+}
+#persona-dropdown.open{display:block}
+.pd-header{font-size:8px;font-weight:800;text-transform:uppercase;letter-spacing:.9px;color:var(--tm);padding:4px 8px 6px;border-bottom:1px solid var(--border);margin-bottom:4px}
+.pd-opt{
+  display:flex;align-items:center;gap:9px;padding:7px 10px;
+  border-radius:6px;cursor:pointer;font-size:11px;transition:all .12s;
+}
+.pd-opt:hover{background:rgba(15,98,254,.07)}
+.pd-opt.active{background:rgba(15,98,254,.1)}
+.pd-avatar{
+  width:26px;height:26px;border-radius:50%;
+  display:flex;align-items:center;justify-content:center;
+  font-size:11px;font-weight:800;color:#fff;flex-shrink:0;
+}
+.pd-name{font-size:11px;font-weight:700;color:var(--tp);flex:1}
+.pd-sub{font-size:9px;color:var(--tm)}
+.pd-badge{font-size:8px;font-weight:800;padding:2px 6px;border-radius:3px;flex-shrink:0}
 
 /* ══════════════ BROWSE SECTION ══════════════ */
 #browse{padding:28px 48px}
@@ -352,18 +397,33 @@ html,body{min-height:100vh;background:var(--bg);color:var(--tp);
       Pruning
     </a>
   </nav>
-  <div id="role-select-wrap">
-    <button id="role-select-btn" onclick="toggleRoleDropdown()">
-      <span class="role-dot"></span>
-      <span id="role-btn-label">All Roles</span>
-      <span class="role-caret">▼</span>
-    </button>
-    <div id="role-dropdown">
-      <div class="rd-opt active" data-role="all" onclick="setRole('all',this)"><span class="rd-dot" style="background:#6f6f6f"></span>All Roles</div>
-      <div class="rd-opt" data-role="seller" onclick="setRole('seller',this)"><span class="rd-dot" style="background:#0f62fe"></span>CSE</div>
-      <div class="rd-opt" data-role="bss" onclick="setRole('bss',this)"><span class="rd-dot" style="background:#a56eff"></span>BSS / Brand Specialist</div>
-      <div class="rd-opt" data-role="manager" onclick="setRole('manager',this)"><span class="rd-dot" style="background:#009d9a"></span>Manager / FLM</div>
-      <div class="rd-opt" data-role="executive" onclick="setRole('executive',this)"><span class="rd-dot" style="background:#ff832b"></span>Executive / SLM</div>
+  <div style="display:flex;align-items:center">
+    <div id="role-select-wrap">
+      <button id="role-select-btn" onclick="toggleRoleDropdown()">
+        <span class="role-dot" id="role-dot-indicator"></span>
+        <span id="role-btn-label">All Roles</span>
+        <span class="role-caret">▼</span>
+      </button>
+      <div id="role-dropdown">
+        <div class="rd-opt active" data-role="all" onclick="setRole('all',this)"><span class="rd-dot" style="background:#6f6f6f"></span>All Roles</div>
+        <div class="rd-opt" data-role="seller" onclick="setRole('seller',this)"><span class="rd-dot" style="background:#0f62fe"></span>CSE</div>
+        <div class="rd-opt" data-role="bss" onclick="setRole('bss',this)"><span class="rd-dot" style="background:#a56eff"></span>BSS / Brand Specialist</div>
+        <div class="rd-opt" data-role="manager" onclick="setRole('manager',this)"><span class="rd-dot" style="background:#009d9a"></span>Manager / FLM</div>
+        <div class="rd-opt" data-role="executive" onclick="setRole('executive',this)"><span class="rd-dot" style="background:#ff832b"></span>Executive / SLM</div>
+      </div>
+    </div>
+    <!-- Persona "Viewing as" pill — shown when a role is selected -->
+    <div id="persona-select-wrap" class="hidden">
+      <button id="persona-select-btn" onclick="togglePersonaDropdown()">
+        <span class="ps-avatar" id="ps-avatar-initials">MW</span>
+        <span class="ps-label" id="ps-name-label">Marcus Webb</span>
+        <span class="ps-badge" id="ps-badge-label">CSE</span>
+        <span style="opacity:.4;font-size:8px;margin-left:2px">▼</span>
+      </button>
+      <div id="persona-dropdown">
+        <div class="pd-header" id="pd-header-lbl">Viewing as — CSE</div>
+        <div id="pd-opts"></div>
+      </div>
     </div>
   </div>
   <div class="hdr-right">
@@ -578,33 +638,266 @@ function clearFilters() {
   document.getElementById('clear-btn').style.display = 'none';
 }
 
+// ══════════════════════════════════════════════════════════════════════
+// ── ROLE PERSONAS — one per selectable role, drives "Viewing as" pill ─
+// ══════════════════════════════════════════════════════════════════════
+const ROLE_PERSONAS = {
+  seller: [
+    {
+      id:'sel-001', name:'Marcus Webb', initials:'MW', badge:'CSE',
+      color:'#0f62fe', geo:'NYC Metro',
+      desc:'Client Executive · NYC Metro',
+      // All nodes this persona can see
+      nodeIds: new Set(['sel-001','mgr-001',
+        'acc-001','acc-005',
+        'ins-001','ins-003','ins-005',
+        'opp-001','opp-002',
+        'dep-001','dep-003','dep-005',
+        'ter-001',
+        'prd-001','prd-002','prd-003','prd-004','prd-005']),
+    },
+    {
+      id:'sel-003', name:'James Kowalski', initials:'JK', badge:'CSE',
+      color:'#0f62fe', geo:'Atlanta',
+      desc:'Client Executive · Atlanta',
+      nodeIds: new Set(['sel-003','mgr-002',
+        'acc-002','acc-003',
+        'ins-004',
+        'opp-003',
+        'dep-002','dep-004',
+        'ter-003',
+        'prd-001','prd-005','prd-006']),
+    },
+    {
+      id:'sel-005', name:'Tyler Oduya', initials:'TO', badge:'CSE',
+      color:'#0f62fe', geo:'San Francisco',
+      desc:'Client Executive · Bay Area',
+      nodeIds: new Set(['sel-005','mgr-003',
+        'acc-004',
+        'ins-002',
+        'opp-004',
+        'dep-002',
+        'ter-004',
+        'prd-001','prd-002','prd-003']),
+    },
+  ],
+  bss: [
+    {
+      id:'sel-002', name:'Aisha Thornton', initials:'AT', badge:'BSS',
+      color:'#a56eff', geo:'New England',
+      desc:'BSS · watsonx AI & Automation',
+      nodeIds: new Set(['sel-002','mgr-001',
+        'acc-001','acc-004',
+        'ins-001','ins-002',
+        'opp-001','opp-004',
+        'dep-001','dep-002',
+        'prd-001','prd-002','prd-003']),
+    },
+    {
+      id:'sel-004', name:'Lin Mei Zhang', initials:'LZ', badge:'BSS',
+      color:'#a56eff', geo:'Miami',
+      desc:'BSS · Hybrid Cloud & Infrastructure',
+      nodeIds: new Set(['sel-004','mgr-002',
+        'acc-006',
+        'dep-004',
+        'prd-001','prd-002','prd-006','prd-007']),
+    },
+    {
+      id:'sel-006', name:'Rachel Patel', initials:'RP', badge:'BSS',
+      color:'#a56eff', geo:'Los Angeles',
+      desc:'BSS · Security & Compliance',
+      nodeIds: new Set(['sel-006','mgr-003',
+        'acc-005',
+        'ins-003',
+        'opp-002',
+        'dep-003',
+        'prd-004','prd-005']),
+    },
+    {
+      id:'sel-007', name:'Monique Tureaud', initials:'MT', badge:'TSL',
+      color:'#33b1ff', geo:'Baton Rouge, LA',
+      desc:'TSL · Cognos Analytics & Planning Analytics',
+      nodeIds: new Set(['sel-007','mgr-002','mgr-004',
+        'dep-006','dep-007',
+        'prd-001','prd-002']),
+    },
+  ],
+  manager: [
+    {
+      id:'mgr-001', name:'Sandra Okafor', initials:'SO', badge:'FLM',
+      color:'#009d9a', geo:'Northeast',
+      desc:'First-line Manager · Northeast',
+      // FLM sees all their reports + their accounts/opps/deployments
+      nodeIds: new Set(['mgr-001',
+        'sel-001','sel-002',
+        'acc-001','acc-004','acc-005',
+        'ins-001','ins-002','ins-003','ins-005',
+        'opp-001','opp-002','opp-004',
+        'dep-001','dep-002','dep-003','dep-005',
+        'ter-001','ter-002',
+        'prd-001','prd-002','prd-003','prd-004','prd-005']),
+    },
+    {
+      id:'mgr-002', name:'David Reyes', initials:'DR', badge:'FLM',
+      color:'#009d9a', geo:'Southeast',
+      desc:'First-line Manager · Southeast',
+      nodeIds: new Set(['mgr-002',
+        'sel-003','sel-004','sel-007','mgr-004',
+        'acc-002','acc-003','acc-006',
+        'ins-004',
+        'opp-003',
+        'dep-004','dep-006','dep-007',
+        'ter-003',
+        'prd-001','prd-002','prd-006']),
+    },
+    {
+      id:'mgr-003', name:'Priya Nambiar', initials:'PN', badge:'SLM',
+      color:'#a56eff', geo:'West Coast',
+      desc:'Second-line Manager · West Coast',
+      // SLM sees everything under their region — all managers + sellers + accounts
+      nodeIds: new Set(['mgr-003',
+        'sel-005','sel-006',
+        'acc-004',
+        'ins-002',
+        'opp-004',
+        'dep-002',
+        'ter-004','ter-005',
+        'prd-001','prd-002','prd-003','prd-004','prd-005']),
+    },
+  ],
+  executive: [
+    {
+      id:'mgr-003', name:'Priya Nambiar', initials:'PN', badge:'SLM',
+      color:'#a56eff', geo:'West Coast',
+      desc:'SLM · West Coast — Executive View',
+      // SLM exec view: all territories, managers, top accounts, all pipeline
+      nodeIds: new Set(['mgr-001','mgr-002','mgr-003','mgr-004',
+        'sel-001','sel-002','sel-003','sel-004','sel-005','sel-006','sel-007',
+        'acc-001','acc-002','acc-003','acc-004','acc-005','acc-006',
+        'ins-001','ins-002','ins-003','ins-004','ins-005',
+        'opp-001','opp-002','opp-003','opp-004',
+        'dep-001','dep-002','dep-003','dep-004','dep-005','dep-006','dep-007',
+        'ter-001','ter-002','ter-003','ter-004','ter-005']),
+    },
+    {
+      id:'vp-na', name:'Robert Chen', initials:'RC', badge:'VP',
+      color:'#ff832b', geo:'North America',
+      desc:'VP Sales · North America — Executive View',
+      nodeIds: new Set(['mgr-001','mgr-002','mgr-003','mgr-004',
+        'sel-001','sel-002','sel-003','sel-004','sel-005','sel-006','sel-007',
+        'acc-001','acc-002','acc-003','acc-004','acc-005','acc-006',
+        'ins-001','ins-002','ins-003','ins-004','ins-005',
+        'opp-001','opp-002','opp-003','opp-004',
+        'dep-001','dep-002','dep-003','dep-004','dep-005','dep-006','dep-007',
+        'ter-001','ter-002','ter-003','ter-004','ter-005']),
+    },
+  ],
+};
+
+// ── Active persona state ───────────────────────────────────────────────
+let activePersona = null; // null = show all in role
+
 // ── Role dropdown ─────────────────────────────────────────────────────
 const ROLE_LABELS = {all:'All Roles', seller:'CSE', bss:'BSS / Brand Specialist', manager:'Manager / FLM', executive:'Executive / SLM'};
+const ROLE_COLORS = {all:'#6f6f6f', seller:'#0f62fe', bss:'#a56eff', manager:'#009d9a', executive:'#ff832b'};
 
 function toggleRoleDropdown() {
   document.getElementById('role-dropdown').classList.toggle('open');
+  document.getElementById('persona-dropdown').classList.remove('open');
 }
 function setRole(role, el) {
   activeRole = role;
+  activePersona = null;
   document.querySelectorAll('.rd-opt').forEach(o => o.classList.toggle('active', o === el));
   document.getElementById('role-btn-label').textContent = ROLE_LABELS[role] || role;
+  // Update role button dot color
+  const dot = document.getElementById('role-dot-indicator');
+  if (dot) dot.style.background = ROLE_COLORS[role] || '#6f6f6f';
   document.getElementById('role-dropdown').classList.remove('open');
+
+  // Show/hide persona pill and populate it
+  const pWrap = document.getElementById('persona-select-wrap');
+  if (role === 'all') {
+    pWrap.classList.add('hidden');
+  } else {
+    pWrap.classList.remove('hidden');
+    const personas = ROLE_PERSONAS[role] || [];
+    // Auto-select first persona for this role
+    if (personas.length > 0) setPersona(personas[0]);
+    renderPersonaDropdown(role);
+    // Update persona button badge color to match role
+    document.getElementById('persona-select-btn').style.color = ROLE_COLORS[role] || '#0f62fe';
+    document.getElementById('persona-select-btn').style.background = (ROLE_COLORS[role] || '#0f62fe') + '10';
+    document.getElementById('ps-badge-label').style.background = (ROLE_COLORS[role] || '#0f62fe') + '20';
+    document.getElementById('ps-badge-label').style.color = ROLE_COLORS[role] || '#0f62fe';
+  }
+
   renderCards(getFilteredNodes());
   updateBrowseLabel();
 }
+
+function setPersona(persona) {
+  activePersona = persona;
+  document.getElementById('ps-avatar-initials').textContent = persona.initials;
+  document.getElementById('ps-avatar-initials').style.background = `linear-gradient(135deg,${persona.color},${persona.color}aa)`;
+  document.getElementById('ps-name-label').textContent = persona.name;
+  document.getElementById('ps-badge-label').textContent = persona.badge;
+  // Refresh cards
+  renderCards(getFilteredNodes());
+  updateBrowseLabel();
+}
+
+function renderPersonaDropdown(role) {
+  const personas = ROLE_PERSONAS[role] || [];
+  const header = document.getElementById('pd-header-lbl');
+  header.textContent = `Viewing as — ${ROLE_LABELS[role] || role}`;
+  const opts = document.getElementById('pd-opts');
+  opts.innerHTML = personas.map(p => `
+    <div class="pd-opt ${activePersona?.id === p.id ? 'active' : ''}" onclick="selectPersona('${p.id}','${role}')">
+      <div class="pd-avatar" style="background:linear-gradient(135deg,${p.color},${p.color}aa)">${p.initials}</div>
+      <div>
+        <div class="pd-name">${p.name}</div>
+        <div class="pd-sub">${p.desc}</div>
+      </div>
+      <div class="pd-badge" style="background:${p.color}20;color:${p.color}">${p.badge}</div>
+    </div>
+  `).join('');
+}
+
+function selectPersona(personaId, role) {
+  const personas = ROLE_PERSONAS[role] || [];
+  const p = personas.find(x => x.id === personaId);
+  if (!p) return;
+  setPersona(p);
+  // Mark active in dropdown
+  document.querySelectorAll('#pd-opts .pd-opt').forEach((el, i) => {
+    el.classList.toggle('active', personas[i]?.id === personaId);
+  });
+  document.getElementById('persona-dropdown').classList.remove('open');
+}
+
+function togglePersonaDropdown() {
+  document.getElementById('persona-dropdown').classList.toggle('open');
+  document.getElementById('role-dropdown').classList.remove('open');
+}
+
 document.addEventListener('click', e => {
-  if (!e.target.closest('#role-select-wrap')) {
+  if (!e.target.closest('#role-select-wrap') && !e.target.closest('#persona-select-wrap')) {
     document.getElementById('role-dropdown').classList.remove('open');
+    document.getElementById('persona-dropdown').classList.remove('open');
   }
 });
 
 function updateBrowseLabel() {
   const lbl = document.getElementById('browse-lbl');
+  const pName = activePersona ? activePersona.name : null;
   if (currentQuery) {
-    lbl.textContent = `Search results for "${currentQuery}"`;
+    lbl.textContent = `Search results for "${currentQuery}"${pName ? ` · ${pName}'s view` : ''}`;
   } else if (activeRole !== 'all') {
-    const roleNames = {seller:'CSEs',bss:'BSS / Brand Specialists',manager:'Managers / FLM',executive:'SLM / Executive View'};
-    lbl.textContent = `Browsing as: ${roleNames[activeRole] || activeRole}`;
+    const roleNames = {seller:'CSE',bss:'BSS / Brand Specialist',manager:'Manager',executive:'Executive'};
+    lbl.textContent = pName
+      ? `Viewing as ${pName} (${activePersona.badge})`
+      : `Browsing as: ${roleNames[activeRole] || activeRole}`;
   } else {
     lbl.textContent = 'Browse All Entities';
   }
@@ -614,15 +907,16 @@ function updateBrowseLabel() {
 function getFilteredNodes(query = currentQuery) {
   let pool = NODES;
 
-  // Role filter
-  if (activeRole === 'seller') {
-    // CEs see their accounts, installs, opps, territories, deployments
+  // Persona-scoped filter — show ONLY this persona's linked nodes
+  if (activePersona && activePersona.nodeIds) {
+    pool = pool.filter(n => activePersona.nodeIds.has(n.id));
+  } else if (activeRole === 'seller') {
+    // Generic CSE view (no persona selected)
     pool = pool.filter(n => {
       if (n.label === 'Seller') return !n.sellerType || n.sellerType === 'CE' || n.role?.includes('Executive');
       return ['Account','Install','Opportunity','Product','Territory','Deployment'].includes(n.label);
     });
   } else if (activeRole === 'bss') {
-    // BSS / Brand Specialists see products, deployments, installs, accounts — but NOT CE-only seller cards
     pool = pool.filter(n => {
       if (n.label === 'Seller') return n.sellerType === 'BSS' || n.sellerType === 'TSL' || n.role?.includes('Brand') || n.role?.includes('Specialist');
       if (n.label === 'Manager') return n.role?.includes('ATL') || n.role?.includes('FLM');
