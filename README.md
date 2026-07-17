@@ -26,6 +26,19 @@ Every relationship is a **Knowledge Asset** with W3C PROV-DM provenance metadata
 
 ---
 
+## What's New in v0.9.0
+
+| Area | Change |
+|---|---|
+| **Unified search + agent bar** | `search.html` hero now has a **single combined input bar** — the side chat rail is removed. One bar handles both keyword search (debounced card filtering) and natural language Scout Agent queries. Search button, ↑ Send button, and 📌 Pin button all live in the same pill. |
+| **Suggestion chips in hero** | 10 quick-action chips (Next best actions, Org hierarchy, Install base, Stalled deployments, Closing pipeline, Expiring support, Co-sell, Competitor threats, Share of wallet, Territory coverage) sit below the input and collapse on first query. |
+| **Inline chat thread** | Scout Agent responses now appear inline below the hero — conversation thread reveals on first message, suggestion chips hide. No side panel. |
+| **"Viewing as" persona pill** | Selecting a role in the dropdown now shows an attached **Viewing as** pill to the right, showing the persona's initials avatar, name, and role badge. Click it to switch persona within the same role. Cards immediately filter to only that persona's linked nodes. |
+| **Full persona library** | 12 personas across 4 roles: 3 CSEs (Marcus Webb/NYC, James Kowalski/ATL, Tyler Oduya/SF), 4 BSS/TSL (Aisha Thornton, Lin Mei Zhang, Rachel Patel, Monique Tureaud), 3 Manager/FLM (Sandra Okafor FLM NE, David Reyes FLM SE, Priya Nambiar SLM), 2 Executive (Priya Nambiar SLM view, Robert Chen VP NA). |
+| **Persona-scoped node filtering** | When a persona is active, `getFilteredNodes()` restricts the card grid to only that persona's `nodeIds` — accounts, installs, opps, deployments, territories, products linked to them specifically. |
+| **Deployment version + tickets panel** | `deployment.html` now renders a version lifecycle KPI (current vs latest, upgrade-available badge, v-bar fill), plus a full **Support Tickets** section — IBM Support PMR/Case tickets and client ServiceNow tickets, severity 1–4 left-border colors, status badges (OPEN/IN_PROGRESS/RESOLVED/CLOSED), and EOS warning prefix. |
+| **Role label rename** | `CE / Seller` renamed to `CSE` throughout — dropdown option, `ROLE_LABELS`, browse label, `ROLE_PERSONAS` sellerType. |
+
 ## What's New in v0.8.0
 
 | Area | Change |
@@ -202,7 +215,7 @@ In live mode the search agent runs actual Cypher queries against Neo4j and uses 
 
 | Page | Entry Point | Purpose |
 |---|---|---|
-| `search.html` | **Recommended start** | Enterprise search hub — hero search, role pills, entity cards, AI chat rail with rich answer panels |
+| `search.html` | **Recommended start** | Enterprise search hub — unified search+agent bar, persona "Viewing as" pill, suggestion chips, inline chat thread, entity filter pills, full-width card grid |
 | `index.html` | Graph explorer | Interactive SVG dual-graph with zoom/pan, hub clusters, hierarchy flow, drag engine, write-back, modernize, partners, trust tabs |
 | `pruning.html` | Pruning dashboard | Agent health, KPI strip, stale node table, run history sparkline, source freshness, event log, manual trigger |
 | `seller.html?id=sel-XXX` | Seller profile | Hero card, reports-to, accounts, product coverage, deployments driving, co-sell partners |
@@ -223,14 +236,17 @@ In live mode the search agent runs actual Cypher queries against Neo4j and uses 
 
 The primary entry point for IBM Scout. Features:
 
-- **Hero search bar** — live debounced search (280ms) + Enter key
-- **Role pills** — filter by CE/Seller, BSS/Brand Specialist, Manager/FLM, Executive/SLM
-- **Entity filter pills** — all label types including Deployment
-- **What's New ticker** — live-scrolling deployment signals (RED health, stalled, expand-ready)
-- **Insights hero chips** — live from `/insights/summary` — shows expiring support count, RED deployment count, stalled deployments, expand-ready count, avg adoption %, whitespace gaps, trust score
-- **Card grid** — Gainsight health badges on deployment cards, support expiry alerts on install cards
-- **AI chat rail** — `POST /chat` → rich HTML panel responses (no plain text)
-- **8 intent-labelled suggested questions** covering every query type on first load
+- **Unified search + agent bar** — single input handles both debounced keyword card filtering and natural language Scout Agent queries; Search + ↑ Send + 📌 Pin all in one pill
+- **"Viewing as" persona pill** — attaches to the right of the role dropdown when a role is selected; shows initials avatar, name, role badge; click to switch persona; cards filter to only that persona's linked nodes
+- **Persona library (12 personas)** — 3 CSE, 4 BSS/TSL, 3 Manager/FLM/SLM, 2 Executive; each with a pre-defined `nodeIds` set
+- **Suggestion chips** — 10 quick-action chips in the hero; collapse after first query; re-appear on page reload
+- **Inline chat thread** — Scout Agent conversation appears below the hero; reveals on first message
+- **Pinned queries** — 📌 pin any query to localStorage; chips render below the input for one-click re-run
+- **Role filter dropdown** — CSE / BSS / Manager / Executive — each auto-selects first persona and scopes cards
+- **Entity filter pills** — Seller, Manager, Territory, Account, Product, Install, Deployment, Opportunity
+- **Insights hero chips** — live from `/insights/summary` on API health check
+- **Card grid** — Gainsight health badges on deployment cards, EOS/expiry alerts on install cards
+- **10 intent-labelled suggestion chips** covering every query type — NBA, org, install, deployment, pipeline, expiring, co-sell, competitor, revenue, territory
 
 ### Rich Answer Engine (chat rail)
 
@@ -530,12 +546,13 @@ IBM Scout/         (repo folder: IBM DKG)
 | Gainsight live sync (replace seed data) | 🔐 Pending Gainsight API key |
 | watsonx.ai Granite narrative (live) | 🔑 Ready to plug in |
 | Neo4j Aura (production graph) | ☁️ Ready to provision |
-| watsonx Orchestrate skill deployment | 🗓 YAML previously generated; reconnect after skill export |
+| watsonx Orchestrate skill deployment | 🗓 YAML schema drafted; reconnect after skill export |
 | Human write-back → backend persistence | 🗓 Session-only today; DB persistence planned |
 | Slack / Teams query bot | 🗓 Digest copy-ready today; bot connector planned |
 | NL alert subscriptions ("tell me when…") | 🗓 Planned |
-| Graph node drag-to-reposition | 🗓 Planned — mouse drag on individual nodes |
-| Recently Viewed node history trail | 🗓 Planned — right-panel persistent history |
+| Knowledge Asset detail page | 🗓 Planned — view linked sources, confidence score, provenance chain |
+| Competitor detail deep-link | 🗓 Planned — deep-link from EPM panel competitor cards |
+| Multi-turn chat context | 🗓 Planned — thread-aware follow-up resolution |
 | Embedding-based semantic search | 🔑 Ready to plug in |
 | Conflict detection persistence | 🗓 Session-only today |
 
