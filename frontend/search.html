@@ -359,7 +359,7 @@ html,body{min-height:100vh;background:var(--bg);color:var(--tp);
     </button>
     <div id="role-dropdown">
       <div class="rd-opt active" data-role="all" onclick="setRole('all',this)"><span class="rd-dot" style="background:#6f6f6f"></span>All Roles</div>
-      <div class="rd-opt" data-role="seller" onclick="setRole('seller',this)"><span class="rd-dot" style="background:#0f62fe"></span>CE / Seller</div>
+      <div class="rd-opt" data-role="seller" onclick="setRole('seller',this)"><span class="rd-dot" style="background:#0f62fe"></span>CSE</div>
       <div class="rd-opt" data-role="bss" onclick="setRole('bss',this)"><span class="rd-dot" style="background:#a56eff"></span>BSS / Brand Specialist</div>
       <div class="rd-opt" data-role="manager" onclick="setRole('manager',this)"><span class="rd-dot" style="background:#009d9a"></span>Manager / FLM</div>
       <div class="rd-opt" data-role="executive" onclick="setRole('executive',this)"><span class="rd-dot" style="background:#ff832b"></span>Executive / SLM</div>
@@ -587,7 +587,7 @@ function clearFilters() {
 }
 
 // ── Role dropdown ─────────────────────────────────────────────────────
-const ROLE_LABELS = {all:'All Roles', seller:'CE / Seller', bss:'BSS / Brand Specialist', manager:'Manager / FLM', executive:'Executive / SLM'};
+const ROLE_LABELS = {all:'All Roles', seller:'CSE', bss:'BSS / Brand Specialist', manager:'Manager / FLM', executive:'Executive / SLM'};
 
 function toggleRoleDropdown() {
   document.getElementById('role-dropdown').classList.toggle('open');
@@ -611,7 +611,7 @@ function updateBrowseLabel() {
   if (currentQuery) {
     lbl.textContent = `Search results for "${currentQuery}"`;
   } else if (activeRole !== 'all') {
-    const roleNames = {seller:'CE / Sellers',bss:'BSS / Brand Specialists',manager:'Managers / FLM',executive:'SLM / Executive View'};
+    const roleNames = {seller:'CSEs',bss:'BSS / Brand Specialists',manager:'Managers / FLM',executive:'SLM / Executive View'};
     lbl.textContent = `Browsing as: ${roleNames[activeRole] || activeRole}`;
   } else {
     lbl.textContent = 'Browse All Entities';

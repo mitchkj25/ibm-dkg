@@ -201,6 +201,28 @@ html,body{min-height:100vh;background:var(--bg);color:var(--tp);
 /* ── Sync badge ── */
 .sync-chip{font-size:10px;color:var(--tm);display:flex;align-items:center;gap:5px;margin-top:6px}
 .sync-dot{width:6px;height:6px;border-radius:50%;background:var(--ibm-green)}
+
+/* ── Support Tickets ── */
+.ticket-row{
+  display:flex;align-items:flex-start;gap:12px;
+  padding:11px 14px;border-radius:8px;margin-bottom:8px;
+  background:var(--surface);border:1px solid var(--border);
+  cursor:default;transition:border-color .15s;
+}
+.ticket-row:hover{border-color:var(--border-hi)}
+.ticket-row.sev1{border-left:3px solid #da1e28}
+.ticket-row.sev2{border-left:3px solid #ff832b}
+.ticket-row.sev3{border-left:3px solid #f1c21b}
+.ticket-row.sev4{border-left:3px solid #24a148}
+.ticket-id{font-size:10px;font-family:'IBM Plex Mono',monospace;color:var(--ibm-blue);font-weight:700;white-space:nowrap;min-width:90px}
+.ticket-body{flex:1;min-width:0}
+.ticket-title{font-size:12px;font-weight:600;color:var(--tp);margin-bottom:3px}
+.ticket-meta{font-size:10px;color:var(--ts);display:flex;gap:10px;flex-wrap:wrap}
+.ticket-sev{font-size:8.5px;font-weight:800;text-transform:uppercase;padding:1px 7px;border-radius:4px;white-space:nowrap}
+.ticket-status{font-size:8.5px;font-weight:700;padding:1px 7px;border-radius:4px;white-space:nowrap;margin-left:auto;flex-shrink:0;align-self:flex-start}
+/* ── Version bar ── */
+.ver-track{height:8px;background:#e8e8e8;border-radius:4px;overflow:hidden;margin:5px 0 2px}
+.ver-fill{height:100%;border-radius:4px}
 </style>
 </head>
 <body>
@@ -299,6 +321,12 @@ html,body{min-height:100vh;background:var(--bg);color:var(--tp);
       <div class="kpi-label">Deployment Status</div>
       <div class="kpi-sub" id="kpi-go-live"></div>
     </div>
+    <div class="kpi-card">
+      <div class="kpi-val" id="kpi-version" style="font-size:20px">—</div>
+      <div class="kpi-label">Installed Version</div>
+      <div class="ver-track"><div class="ver-fill" id="kpi-version-bar" style="width:100%;background:#24a148"></div></div>
+      <div class="kpi-sub" id="kpi-version-sub"></div>
+    </div>
   </div>
 
   <!-- Blockers + Expand signals -->
@@ -323,6 +351,16 @@ html,body{min-height:100vh;background:var(--bg);color:var(--tp);
       <div class="section-title">👥 Team</div>
       <div id="team-list"></div>
     </div>
+  </div>
+
+  <!-- Support Tickets -->
+  <div class="section-card" style="margin-bottom:24px">
+    <div class="section-title">
+      🎫 Support Tickets
+      <span class="count" id="ticket-count">0</span>
+      <span style="margin-left:auto;font-size:9px;font-weight:400;color:var(--tm)">Source: IBM Support / Client ServiceNow</span>
+    </div>
+    <div id="tickets-list"></div>
   </div>
 
   <!-- Timeline -->
@@ -350,6 +388,7 @@ const DEP_DATA = {
     id:'dep-001', name:'Turbonomic Deployment', product:'IBM Turbonomic', account:'First National Bancorp',
     site:'FNB-CORP-0012 (Corporate HQ)', deploymentStatus:'LIVE', gainsightHealthLabel:'GREEN', gainsightScore:88,
     adoptionPct:97, entitledUnits:6000, activatedUnits:5820, activeUsers30d:142,
+    version:'8.10', latestVersion:'8.12',
     useCasesLive:4, useCasesIdentified:4,
     useCases:['VM resource management (Live)','Hybrid cloud cost optimization (Live)','Application performance (Live)','FinOps reporting (Live)'],
     blockers:[], expandSignals:['Hybrid cloud expansion planned Q3 2025 — 2,800 additional VMs in scope','2025 renewal includes upsell opportunity for Application Resource Management module'],
@@ -361,8 +400,9 @@ const DEP_DATA = {
   },
   'dep-002': {
     id:'dep-002', name:'watsonx.ai Deployment', product:'watsonx.ai', account:'Apex Technology Partners',
-    site:'FNB-RET-0031 (Retail Banking Div.)', deploymentStatus:'IN_PROGRESS', gainsightHealthLabel:'YELLOW', gainsightScore:61,
+    site:'ATP-HQ-0088 (HQ — Engineering)', deploymentStatus:'IN_PROGRESS', gainsightHealthLabel:'YELLOW', gainsightScore:61,
     adoptionPct:42, entitledUnits:500, activatedUnits:210, activeUsers30d:87,
+    version:'2.0', latestVersion:'2.1',
     useCasesLive:2, useCasesIdentified:6,
     useCases:['Internal developer copilot (Live)','Fraud detection model training (Live)','Customer churn prediction (Planned)','Document intelligence (Planned)','Code generation pipeline (Planned)','AI governance alignment (Pending)'],
     blockers:['IT security review not yet complete — blocks provisioning remaining 290 seats','API integration with internal data lake pending — required for 4 additional use cases'],
@@ -375,8 +415,9 @@ const DEP_DATA = {
   },
   'dep-003': {
     id:'dep-003', name:'OpenPages GRC Deployment', product:'IBM OpenPages', account:'Cascadia Insurance Group',
-    site:'Corporate (no site number)', deploymentStatus:'LIVE', gainsightHealthLabel:'YELLOW', gainsightScore:72,
+    site:'CIG-ENT-0033 (Enterprise GRC)', deploymentStatus:'LIVE', gainsightHealthLabel:'YELLOW', gainsightScore:72,
     adoptionPct:96, entitledUnits:300, activatedUnits:288, activeUsers30d:201,
+    version:'8.3', latestVersion:'9.0',
     useCasesLive:5, useCasesIdentified:5,
     useCases:['Operational risk register (Live)','Regulatory compliance tracking (Live)','Audit management (Live)','Policy lifecycle management (Live)','Risk reporting dashboards (Live)'],
     blockers:['Support contract expires Sep 2025 — upgrade to v9 proposal not yet signed. Risk of churn to support-gap period.'],
@@ -389,8 +430,9 @@ const DEP_DATA = {
   },
   'dep-004': {
     id:'dep-004', name:'Sterling OMS Deployment', product:'IBM Sterling Order Management', account:'Nova Retail Group',
-    site:'Corporate (no site number)', deploymentStatus:'STALLED', gainsightHealthLabel:'RED', gainsightScore:31,
+    site:'NRG-CORP-0021 (Corporate Technology)', deploymentStatus:'STALLED', gainsightHealthLabel:'RED', gainsightScore:31,
     adoptionPct:38, entitledUnits:1, activatedUnits:1, activeUsers30d:23,
+    version:'9.5', latestVersion:'10.0',
     useCasesLive:1, useCasesIdentified:3,
     useCases:['Basic order routing (Live)','Omnichannel inventory visibility (Blocked)','Returns & reverse logistics (Not started)'],
     blockers:['Version 9.5 out of standard support since Nov 2024 — customer resistant to upgrade costs without clear ROI','Internal IT deployment freeze in effect until Q4 2025 — no new configuration changes permitted','Competitive evaluation underway: Manhattan Associates OMS being evaluated by VP of Operations'],
@@ -405,6 +447,7 @@ const DEP_DATA = {
     id:'dep-005', name:'CP4Security Deployment', product:'IBM Cloud Pak for Security', account:'First National Bancorp',
     site:'FNB-CORP-0012 (Corporate HQ)', deploymentStatus:'IN_PROGRESS', gainsightHealthLabel:'YELLOW', gainsightScore:74,
     adoptionPct:68, entitledUnits:null, activatedUnits:null, activeUsers30d:54,
+    version:'1.9', latestVersion:'1.10',
     useCasesLive:2, useCasesIdentified:3,
     useCases:['SIEM consolidation — QRadar migration (Live)','Threat intelligence feed integration (Live)','SOAR playbook automation (Blocked — firewall dependency)'],
     blockers:['QRadar migration dependency: internal firewall rules not yet updated by network team. Blocking SOAR go-live.'],
@@ -419,6 +462,7 @@ const DEP_DATA = {
     id:'dep-006', name:'Cognos Analytics Deployment', product:'IBM Cognos Analytics', account:'State of Louisiana — DCFS',
     site:'LA-GOV-0041 (Dept. of Children & Family Services)', deploymentStatus:'LIVE', gainsightHealthLabel:'GREEN', gainsightScore:91,
     adoptionPct:99, entitledUnits:150, activatedUnits:148, activeUsers30d:112,
+    version:'12.0', latestVersion:'12.0',
     useCasesLive:8, useCasesIdentified:8,
     useCases:['Child welfare caseload dashboards (Live)','Federal reporting compliance (Live)','Resource allocation analytics (Live)','Staff performance metrics (Live)','Incident trend analysis (Live)','Budget forecasting (Live)','Field supervisor reports (Live)','Executive leadership KPI view (Live)'],
     blockers:[],
@@ -433,6 +477,7 @@ const DEP_DATA = {
     id:'dep-007', name:'Cognos Analytics Deployment', product:'IBM Cognos Analytics', account:'State of Louisiana — DOTD',
     site:'LA-GOV-0089 (Dept. of Transportation & Development)', deploymentStatus:'STALLED', gainsightHealthLabel:'RED', gainsightScore:44,
     adoptionPct:51, entitledUnits:80, activatedUnits:41, activeUsers30d:18,
+    version:'11.2', latestVersion:'12.0',
     useCasesLive:2, useCasesIdentified:4,
     useCases:['Project status reporting (Live)','Contractor performance tracking (Live)','Bridge inspection analytics (Blocked — data access issue)','Maintenance cost forecasting (Not started — admin gap)'],
     blockers:['Version 11.2 out of standard support — upgrade to v12 blocked by agency procurement freeze (6+ month process)','Key Cognos admin (James Fontenot) left agency in March 2025 — knowledge transfer gap, no replacement trained','Low adoption in engineering division — only 18 of 41 provisioned users active in last 30 days'],
@@ -443,6 +488,41 @@ const DEP_DATA = {
     sellerName:'Monique Tureaud', sellerRole:'Brand Sales Specialist (TSL)',
     description:'Cognos STALLED at DOTD — 51% adoption, v11.2 out of support, RED health. Admin turnover created knowledge gap. Procurement freeze blocks upgrade. Seller must engage DOTD IT director directly to accelerate procurement, and arrange free Cognos training session to address adoption.',
   },
+};
+
+// ── Support Ticket seed data (keyed by dep id) ───────────────────────────
+// IBM Support uses PMRs (Problem Management Records) / Cases. Client side often uses ServiceNow.
+const TICKET_DATA = {
+  'dep-001': [
+    {id:'TS004821392',source:'IBM Support',title:'Turbonomic 8.10 — ARM policy recommendation delay > 30 min on large cluster',severity:3,status:'CLOSED',opened:'2025-03-12',closed:'2025-04-01',owner:'FNB Infrastructure Team',description:'Intermittent delay in policy recommendation engine on clusters > 2,000 VMs. Resolved with patch 8.10.3.'},
+    {id:'TS004991103',source:'IBM Support',title:'Gainsight health score not updating after VM decommission events',severity:4,status:'RESOLVED',opened:'2025-06-02',closed:'2025-06-18',owner:'Brittany Holloway (CSM)',description:'Gainsight integration missed decommission events via vCenter webhook. Configuration fix applied.'},
+  ],
+  'dep-002': [
+    {id:'TS005102847',source:'IBM Support',title:'watsonx.ai 2.0 — API rate limit errors during batch inference job (fraud model)',severity:2,status:'OPEN',opened:'2025-06-28',closed:null,owner:'Jordan Li (CSM)',description:'Customer hitting 429 rate limit errors on /v1/generate endpoint during nightly fraud model training batch. Throttling policy adjustment in review.'},
+    {id:'INC0041823',source:'Client ServiceNow',title:'IT Security review — watsonx.ai data residency compliance documentation request',severity:3,status:'IN_PROGRESS',opened:'2025-05-10',closed:null,owner:'Apex IT Security (Sarah Park)',description:'Apex IT Security team requires IBM data residency attestation for CCPA/SOC2 before provisioning remaining 290 seats. IBM Legal response pending.'},
+    {id:'TS005089234',source:'IBM Support',title:'watsonx.ai Studio — project collaboration role assignment bug for SSO users',severity:4,status:'RESOLVED',opened:'2025-07-01',closed:'2025-07-08',owner:'Jordan Li (CSM)',description:'SSO-federated users could not be assigned Collaborator role in Studio projects. Fix deployed in 2.0.1 patch.'},
+  ],
+  'dep-003': [
+    {id:'TS004773901',source:'IBM Support',title:'OpenPages 8.3 — PDF export fails for regulatory reports > 500 pages',severity:2,status:'OPEN',opened:'2025-04-20',closed:null,owner:'Carlos Vega (CSM)',description:'PDF rendering engine times out on large reports. Engineering ticket raised; v9 upgrade resolves this as report engine was rewritten.'},
+    {id:'INC0039102',source:'Client ServiceNow',title:'OpenPages — claims automation integration with Guidewire PolicyCenter not loading',severity:3,status:'OPEN',opened:'2025-07-05',closed:null,owner:'Cascadia IT (David Reese)',description:'New claims automation use case blocked by Guidewire API version mismatch. IBM Professional Services engagement required.'},
+  ],
+  'dep-004': [
+    {id:'TS004601122',source:'IBM Support',title:'Sterling OMS 9.5 — EOS notice: no more security patches after Nov 2024',severity:1,status:'OPEN',opened:'2024-10-01',closed:null,owner:'Paula Mendes (CSM)',description:'CRITICAL: Sterling OMS v9.5 is out of standard support. Customer has received official EOS notice. IBM cannot issue security patches. Upgrade to v10 is the only resolution path.'},
+    {id:'TS004822044',source:'IBM Support',title:'OMS order routing rules not evaluating correctly for split-shipment orders',severity:2,status:'OPEN',opened:'2025-03-15',closed:null,owner:'Paula Mendes (CSM)',description:'Split-shipment routing logic regression in 9.5.2 patch. Hotfix available but requires engagement — customer IT freeze prevents applying it.'},
+    {id:'INC0040017',source:'Client ServiceNow',title:'Sterling OMS — inventory sync failure with Manhattan WMS pilot system',severity:2,status:'IN_PROGRESS',opened:'2025-06-22',closed:null,owner:'Nova Retail IT (Greg Hansen)',description:'During Manhattan Associates evaluation pilot, inventory sync between IBM Sterling and Manhattan WMS failing. Customer IT investigating integration layer.'},
+  ],
+  'dep-005': [
+    {id:'TS005044918',source:'IBM Support',title:'CP4Security 1.9 — QRadar SIEM connector dropping events during high-volume ingest',severity:2,status:'IN_PROGRESS',opened:'2025-06-10',closed:null,owner:'Brittany Holloway (CSM)',description:'QRadar connector drops ~3% of syslog events when ingest exceeds 50K EPS. Engineering investigating buffer overflow in event pipeline. Patch expected v1.9.2.'},
+    {id:'TS005061207',source:'IBM Support',title:'SOAR playbook — firewall rule exception request for automated response actions',severity:3,status:'OPEN',opened:'2025-06-30',closed:null,owner:'FNB CISO Team (Rachel Kim)',description:'SOAR automated response playbooks require outbound firewall rule changes. FNB network team must approve exception request #FW-2025-0041 before SOAR use case can go live.'},
+  ],
+  'dep-006': [
+    {id:'TS004933210',source:'IBM Support',title:'Cognos 12.0 — Planning Analytics integration — OAuth token refresh failure',severity:3,status:'RESOLVED',opened:'2025-05-14',closed:'2025-05-28',owner:'Diane Broussard (CSM)',description:'OAuth 2.0 token refresh for Planning Analytics integration failed after DCFS identity provider updated their OIDC config. IBM Support provided configuration patch.'},
+  ],
+  'dep-007': [
+    {id:'TS004512803',source:'IBM Support',title:'Cognos 11.2 — EOS: end of standard support June 2025',severity:1,status:'OPEN',opened:'2025-01-15',closed:null,owner:'Diane Broussard (CSM)',description:'CRITICAL: Cognos Analytics v11.2 support ends June 2025. IBM has issued formal EOS notice. No security patches will be issued after this date. Upgrade to v12 is the only resolution. Customer procurement freeze is the current blocker.'},
+    {id:'TS004788341',source:'IBM Support',title:'Cognos 11.2 — bridge inspection dashboard data refresh job fails silently',severity:2,status:'OPEN',opened:'2025-04-08',closed:null,owner:'Diane Broussard (CSM)',description:'Scheduled data refresh for bridge inspection analytics dashboard fails without error notification. Root cause: deprecated data connector in 11.2 not compatible with DOTD SQL Server 2022. Fix requires upgrade.'},
+    {id:'INC0038901',source:'Client ServiceNow',title:'Cognos — knowledge transfer request: admin role vacancy (James Fontenot left)',severity:3,status:'IN_PROGRESS',opened:'2025-04-02',closed:null,owner:'DOTD IT Director (Marie Thibodaux)',description:'Primary Cognos admin James Fontenot departed March 2025. Agency requests IBM training engagement to upskill replacement. IBM Education Services engagement being scoped.'},
+  ],
 };
 
 const STATUS_COLOR = {LIVE:'#24a148',IN_PROGRESS:'#1192e8',STALLED:'#da1e28',NOT_STARTED:'#6f6f6f',CHURNED:'#8a3800'};
@@ -560,6 +640,81 @@ function renderTimeline(dep) {
   `).join('') || '<div class="empty-state">No timeline data available.</div>';
 }
 
+function renderVersion(dep) {
+  const vEl  = document.getElementById('kpi-version');
+  const vBar = document.getElementById('kpi-version-bar');
+  const vSub = document.getElementById('kpi-version-sub');
+  if (!dep.version) { vEl.textContent = '—'; vSub.textContent = 'No version data'; return; }
+  const behind = dep.version !== dep.latestVersion;
+  vEl.textContent = `v${dep.version}`;
+  vEl.style.color = behind ? '#f1c21b' : '#24a148';
+  vBar.style.background = behind ? '#f1c21b' : '#24a148';
+  // Progress: treat versions as numeric for simple comparison
+  const cur = parseFloat(dep.version), latest = parseFloat(dep.latestVersion || dep.version);
+  const pct = latest > 0 ? Math.min(100, Math.round((cur / latest) * 100)) : 100;
+  vBar.style.width = pct + '%';
+  vSub.textContent = behind ? `Latest: v${dep.latestVersion} — upgrade available` : 'Up to date';
+  vSub.style.color = behind ? '#ff832b' : 'var(--tm)';
+}
+
+function renderTickets(dep) {
+  const tickets = TICKET_DATA[dep.id] || [];
+  const countEl = document.getElementById('ticket-count');
+  const listEl  = document.getElementById('tickets-list');
+  countEl.textContent = tickets.length;
+
+  if (!tickets.length) {
+    listEl.innerHTML = '<div class="empty-state">No open support tickets on record for this deployment.</div>';
+    return;
+  }
+
+  const SEV_META = {
+    1: { label:'Sev 1 — Critical',  bg:'rgba(218,30,40,.12)', col:'#da1e28',  cls:'sev1' },
+    2: { label:'Sev 2 — High',      bg:'rgba(255,131,43,.1)', col:'#ff832b',  cls:'sev2' },
+    3: { label:'Sev 3 — Medium',    bg:'rgba(241,194,27,.1)', col:'#946500',  cls:'sev3' },
+    4: { label:'Sev 4 — Low',       bg:'rgba(36,161,72,.08)', col:'#24a148',  cls:'sev4' },
+  };
+  const ST_META = {
+    OPEN:        { bg:'rgba(218,30,40,.1)',   col:'#da1e28',  label:'OPEN' },
+    IN_PROGRESS: { bg:'rgba(255,131,43,.1)',  col:'#ff832b',  label:'IN PROGRESS' },
+    RESOLVED:    { bg:'rgba(36,161,72,.08)',  col:'#24a148',  label:'RESOLVED' },
+    CLOSED:      { bg:'rgba(82,82,82,.1)',    col:'#525252',  label:'CLOSED' },
+  };
+
+  // Sort: SEV1 first, then open/in-progress before closed
+  const sorted = [...tickets].sort((a, b) => {
+    const stOrder = {OPEN:0, IN_PROGRESS:1, RESOLVED:2, CLOSED:3};
+    if (a.severity !== b.severity) return a.severity - b.severity;
+    return (stOrder[a.status]||0) - (stOrder[b.status]||0);
+  });
+
+  listEl.innerHTML = sorted.map(t => {
+    const sev = SEV_META[t.severity] || SEV_META[3];
+    const st  = ST_META[t.status]  || ST_META.OPEN;
+    const srcBadge = t.source === 'Client ServiceNow'
+      ? `<span style="font-size:8px;background:rgba(165,110,255,.1);color:#6929c4;padding:1px 6px;border-radius:3px;font-weight:700">ServiceNow</span>`
+      : `<span style="font-size:8px;background:rgba(15,98,254,.08);color:var(--ibm-blue);padding:1px 6px;border-radius:3px;font-weight:700">IBM Support</span>`;
+    const isEos = t.title.toLowerCase().includes('eos') || t.title.toLowerCase().includes('end of support');
+    return `<div class="ticket-row ${sev.cls}">
+      <div>
+        <div class="ticket-id">${t.id}</div>
+        ${srcBadge}
+      </div>
+      <div class="ticket-body">
+        <div class="ticket-title">${isEos ? '⚠ ' : ''}${t.title}</div>
+        <div class="ticket-meta">
+          <span><span class="ticket-sev" style="background:${sev.bg};color:${sev.col}">${sev.label}</span></span>
+          <span style="color:var(--tm)">Opened ${t.opened}</span>
+          ${t.closed ? `<span style="color:var(--tm)">Closed ${t.closed}</span>` : ''}
+          <span style="color:var(--ts)">Owner: ${t.owner}</span>
+        </div>
+        <div style="font-size:11px;color:var(--ts);margin-top:5px;line-height:1.5">${t.description}</div>
+      </div>
+      <span class="ticket-status" style="background:${st.bg};color:${st.col}">${st.label}</span>
+    </div>`;
+  }).join('');
+}
+
 function renderActions(dep) {
   const el = document.getElementById('action-row');
   const btns = [`<a href="search.html" class="action-btn secondary">← Back to Search</a>`];
@@ -632,6 +787,8 @@ function renderPage(dep) {
   renderUseCases(dep);
   renderTeam(dep);
   renderTimeline(dep);
+  renderVersion(dep);
+  renderTickets(dep);
   renderActions(dep);
 }
 
