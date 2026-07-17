@@ -54,55 +54,62 @@ html,body{min-height:100vh;background:var(--bg);color:var(--tp);
 .badge-demo{padding:3px 8px;border-radius:8px;font-size:9px;font-weight:800;letter-spacing:.5px;text-transform:uppercase;background:rgba(255,131,43,.1);color:var(--ibm-orange);border:1px solid rgba(255,131,43,.2)}
 
 /* ══════════════ LAYOUT ══════════════ */
-#layout{display:flex;min-height:calc(100vh - 54px)}
-#main{flex:1;overflow-y:auto;padding:0 0 60px}
-#chat-rail{
-  width:340px;flex-shrink:0;
-  background:rgba(240,244,255,0.6);
-  border-left:1px solid var(--border);
-  display:flex;flex-direction:column;
-  position:sticky;top:54px;height:calc(100vh - 54px);
-}
+#layout{display:block;min-height:calc(100vh - 54px)}
+#main{width:100%;padding:0 0 60px}
 
 /* ══════════════ HERO ══════════════ */
 #hero{
-  background:linear-gradient(160deg, rgba(15,98,254,0.08) 0%, rgba(240,244,255,0) 50%);
+  background:linear-gradient(160deg, rgba(15,98,254,0.08) 0%, rgba(240,244,255,0) 60%);
   border-bottom:1px solid var(--border);
-  padding:48px 48px 36px;
+  padding:48px 64px 36px;
 }
 .hero-eyebrow{font-size:10px;font-weight:800;letter-spacing:1.5px;text-transform:uppercase;color:var(--ibm-blue);margin-bottom:10px}
 .hero-title{font-size:30px;font-weight:700;line-height:1.15;letter-spacing:-.5px;margin-bottom:6px}
 .hero-title span{color:var(--ibm-blue)}
-.hero-sub{font-size:13px;color:var(--ts);margin-bottom:28px;max-width:560px;line-height:1.6}
+.hero-sub{font-size:13px;color:var(--ts);margin-bottom:24px;max-width:680px;line-height:1.6}
 
-/* Search bar */
-#search-wrap{
-  background:#ffffff;
-  border:1px solid var(--border);
-  border-radius:12px;
-  display:flex;align-items:center;
-  padding:0 16px;gap:10px;
-  max-width:680px;
+/* ── Combined agent input bar ── */
+#agent-input-wrap{
+  display:flex;align-items:center;gap:10px;
+  background:#ffffff;border:1.5px solid var(--border);
+  border-radius:14px;padding:6px 10px 6px 18px;
+  max-width:860px;
   transition:border-color .2s,box-shadow .2s;
+  box-shadow:0 2px 8px rgba(0,0,60,.06);
 }
-#search-wrap:focus-within{
+#agent-input-wrap:focus-within{
   border-color:var(--border-hi);
-  box-shadow:0 0 0 3px rgba(15,98,254,0.12);
+  box-shadow:0 0 0 3px rgba(15,98,254,0.1),0 2px 8px rgba(0,0,60,.06);
 }
-#search-wrap svg{flex-shrink:0;opacity:.4}
+#agent-input-wrap svg{flex-shrink:0;opacity:.35}
 #search-inp{
   flex:1;background:none;border:none;outline:none;
-  color:var(--tp);font-size:15px;padding:14px 0;
-  font-family:inherit;
+  color:var(--tp);font-size:14px;padding:8px 0;
+  font-family:inherit;min-width:0;
 }
 #search-inp::placeholder{color:var(--tm)}
+/* cr-input inside agent-input-wrap */
+.cr-input{
+  flex:1;background:none;border:none;outline:none;
+  color:var(--tp);font-size:14px;padding:8px 0;
+  font-family:inherit;min-width:0;
+}
+.cr-input::placeholder{color:var(--tm)}
+.agent-input-div{width:1px;height:22px;background:var(--border);flex-shrink:0}
 #search-go{
   background:var(--ibm-blue);color:#fff;border:none;
-  cursor:pointer;padding:8px 18px;border-radius:7px;
+  cursor:pointer;padding:8px 18px;border-radius:8px;
   font-size:12px;font-weight:700;transition:background .15s;
   white-space:nowrap;flex-shrink:0;
 }
 #search-go:hover{background:var(--ibm-dk)}
+/* cr-send inside merged bar */
+.cr-send{
+  background:var(--ibm-blue);color:#fff;border:none;
+  border-radius:8px;width:34px;height:34px;display:flex;align-items:center;justify-content:center;
+  cursor:pointer;font-size:14px;transition:background .15s;flex-shrink:0;
+}
+.cr-send:hover{background:var(--ibm-dk)}
 
 /* Role dropdown in header */
 #role-select-wrap{position:relative;display:flex;align-items:center}
@@ -211,25 +218,15 @@ html,body{min-height:100vh;background:var(--bg);color:var(--tp);
 .gb-txt p{font-size:11px;color:var(--ts)}
 .gb-arrow{margin-left:auto;font-size:18px;color:var(--ibm-blue);flex-shrink:0}
 
-/* ══════════════ CHAT RAIL ══════════════ */
-.cr-hdr{
-  padding:14px 16px 10px;
-  border-bottom:1px solid var(--border);
-  display:flex;align-items:center;gap:10px;
+/* ══════════════ CHAT THREAD (inline, below hero) ══════════════ */
+#chat-thread-wrap{
+  max-width:860px;
+  margin-top:20px;
 }
-.cr-avatar{
-  width:32px;height:32px;border-radius:50%;
-  background:linear-gradient(135deg,#0f62fe,#a56eff);
-  display:flex;align-items:center;justify-content:center;
-  font-size:14px;flex-shrink:0;
-}
-.cr-name{font-size:12px;font-weight:700}
-.cr-status{font-size:9px;color:var(--ibm-green);display:flex;align-items:center;gap:3px}
-.cr-status::before{content:'';display:inline-block;width:5px;height:5px;border-radius:50%;background:var(--ibm-green)}
-.cr-msgs{flex:1;overflow-y:auto;padding:14px 14px 0;display:flex;flex-direction:column;gap:10px}
-.msg{max-width:90%;border-radius:10px;padding:9px 12px;font-size:11px;line-height:1.55}
+#cr-msgs{display:flex;flex-direction:column;gap:10px}
+.msg{max-width:78%;border-radius:10px;padding:10px 14px;font-size:12px;line-height:1.55}
 .msg.agent{background:#ffffff;border:1px solid var(--border);color:var(--tp);align-self:flex-start}
-.msg.user{background:rgba(15,98,254,0.1);border:1px solid rgba(15,98,254,0.25);color:var(--ibm-blue);align-self:flex-end}
+.msg.user{background:rgba(15,98,254,0.1);border:1px solid rgba(15,98,254,0.25);color:var(--ibm-blue);align-self:flex-end;max-width:60%}
 .msg-name{font-size:8px;font-weight:800;text-transform:uppercase;letter-spacing:.5px;margin-bottom:3px;color:var(--ts)}
 .suggested-q{
   background:none;border:1px solid var(--border);
@@ -240,8 +237,22 @@ html,body{min-height:100vh;background:var(--bg);color:var(--tp);
 }
 .suggested-q:hover{border-color:var(--border-hi);color:var(--tp);background:var(--surface)}
 
-/* ── Pinned queries ─────────────────────────────────────────────── */
-#pinned-panel{padding:8px 12px;border-bottom:1px solid var(--border);background:rgba(15,98,254,0.03)}
+/* ── Suggested chips grid in hero ────────────────────────────── */
+#hero-suggestions{
+  display:flex;flex-wrap:wrap;gap:6px;
+  margin-top:14px;max-width:860px;
+}
+.hs-chip{
+  display:inline-flex;align-items:center;gap:5px;
+  padding:5px 12px;background:#fff;
+  border:1px solid var(--border);border-radius:20px;
+  font-size:11px;color:var(--ts);cursor:pointer;
+  transition:all .15s;white-space:nowrap;
+}
+.hs-chip:hover{border-color:var(--border-hi);color:var(--tp);background:var(--card-hover)}
+
+/* ── Pinned queries ─────────────────────────────────────────── */
+#pinned-panel{margin-top:10px;max-width:860px;padding:8px 12px;background:rgba(15,98,254,0.03);border:1px solid rgba(15,98,254,0.12);border-radius:8px}
 #pinned-panel.empty{display:none}
 .pinned-hdr{display:flex;align-items:center;justify-content:space-between;margin-bottom:5px}
 .pinned-hdr-lbl{font-size:8px;font-weight:800;text-transform:uppercase;letter-spacing:.9px;color:var(--ibm-blue)}
@@ -252,23 +263,10 @@ html,body{min-height:100vh;background:var(--bg);color:var(--tp);
 .pinned-chip .pc-rm{font-size:10px;color:var(--tm);line-height:1;margin-left:2px;opacity:.6}
 .pinned-chip .pc-rm:hover{opacity:1;color:var(--ibm-red)}
 
-.cr-input-wrap{
-  padding:10px 12px;border-top:1px solid var(--border);
-  display:flex;gap:6px;
-}
-.cr-input{
-  flex:1;background:var(--surface);border:1px solid var(--border);
-  border-radius:7px;padding:8px 10px;font-size:11px;
-  color:var(--tp);font-family:inherit;outline:none;
-  transition:border-color .15s;
-}
-.cr-input:focus{border-color:var(--border-hi)}
-.cr-send{
-  background:var(--ibm-blue);color:#fff;border:none;
-  border-radius:7px;padding:8px 12px;cursor:pointer;
-  font-size:12px;transition:background .15s;
-}
-.cr-send:hover{background:var(--ibm-dk)}
+/* pin btn next to send */
+#cr-pin{background:rgba(15,98,254,0.06);border:1px solid rgba(15,98,254,0.2);color:var(--ibm-blue);border-radius:8px;width:34px;height:34px;display:flex;align-items:center;justify-content:center;cursor:pointer;font-size:13px;flex-shrink:0;transition:background .15s}
+#cr-pin:hover{background:rgba(15,98,254,0.12)}
+
 .typing{display:flex;gap:3px;align-items:center;padding:4px 2px}
 .typing span{width:5px;height:5px;border-radius:50%;background:var(--ts);animation:bounce .9s infinite}
 .typing span:nth-child(2){animation-delay:.15s}
@@ -311,17 +309,20 @@ html,body{min-height:100vh;background:var(--bg);color:var(--tp);
 }
 .nb-label{font-size:9px;font-weight:800;text-transform:uppercase;letter-spacing:.8px;color:var(--ibm-cyan);margin-bottom:4px;display:flex;align-items:center;gap:5px}
 
+/* ══════════════ BROWSE / RESULTS ══════════════ */
+#browse{padding:28px 64px}
+
 /* ══════════════ RESPONSIVE ══════════════ */
 @media(max-width:1100px){
-  #chat-rail{display:none}
-  #hero,#browse{padding-left:28px;padding-right:28px}
-  #narrative-bar,#graph-banner{margin-left:28px;margin-right:28px}
+  #hero,#browse{padding-left:32px;padding-right:32px}
+  #narrative-bar,#graph-banner{margin-left:32px;margin-right:32px}
 }
 @media(max-width:700px){
   .hero-title{font-size:22px}
   #hero{padding:28px 20px 24px}
   #browse{padding:20px}
   #narrative-bar,#graph-banner{margin:0 20px 16px}
+  #agent-input-wrap{border-radius:10px}
 }
 </style>
 </head>
@@ -377,12 +378,45 @@ html,body{min-height:100vh;background:var(--bg);color:var(--tp);
   <section id="hero">
     <div class="hero-eyebrow">🔍 IBM Scout</div>
     <h1 class="hero-title">Your <span>seller intelligence</span><br>starts here.</h1>
-    <p class="hero-sub">Search sellers, accounts, products, territories, installs, and opportunities — all connected in one graph-powered platform.</p>
+    <p class="hero-sub">Search sellers, accounts, products, territories, installs, and opportunities — or ask Scout anything about your book of business.</p>
 
-    <div id="search-wrap">
+    <!-- Combined search + agent input bar -->
+    <div id="agent-input-wrap">
       <svg width="18" height="18" viewBox="0 0 16 16" fill="none"><circle cx="6.5" cy="6.5" r="5" stroke="currentColor" stroke-width="1.5"/><line x1="10.5" y1="10.5" x2="14" y2="14" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/></svg>
-      <input id="search-inp" type="text" placeholder='Search sellers, accounts, "who owns First National", "watsonx installs", "expiring support"…' autocomplete="off"/>
+      <input id="search-inp" type="text" placeholder='Search or ask Scout — "who owns First National?", "stalled deployments", "expiring support"…' autocomplete="off" style="display:none"/>
+      <input class="cr-input" id="cr-input" type="text" placeholder='Ask Scout anything or search — "stalled deployments", "who owns FNB?", "closing pipeline"…' autocomplete="off"/>
+      <div class="agent-input-div"></div>
       <button id="search-go">Search</button>
+      <button class="cr-send" id="cr-send">↑</button>
+      <button id="cr-pin" title="Pin this query" onclick="pinCurrentQuery()">📌</button>
+    </div>
+
+    <!-- Suggested quick-action chips -->
+    <div id="hero-suggestions">
+      <button class="hs-chip" onclick="askAgent('What are my next best actions today?')">⚡ Next best actions</button>
+      <button class="hs-chip" onclick="askAgent('Who does Marcus Webb report to?')">🏢 Org hierarchy</button>
+      <button class="hs-chip" onclick="askAgent('What does First National Bancorp have installed?')">⚙️ Install base</button>
+      <button class="hs-chip" onclick="askAgent('Show me all stalled deployments and adoption blockers')">🚀 Stalled deployments</button>
+      <button class="hs-chip" onclick="askAgent('What open opportunities are closing in the next 30 days?')">💡 Closing pipeline</button>
+      <button class="hs-chip" onclick="askAgent('Find all expiring support contracts in the next 90 days')">⚠️ Expiring support</button>
+      <button class="hs-chip" onclick="askAgent('Who can co-sell watsonx with a CE in the Northeast?')">🤝 Co-sell partners</button>
+      <button class="hs-chip" onclick="askAgent('Which accounts have CRITICAL displacement risk from competitors?')">⚔ Competitor threats</button>
+      <button class="hs-chip" onclick="askAgent('What is the IBM share of wallet across my accounts?')">💰 Share of wallet</button>
+      <button class="hs-chip" onclick="askAgent('Which sellers cover the Southeast territory?')">📍 Territory coverage</button>
+    </div>
+
+    <!-- Pinned queries -->
+    <div id="pinned-panel" class="empty">
+      <div class="pinned-hdr">
+        <span class="pinned-hdr-lbl">📌 Pinned Queries</span>
+        <button class="pinned-clear" onclick="clearPinnedQueries()" title="Clear all pinned queries">Clear all</button>
+      </div>
+      <div id="pinned-chips"></div>
+    </div>
+
+    <!-- Inline chat thread (appears after first query) -->
+    <div id="chat-thread-wrap" style="display:none">
+      <div id="cr-msgs"></div>
     </div>
 
   </section>
@@ -419,48 +453,6 @@ html,body{min-height:100vh;background:var(--bg);color:var(--tp);
   </div>
 
 </div><!-- #main -->
-
-<!-- ══════════════ CHAT RAIL ══════════════ -->
-<aside id="chat-rail">
-  <div class="cr-hdr">
-    <div class="cr-avatar">🤖</div>
-    <div>
-      <div class="cr-name">Scout Agent</div>
-      <div class="cr-status">Ask me anything</div>
-    </div>
-  </div>
-  <div class="cr-msgs" id="cr-msgs">
-    <div class="msg agent">
-      <div class="msg-name">Scout · IBM Seller Intelligence</div>
-      I'm your AI-powered knowledge graph agent. Ask me about org hierarchy, accounts, installs, deployments, pipeline, territory coverage, or product certifications.
-      <div style="margin-top:10px;display:flex;flex-direction:column;gap:4px">
-        <div style="font-size:9px;font-weight:700;text-transform:uppercase;letter-spacing:.6px;color:var(--tm);margin-bottom:2px">Try asking…</div>
-        <button class="suggested-q" onclick="askAgent('What are my next best actions today?')">⚡ Next best actions today</button>
-        <button class="suggested-q" onclick="askAgent('Who does Marcus Webb report to and what accounts does he own?')">🏢 Who manages Marcus Webb?</button>
-        <button class="suggested-q" onclick="askAgent('What does First National Bancorp have installed?')">⚙️ First National install base</button>
-        <button class="suggested-q" onclick="askAgent('Show me all stalled deployments and adoption blockers')">🚀 Stalled deployments</button>
-        <button class="suggested-q" onclick="askAgent('What open opportunities are closing in the next 30 days?')">💡 Closing pipeline</button>
-        <button class="suggested-q" onclick="askAgent('Which sellers cover the Southeast territory?')">📍 Southeast territory</button>
-        <button class="suggested-q" onclick="askAgent('Find all expiring support contracts in the next 90 days')">⚠️ Expiring support</button>
-        <button class="suggested-q" onclick="askAgent('Who can co-sell watsonx with a CE in the Northeast?')">🤝 Co-sell partners</button>
-        <button class="suggested-q" onclick="askAgent('Which accounts have CRITICAL displacement risk from competitors?')">⚔ Critical competitor threats</button>
-        <button class="suggested-q" onclick="askAgent('What is the IBM share of wallet across my accounts?')">💰 Revenue & share of wallet</button>
-      </div>
-    </div>
-  </div>
-  <div id="pinned-panel" class="empty">
-    <div class="pinned-hdr">
-      <span class="pinned-hdr-lbl">📌 Pinned Queries</span>
-      <button class="pinned-clear" onclick="clearPinnedQueries()" title="Clear all pinned queries">Clear all</button>
-    </div>
-    <div id="pinned-chips"></div>
-  </div>
-  <div class="cr-input-wrap">
-    <input class="cr-input" id="cr-input" type="text" placeholder="Ask anything about your accounts…"/>
-    <button class="cr-send" id="cr-send">↑</button>
-    <button id="cr-pin" title="Pin this query" onclick="pinCurrentQuery()" style="background:rgba(15,98,254,0.06);border:1px solid rgba(15,98,254,0.2);color:var(--ibm-blue);border-radius:7px;padding:0 9px;cursor:pointer;font-size:13px;flex-shrink:0;transition:background .15s" title="Save query">📌</button>
-  </div>
-</aside>
 </div><!-- #layout -->
 
 <script>
@@ -1251,6 +1243,7 @@ function buildRichAnswer(q, intent, nodes) {
 
 // ── Chat agent ────────────────────────────────────────────────────────
 function pushUserMsg(text) {
+  revealChatThread();
   const msgs = document.getElementById('cr-msgs');
   const el = document.createElement('div');
   el.className = 'msg user';
@@ -1498,18 +1491,37 @@ async function loadInsightsSummary() {
   } catch (_) {}
 }
 
+// ── Show chat thread on first message ────────────────────────────────
+function revealChatThread() {
+  const wrap = document.getElementById('chat-thread-wrap');
+  const suggs = document.getElementById('hero-suggestions');
+  if (wrap && wrap.style.display === 'none') {
+    wrap.style.display = 'block';
+    if (suggs) suggs.style.display = 'none';
+  }
+}
+
 // ── Event bindings ────────────────────────────────────────────────────
-document.getElementById('search-go').onclick = () => doSearch(document.getElementById('search-inp').value);
-document.getElementById('search-inp').addEventListener('keydown', e => { if (e.key === 'Enter') doSearch(e.target.value); });
+// Search button triggers sendChat (which calls doSearch too)
+document.getElementById('search-go').onclick = () => {
+  const q = document.getElementById('cr-input').value.trim();
+  if (q) sendChat(); else { currentQuery = ''; renderCards(NODES); hideNarrative(); updateBrowseLabel(); }
+};
 document.getElementById('cr-send').onclick = sendChat;
 document.getElementById('cr-input').addEventListener('keydown', e => { if (e.key === 'Enter') sendChat(); });
 
-// Debounced live search
+// Debounced live card filter as user types (silently update cards while typing)
 let debounceTimer;
-document.getElementById('search-inp').addEventListener('input', e => {
+document.getElementById('cr-input').addEventListener('input', e => {
   clearTimeout(debounceTimer);
   debounceTimer = setTimeout(() => {
-    if (e.target.value.length > 2 || e.target.value.length === 0) doSearch(e.target.value);
+    const v = e.target.value;
+    if (v.length > 2 || v.length === 0) {
+      currentQuery = v;
+      renderCards(getFilteredNodes(v));
+      updateBrowseLabel();
+      if (!v) hideNarrative();
+    }
   }, 280);
 });
 
