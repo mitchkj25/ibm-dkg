@@ -111,6 +111,72 @@ html,body{min-height:100vh;background:var(--bg);color:var(--tp);
 .site-total-row{display:flex;align-items:center;justify-content:space-between;padding:10px 0 0;border-top:1px solid var(--border);margin-top:6px}
 .site-total-lbl{font-size:10px;font-weight:700;text-transform:uppercase;letter-spacing:.4px;color:var(--ts)}
 .site-total-val{font-size:16px;font-weight:700;color:var(--ibm-green)}
+/* ── Draup panel ─────────────────────────────────────────────────── */
+#draup-section{margin-bottom:24px}
+.draup-hdr{
+  display:flex;align-items:center;justify-content:space-between;
+  background:linear-gradient(135deg,#0a1628 0%,#102040 100%);
+  border-radius:10px 10px 0 0;padding:14px 20px;
+}
+.draup-hdr-left{display:flex;align-items:center;gap:10px}
+.draup-logo-pill{
+  background:rgba(0,200,200,.15);border:1px solid rgba(0,200,200,.3);
+  border-radius:6px;padding:3px 10px;
+  font-size:10px;font-weight:800;letter-spacing:.8px;color:#00c8c8;text-transform:uppercase;
+}
+.draup-title{font-size:14px;font-weight:700;color:#fff;letter-spacing:-.1px}
+.draup-sub{font-size:10px;color:rgba(255,255,255,.45);margin-top:1px}
+.draup-score-pill{
+  background:rgba(0,200,200,.12);border:1px solid rgba(0,200,200,.25);
+  border-radius:8px;padding:8px 14px;text-align:center;
+}
+.draup-score-val{font-size:22px;font-weight:700;color:#00c8c8;line-height:1}
+.draup-score-lbl{font-size:8px;color:rgba(255,255,255,.4);text-transform:uppercase;letter-spacing:.7px;margin-top:2px}
+.draup-body{
+  background:var(--surface);border:1px solid var(--border);border-top:none;
+  border-radius:0 0 10px 10px;padding:20px;
+}
+.draup-grid{display:grid;grid-template-columns:1fr 1fr;gap:16px}
+@media(max-width:800px){.draup-grid{grid-template-columns:1fr}}
+.draup-panel{background:var(--card);border:1px solid var(--border);border-radius:8px;padding:14px 16px}
+.draup-panel-title{
+  font-size:9px;font-weight:800;text-transform:uppercase;letter-spacing:.9px;
+  color:var(--ts);margin-bottom:12px;display:flex;align-items:center;gap:6px;
+}
+/* Tech stack domain row */
+.ts-domain{margin-bottom:10px}
+.ts-domain-name{font-size:11px;font-weight:600;color:var(--tp);margin-bottom:4px}
+.ts-vendors{display:flex;flex-wrap:wrap;gap:4px}
+.ts-vendor{
+  display:inline-flex;align-items:center;gap:4px;
+  padding:3px 9px;border-radius:4px;font-size:9.5px;font-weight:700;
+  border:1px solid;white-space:nowrap;
+}
+/* Talent signal row */
+.talent-row{display:flex;align-items:center;gap:10px;padding:7px 0;border-bottom:1px solid var(--border)}
+.talent-row:last-child{border-bottom:none}
+.talent-bar-wrap{flex:1}
+.talent-bar-track{height:5px;background:rgba(0,157,154,.1);border-radius:3px;overflow:hidden;margin-top:3px}
+.talent-bar-fill{height:100%;border-radius:3px;background:var(--ibm-teal)}
+/* Intent signal chip */
+.intent-chip{
+  display:flex;align-items:flex-start;gap:8px;
+  padding:9px 12px;border-radius:7px;margin-bottom:7px;
+  border:1px solid;
+}
+.intent-chip:last-child{margin-bottom:0}
+.intent-chip-icon{font-size:15px;flex-shrink:0;margin-top:1px}
+.intent-chip-body{flex:1;min-width:0}
+.intent-chip-label{font-size:11px;font-weight:700;color:var(--tp);margin-bottom:2px}
+.intent-chip-desc{font-size:10px;color:var(--ts);line-height:1.5}
+.intent-chip-badge{font-size:8px;font-weight:800;padding:2px 7px;border-radius:4px;flex-shrink:0;white-space:nowrap;align-self:flex-start;margin-top:1px}
+/* Vendor landscape table */
+.vl-row{display:flex;align-items:center;gap:8px;padding:7px 0;border-bottom:1px solid var(--border);font-size:11px}
+.vl-row:last-child{border-bottom:none}
+.vl-vendor{font-weight:700;color:var(--tp);min-width:120px}
+.vl-cat{font-size:9px;color:var(--tm);flex:1}
+.vl-spend{font-size:10px;font-weight:700;color:var(--ts);white-space:nowrap}
+.vl-dot{width:8px;height:8px;border-radius:50%;flex-shrink:0}
 </style>
 </head>
 <body>
@@ -207,6 +273,26 @@ html,body{min-height:100vh;background:var(--bg);color:var(--tp);
   <div class="section-card" style="margin-bottom:24px" id="epm-section">
     <div class="section-title">📊 EPM Intelligence — Q2 2025</div>
     <div id="epm-content"><div class="empty-state">No EPM report available for this account.</div></div>
+  </div>
+
+  <!-- Draup Competitive Intelligence Panel -->
+  <div id="draup-section">
+    <div class="draup-hdr">
+      <div class="draup-hdr-left">
+        <div class="draup-logo-pill">Draup</div>
+        <div>
+          <div class="draup-title">Competitive Intelligence Report</div>
+          <div class="draup-sub" id="draup-refreshed">Last refreshed —</div>
+        </div>
+      </div>
+      <div class="draup-score-pill">
+        <div class="draup-score-val" id="draup-score">—</div>
+        <div class="draup-score-lbl">Mod. Index</div>
+      </div>
+    </div>
+    <div class="draup-body">
+      <div id="draup-content"><div class="empty-state">No Draup report available for this account.</div></div>
+    </div>
   </div>
 
   <div class="action-row" id="action-row">
@@ -454,6 +540,9 @@ function renderPage(acc) {
   // EPM Intelligence
   renderEpmPanel(acc.id);
 
+  // Draup Intelligence
+  renderDraupPanel(acc.id);
+
   // Actions
   const btns = [`<a href="search.html" class="action-btn secondary">← Back to Search</a>`];
   if(opps.length) btns.push(`<a href="search.html?q=${encodeURIComponent(acc.name+' pipeline')}" class="action-btn primary">💡 View Pipeline</a>`);
@@ -588,6 +677,412 @@ function renderEpmPanel(accId) {
   }
 
   el.innerHTML = kpiHtml + revenueHtml + prodHtml + notesHtml + compHtml;
+}
+
+// ══════════════════════════════════════════════════════════════════════
+// ── DRAUP COMPETITIVE INTELLIGENCE DATA ──────────────────────────────
+// ══════════════════════════════════════════════════════════════════════
+const DRAUP_REPORTS = {
+  'acc-001': {
+    modIndex: 74,
+    lastRefreshed: '2025-06-18',
+    accountType: 'Enterprise Financial Services',
+    itHeadcount: 4200,
+    techBudgetEst: 620000000,
+    techBudgetGrowthPct: 6.2,
+    techStack: [
+      { domain: 'AI / Machine Learning', vendors: [
+        { name: 'IBM watsonx.ai', type: 'ibm', status: 'Active' },
+        { name: 'Microsoft Azure OpenAI', type: 'competitor', status: 'Expanding' },
+        { name: 'DataRobot', type: 'competitor', status: 'Pilot' },
+      ]},
+      { domain: 'Security & Compliance', vendors: [
+        { name: 'IBM CP4Security', type: 'ibm', status: 'Active' },
+        { name: 'CrowdStrike Falcon', type: 'competitor', status: 'Entrenched' },
+        { name: 'Splunk SIEM', type: 'competitor', status: 'Active' },
+      ]},
+      { domain: 'AIOps / Infrastructure', vendors: [
+        { name: 'IBM Turbonomic', type: 'ibm', status: 'Live 97%' },
+        { name: 'Dynatrace', type: 'competitor', status: 'Active' },
+      ]},
+      { domain: 'Cloud Platforms', vendors: [
+        { name: 'AWS (primary)', type: 'competitor', status: 'Primary IaaS' },
+        { name: 'Azure', type: 'competitor', status: 'Secondary' },
+        { name: 'IBM Cloud', type: 'ibm', status: 'Hybrid gateway' },
+      ]},
+    ],
+    talentSignals: [
+      { role: 'AI / ML Engineers', openRoles: 38, yoy: 42, signal: 'HIGH' },
+      { role: 'Cloud / Platform Engineers', openRoles: 54, yoy: 18, signal: 'MEDIUM' },
+      { role: 'Cybersecurity Analysts', openRoles: 29, yoy: 11, signal: 'MEDIUM' },
+      { role: 'Data Engineers', openRoles: 44, yoy: 33, signal: 'HIGH' },
+    ],
+    vendorLandscape: [
+      { vendor: 'Microsoft', category: 'Cloud / AI / Productivity', estSpend: 48000000, relationship: 'Strategic', ibmOverlap: true },
+      { vendor: 'CrowdStrike', category: 'Security / XDR', estSpend: 12000000, relationship: 'Embedded', ibmOverlap: true },
+      { vendor: 'AWS', category: 'Cloud Infrastructure', estSpend: 85000000, relationship: 'Primary IaaS', ibmOverlap: false },
+      { vendor: 'ServiceNow', category: 'ITSM / Workflow', estSpend: 9500000, relationship: 'Active', ibmOverlap: false },
+      { vendor: 'Dynatrace', category: 'APM / Observability', estSpend: 5200000, relationship: 'Active', ibmOverlap: true },
+    ],
+    intentSignals: [
+      { icon: '🤖', label: 'AI Platform Consolidation Initiative', priority: 'HIGH', desc: 'FNB CTO published internal mandate to consolidate AI tooling to 2 vendors by Q1 2026. IBM watsonx + Microsoft Azure OpenAI are front-runners. Governance and explainability requirements favor IBM.', bg: 'rgba(218,30,40,.05)', border: 'rgba(218,30,40,.2)', badge: 'HIGH', badgeCol: '#da1e28' },
+      { icon: '🔒', label: 'QRadar SIEM Migration RFP', priority: 'MEDIUM', desc: 'IT Security team issued an internal RFP to migrate legacy SIEM. IBM QRadar on Cloud and Splunk are in evaluation. CP4Security integration is IBM\'s key differentiator.', bg: 'rgba(255,131,43,.05)', border: 'rgba(255,131,43,.2)', badge: 'MEDIUM', badgeCol: '#ff832b' },
+      { icon: '☁️', label: 'Hybrid Cloud Expansion — 2,800 VMs', priority: 'MEDIUM', desc: 'Infrastructure team planning 2,800 additional VMs in Q3 hybrid cloud expansion. IBM Turbonomic renewal and upsell opportunity directly tied to this initiative.', bg: 'rgba(255,131,43,.05)', border: 'rgba(255,131,43,.2)', badge: 'MEDIUM', badgeCol: '#ff832b' },
+      { icon: '📋', label: 'NIST AI RMF Compliance Program', priority: 'LOW', desc: 'Risk & Compliance team standing up NIST AI RMF compliance program. watsonx.governance is a natural fit for automated AI fact-checking and drift detection.', bg: 'rgba(36,161,72,.04)', border: 'rgba(36,161,72,.18)', badge: 'OPPORTUNITY', badgeCol: '#24a148' },
+    ],
+  },
+  'acc-002': {
+    modIndex: 51,
+    lastRefreshed: '2025-06-15',
+    accountType: 'Enterprise Healthcare',
+    itHeadcount: 1800,
+    techBudgetEst: 280000000,
+    techBudgetGrowthPct: 3.8,
+    techStack: [
+      { domain: 'AI / Clinical Decision Support', vendors: [
+        { name: 'Microsoft Azure AI Foundry', type: 'competitor', status: 'Pilot — expanding' },
+        { name: 'IBM watsonx.ai', type: 'ibm', status: 'Pilot' },
+        { name: 'Nuance (Microsoft)', type: 'competitor', status: 'Active (DAX)' },
+      ]},
+      { domain: 'Electronic Health Records', vendors: [
+        { name: 'Epic EHR', type: 'neutral', status: 'Primary EHR' },
+        { name: 'Meditech', type: 'neutral', status: 'Legacy — migration' },
+      ]},
+      { domain: 'Security', vendors: [
+        { name: 'Palo Alto Prisma Cloud', type: 'competitor', status: 'Active' },
+        { name: 'IBM CP4Security (pilot)', type: 'ibm', status: 'Pilot' },
+      ]},
+    ],
+    talentSignals: [
+      { role: 'Health Informatics / Data Science', openRoles: 22, yoy: 55, signal: 'HIGH' },
+      { role: 'Clinical AI / ML Engineers', openRoles: 14, yoy: 87, signal: 'HIGH' },
+      { role: 'Cloud Security Engineers', openRoles: 18, yoy: 25, signal: 'MEDIUM' },
+    ],
+    vendorLandscape: [
+      { vendor: 'Microsoft', category: 'Azure + Nuance + M365', estSpend: 32000000, relationship: 'Strategic', ibmOverlap: true },
+      { vendor: 'Epic Systems', category: 'EHR / Clinical Platform', estSpend: 28000000, relationship: 'Core system', ibmOverlap: false },
+      { vendor: 'Palo Alto Networks', category: 'Security / CNAPP', estSpend: 4800000, relationship: 'Active', ibmOverlap: true },
+      { vendor: 'AWS', category: 'Cloud Infrastructure', estSpend: 18000000, relationship: 'Primary IaaS', ibmOverlap: false },
+    ],
+    intentSignals: [
+      { icon: '🏥', label: 'Clinical AI Vendor Selection — Q4 2025', priority: 'HIGH', desc: 'Meridian CIO confirmed clinical AI platform selection in Q4 2025. Microsoft Azure AI Foundry is leading; IBM must accelerate watsonx.ai pilot velocity. Explainability and HIPAA compliance are key decision criteria.', bg: 'rgba(218,30,40,.05)', border: 'rgba(218,30,40,.2)', badge: 'CRITICAL', badgeCol: '#da1e28' },
+      { icon: '🔐', label: 'HIPAA Zero-Trust Security Architecture', priority: 'MEDIUM', desc: 'Security team redesigning network access model post-ransomware incident at peer network. CP4Security SOAR and identity capabilities are aligned to this initiative.', bg: 'rgba(255,131,43,.05)', border: 'rgba(255,131,43,.2)', badge: 'MEDIUM', badgeCol: '#ff832b' },
+      { icon: '📊', label: 'Epic Interoperability & AI Integration RFP', priority: 'LOW', desc: 'Active RFP for AI tooling that integrates with Epic FHIR APIs. IBM watsonx.ai on-prem option is an advantage for PHI data sovereignty concerns.', bg: 'rgba(36,161,72,.04)', border: 'rgba(36,161,72,.18)', badge: 'OPPORTUNITY', badgeCol: '#24a148' },
+    ],
+  },
+  'acc-003': {
+    modIndex: 28,
+    lastRefreshed: '2025-06-10',
+    accountType: 'Mid-Market Retail',
+    itHeadcount: 420,
+    techBudgetEst: 140000000,
+    techBudgetGrowthPct: -2.1,
+    techStack: [
+      { domain: 'Order Management / Supply Chain', vendors: [
+        { name: 'IBM Sterling OMS (STALLED)', type: 'ibm', status: '⚠ Out of support' },
+        { name: 'Manhattan Associates (eval)', type: 'competitor', status: 'Active evaluation' },
+        { name: 'Blue Yonder', type: 'competitor', status: 'RFI stage' },
+      ]},
+      { domain: 'Cloud Infrastructure', vendors: [
+        { name: 'AWS', type: 'competitor', status: 'Primary IaaS' },
+        { name: 'Azure', type: 'competitor', status: 'M365 / Secondary' },
+      ]},
+    ],
+    talentSignals: [
+      { role: 'Supply Chain / OMS Engineers', openRoles: 8, yoy: -20, signal: 'LOW' },
+      { role: 'Retail Technology Analysts', openRoles: 5, yoy: -10, signal: 'LOW' },
+    ],
+    vendorLandscape: [
+      { vendor: 'Manhattan Associates', category: 'Supply Chain / OMS', estSpend: 0, relationship: 'Active eval — no contract yet', ibmOverlap: true },
+      { vendor: 'AWS', category: 'Cloud Infrastructure', estSpend: 11000000, relationship: 'Primary IaaS', ibmOverlap: false },
+      { vendor: 'Microsoft', category: 'M365 / Azure', estSpend: 6200000, relationship: 'Active', ibmOverlap: false },
+    ],
+    intentSignals: [
+      { icon: '⚠️', label: 'OMS Platform Replacement Decision — Imminent', priority: 'HIGH', desc: 'Nova Retail IT committee voted to replace their OMS platform by Q1 2026. IBM Sterling OMS v10 upgrade and Manhattan Associates Active Omni are the two finalists. IBM must close upgrade proposal within 30 days or lose the footprint.', bg: 'rgba(218,30,40,.07)', border: 'rgba(218,30,40,.25)', badge: 'CRITICAL', badgeCol: '#da1e28' },
+      { icon: '🛒', label: 'Omnichannel Fulfillment Modernization', priority: 'MEDIUM', desc: 'Board approved a $40M omnichannel fulfillment modernization initiative including BOPIS, same-day delivery, and unified inventory. IBM Sterling v10 capabilities map directly to all three workstreams.', bg: 'rgba(255,131,43,.05)', border: 'rgba(255,131,43,.2)', badge: 'MEDIUM', badgeCol: '#ff832b' },
+    ],
+  },
+  'acc-004': {
+    modIndex: 82,
+    lastRefreshed: '2025-06-20',
+    accountType: 'Enterprise Technology / SaaS',
+    itHeadcount: 6800,
+    techBudgetEst: 450000000,
+    techBudgetGrowthPct: 14.3,
+    techStack: [
+      { domain: 'AI / LLM Platform', vendors: [
+        { name: 'IBM watsonx.ai', type: 'ibm', status: 'Active — 42% adoption' },
+        { name: 'OpenAI ChatGPT Enterprise', type: 'competitor', status: 'Active — productivity' },
+        { name: 'Anthropic Claude (API)', type: 'competitor', status: 'Dev teams' },
+        { name: 'Google Vertex AI', type: 'competitor', status: 'Evaluating' },
+      ]},
+      { domain: 'AI Governance / MLOps', vendors: [
+        { name: 'IBM watsonx.governance', type: 'ibm', status: 'Pilot — $560K opp' },
+        { name: 'Weights & Biases', type: 'competitor', status: 'Active MLOps' },
+        { name: 'Comet ML', type: 'competitor', status: 'Active' },
+      ]},
+      { domain: 'Data / Analytics', vendors: [
+        { name: 'AWS SageMaker', type: 'competitor', status: 'Active — data eng.' },
+        { name: 'Databricks', type: 'competitor', status: 'Primary lakehouse' },
+        { name: 'IBM watsonx.data', type: 'ibm', status: 'Evaluating' },
+      ]},
+      { domain: 'Cloud Platforms', vendors: [
+        { name: 'AWS (primary)', type: 'competitor', status: 'Primary IaaS' },
+        { name: 'GCP', type: 'competitor', status: 'AI / ML workloads' },
+      ]},
+    ],
+    talentSignals: [
+      { role: 'LLM / GenAI Engineers', openRoles: 112, yoy: 180, signal: 'HIGH' },
+      { role: 'AI Platform / MLOps Engineers', openRoles: 67, yoy: 95, signal: 'HIGH' },
+      { role: 'AI Safety / Governance', openRoles: 19, yoy: 320, signal: 'HIGH' },
+      { role: 'Data Engineers / Lakehouse', openRoles: 88, yoy: 42, signal: 'HIGH' },
+    ],
+    vendorLandscape: [
+      { vendor: 'OpenAI', category: 'LLM / Productivity AI', estSpend: 5400000, relationship: 'Active', ibmOverlap: true },
+      { vendor: 'AWS', category: 'Cloud IaaS + SageMaker', estSpend: 72000000, relationship: 'Primary', ibmOverlap: true },
+      { vendor: 'Databricks', category: 'Data Lakehouse', estSpend: 18000000, relationship: 'Strategic', ibmOverlap: true },
+      { vendor: 'Google Cloud', category: 'AI / ML workloads', estSpend: 22000000, relationship: 'Active', ibmOverlap: true },
+    ],
+    intentSignals: [
+      { icon: '🤖', label: 'AI Governance Mandate — Board-Level', priority: 'HIGH', desc: 'Apex board approved an AI governance and compliance program in response to EU AI Act and NIST AI RMF. Legal team leading vendor selection. watsonx.governance automated fact-checking and model risk scoring are directly aligned.', bg: 'rgba(218,30,40,.05)', border: 'rgba(218,30,40,.2)', badge: 'HIGH', badgeCol: '#da1e28' },
+      { icon: '📊', label: 'Unified Data Platform Evaluation', priority: 'MEDIUM', desc: 'Data engineering team evaluating replacing Databricks with a more cost-effective lakehouse. IBM watsonx.data (Presto + open lakehouse) is on the shortlist. Potential $2M+ displacement opportunity.', bg: 'rgba(255,131,43,.05)', border: 'rgba(255,131,43,.2)', badge: 'MEDIUM', badgeCol: '#ff832b' },
+      { icon: '🌐', label: 'LLM Consolidation — 4 Models to 2', priority: 'MEDIUM', desc: 'CTO directive to reduce LLM vendor fragmentation. Currently using 4 providers. IBM Granite + OpenAI shortlisted as the two survivors. On-prem Granite capability is a strong differentiator for regulated data.', bg: 'rgba(255,131,43,.05)', border: 'rgba(255,131,43,.2)', badge: 'MEDIUM', badgeCol: '#ff832b' },
+      { icon: '✅', label: 'watsonx.ai Expansion to 3 New LOBs', priority: 'LOW', desc: 'Product team approved expanding watsonx.ai to 3 additional LOBs (Legal, Finance, Customer Support). Aisha Thornton is driving BSS co-sell motion. Target close Q3 2025.', bg: 'rgba(36,161,72,.04)', border: 'rgba(36,161,72,.18)', badge: 'OPPORTUNITY', badgeCol: '#24a148' },
+    ],
+  },
+  'acc-005': {
+    modIndex: 58,
+    lastRefreshed: '2025-06-12',
+    accountType: 'Enterprise Insurance',
+    itHeadcount: 1100,
+    techBudgetEst: 190000000,
+    techBudgetGrowthPct: 1.4,
+    techStack: [
+      { domain: 'Risk & Compliance (GRC)', vendors: [
+        { name: 'IBM OpenPages', type: 'ibm', status: 'Live — support expiring' },
+        { name: 'ServiceNow GRC', type: 'competitor', status: 'Active evaluation' },
+        { name: 'Archer (RSA)', type: 'competitor', status: 'Legacy — being replaced' },
+      ]},
+      { domain: 'Claims Management', vendors: [
+        { name: 'Guidewire ClaimCenter', type: 'neutral', status: 'Core system' },
+        { name: 'Majesco', type: 'neutral', status: 'Legacy billing' },
+      ]},
+      { domain: 'AI / Analytics', vendors: [
+        { name: 'Microsoft Azure ML', type: 'competitor', status: 'Active' },
+        { name: 'SAS Viya', type: 'competitor', status: 'Actuarial models' },
+      ]},
+    ],
+    talentSignals: [
+      { role: 'GRC / Risk Analysts', openRoles: 12, yoy: -5, signal: 'LOW' },
+      { role: 'AI / Actuarial Data Scientists', openRoles: 9, yoy: 22, signal: 'MEDIUM' },
+      { role: 'Cloud Security Engineers', openRoles: 7, yoy: 15, signal: 'MEDIUM' },
+    ],
+    vendorLandscape: [
+      { vendor: 'ServiceNow', category: 'GRC / IRM / ITSM', estSpend: 9200000, relationship: 'Active — expanding', ibmOverlap: true },
+      { vendor: 'Guidewire', category: 'P&C Insurance Core', estSpend: 15000000, relationship: 'Core — renewal 2027', ibmOverlap: false },
+      { vendor: 'Microsoft', category: 'Azure ML + M365', estSpend: 14000000, relationship: 'Active', ibmOverlap: false },
+    ],
+    intentSignals: [
+      { icon: '⚠️', label: 'OpenPages Renewal Decision — 45 Days', priority: 'HIGH', desc: 'CFO escalated OpenPages renewal to board-level. ServiceNow GRC is the primary competitive alternative. IBM must close OpenPages v9 upgrade proposal within 45 days. Delay increases churn probability to 70%+.', bg: 'rgba(218,30,40,.07)', border: 'rgba(218,30,40,.25)', badge: 'CRITICAL', badgeCol: '#da1e28' },
+      { icon: '📋', label: 'NAIC Model Audit Rule Compliance', priority: 'MEDIUM', desc: 'Cascadia must comply with NAIC Model Audit Rule by year-end. IBM OpenPages operational risk module directly addresses MAR Section 7 audit trail requirements — a strong retention argument.', bg: 'rgba(255,131,43,.05)', border: 'rgba(255,131,43,.2)', badge: 'MEDIUM', badgeCol: '#ff832b' },
+      { icon: '🏛️', label: 'AI Governance for Actuarial Models', priority: 'LOW', desc: 'Actuarial team exploring AI governance tooling for SAS Viya models under NAIC AI Principles. watsonx.governance cross-sell opportunity identified by CSM Carlos Vega.', bg: 'rgba(36,161,72,.04)', border: 'rgba(36,161,72,.18)', badge: 'OPPORTUNITY', badgeCol: '#24a148' },
+    ],
+  },
+  'acc-006': {
+    modIndex: 35,
+    lastRefreshed: '2025-06-08',
+    accountType: 'Mid-Market Logistics',
+    itHeadcount: 180,
+    techBudgetEst: 85000000,
+    techBudgetGrowthPct: 5.5,
+    techStack: [
+      { domain: 'Transportation Management', vendors: [
+        { name: 'Oracle TMS', type: 'competitor', status: 'Active' },
+        { name: 'MercuryGate', type: 'competitor', status: 'Active' },
+      ]},
+      { domain: 'Order / Warehouse Management', vendors: [
+        { name: 'Manhattan WMS', type: 'competitor', status: 'Active' },
+        { name: 'IBM Sterling OMS (eval)', type: 'ibm', status: 'Evaluation — pilot' },
+      ]},
+      { domain: 'Cloud', vendors: [
+        { name: 'AWS', type: 'competitor', status: 'Primary' },
+      ]},
+    ],
+    talentSignals: [
+      { role: 'Supply Chain / Logistics Technology', openRoles: 6, yoy: 33, signal: 'MEDIUM' },
+      { role: 'Data / Analytics Analysts', openRoles: 4, yoy: 20, signal: 'LOW' },
+    ],
+    vendorLandscape: [
+      { vendor: 'Oracle', category: 'TMS / ERP', estSpend: 7500000, relationship: 'Active', ibmOverlap: false },
+      { vendor: 'Manhattan Associates', category: 'WMS', estSpend: 3200000, relationship: 'Active', ibmOverlap: false },
+      { vendor: 'AWS', category: 'Cloud IaaS', estSpend: 4100000, relationship: 'Primary', ibmOverlap: false },
+    ],
+    intentSignals: [
+      { icon: '🚛', label: 'AI-Driven Order Orchestration RFI', priority: 'MEDIUM', desc: 'Operations VP published an RFI for AI-driven order orchestration and real-time inventory visibility. IBM Sterling OMS is a top-3 candidate alongside Blue Yonder and Oracle SCM Cloud.', bg: 'rgba(255,131,43,.05)', border: 'rgba(255,131,43,.2)', badge: 'MEDIUM', badgeCol: '#ff832b' },
+      { icon: '✅', label: 'New Logo — No Existing IBM Revenue', priority: 'LOW', desc: 'SunCoast Logistics has no existing IBM contract. Greenfield opportunity. Sterling OMS pilot on SCL-OPS-0017 whitespace site is the recommended entry motion.', bg: 'rgba(36,161,72,.04)', border: 'rgba(36,161,72,.18)', badge: 'OPPORTUNITY', badgeCol: '#24a148' },
+    ],
+  },
+  'acc-007': {
+    modIndex: 63,
+    lastRefreshed: '2025-06-16',
+    accountType: 'Public Sector / State Government',
+    itHeadcount: 2200,
+    techBudgetEst: 420000000,
+    techBudgetGrowthPct: 4.1,
+    techStack: [
+      { domain: 'Business Intelligence / Analytics', vendors: [
+        { name: 'IBM Cognos Analytics', type: 'ibm', status: 'DCFS — Live 99%' },
+        { name: 'IBM Cognos Analytics', type: 'ibm', status: 'DOTD — Stalled ⚠' },
+        { name: 'Microsoft Power BI', type: 'competitor', status: 'Expanding at DOTD' },
+        { name: 'Tableau', type: 'competitor', status: 'DHH evaluation' },
+      ]},
+      { domain: 'Infrastructure / AIOps', vendors: [
+        { name: 'IBM Turbonomic', type: 'ibm', status: 'DHH — Active' },
+        { name: 'VMware vSphere', type: 'competitor', status: 'Primary on-prem' },
+      ]},
+      { domain: 'Cloud', vendors: [
+        { name: 'AWS GovCloud', type: 'competitor', status: 'DCFS — expanding' },
+        { name: 'Microsoft Azure Gov', type: 'competitor', status: 'DOTD — active' },
+      ]},
+    ],
+    talentSignals: [
+      { role: 'BI / Data Analysts', openRoles: 31, yoy: 8, signal: 'MEDIUM' },
+      { role: 'Cloud / Infrastructure Engineers', openRoles: 24, yoy: 16, signal: 'MEDIUM' },
+      { role: 'AI / Data Science (State Gov)', openRoles: 11, yoy: 45, signal: 'HIGH' },
+    ],
+    vendorLandscape: [
+      { vendor: 'Microsoft', category: 'Azure Gov + Power BI + M365', estSpend: 28000000, relationship: 'Expanding', ibmOverlap: true },
+      { vendor: 'Tableau (Salesforce)', category: 'Business Intelligence', estSpend: 4800000, relationship: 'Evaluating at DHH', ibmOverlap: true },
+      { vendor: 'VMware', category: 'On-prem virtualization', estSpend: 9200000, relationship: 'Core — renewal 2026', ibmOverlap: false },
+      { vendor: 'AWS GovCloud', category: 'Cloud IaaS', estSpend: 16000000, relationship: 'DCFS primary cloud', ibmOverlap: false },
+    ],
+    intentSignals: [
+      { icon: '⚠️', label: 'DOTD Cognos Upgrade — Procurement Blocked', priority: 'HIGH', desc: 'DOTD upgrade to Cognos v12 blocked in procurement committee. Power BI Premium actively positioned as replacement by Microsoft. Carahsoft must push the state contract vehicle to unlock the upgrade before end of fiscal year.', bg: 'rgba(218,30,40,.07)', border: 'rgba(218,30,40,.25)', badge: 'CRITICAL', badgeCol: '#da1e28' },
+      { icon: '📊', label: 'DHH Analytics Platform Selection', priority: 'MEDIUM', desc: 'DHH is selecting a BI platform for population health dashboards. IBM Cognos Analytics expansion from DCFS is the recommended play. Tableau is the primary competitive threat.', bg: 'rgba(255,131,43,.05)', border: 'rgba(255,131,43,.2)', badge: 'MEDIUM', badgeCol: '#ff832b' },
+      { icon: '🤖', label: 'State AI Task Force — Governance RFI', priority: 'MEDIUM', desc: 'Louisiana Office of Technology Services published an AI Governance RFI. watsonx.governance FedRAMP-eligible path and IBM public sector credentials are strong advantages.', bg: 'rgba(255,131,43,.05)', border: 'rgba(255,131,43,.2)', badge: 'MEDIUM', badgeCol: '#ff832b' },
+      { icon: '✅', label: 'DCFS Reference Customer — Expand to DHH', priority: 'LOW', desc: 'DCFS (99% utilization, GREEN Gainsight) is the strongest IBM reference in state government. Monique Tureaud should leverage DCFS CITO as executive reference for the DHH Cognos expansion pitch.', bg: 'rgba(36,161,72,.04)', border: 'rgba(36,161,72,.18)', badge: 'OPPORTUNITY', badgeCol: '#24a148' },
+    ],
+  },
+};
+
+// ── Draup Panel renderer ──────────────────────────────────────────────────
+function renderDraupPanel(accId) {
+  const d = DRAUP_REPORTS[accId];
+  if (!d) { document.getElementById('draup-section').style.display = 'none'; return; }
+
+  document.getElementById('draup-score').textContent = d.modIndex;
+  document.getElementById('draup-refreshed').textContent =
+    `Last refreshed ${d.lastRefreshed} · ${d.accountType} · ${d.itHeadcount.toLocaleString()} IT staff · ~${fmtM(d.techBudgetEst)} tech budget`;
+
+  // Vendor type style map
+  const vtStyle = {
+    ibm:        { bg:'rgba(15,98,254,.10)', color:'var(--ibm-blue)',   border:'rgba(15,98,254,.28)' },
+    competitor: { bg:'rgba(218,30,40,.06)', color:'#c62828',           border:'rgba(218,30,40,.2)'  },
+    neutral:    { bg:'rgba(82,82,82,.07)',  color:'var(--ts)',          border:'var(--border)'        },
+  };
+
+  // Tech Stack
+  const stackHtml = d.techStack.map(dom => `
+    <div class="ts-domain">
+      <div class="ts-domain-name">${dom.domain}</div>
+      <div class="ts-vendors">
+        ${dom.vendors.map(v => {
+          const s = vtStyle[v.type] || vtStyle.neutral;
+          const dot = v.type === 'ibm' ? '⬡ ' : '';
+          return `<span class="ts-vendor" style="background:${s.bg};color:${s.color};border-color:${s.border}">${dot}${v.name} <span style="font-size:8px;opacity:.55;font-weight:400">${v.status}</span></span>`;
+        }).join('')}
+      </div>
+    </div>`).join('');
+
+  // Talent
+  const maxRoles = Math.max(...d.talentSignals.map(t => t.openRoles), 1);
+  const sigCol = { HIGH:'#da1e28', MEDIUM:'#ff832b', LOW:'#24a148' };
+  const talentHtml = d.talentSignals.map(t => {
+    const pct = Math.round((t.openRoles / maxRoles) * 100);
+    const col = sigCol[t.signal] || '#888';
+    const yoyStr = t.yoy >= 0 ? `+${t.yoy}% YoY` : `${t.yoy}% YoY`;
+    return `<div class="talent-row">
+      <div class="talent-bar-wrap">
+        <div style="display:flex;justify-content:space-between;margin-bottom:2px">
+          <span style="font-size:11px;font-weight:600;color:var(--tp)">${t.role}</span>
+          <span style="font-size:9px;color:var(--ts)">${t.openRoles} open</span>
+        </div>
+        <div class="talent-bar-track"><div class="talent-bar-fill" style="width:${pct}%;background:${col}"></div></div>
+      </div>
+      <div style="text-align:right;flex-shrink:0;min-width:64px">
+        <div style="font-size:9px;font-weight:700;color:${col}">${t.signal}</div>
+        <div style="font-size:8px;color:var(--tm)">${yoyStr}</div>
+      </div>
+    </div>`;
+  }).join('');
+
+  // Vendor landscape
+  const vendorHtml = d.vendorLandscape.map(v => `
+    <div class="vl-row">
+      <div class="vl-dot" style="background:${v.ibmOverlap?'#da1e28':'#009d9a'}" title="${v.ibmOverlap?'IBM competitive overlap':'No direct IBM overlap'}"></div>
+      <div class="vl-vendor">${v.vendor}</div>
+      <div class="vl-cat">${v.category} · <em style="font-style:normal;color:var(--ts)">${v.relationship}</em></div>
+      <div class="vl-spend">${v.estSpend > 0 ? fmtM(v.estSpend) : '—'}</div>
+    </div>`).join('');
+
+  // Intent signals
+  const intentHtml = d.intentSignals.map(s => `
+    <div class="intent-chip" style="background:${s.bg};border-color:${s.border}">
+      <div class="intent-chip-icon">${s.icon}</div>
+      <div class="intent-chip-body">
+        <div class="intent-chip-label">${s.label}</div>
+        <div class="intent-chip-desc">${s.desc}</div>
+      </div>
+      <div class="intent-chip-badge" style="background:${s.badgeCol}18;color:${s.badgeCol}">${s.badge}</div>
+    </div>`).join('');
+
+  const budgetGrow = d.techBudgetGrowthPct >= 0
+    ? `<span style="color:#24a148;font-weight:700">▲ +${d.techBudgetGrowthPct}% YoY</span>`
+    : `<span style="color:#da1e28;font-weight:700">▼ ${d.techBudgetGrowthPct}% YoY</span>`;
+
+  document.getElementById('draup-content').innerHTML = `
+    <div style="display:flex;gap:10px;margin-bottom:16px;flex-wrap:wrap">
+      <div style="background:var(--card);border:1px solid var(--border);border-radius:8px;padding:10px 14px;flex:1;min-width:130px">
+        <div style="font-size:9px;font-weight:800;text-transform:uppercase;letter-spacing:.7px;color:var(--ts);margin-bottom:4px">IT Headcount</div>
+        <div style="font-size:18px;font-weight:700;color:var(--ibm-blue)">${d.itHeadcount.toLocaleString()}</div>
+      </div>
+      <div style="background:var(--card);border:1px solid var(--border);border-radius:8px;padding:10px 14px;flex:1;min-width:130px">
+        <div style="font-size:9px;font-weight:800;text-transform:uppercase;letter-spacing:.7px;color:var(--ts);margin-bottom:4px">Tech Budget Est.</div>
+        <div style="font-size:18px;font-weight:700;color:var(--ibm-blue)">${fmtM(d.techBudgetEst)}</div>
+        <div style="font-size:9px;margin-top:2px">${budgetGrow}</div>
+      </div>
+      <div style="background:var(--card);border:1px solid var(--border);border-radius:8px;padding:10px 14px;flex:1;min-width:130px">
+        <div style="font-size:9px;font-weight:800;text-transform:uppercase;letter-spacing:.7px;color:var(--ts);margin-bottom:4px">IT Modernization Index</div>
+        <div style="font-size:18px;font-weight:700;color:${d.modIndex>=70?'#24a148':d.modIndex>=45?'#ff832b':'#da1e28'}">${d.modIndex} / 100</div>
+        <div style="height:4px;background:#e8e8e8;border-radius:2px;margin-top:5px"><div style="width:${d.modIndex}%;height:100%;border-radius:2px;background:${d.modIndex>=70?'#24a148':d.modIndex>=45?'#ff832b':'#da1e28'}"></div></div>
+      </div>
+    </div>
+    <div class="draup-grid" style="margin-bottom:16px">
+      <div class="draup-panel">
+        <div class="draup-panel-title">🧱 Tech Stack Radar</div>
+        ${stackHtml}
+      </div>
+      <div>
+        <div class="draup-panel" style="margin-bottom:12px">
+          <div class="draup-panel-title">👩‍💻 IT Talent & Hiring Signals</div>
+          ${talentHtml}
+        </div>
+        <div class="draup-panel">
+          <div class="draup-panel-title">
+            🏢 Vendor Landscape
+            <span style="font-size:8px;font-weight:600;color:var(--tm);text-transform:none;letter-spacing:0">
+              <span style="display:inline-block;width:7px;height:7px;border-radius:50%;background:#da1e28;margin:0 2px 0 6px"></span>IBM overlap
+              <span style="display:inline-block;width:7px;height:7px;border-radius:50%;background:#009d9a;margin:0 2px 0 8px"></span>No overlap
+            </span>
+          </div>
+          ${vendorHtml}
+        </div>
+      </div>
+    </div>
+    <div class="draup-panel">
+      <div class="draup-panel-title">🎯 Strategic Intent Signals <span style="font-size:8px;font-weight:600;color:var(--tm);text-transform:none;letter-spacing:0">${d.intentSignals.length} active signals</span></div>
+      ${intentHtml}
+    </div>`;
 }
 
 const params = new URLSearchParams(window.location.search);
